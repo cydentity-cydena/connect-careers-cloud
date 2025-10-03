@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import Navigation from "@/components/Navigation";
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -100,8 +101,11 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen bg-background">
+      <Navigation />
+      
+      <div className="flex items-center justify-center p-4 pt-20">
+        <div className="w-full max-w-md">
         <div className="flex items-center justify-center gap-2 mb-8 animate-fade-in">
           <Shield className="h-10 w-10 text-primary animate-glow-pulse" />
           <span className="text-3xl font-bold bg-gradient-cyber bg-clip-text text-transparent">
@@ -231,6 +235,7 @@ const Auth = () => {
             </Tabs>
           </CardContent>
         </Card>
+        </div>
       </div>
     </div>
   );
