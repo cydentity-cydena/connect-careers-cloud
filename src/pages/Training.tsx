@@ -84,6 +84,15 @@ const Training = () => {
       icon: <Shield className="h-6 w-6" />,
       providers: [
         {
+          name: "CyberRanges",
+          description: "Official cyber range of UN's ITU. Military-grade platform for realistic cybersecurity scenarios and team exercises.",
+          color: "bg-slate-800",
+          features: ["Team Exercises", "MITRE ATT&CK", "Realistic Scenarios", "Professional Platform"],
+          freeCourses: [
+            { name: "Request Demo", url: "https://cyberranges.com/" }
+          ]
+        },
+        {
           name: "CyberDefenders",
           description: "Blue team training platform with free forensics and incident response challenges.",
           color: "bg-blue-800",
