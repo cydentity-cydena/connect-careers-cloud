@@ -55,11 +55,17 @@ Deno.serve(async (req) => {
     const completedCourseIds = completedData?.map(c => c.partner_course_id) || [];
 
     // Fetch active courses not yet completed
-    const { data: courses, error: coursesError } = await supabase
+    let query = supabase
       .from('partner_courses')
       .select('*')
-      .eq('active', true)
-      .not('id', 'in', `(${completedCourseIds.length > 0 ? completedCourseIds.join(',') : 'null'})`);
+      .eq('active', true);
+    
+    // Only filter out completed courses if there are any
+    if (completedCourseIds.length > 0) {
+      query = query.not('id', 'in', `(${completedCourseIds.join(',')})`);
+    }
+    
+    const { data: courses, error: coursesError } = await query;
 
     if (coursesError) {
       console.error('Error fetching courses:', coursesError);

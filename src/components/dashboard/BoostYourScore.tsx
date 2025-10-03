@@ -69,7 +69,7 @@ export const BoostYourScore = () => {
             <CheckCircle className="h-12 w-12 text-primary mx-auto mb-4" />
             <p className="text-lg font-semibold mb-2">Great job!</p>
             <p className="text-muted-foreground">
-              New free boosts coming soon. Check back later!
+              You've completed all available boosts. Check back regularly for new courses!
             </p>
           </CardContent>
         </Card>
