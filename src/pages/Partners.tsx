@@ -29,10 +29,16 @@ const Partners = () => {
       features: ["CISSP", "SSCP", "CCSP", "ISSAP"]
     },
     {
+      name: "ISACA",
+      description: "Global association for IT governance, risk management, and cybersecurity professionals.",
+      color: "bg-orange-600",
+      features: ["CISA", "CISM", "CRISC", "CGEIT"]
+    },
+    {
       name: "Real LMS",
       description: "Comprehensive learning management system for cybersecurity professionals and organizations.",
       color: "bg-teal-600",
-      features: ["Custom Training Paths", "Skills Assessment", "Team Management", "Progress Tracking"]
+      features: ["ISO Certifications", "Custom Training Paths", "Cybersecurity Training", "AI Training Programs"]
     }
   ];
 
