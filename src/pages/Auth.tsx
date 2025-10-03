@@ -55,62 +55,66 @@ const Auth = () => {
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate inputs
+    try {
+      emailSchema.parse(email);
+      passwordSchema.parse(password);
+      nameSchema.parse(fullName);
+    } catch (error: any) {
+      if (error instanceof z.ZodError) {
+        toast.error(error.errors[0].message);
+        return;
+      }
+    }
+
+    if (!userRole) {
+      toast.error("Please select a role");
+      return;
+    }
+
     setIsLoading(true);
 
     try {
-      // Validate inputs
-      const emailResult = emailSchema.safeParse(email);
-      if (!emailResult.success) {
-        toast.error(emailResult.error.errors[0].message);
-        setIsLoading(false);
-        return;
-      }
-
-      const passwordResult = passwordSchema.safeParse(password);
-      if (!passwordResult.success) {
-        toast.error(passwordResult.error.errors[0].message);
-        setIsLoading(false);
-        return;
-      }
-
-      const nameResult = nameSchema.safeParse(fullName);
-      if (!nameResult.success) {
-        toast.error(nameResult.error.errors[0].message);
-        setIsLoading(false);
-        return;
-      }
-
+      console.log('Starting secure signup process...');
+      
       // Call secure signup edge function
-      const { data, error } = await supabase.functions.invoke('secure-signup', {
+      const { data, error: functionError } = await supabase.functions.invoke('secure-signup', {
         body: {
-          email: emailResult.data,
-          password: passwordResult.data,
-          fullName: nameResult.data,
+          email: email.trim().toLowerCase(),
+          password,
+          fullName: fullName.trim(),
           role: userRole,
         },
       });
 
-      if (error) throw error;
+      if (functionError) throw functionError;
+      if (!data.success) throw new Error(data.error || 'Signup failed');
 
-      if (data.error) {
-        toast.error(data.error);
-        setIsLoading(false);
-        return;
-      }
+      console.log('Signup successful, now signing in...');
 
-      // Sign in the user after successful signup
+      // Sign in the user
       const { error: signInError } = await supabase.auth.signInWithPassword({
-        email: emailResult.data,
-        password: passwordResult.data,
+        email: email.trim().toLowerCase(),
+        password,
       });
 
       if (signInError) throw signInError;
 
-      toast.success("Account created successfully!");
+      toast.success("Account created successfully! Welcome to Cydent.");
       navigate("/dashboard");
     } catch (error: any) {
       console.error('Signup error:', error);
-      toast.error(error.message || "Failed to create account");
+      
+      if (error.message?.includes('already registered')) {
+        toast.error("This email is already registered. Please sign in instead.");
+      } else if (error.message?.includes('Invalid email')) {
+        toast.error("Please enter a valid email address.");
+      } else if (error.message?.includes('Password')) {
+        toast.error("Password does not meet requirements. Use 12+ characters with mixed case, numbers, and symbols.");
+      } else {
+        toast.error(error.message || "Failed to create account. Please try again.");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -118,37 +122,39 @@ const Auth = () => {
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate inputs
+    try {
+      emailSchema.parse(email);
+    } catch (error: any) {
+      if (error instanceof z.ZodError) {
+        toast.error(error.errors[0].message);
+        return;
+      }
+    }
+
     setIsLoading(true);
 
     try {
-      // Validate email
-      const emailResult = emailSchema.safeParse(email);
-      if (!emailResult.success) {
-        toast.error(emailResult.error.errors[0].message);
-        setIsLoading(false);
-        return;
-      }
-
       const { error } = await supabase.auth.signInWithPassword({
-        email: emailResult.data,
+        email: email.trim().toLowerCase(),
         password,
       });
 
-      if (error) {
-        if (error.message.includes("Invalid login credentials")) {
-          toast.error("Invalid email or password");
-        } else {
-          toast.error(error.message);
-        }
-        setIsLoading(false);
-        return;
-      }
+      if (error) throw error;
 
-      toast.success("Signed in successfully!");
+      toast.success("Welcome back!");
       navigate("/dashboard");
     } catch (error: any) {
       console.error('Sign in error:', error);
-      toast.error("Failed to sign in");
+      
+      if (error.message?.includes('Invalid login credentials')) {
+        toast.error("Invalid email or password. Please try again.");
+      } else if (error.message?.includes('Email not confirmed')) {
+        toast.error("Please confirm your email before signing in.");
+      } else {
+        toast.error(error.message || "Failed to sign in. Please try again.");
+      }
     } finally {
       setIsLoading(false);
     }

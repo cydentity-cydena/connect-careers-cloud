@@ -1,4 +1,4 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.38.4";
 
 const corsHeaders = {
@@ -14,42 +14,28 @@ interface SignupRequest {
 }
 
 serve(async (req) => {
-  // Handle CORS preflight requests
+  // Handle CORS preflight
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    
+    // Create admin client with service role
+    const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false
+      }
+    });
+
     const { email, password, fullName, role }: SignupRequest = await req.json();
 
-    // Validate inputs
-    if (!email || !password || !fullName || !role) {
-      return new Response(
-        JSON.stringify({ error: 'Missing required fields' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
+    console.log('Starting secure signup for:', email, 'with role:', role);
 
-    if (!['candidate', 'employer'].includes(role)) {
-      return new Response(
-        JSON.stringify({ error: 'Invalid role' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
-    // Create Supabase client with service role for admin operations
-    const supabaseAdmin = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
-      {
-        auth: {
-          autoRefreshToken: false,
-          persistSession: false,
-        },
-      }
-    );
-
-    // Step 1: Create the user in auth
+    // 1. Create auth user
     const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
       email,
       password,
@@ -60,73 +46,87 @@ serve(async (req) => {
     });
 
     if (authError) {
-      console.error('Auth error:', authError);
-      return new Response(
-        JSON.stringify({ error: authError.message }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+      console.error('Auth user creation failed:', authError);
+      throw authError;
     }
 
     const userId = authData.user.id;
+    console.log('Auth user created:', userId);
 
-    // Step 2: Insert user role (using service role to bypass RLS)
+    // 2. Create profile (automatically created by trigger, but we verify)
+    const { error: profileError } = await supabaseAdmin
+      .from('profiles')
+      .select('id')
+      .eq('id', userId)
+      .single();
+
+    if (profileError && profileError.code !== 'PGRST116') {
+      console.error('Profile verification failed:', profileError);
+      // Profile should be created by trigger, if not we have an issue
+    }
+
+    // 3. Assign role using service role (bypasses RLS)
     const { error: roleError } = await supabaseAdmin
       .from('user_roles')
-      .insert({ user_id: userId, role });
+      .insert({
+        user_id: userId,
+        role: role,
+      });
 
     if (roleError) {
-      console.error('Role error:', roleError);
-      // Rollback: delete the user if role insertion fails
+      console.error('Role assignment failed:', roleError);
+      // Cleanup: delete the auth user if role assignment fails
       await supabaseAdmin.auth.admin.deleteUser(userId);
-      return new Response(
-        JSON.stringify({ error: 'Failed to assign user role' }),
-        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+      throw new Error('Failed to assign user role');
     }
 
-    // Step 3: If candidate, create candidate profile
+    console.log('Role assigned successfully:', role);
+
+    // 4. If candidate, create candidate profile
     if (role === 'candidate') {
-      const { error: profileError } = await supabaseAdmin
+      const { error: candidateError } = await supabaseAdmin
         .from('candidate_profiles')
-        .insert({ user_id: userId });
+        .insert({
+          user_id: userId,
+          title: '',
+          years_experience: 0,
+        });
 
-      if (profileError) {
-        console.error('Profile error:', profileError);
-        // Rollback: delete user and role
-        await supabaseAdmin.from('user_roles').delete().eq('user_id', userId);
+      if (candidateError) {
+        console.error('Candidate profile creation failed:', candidateError);
+        // Cleanup
         await supabaseAdmin.auth.admin.deleteUser(userId);
-        return new Response(
-          JSON.stringify({ error: 'Failed to create candidate profile' }),
-          { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
+        throw new Error('Failed to create candidate profile');
       }
+
+      console.log('Candidate profile created successfully');
     }
 
-    // Step 4: Create notification for new user
-    await supabaseAdmin.from('notifications').insert({
-      user_id: userId,
-      type: 'system',
-      title: 'Welcome to Cydent!',
-      message: `Welcome ${fullName}! Your ${role} account has been created successfully.`,
-      link: '/dashboard',
-    });
-
-    console.log(`Successfully created ${role} account for ${email}`);
-
     return new Response(
-      JSON.stringify({ 
+      JSON.stringify({
         success: true,
-        message: 'Account created successfully',
-        userId 
+        user: {
+          id: userId,
+          email: authData.user.email,
+          role: role,
+        },
       }),
-      { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 200,
+      }
     );
-  } catch (error) {
-    console.error('Error in secure-signup function:', error);
-    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+  } catch (error: any) {
+    console.error('Signup error:', error);
     return new Response(
-      JSON.stringify({ error: errorMessage }),
-      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      JSON.stringify({
+        success: false,
+        error: error.message || 'Signup failed',
+      }),
+      {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 400,
+      }
     );
   }
 });
