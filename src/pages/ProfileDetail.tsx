@@ -31,64 +31,85 @@ export default function ProfileDetail() {
     try {
       setLoading(true);
 
-      // Get current user
+      // Get current user (optional)
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        navigate("/auth");
-        return;
+      setCurrentUserId(user?.id ?? null);
+
+      // Determine unlock status and credits if logged in
+      let unlocked = false;
+      if (user) {
+        const { data: unlockData } = await supabase
+          .from("profile_unlocks")
+          .select("id")
+          .eq("employer_id", user.id)
+          .eq("candidate_id", id)
+          .maybeSingle();
+        unlocked = !!unlockData;
+
+        const { data: creditData } = await supabase
+          .from("employer_credits")
+          .select("credits")
+          .eq("employer_id", user.id)
+          .maybeSingle();
+        setCredits(creditData?.credits || 0);
       }
-      setCurrentUserId(user.id);
+      setIsUnlocked(unlocked);
 
-      // Check if profile is unlocked
-      const { data: unlockData } = await supabase
-        .from("profile_unlocks")
-        .select("id")
-        .eq("employer_id", user.id)
-        .eq("candidate_id", id)
-        .maybeSingle();
+      // Load profile (email only when unlocked)
+      let profileData: any = null;
+      if (unlocked) {
+        const { data } = await supabase
+          .from("profiles")
+          .select("full_name, avatar_url, location, bio, email")
+          .eq("id", id)
+          .maybeSingle();
+        profileData = data;
+      } else {
+        const { data } = await supabase.rpc("get_public_profile", { profile_id: id });
+        profileData = Array.isArray(data) ? data?.[0] : data;
+      }
+      setProfile(profileData);
 
-      setIsUnlocked(!!unlockData);
+      // Load candidate profile
+      if (unlocked) {
+        const { data } = await supabase
+          .from("candidate_profiles")
+          .select(`
+            *,
+            candidate_skills(
+              skill_id,
+              years_experience,
+              proficiency_level,
+              skills(name, category)
+            ),
+            certifications(name, issuer, issue_date, expiry_date, credential_url)
+          `)
+          .eq("user_id", id)
+          .maybeSingle();
+        if (data) setCandidateProfile(data);
+      } else {
+        const { data: publicCandidate } = await supabase.rpc("get_public_candidate_profile", { profile_user_id: id });
+        const base = Array.isArray(publicCandidate) ? publicCandidate?.[0] : publicCandidate;
 
-      // Get employer credits
-      const { data: creditData } = await supabase
-        .from("employer_credits")
-        .select("credits")
-        .eq("employer_id", user.id)
-        .maybeSingle();
-
-      setCredits(creditData?.credits || 0);
-
-      // Get public profile info (email visible only if unlocked)
-      const profileFields = unlockData 
-        ? "full_name, avatar_url, location, bio, email"
-        : "full_name, avatar_url, location, bio";
-        
-      const { data: publicProfile } = await supabase
-        .from("profiles")
-        .select(profileFields)
-        .eq("id", id)
-        .single();
-
-      setProfile(publicProfile);
-
-      // Get candidate profile (visible if unlocked or if they have an application)
-      const { data: candidateData } = await supabase
-        .from("candidate_profiles")
-        .select(`
-          *,
-          candidate_skills(
-            skill_id,
+        const { data: skills } = await supabase
+          .from("candidate_skills")
+          .select(`
             years_experience,
             proficiency_level,
             skills(name, category)
-          ),
-          certifications(name, issuer, issue_date, expiry_date, credential_url)
-        `)
-        .eq("user_id", id)
-        .maybeSingle();
+          `)
+          .eq("candidate_id", id);
 
-      if (candidateData) {
-        setCandidateProfile(candidateData);
+        const { data: certs } = await supabase
+          .from("certifications")
+          .select("name, issuer, issue_date, expiry_date, credential_url")
+          .eq("candidate_id", id);
+
+        setCandidateProfile({
+          ...base,
+          candidate_skills: skills || [],
+          certifications: certs || [],
+        });
       }
 
     } catch (error: any) {

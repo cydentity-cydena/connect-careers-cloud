@@ -45,15 +45,13 @@ const Dashboard = () => {
         .from("user_roles")
         .select("role")
         .eq("user_id", session.user.id)
-        .single();
+        .maybeSingle();
 
       if (roleError) {
         console.error("Error fetching role:", roleError);
-        toast.error("Failed to load user role");
-        return;
       }
 
-      setUserRole(roleData.role);
+      setUserRole(roleData?.role ?? null);
     } catch (error) {
       console.error("Error checking user:", error);
     } finally {
