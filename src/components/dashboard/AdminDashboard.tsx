@@ -1,5 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Shield, Users, Briefcase, AlertCircle } from "lucide-react";
+import { SeedDemoCandidates } from "@/components/admin/SeedDemoCandidates";
 
 const AdminDashboard = () => {
   return (
@@ -66,6 +67,8 @@ const AdminDashboard = () => {
       </div>
 
       <div className="grid md:grid-cols-2 gap-6">
+        <SeedDemoCandidates />
+        
         <Card className="border-border shadow-card">
           <CardHeader>
             <CardTitle>Platform Analytics</CardTitle>
@@ -87,21 +90,6 @@ const AdminDashboard = () => {
                 <span className="text-sm text-muted-foreground">Companies</span>
                 <span className="font-semibold">0</span>
               </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-border shadow-card">
-          <CardHeader>
-            <CardTitle>Moderation Queue</CardTitle>
-            <CardDescription>
-              Content requiring review
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="text-center py-8">
-              <p className="text-4xl font-bold text-primary mb-2">0</p>
-              <p className="text-sm text-muted-foreground">Items to review</p>
             </div>
           </CardContent>
         </Card>

@@ -3,6 +3,9 @@ project_id = "wbeomprrrmteftumwljf"
 [functions.secure-signup]
 verify_jwt = false
 
+[functions.seed-demo-candidates]
+verify_jwt = true
+
 [functions.unlock-profile]
 verify_jwt = true
 
