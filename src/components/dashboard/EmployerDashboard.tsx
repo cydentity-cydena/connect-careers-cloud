@@ -3,8 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Building, Users, Briefcase, TrendingUp, Coins } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Building, Users, Briefcase, TrendingUp, Coins, Workflow } from "lucide-react";
 import { CreditsPurchaseDialog } from "@/components/employer/CreditsPurchaseDialog";
+import { ApplicationPipeline } from "@/components/employer/ApplicationPipeline";
 
 const EmployerDashboard = () => {
   const navigate = useNavigate();
@@ -58,10 +60,20 @@ const EmployerDashboard = () => {
       <div>
         <h1 className="text-4xl font-bold mb-2">Employer Dashboard</h1>
         <p className="text-muted-foreground">
-          Manage your company profile and job postings
+          Manage your company profile, job postings, and application pipeline
         </p>
       </div>
 
+      <Tabs defaultValue="overview" className="w-full">
+        <TabsList className="grid w-full max-w-md grid-cols-2">
+          <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="pipeline" className="gap-2">
+            <Workflow className="h-4 w-4" />
+            Application Pipeline
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="overview" className="space-y-8 mt-6">
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
         <Card className="border-primary border-2 shadow-lg hover:scale-105 transition-transform">
           <CardHeader className="pb-3">
@@ -205,6 +217,12 @@ const EmployerDashboard = () => {
           </div>
         </CardContent>
       </Card>
+        </TabsContent>
+
+        <TabsContent value="pipeline" className="mt-6">
+          <ApplicationPipeline />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
