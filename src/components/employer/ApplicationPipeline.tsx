@@ -83,6 +83,23 @@ export const ApplicationPipeline = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
+      // First get the employer's jobs to filter applications
+      const { data: employerJobs, error: jobsError } = await supabase
+        .from('jobs')
+        .select('id')
+        .eq('created_by', user.id);
+
+      if (jobsError) throw jobsError;
+
+      const jobIds = employerJobs?.map(j => j.id) || [];
+      
+      if (jobIds.length === 0) {
+        setApplications([]);
+        setLoading(false);
+        return;
+      }
+
+      // Now fetch applications for those jobs
       let query = supabase
         .from('applications')
         .select(`
@@ -96,11 +113,10 @@ export const ApplicationPipeline = () => {
             avatar_url
           ),
           job:jobs!applications_job_id_fkey(
-            title,
-            created_by
+            title
           )
         `)
-        .eq('jobs.created_by', user.id)
+        .in('job_id', jobIds)
         .order('applied_at', { ascending: false });
 
       if (selectedJob) {
