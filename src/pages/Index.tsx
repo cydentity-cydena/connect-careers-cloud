@@ -58,7 +58,7 @@ const Index = () => {
       <section className="py-24 bg-card/30">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16 animate-fade-in">
-            <h2 className="text-4xl font-bold mb-4">Why Choose Cydent?</h2>
+            <h2 className="text-4xl font-bold mb-4">Why Choose Cydena?</h2>
             <p className="text-muted-foreground text-lg">
               Built specifically for the cybersecurity industry
             </p>
@@ -227,7 +227,7 @@ const Index = () => {
             <div>
               <Link to="/" className="flex items-center gap-2 mb-4">
                 <Shield className="h-6 w-6 text-primary" />
-                <span className="text-xl font-bold">Cydent</span>
+                <span className="text-xl font-bold">Cydena</span>
               </Link>
               <p className="text-sm text-muted-foreground">
                 The future of cybersecurity recruitment. Connecting elite talent with cutting-edge opportunities.
@@ -265,7 +265,7 @@ const Index = () => {
           
           <div className="border-t border-border pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-muted-foreground text-sm">
-              © 2025 Cydent. All rights reserved.
+              © 2025 Cydena. All rights reserved.
             </p>
             <div className="flex gap-4 text-sm text-muted-foreground">
               <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Twitter</a>

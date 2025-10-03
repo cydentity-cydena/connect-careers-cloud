@@ -9,7 +9,7 @@ import { MessageCircle } from "lucide-react";
 const FAQ = () => {
   const candidateFAQs = [
     {
-      question: "Is Cydent really free for candidates?",
+      question: "Is Cydena really free for candidates?",
       answer: "Yes! 100% free forever for all candidates, from entry-level to CISO. No hidden fees, no premium tiers. We believe in giving cybersecurity professionals equal access to opportunities."
     },
     {
@@ -36,7 +36,7 @@ const FAQ = () => {
 
   const employerFAQs = [
     {
-      question: "How is Cydent different from LinkedIn Recruiter?",
+      question: "How is Cydena different from LinkedIn Recruiter?",
       answer: "Unlike LinkedIn's subscription model (£8,000+/year), we use a pay-per-unlock system. You only pay when you find a candidate you want to contact. Plus, our platform is specialized for cybersecurity with verified certifications, security clearance filters, and skills-based matching."
     },
     {
@@ -53,7 +53,7 @@ const FAQ = () => {
     },
     {
       question: "What if I unlock a profile and they're not interested?",
-      answer: "While we can't refund individual unlocks, we recommend using our free preview features first: view certifications, years of experience, skills, and leaderboard ranking before unlocking. Most candidates on Cydent are actively job seeking."
+      answer: "While we can't refund individual unlocks, we recommend using our free preview features first: view certifications, years of experience, skills, and leaderboard ranking before unlocking. Most candidates on Cydena are actively job seeking."
     },
     {
       question: "Can I post multiple jobs?",
@@ -75,7 +75,7 @@ const FAQ = () => {
       answer: "Yes. We use bank-level encryption (AES-256), secure authentication, and comply with GDPR/UK data protection laws. As a cybersecurity platform, security is our top priority. Your data is never sold to third parties."
     },
     {
-      question: "Can I integrate Cydent with my ATS?",
+      question: "Can I integrate Cydena with my ATS?",
       answer: "API access and ATS integrations are available for Enterprise customers. Contact our sales team to discuss your specific integration needs."
     },
     {
@@ -87,8 +87,8 @@ const FAQ = () => {
   return (
     <div className="min-h-screen bg-background">
       <SEO
-        title="FAQ - Cydent | Cybersecurity Recruitment Questions Answered"
-        description="Get answers to frequently asked questions about Cydent's cybersecurity recruitment platform. Learn about pricing, features, and how to get started."
+        title="FAQ - Cydena | Cybersecurity Recruitment Questions Answered"
+        description="Get answers to frequently asked questions about Cydena's cybersecurity recruitment platform. Learn about pricing, features, and how to get started."
         keywords="cybersecurity recruitment faq, how to hire cybersecurity talent, cyber job board questions, recruitment platform help"
       />
       <Navigation />
@@ -101,7 +101,7 @@ const FAQ = () => {
               Frequently Asked <span className="bg-gradient-cyber bg-clip-text text-transparent">Questions</span>
             </h1>
             <p className="text-xl text-muted-foreground">
-              Everything you need to know about Cydent
+              Everything you need to know about Cydena
             </p>
           </div>
 
@@ -109,7 +109,7 @@ const FAQ = () => {
           <Card className="mb-8 animate-slide-up">
             <CardHeader>
               <CardTitle className="text-2xl">For Candidates</CardTitle>
-              <CardDescription>Questions about using Cydent to find your next role</CardDescription>
+              <CardDescription>Questions about using Cydena to find your next role</CardDescription>
             </CardHeader>
             <CardContent>
               <Accordion type="single" collapsible className="w-full">
@@ -129,7 +129,7 @@ const FAQ = () => {
           <Card className="mb-8 animate-slide-up" style={{animationDelay: '0.1s'}}>
             <CardHeader>
               <CardTitle className="text-2xl">For Employers</CardTitle>
-              <CardDescription>Questions about hiring through Cydent</CardDescription>
+              <CardDescription>Questions about hiring through Cydena</CardDescription>
             </CardHeader>
             <CardContent>
               <Accordion type="single" collapsible className="w-full">

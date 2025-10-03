@@ -96,7 +96,7 @@ const Profile = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <SEO title="Edit Profile | Cydent" description="Edit your cybersecurity profile and experience." />
+      <SEO title="Edit Profile | Cydena" description="Edit your cybersecurity profile and experience." />
       <Card className="max-w-4xl mx-auto">
         <CardHeader>
           <CardTitle>Edit Profile</CardTitle>

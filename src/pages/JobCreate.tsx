@@ -78,7 +78,7 @@ const JobCreate = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <SEO title="Post a Job | Cydent" description="Post a new cybersecurity job opening." />
+      <SEO title="Post a Job | Cydena" description="Post a new cybersecurity job opening." />
       <Card className="max-w-3xl mx-auto">
         <CardHeader>
           <CardTitle>Post a Job</CardTitle>

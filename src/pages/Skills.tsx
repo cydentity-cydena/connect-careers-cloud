@@ -82,7 +82,7 @@ const Skills = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <SEO title="Add Skills | Cydent" description="Add skills to your candidate profile." />
+      <SEO title="Add Skills | Cydena" description="Add skills to your candidate profile." />
       <Card className="max-w-3xl mx-auto">
         <CardHeader>
           <CardTitle>Select your skills</CardTitle>

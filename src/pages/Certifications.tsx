@@ -68,7 +68,7 @@ const Certifications = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <SEO title="Add Certification | Cydent" description="Add a new certification to your profile." />
+      <SEO title="Add Certification | Cydena" description="Add a new certification to your profile." />
       <Card className="max-w-2xl mx-auto">
         <CardHeader>
           <CardTitle>Add Certification</CardTitle>

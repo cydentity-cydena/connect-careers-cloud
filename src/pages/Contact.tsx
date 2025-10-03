@@ -131,10 +131,10 @@ const Contact = () => {
                     Questions about your profile, certifications, or job opportunities
                   </p>
                   <a
-                    href="mailto:candidates@cydent.com"
+                    href="mailto:candidates@cydena.com"
                     className="text-sm text-primary hover:underline"
                   >
-                    candidates@cydent.com
+                    candidates@cydena.com
                   </a>
                 </div>
 
@@ -144,10 +144,10 @@ const Contact = () => {
                     Interested in posting jobs or accessing our talent pool
                   </p>
                   <a
-                    href="mailto:employers@cydent.com"
+                    href="mailto:employers@cydena.com"
                     className="text-sm text-primary hover:underline"
                   >
-                    employers@cydent.com
+                    employers@cydena.com
                   </a>
                 </div>
 
@@ -157,10 +157,10 @@ const Contact = () => {
                     Partnership inquiries for training organizations
                   </p>
                   <a
-                    href="mailto:partners@cydent.com"
+                    href="mailto:partners@cydena.com"
                     className="text-sm text-primary hover:underline"
                   >
-                    partners@cydent.com
+                    partners@cydena.com
                   </a>
                 </div>
               </CardContent>

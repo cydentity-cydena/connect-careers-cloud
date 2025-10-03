@@ -9,7 +9,7 @@ const Pricing = () => {
   return (
     <div className="min-h-screen bg-background">
       <SEO
-        title="Pricing - Cydent | Transparent Cybersecurity Recruitment Costs"
+        title="Pricing - Cydena | Transparent Cybersecurity Recruitment Costs"
         description="Simple, transparent pricing for cybersecurity recruitment. No long-term contracts, no retainer fees. Pay only for what you use with our credit-based system."
         keywords="cybersecurity recruitment pricing, tech recruitment costs, hire cybersecurity talent, recruitment fees, pay per hire"
       />
@@ -29,7 +29,7 @@ const Pricing = () => {
         {/* Comparison with Traditional Recruitment */}
         <Card className="mb-16 border-2 border-primary/20 bg-gradient-card animate-slide-up">
           <CardHeader>
-            <CardTitle className="text-2xl">Why Cydent vs Traditional Recruitment?</CardTitle>
+            <CardTitle className="text-2xl">Why Cydena vs Traditional Recruitment?</CardTitle>
             <CardDescription>See the difference in cost and speed</CardDescription>
           </CardHeader>
           <CardContent>
@@ -65,7 +65,7 @@ const Pricing = () => {
               <div>
                 <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
                   <Check className="h-5 w-5 text-primary" />
-                  Cydent Platform
+                  Cydena Platform
                 </h3>
                 <ul className="space-y-3">
                   <li className="flex items-start gap-2">
@@ -266,7 +266,7 @@ const Pricing = () => {
               </div>
               <div className="space-y-4">
                 <div>
-                  <h4 className="font-semibold mb-2">Cydent Platform Cost</h4>
+                  <h4 className="font-semibold mb-2">Cydena Platform Cost</h4>
                   <p className="text-3xl font-bold text-primary">£200</p>
                   <p className="text-sm text-muted-foreground">View 20 candidates @ £10 each</p>
                 </div>

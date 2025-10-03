@@ -196,8 +196,8 @@ const Training = () => {
     <div className="min-h-screen bg-background">
       <Navigation />
       <SEO 
-        title="Free Training | Cydent" 
-        description="Complete free cybersecurity courses from leading training providers and earn points on Cydent." 
+        title="Free Training | Cydena" 
+        description="Complete free cybersecurity courses from leading training providers and earn points on Cydena."
       />
       <main className="container mx-auto px-4 py-16">
         <div className="max-w-6xl mx-auto">
@@ -215,7 +215,7 @@ const Training = () => {
                   For Candidates
                 </h2>
                 <p className="text-muted-foreground">
-                  Completed training from these partners? Import your certificates and badges directly into your Cydent profile. 
+                  Completed training from these partners? Import your certificates and badges directly into your Cydena profile. 
                   We support Credly, Accredible, and direct badge URLs. Earn +500-700 points for verified certifications!
                 </p>
               </div>
@@ -225,7 +225,7 @@ const Training = () => {
                   For Training Providers
                 </h2>
                 <p className="text-muted-foreground">
-                  Interested in partnering with Cydent? We showcase your training graduates to employers at no cost. 
+                  Interested in partnering with Cydena? We showcase your training graduates to employers at no cost.
                   Your graduates gain visibility, and you gain a direct talent pipeline. Easy integration with existing badge systems.
                 </p>
               </div>

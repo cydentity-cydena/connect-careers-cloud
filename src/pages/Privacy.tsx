@@ -6,8 +6,8 @@ const Privacy = () => {
   return (
     <div className="min-h-screen bg-background">
       <SEO
-        title="Privacy Policy - Cydent"
-        description="Privacy Policy for Cydent cybersecurity recruitment platform. Learn how we protect and handle your personal data."
+        title="Privacy Policy - Cydena"
+        description="Privacy Policy for Cydena cybersecurity recruitment platform. Learn how we protect and handle your personal data."
       />
       <Navigation />
 
@@ -24,11 +24,11 @@ const Privacy = () => {
             </CardHeader>
             <CardContent className="space-y-4 text-muted-foreground">
               <p>
-                At Cydent, we take your privacy seriously. This Privacy Policy explains how we collect, use, store, and 
+                At Cydena, we take your privacy seriously. This Privacy Policy explains how we collect, use, store, and 
                 protect your personal information when you use our platform.
               </p>
               <p>
-                By using Cydent, you agree to the collection and use of information in accordance with this policy. 
+                By using Cydena, you agree to the collection and use of information in accordance with this policy.
                 We are committed to transparency and compliance with GDPR (General Data Protection Regulation) and UK data 
                 protection laws.
               </p>
@@ -74,7 +74,7 @@ const Privacy = () => {
             <CardContent className="space-y-4 text-muted-foreground">
               <p>We use your personal information to:</p>
               <ul className="list-disc pl-6 space-y-2">
-                <li>Provide and maintain the Cydent platform</li>
+                <li>Provide and maintain the Cydena platform</li>
                 <li>Match candidates with relevant job opportunities</li>
                 <li>Enable communication between candidates and employers</li>
                 <li>Process payments and manage credits for employers</li>
@@ -191,7 +191,7 @@ const Privacy = () => {
                 <li><strong>Right to Withdraw Consent:</strong> Withdraw consent for marketing or other consent-based processing</li>
               </ul>
               <p className="mt-4">
-                To exercise any of these rights, contact us at privacy@cydent.com. We will respond within 30 days.
+                To exercise any of these rights, contact us at privacy@cydena.com. We will respond within 30 days.
               </p>
             </CardContent>
           </Card>
@@ -202,7 +202,7 @@ const Privacy = () => {
             </CardHeader>
             <CardContent className="space-y-4 text-muted-foreground">
               <p>
-                We use cookies and similar tracking technologies to enhance your experience on Cydent:
+                We use cookies and similar tracking technologies to enhance your experience on Cydena:
               </p>
               <ul className="list-disc pl-6 space-y-2">
                 <li><strong>Essential Cookies:</strong> Required for login, security, and core platform functionality</li>
@@ -222,7 +222,7 @@ const Privacy = () => {
             </CardHeader>
             <CardContent className="space-y-4 text-muted-foreground">
               <p>
-                Cydent is not intended for users under the age of 16. We do not knowingly collect personal information 
+                Cydena is not intended for users under the age of 16. We do not knowingly collect personal information 
                 from children. If we become aware that we have collected data from a child, we will delete it promptly.
               </p>
             </CardContent>
@@ -274,8 +274,8 @@ const Privacy = () => {
                 If you have questions about this Privacy Policy or how we handle your data, please contact us:
               </p>
               <ul className="list-none space-y-2 mt-4">
-                <li><strong>Email:</strong> privacy@cydent.com</li>
-                <li><strong>Data Protection Officer:</strong> dpo@cydent.com</li>
+                <li><strong>Email:</strong> privacy@cydena.com</li>
+                <li><strong>Data Protection Officer:</strong> dpo@cydena.com</li>
                 <li><strong>Contact Form:</strong> Available on our Contact page</li>
               </ul>
               <p className="mt-4">

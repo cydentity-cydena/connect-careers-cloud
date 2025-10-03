@@ -101,7 +101,7 @@ const Auth = () => {
 
       if (signInError) throw signInError;
 
-      toast.success("Account created successfully! Welcome to Cydent.");
+      toast.success("Account created successfully! Welcome to Cydena.");
       navigate("/dashboard");
     } catch (error: any) {
       console.error('Signup error:', error);
@@ -169,7 +169,7 @@ const Auth = () => {
         <div className="flex items-center justify-center gap-2 mb-8 animate-fade-in">
           <Shield className="h-10 w-10 text-primary animate-glow-pulse" />
           <span className="text-3xl font-bold bg-gradient-cyber bg-clip-text text-transparent">
-            Cydent
+            Cydena
           </span>
         </div>
 

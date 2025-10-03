@@ -57,7 +57,7 @@ const CompanyCreate = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <SEO title="Create Company Profile | Cydent" description="Create your company profile to start posting jobs." />
+      <SEO title="Create Company Profile | Cydena" description="Create your company profile to start posting jobs." />
       <Card className="max-w-3xl mx-auto">
         <CardHeader>
           <CardTitle>Create Company Profile</CardTitle>

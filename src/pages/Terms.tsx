@@ -6,8 +6,8 @@ const Terms = () => {
   return (
     <div className="min-h-screen bg-background">
       <SEO
-        title="Terms of Service - Cydent"
-        description="Terms of Service for Cydent cybersecurity recruitment platform. Read our terms and conditions for using our services."
+        title="Terms of Service - Cydena"
+        description="Terms of Service for Cydena cybersecurity recruitment platform. Read our terms and conditions for using our services."
       />
       <Navigation />
 
@@ -24,7 +24,7 @@ const Terms = () => {
             </CardHeader>
             <CardContent className="space-y-4 text-muted-foreground">
               <p>
-                By accessing or using Cydent ("the Platform"), you agree to be bound by these Terms of Service ("Terms"). 
+                By accessing or using Cydena ("the Platform"), you agree to be bound by these Terms of Service ("Terms"). 
                 If you do not agree to these Terms, you may not access or use the Platform.
               </p>
               <p>
@@ -39,7 +39,7 @@ const Terms = () => {
             </CardHeader>
             <CardContent className="space-y-4 text-muted-foreground">
               <p>
-                Cydent is an online platform that connects cybersecurity professionals with employers seeking to hire 
+                Cydena is an online platform that connects cybersecurity professionals with employers seeking to hire 
                 cybersecurity talent. The Platform provides:
               </p>
               <ul className="list-disc pl-6 space-y-2">
@@ -143,11 +143,11 @@ const Terms = () => {
             </CardHeader>
             <CardContent className="space-y-4 text-muted-foreground">
               <p>
-                All content on the Platform, including text, graphics, logos, and software, is owned by or licensed to Cydent 
+                All content on the Platform, including text, graphics, logos, and software, is owned by or licensed to Cydena 
                 and is protected by copyright, trademark, and other intellectual property laws.
               </p>
               <p>
-                You retain ownership of content you submit (profiles, resumes, job postings), but grant Cydent a license to 
+                You retain ownership of content you submit (profiles, resumes, job postings), but grant Cydena a license to
                 use, display, and distribute such content as necessary to operate the Platform.
               </p>
             </CardContent>
@@ -208,7 +208,7 @@ const Terms = () => {
             </CardHeader>
             <CardContent className="space-y-4 text-muted-foreground">
               <p>
-                TO THE MAXIMUM EXTENT PERMITTED BY LAW, CYDENT SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, 
+                TO THE MAXIMUM EXTENT PERMITTED BY LAW, CYDENA SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, 
                 CONSEQUENTIAL, OR PUNITIVE DAMAGES ARISING FROM YOUR USE OF THE PLATFORM.
               </p>
               <p>
@@ -266,7 +266,7 @@ const Terms = () => {
             <CardContent className="space-y-4 text-muted-foreground">
               <p>
                 If you have any questions about these Terms, please contact us through our Contact page or email us at 
-                legal@cydent.com.
+                legal@cydena.com.
               </p>
             </CardContent>
           </Card>

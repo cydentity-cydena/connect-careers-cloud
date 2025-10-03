@@ -10,11 +10,11 @@ interface SEOProps {
 }
 
 const SEO = ({
-  title = "Cydent - The Future of Cyber Recruitment",
+  title = "Cydena - The Future of Cyber Recruitment",
   description = "Connect elite cybersecurity talent with cutting-edge opportunities. Skills-based matching, verified certifications, and real-time collaboration platform for cyber professionals.",
   keywords = "cybersecurity jobs, cyber recruitment, security clearance jobs, penetration testing jobs, CISSP, CEH, cyber talent, infosec careers",
   image = "/og-image.jpg",
-  url = "https://cydent.com",
+  url = "https://cydena.com",
   type = "website"
 }: SEOProps) => {
   useEffect(() => {
