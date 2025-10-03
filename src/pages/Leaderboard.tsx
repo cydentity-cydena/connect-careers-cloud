@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Trophy, Medal, Award } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { Link } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 
 interface LeaderboardEntry {
@@ -79,48 +80,54 @@ const Leaderboard = () => {
           <div className="grid grid-cols-3 gap-4 mb-16 max-w-4xl mx-auto">
             {/* 2nd Place - Silver */}
             <div className="flex flex-col items-center justify-end animate-slide-up" style={{ animationDelay: '0.1s' }}>
-              <Card className="w-full border-2 border-gray-400 bg-gradient-to-b from-gray-200 to-gray-300 shadow-lg">
-                <CardContent className="pt-6 text-center">
-                  <div className="bg-gray-400 w-20 h-20 rounded-full mx-auto mb-3 flex items-center justify-center">
-                    <Medal className="h-10 w-10 text-white" />
-                  </div>
-                  <h3 className="font-bold text-lg text-gray-800 mb-1">{topThree[1]?.full_name}</h3>
-                  <p className="text-sm text-gray-600 mb-2">{topThree[1]?.title}</p>
-                  <Badge className="bg-gray-500">2nd Place</Badge>
-                  <p className="text-2xl font-bold text-gray-800 mt-3">{topThree[1]?.score}</p>
-                </CardContent>
-              </Card>
+              <Link to={`/profiles/${topThree[1]?.user_id}`} className="w-full">
+                <Card className="w-full border-2 border-gray-400 bg-gradient-to-b from-gray-200 to-gray-300 shadow-lg hover:scale-105 transition-transform cursor-pointer">
+                  <CardContent className="pt-6 text-center">
+                    <div className="bg-gray-400 w-20 h-20 rounded-full mx-auto mb-3 flex items-center justify-center">
+                      <Medal className="h-10 w-10 text-white" />
+                    </div>
+                    <h3 className="font-bold text-lg text-gray-800 mb-1">{topThree[1]?.full_name}</h3>
+                    <p className="text-sm text-gray-600 mb-2">{topThree[1]?.title}</p>
+                    <Badge className="bg-gray-500">2nd Place</Badge>
+                    <p className="text-2xl font-bold text-gray-800 mt-3">{topThree[1]?.score}</p>
+                  </CardContent>
+                </Card>
+              </Link>
             </div>
 
             {/* 1st Place - Gold */}
             <div className="flex flex-col items-center justify-start animate-slide-up">
               <Trophy className="h-8 w-8 text-yellow-500 mb-2" />
-              <Card className="w-full border-2 border-yellow-500 bg-gradient-to-b from-yellow-300 to-yellow-500 shadow-xl transform scale-110">
-                <CardContent className="pt-6 text-center">
-                  <div className="bg-yellow-600 w-24 h-24 rounded-full mx-auto mb-3 flex items-center justify-center">
-                    <Trophy className="h-12 w-12 text-white" />
-                  </div>
-                  <h3 className="font-bold text-xl text-gray-900 mb-1">{topThree[0]?.full_name}</h3>
-                  <p className="text-sm text-gray-700 mb-2">{topThree[0]?.title}</p>
-                  <Badge className="bg-yellow-700">1st Place</Badge>
-                  <p className="text-3xl font-bold text-gray-900 mt-3">{topThree[0]?.score}</p>
-                </CardContent>
-              </Card>
+              <Link to={`/profiles/${topThree[0]?.user_id}`} className="w-full">
+                <Card className="w-full border-2 border-yellow-500 bg-gradient-to-b from-yellow-300 to-yellow-500 shadow-xl transform scale-110 hover:scale-[1.15] transition-transform cursor-pointer">
+                  <CardContent className="pt-6 text-center">
+                    <div className="bg-yellow-600 w-24 h-24 rounded-full mx-auto mb-3 flex items-center justify-center">
+                      <Trophy className="h-12 w-12 text-white" />
+                    </div>
+                    <h3 className="font-bold text-xl text-gray-900 mb-1">{topThree[0]?.full_name}</h3>
+                    <p className="text-sm text-gray-700 mb-2">{topThree[0]?.title}</p>
+                    <Badge className="bg-yellow-700">1st Place</Badge>
+                    <p className="text-3xl font-bold text-gray-900 mt-3">{topThree[0]?.score}</p>
+                  </CardContent>
+                </Card>
+              </Link>
             </div>
 
             {/* 3rd Place - Bronze */}
             <div className="flex flex-col items-center justify-end animate-slide-up" style={{ animationDelay: '0.2s' }}>
-              <Card className="w-full border-2 border-orange-600 bg-gradient-to-b from-orange-400 to-orange-600 shadow-lg">
-                <CardContent className="pt-6 text-center">
-                  <div className="bg-orange-700 w-20 h-20 rounded-full mx-auto mb-3 flex items-center justify-center">
-                    <Award className="h-10 w-10 text-white" />
-                  </div>
-                  <h3 className="font-bold text-lg text-white mb-1">{topThree[2]?.full_name}</h3>
-                  <p className="text-sm text-orange-100 mb-2">{topThree[2]?.title}</p>
-                  <Badge className="bg-orange-800">3rd Place</Badge>
-                  <p className="text-2xl font-bold text-white mt-3">{topThree[2]?.score}</p>
-                </CardContent>
-              </Card>
+              <Link to={`/profiles/${topThree[2]?.user_id}`} className="w-full">
+                <Card className="w-full border-2 border-orange-600 bg-gradient-to-b from-orange-400 to-orange-600 shadow-lg hover:scale-105 transition-transform cursor-pointer">
+                  <CardContent className="pt-6 text-center">
+                    <div className="bg-orange-700 w-20 h-20 rounded-full mx-auto mb-3 flex items-center justify-center">
+                      <Award className="h-10 w-10 text-white" />
+                    </div>
+                    <h3 className="font-bold text-lg text-white mb-1">{topThree[2]?.full_name}</h3>
+                    <p className="text-sm text-orange-100 mb-2">{topThree[2]?.title}</p>
+                    <Badge className="bg-orange-800">3rd Place</Badge>
+                    <p className="text-2xl font-bold text-white mt-3">{topThree[2]?.score}</p>
+                  </CardContent>
+                </Card>
+              </Link>
             </div>
           </div>
         )}
@@ -145,9 +152,13 @@ const Leaderboard = () => {
               </TableHeader>
               <TableBody>
                 {leaderboard.map((entry) => (
-                  <TableRow key={entry.id} className="hover:bg-accent/50">
+                  <TableRow key={entry.id} className="hover:bg-accent/50 cursor-pointer" onClick={() => window.location.href = `/profiles/${entry.user_id}`}>
                     <TableCell className="font-medium">#{entry.rank}</TableCell>
-                    <TableCell className="font-semibold">{entry.full_name}</TableCell>
+                    <TableCell className="font-semibold">
+                      <Link to={`/profiles/${entry.user_id}`} className="hover:underline">
+                        {entry.full_name}
+                      </Link>
+                    </TableCell>
                     <TableCell>{entry.title}</TableCell>
                     <TableCell>
                       <div className="flex flex-wrap gap-1">
