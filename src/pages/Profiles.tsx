@@ -1,9 +1,10 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Search, Lock, Star } from "lucide-react";
+import { Search, Lock, Star, Eye } from "lucide-react";
 import Navigation from "@/components/Navigation";
 
 interface CandidateProfile {
@@ -18,6 +19,7 @@ interface CandidateProfile {
 }
 
 const Profiles = () => {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
 
   // Mock data - will connect to real database later
@@ -178,16 +180,23 @@ const Profiles = () => {
                     </p>
                   </div>
 
-                  {candidate.locked ? (
-                    <Button variant="cyber" className="w-full gap-2" disabled>
-                      <Lock className="h-4 w-4" />
-                      Unlock Candidate (10 Points)
-                    </Button>
-                  ) : (
-                    <Button variant="hero" className="w-full">
-                      View Full Profile
-                    </Button>
-                  )}
+                  <Button 
+                    variant={candidate.locked ? "outline" : "default"} 
+                    className="w-full gap-2"
+                    onClick={() => navigate(`/profiles/${candidate.id}`)}
+                  >
+                    {candidate.locked ? (
+                      <>
+                        <Lock className="h-4 w-4" />
+                        View & Unlock Profile
+                      </>
+                    ) : (
+                      <>
+                        <Eye className="h-4 w-4" />
+                        View Full Profile
+                      </>
+                    )}
+                  </Button>
                 </div>
               </CardContent>
             </Card>

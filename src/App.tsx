@@ -8,6 +8,7 @@ import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import Leaderboard from "./pages/Leaderboard";
 import Profiles from "./pages/Profiles";
+import ProfileDetail from "./pages/ProfileDetail";
 import Jobs from "./pages/Jobs";
 import Training from "./pages/Training";
 import CertificationCatalog from "./pages/CertificationCatalog";
@@ -37,7 +38,7 @@ const App = () => (
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/leaderboard" element={<Leaderboard />} />
           <Route path="/profiles" element={<Profiles />} />
-          <Route path="/profiles/:id" element={<Profiles />} />
+          <Route path="/profiles/:id" element={<ProfileDetail />} />
           <Route path="/jobs" element={<Jobs />} />
           <Route path="/training" element={<Training />} />
           <Route path="/certifications-catalog" element={<CertificationCatalog />} />
