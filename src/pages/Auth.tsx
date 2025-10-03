@@ -10,6 +10,23 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Navigation from "@/components/Navigation";
+import { z } from "zod";
+
+// Validation schemas
+const emailSchema = z.string().email("Invalid email address").max(255, "Email too long");
+const passwordSchema = z
+  .string()
+  .min(12, "Password must be at least 12 characters")
+  .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+  .regex(/[a-z]/, "Password must contain at least one lowercase letter")
+  .regex(/[0-9]/, "Password must contain at least one number")
+  .regex(/[^A-Za-z0-9]/, "Password must contain at least one special character");
+const nameSchema = z
+  .string()
+  .trim()
+  .min(2, "Name must be at least 2 characters")
+  .max(100, "Name must be less than 100 characters")
+  .regex(/^[a-zA-Z\s'-]+$/, "Name can only contain letters, spaces, hyphens, and apostrophes");
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -17,7 +34,7 @@ const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
-  const [role, setRole] = useState<"candidate" | "employer">("candidate");
+  const [userRole, setUserRole] = useState<"candidate" | "employer">("candidate");
 
   useEffect(() => {
     // Check if user is already logged in
@@ -41,40 +58,59 @@ const Auth = () => {
     setIsLoading(true);
 
     try {
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            full_name: fullName,
-          },
-          emailRedirectTo: `${window.location.origin}/dashboard`
-        }
+      // Validate inputs
+      const emailResult = emailSchema.safeParse(email);
+      if (!emailResult.success) {
+        toast.error(emailResult.error.errors[0].message);
+        setIsLoading(false);
+        return;
+      }
+
+      const passwordResult = passwordSchema.safeParse(password);
+      if (!passwordResult.success) {
+        toast.error(passwordResult.error.errors[0].message);
+        setIsLoading(false);
+        return;
+      }
+
+      const nameResult = nameSchema.safeParse(fullName);
+      if (!nameResult.success) {
+        toast.error(nameResult.error.errors[0].message);
+        setIsLoading(false);
+        return;
+      }
+
+      // Call secure signup edge function
+      const { data, error } = await supabase.functions.invoke('secure-signup', {
+        body: {
+          email: emailResult.data,
+          password: passwordResult.data,
+          fullName: nameResult.data,
+          role: userRole,
+        },
       });
 
-      if (authError) throw authError;
+      if (error) throw error;
 
-      if (authData.user) {
-        // Create role entry
-        const { error: roleError } = await supabase
-          .from("user_roles")
-          .insert({ user_id: authData.user.id, role });
-
-        if (roleError) throw roleError;
-
-        // Create candidate profile if candidate
-        if (role === "candidate") {
-          const { error: profileError } = await supabase
-            .from("candidate_profiles")
-            .insert({ user_id: authData.user.id });
-
-          if (profileError) throw profileError;
-        }
-
-        toast.success("Account created successfully!");
+      if (data.error) {
+        toast.error(data.error);
+        setIsLoading(false);
+        return;
       }
+
+      // Sign in the user after successful signup
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: emailResult.data,
+        password: passwordResult.data,
+      });
+
+      if (signInError) throw signInError;
+
+      toast.success("Account created successfully!");
+      navigate("/dashboard");
     } catch (error: any) {
-      toast.error(error.message || "Failed to sign up");
+      console.error('Signup error:', error);
+      toast.error(error.message || "Failed to create account");
     } finally {
       setIsLoading(false);
     }
@@ -85,16 +121,34 @@ const Auth = () => {
     setIsLoading(true);
 
     try {
+      // Validate email
+      const emailResult = emailSchema.safeParse(email);
+      if (!emailResult.success) {
+        toast.error(emailResult.error.errors[0].message);
+        setIsLoading(false);
+        return;
+      }
+
       const { error } = await supabase.auth.signInWithPassword({
-        email,
+        email: emailResult.data,
         password,
       });
 
-      if (error) throw error;
+      if (error) {
+        if (error.message.includes("Invalid login credentials")) {
+          toast.error("Invalid email or password");
+        } else {
+          toast.error(error.message);
+        }
+        setIsLoading(false);
+        return;
+      }
 
       toast.success("Signed in successfully!");
+      navigate("/dashboard");
     } catch (error: any) {
-      toast.error(error.message || "Failed to sign in");
+      console.error('Sign in error:', error);
+      toast.error("Failed to sign in");
     } finally {
       setIsLoading(false);
     }
@@ -200,12 +254,13 @@ const Auth = () => {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
-                      minLength={6}
+                      minLength={12}
+                      placeholder="Min 12 chars with uppercase, lowercase, number & special char"
                     />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="role">I am a...</Label>
-                    <Select value={role} onValueChange={(v: any) => setRole(v)}>
+                    <Select value={userRole} onValueChange={(v: any) => setUserRole(v)}>
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>

@@ -423,6 +423,27 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_public_candidate_profile: {
+        Args: { profile_user_id: string }
+        Returns: {
+          created_at: string
+          id: string
+          title: string
+          user_id: string
+          willing_to_relocate: boolean
+          years_experience: number
+        }[]
+      }
+      get_public_profile: {
+        Args: { profile_id: string }
+        Returns: {
+          avatar_url: string
+          bio: string
+          full_name: string
+          id: string
+          location: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
