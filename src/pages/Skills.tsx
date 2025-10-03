@@ -58,7 +58,25 @@ const Skills = () => {
       return;
     }
 
-    toast.success('Skills added');
+    // Award points for each skill added
+    const pointsPerSkill = 50;
+    const totalPoints = newSkillIds.length * pointsPerSkill;
+    
+    try {
+      for (const skillId of newSkillIds) {
+        await supabase.functions.invoke('award-points-helper', {
+          body: {
+            candidateId: userId,
+            code: 'SKILL_ADDED',
+            meta: { skillId }
+          }
+        });
+      }
+      toast.success(`✅ ${newSkillIds.length} skill(s) added — +${totalPoints} points!`);
+    } catch (e) {
+      toast.success('Skills added');
+    }
+    
     navigate('/dashboard');
   };
 

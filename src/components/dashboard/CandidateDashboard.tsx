@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { User, Briefcase, FileText, TrendingUp } from "lucide-react";
 import { ProfileStrengthMeter } from "@/components/gamification/ProfileStrengthMeter";
 import { AchievementBadges } from "@/components/gamification/AchievementBadges";
+import { RecentPointsFeed } from "@/components/rewards/RecentPointsFeed";
 
 const CandidateDashboard = () => {
   const [userId, setUserId] = useState<string>("");
@@ -53,12 +54,16 @@ const CandidateDashboard = () => {
               <span className="text-sm text-muted-foreground">Total XP </span>
               <span className="text-xl font-bold text-secondary">{xpData.total_xp}</span>
             </div>
+            <div className="bg-accent/10 px-4 py-2 rounded-lg">
+              <span className="text-sm text-muted-foreground">Points </span>
+              <span className="text-xl font-bold text-accent">{xpData.points_balance || 0}</span>
+            </div>
           </div>
         )}
       </div>
 
       {userId && (
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           <ProfileStrengthMeter userId={userId} />
           <Card className="border-border shadow-card">
             <CardHeader>
@@ -82,6 +87,7 @@ const CandidateDashboard = () => {
               </div>
             </CardContent>
           </Card>
+          <RecentPointsFeed userId={userId} limit={5} />
         </div>
       )}
 

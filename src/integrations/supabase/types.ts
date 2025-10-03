@@ -175,6 +175,7 @@ export type Database = {
           id: string
           last_activity_at: string
           level: number
+          points_balance: number | null
           profile_completion_percent: number
           total_xp: number
           updated_at: string
@@ -185,6 +186,7 @@ export type Database = {
           id?: string
           last_activity_at?: string
           level?: number
+          points_balance?: number | null
           profile_completion_percent?: number
           total_xp?: number
           updated_at?: string
@@ -195,6 +197,7 @@ export type Database = {
           id?: string
           last_activity_at?: string
           level?: number
+          points_balance?: number | null
           profile_completion_percent?: number
           total_xp?: number
           updated_at?: string
@@ -212,6 +215,9 @@ export type Database = {
           issue_date: string | null
           issuer: string | null
           name: string
+          signed_webhook: boolean | null
+          webhook_provider: string | null
+          webhook_verified_at: string | null
         }
         Insert: {
           candidate_id: string
@@ -223,6 +229,9 @@ export type Database = {
           issue_date?: string | null
           issuer?: string | null
           name: string
+          signed_webhook?: boolean | null
+          webhook_provider?: string | null
+          webhook_verified_at?: string | null
         }
         Update: {
           candidate_id?: string
@@ -234,6 +243,9 @@ export type Database = {
           issue_date?: string | null
           issuer?: string | null
           name?: string
+          signed_webhook?: boolean | null
+          webhook_provider?: string | null
+          webhook_verified_at?: string | null
         }
         Relationships: []
       }
@@ -520,6 +532,63 @@ export type Database = {
         }
         Relationships: []
       }
+      reward_points: {
+        Row: {
+          amount: number
+          candidate_id: string
+          created_at: string | null
+          id: string
+          meta: Json | null
+          type: string
+        }
+        Insert: {
+          amount: number
+          candidate_id: string
+          created_at?: string | null
+          id?: string
+          meta?: Json | null
+          type: string
+        }
+        Update: {
+          amount?: number
+          candidate_id?: string
+          created_at?: string | null
+          id?: string
+          meta?: Json | null
+          type?: string
+        }
+        Relationships: []
+      }
+      reward_rules: {
+        Row: {
+          active: boolean | null
+          amount: number
+          code: string
+          created_at: string | null
+          description: string | null
+          id: string
+          updated_at: string | null
+        }
+        Insert: {
+          active?: boolean | null
+          amount: number
+          code: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          updated_at?: string | null
+        }
+        Update: {
+          active?: boolean | null
+          amount?: number
+          code?: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       skills: {
         Row: {
           category: string | null
@@ -596,6 +665,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      award_points: {
+        Args: { p_candidate_id: string; p_code: string; p_meta?: Json }
+        Returns: Json
+      }
       calculate_profile_completion: {
         Args: { user_id: string }
         Returns: number

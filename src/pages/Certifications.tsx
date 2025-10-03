@@ -28,6 +28,7 @@ const Certifications = () => {
     if (!userId) return;
     if (!name) { toast.error('Certification name is required'); return; }
     setLoading(true);
+    
     const { error } = await supabase.from('certifications').insert({
       candidate_id: userId,
       name,
@@ -35,9 +36,33 @@ const Certifications = () => {
       credential_url: credentialUrl,
       credential_id: credentialId,
     });
+    
+    if (error) { 
+      setLoading(false);
+      toast.error(error.message); 
+      return; 
+    }
+
+    // Award points for manual certification
+    try {
+      const { data, error: pointsError } = await supabase.functions.invoke('award-points-helper', {
+        body: {
+          candidateId: userId,
+          code: 'CERT_MANUAL_PENDING',
+          meta: { name, issuer }
+        }
+      });
+
+      if (!pointsError && data?.success) {
+        toast.success(`✅ Certification added — +${data.amount} points! (Pending verification)`);
+      } else {
+        toast.success('Certification added (points will be awarded after verification)');
+      }
+    } catch (e) {
+      toast.success('Certification added');
+    }
+    
     setLoading(false);
-    if (error) { toast.error(error.message); return; }
-    toast.success('Certification added');
     navigate('/dashboard');
   };
 
