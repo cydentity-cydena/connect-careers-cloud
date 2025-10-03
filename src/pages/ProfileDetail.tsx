@@ -55,61 +55,37 @@ export default function ProfileDetail() {
       }
       setIsUnlocked(unlocked);
 
-      // Load profile (email only when unlocked)
-      let profileData: any = null;
-      if (unlocked) {
-        const { data } = await supabase
-          .from("profiles")
-          .select("full_name, avatar_url, location, bio, email")
-          .eq("id", id)
-          .maybeSingle();
-        profileData = data;
-      } else {
-        const { data } = await supabase.rpc("get_public_profile", { profile_id: id });
-        profileData = Array.isArray(data) ? data?.[0] : data;
+      // Fetch profile - same query as Leaderboard and Profiles pages
+      const { data: profileData } = await supabase
+        .from("profiles")
+        .select("id, full_name, avatar_url, location, bio, email")
+        .eq("id", id)
+        .maybeSingle();
+      
+      // Hide email unless unlocked
+      if (!unlocked && profileData) {
+        profileData.email = null;
       }
       setProfile(profileData);
 
-      // Load candidate profile
-      if (unlocked) {
-        const { data } = await supabase
-          .from("candidate_profiles")
-          .select(`
-            *,
-            candidate_skills(
-              skill_id,
-              years_experience,
-              proficiency_level,
-              skills(name, category)
-            ),
-            certifications(name, issuer, issue_date, expiry_date, credential_url)
-          `)
-          .eq("user_id", id)
-          .maybeSingle();
-        if (data) setCandidateProfile(data);
-      } else {
-        const { data: publicCandidate } = await supabase.rpc("get_public_candidate_profile", { profile_user_id: id });
-        const base = Array.isArray(publicCandidate) ? publicCandidate?.[0] : publicCandidate;
-
-        const { data: skills } = await supabase
-          .from("candidate_skills")
-          .select(`
+      // Fetch candidate profile with skills and certs - same as other pages
+      const { data: candidateData } = await supabase
+        .from("candidate_profiles")
+        .select(`
+          *,
+          candidate_skills(
+            skill_id,
             years_experience,
             proficiency_level,
             skills(name, category)
-          `)
-          .eq("candidate_id", id);
+          ),
+          certifications(name, issuer, issue_date, expiry_date, credential_url)
+        `)
+        .eq("user_id", id)
+        .maybeSingle();
 
-        const { data: certs } = await supabase
-          .from("certifications")
-          .select("name, issuer, issue_date, expiry_date, credential_url")
-          .eq("candidate_id", id);
-
-        setCandidateProfile({
-          ...base,
-          candidate_skills: skills || [],
-          certifications: certs || [],
-        });
+      if (candidateData) {
+        setCandidateProfile(candidateData);
       }
 
     } catch (error: any) {
