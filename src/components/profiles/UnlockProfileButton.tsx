@@ -36,6 +36,15 @@ export const UnlockProfileButton = ({
       return;
     }
 
+    // Check if this is a demo profile (has very high credit count)
+    if (remainingCredits === 999) {
+      // Demo profile - just trigger the unlock callback without API call
+      toast.success("Demo profile unlocked! This shows what employers see after unlocking.");
+      onUnlock();
+      setShowConfirm(false);
+      return;
+    }
+
     setIsLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke('unlock-profile', {
@@ -99,9 +108,11 @@ export const UnlockProfileButton = ({
                 <li>Portfolio and GitHub links</li>
                 <li>Full work history</li>
               </ul>
-              <p className="mt-3 font-semibold">
-                Remaining credits after unlock: {remainingCredits - 1}
-              </p>
+              {remainingCredits !== 999 && (
+                <p className="mt-3 font-semibold">
+                  Remaining credits after unlock: {remainingCredits - 1}
+                </p>
+              )}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
