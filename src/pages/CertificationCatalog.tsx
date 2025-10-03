@@ -9,6 +9,7 @@ interface Course {
   description: string;
   provider: string;
   roles: string;
+  enrollUrl: string;
 }
 
 const CertificationCatalog = () => {
@@ -17,67 +18,78 @@ const CertificationCatalog = () => {
       name: "CompTIA Security+",
       description: "Essential principles for network security and risk management.",
       provider: "CompTIA",
-      roles: "Security Administrator, Systems Administrator, Network Engineer"
+      roles: "Security Administrator, Systems Administrator, Network Engineer",
+      enrollUrl: "https://www.comptia.org/certifications/security"
     },
     {
       name: "CompTIA Cybersecurity Analyst (CySA+)",
       description: "Focuses on threat detection and response.",
       provider: "CompTIA",
-      roles: "Security Analyst, Threat Intelligence Analyst, SOC Analyst"
+      roles: "Security Analyst, Threat Intelligence Analyst, SOC Analyst",
+      enrollUrl: "https://www.comptia.org/certifications/cybersecurity-analyst"
     },
     {
       name: "CompTIA Advanced Security Practitioner (CASP+)",
       description: "Advanced practitioners covering enterprise security and risk management.",
       provider: "CompTIA",
-      roles: "Security Architect, Senior Security Engineer"
+      roles: "Security Architect, Senior Security Engineer",
+      enrollUrl: "https://www.comptia.org/certifications/comptia-advanced-security-practitioner"
     },
     {
       name: "Certified Ethical Hacker (CEH)",
       description: "Focuses on hacking tools, techniques, and methodologies.",
       provider: "EC-Council",
-      roles: "Ethical Hacker, Penetration Tester, Network Security Specialist"
+      roles: "Ethical Hacker, Penetration Tester, Network Security Specialist",
+      enrollUrl: "https://www.eccouncil.org/train-certify/certified-ethical-hacker-ceh/"
     },
     {
       name: "Certified Network Defender (CND)",
       description: "Focuses on network security technologies and operations.",
       provider: "EC-Council",
-      roles: "Network Administrator, Network Defense Technician"
+      roles: "Network Administrator, Network Defense Technician",
+      enrollUrl: "https://www.eccouncil.org/train-certify/certified-network-defender-cnd/"
     },
     {
       name: "Certified Information Security Manager (CISM)",
       description: "Advanced certification focusing on managing and governing information security programs.",
       provider: "EC-Council",
-      roles: "Information Security Manager, IT Audit Manager"
+      roles: "Information Security Manager, IT Audit Manager",
+      enrollUrl: "https://www.eccouncil.org/train-certify/certified-chief-information-security-officer-cciso/"
     },
     {
       name: "GIAC Security Essentials (GSEC)",
       description: "Comprehensive information security certification.",
       provider: "SANS",
-      roles: "Security Professional, Network Administrator"
+      roles: "Security Professional, Network Administrator",
+      enrollUrl: "https://www.giac.org/certifications/security-essentials-gsec/"
     },
     {
       name: "GIAC Penetration Tester (GPEN)",
       description: "Penetration testing and ethical hacking skills.",
       provider: "SANS",
-      roles: "Penetration Tester, Security Consultant"
+      roles: "Penetration Tester, Security Consultant",
+      enrollUrl: "https://www.giac.org/certifications/penetration-tester-gpen/"
     },
     {
       name: "GIAC Incident Handler (GCIH)",
       description: "Incident handling and computer forensics.",
       provider: "SANS",
-      roles: "Incident Handler, Security Operations Analyst"
+      roles: "Incident Handler, Security Operations Analyst",
+      enrollUrl: "https://www.giac.org/certifications/certified-incident-handler-gcih/"
     },
     {
       name: "Certified Information Systems Security Professional (CISSP)",
       description: "Advanced security certification for experienced professionals.",
       provider: "ISC2",
-      roles: "Security Consultant, Manager, CISO"
+      roles: "Security Consultant, Manager, CISO",
+      enrollUrl: "https://www.isc2.org/certifications/cissp"
     },
     {
       name: "Systems Security Certified Practitioner (SSCP)",
       description: "IT administration and security operations certification.",
       provider: "ISC2",
-      roles: "Systems Administrator, Security Analyst"
+      roles: "Systems Administrator, Security Analyst",
+      enrollUrl: "https://www.isc2.org/certifications/sscp"
     },
   ];
 
@@ -135,7 +147,11 @@ const CertificationCatalog = () => {
                             {course.roles}
                           </p>
                         </div>
-                        <Button variant="hero" className="w-full gap-2">
+                        <Button 
+                          variant="hero" 
+                          className="w-full gap-2"
+                          onClick={() => window.open(course.enrollUrl, '_blank')}
+                        >
                           <BookOpen className="h-4 w-4" />
                           Enroll Now
                         </Button>
