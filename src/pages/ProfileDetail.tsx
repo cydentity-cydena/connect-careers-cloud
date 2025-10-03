@@ -55,21 +55,26 @@ export default function ProfileDetail() {
       }
       setIsUnlocked(unlocked);
 
-      // Fetch profile - same query as Leaderboard and Profiles pages
-      const { data: profileData } = await supabase
+      // Fetch profile - try direct, fallback to public RPC (RLS-safe)
+      let profileData: any = null;
+      const { data: directProfile } = await supabase
         .from("profiles")
         .select("id, full_name, avatar_url, location, bio, email")
         .eq("id", id)
         .maybeSingle();
-      
-      // Hide email unless unlocked
-      if (!unlocked && profileData) {
-        profileData.email = null;
+
+      if (directProfile) {
+        profileData = { ...directProfile };
+        if (!unlocked) profileData.email = null;
+      } else {
+        const { data: rpcProfile } = await supabase.rpc('get_public_profile', { profile_id: id });
+        const row = Array.isArray(rpcProfile) ? rpcProfile?.[0] : rpcProfile;
+        profileData = row || null;
       }
       setProfile(profileData);
 
-      // Fetch candidate profile with skills and certs - same as other pages
-      const { data: candidateData } = await supabase
+      // Fetch candidate profile with skills and certs - try direct, fallback to public RPC
+      const { data: candidateDirect } = await supabase
         .from("candidate_profiles")
         .select(`
           *,
@@ -84,8 +89,29 @@ export default function ProfileDetail() {
         .eq("user_id", id)
         .maybeSingle();
 
-      if (candidateData) {
-        setCandidateProfile(candidateData);
+      if (candidateDirect) {
+        setCandidateProfile(candidateDirect);
+      } else {
+        const { data: rpcCandidate } = await supabase.rpc('get_public_candidate_profile', { profile_user_id: id });
+        const base = Array.isArray(rpcCandidate) ? rpcCandidate?.[0] : rpcCandidate;
+
+        // Publicly readable tables for skills and certifications
+        const [{ data: skills }, { data: certs }] = await Promise.all([
+          supabase
+            .from("candidate_skills")
+            .select(`years_experience, proficiency_level, skills(name, category)`) 
+            .eq("candidate_id", id),
+          supabase
+            .from("certifications")
+            .select("name, issuer, issue_date, expiry_date, credential_url")
+            .eq("candidate_id", id),
+        ]);
+
+        setCandidateProfile({
+          ...base,
+          candidate_skills: skills || [],
+          certifications: certs || [],
+        });
       }
 
     } catch (error: any) {

@@ -48,17 +48,23 @@ const Profiles = () => {
 
       const candidateIds = xpData.map(entry => entry.candidate_id);
 
-      // Fetch profiles
-      const { data: profileData } = await supabase
-        .from('profiles')
-        .select('id, full_name')
-        .in('id', candidateIds);
+      // Fetch public profile names via RPC (RLS-safe)
+      const profileResults = await Promise.all(
+        candidateIds.map(async (cid) => {
+          const { data } = await supabase.rpc('get_public_profile', { profile_id: cid });
+          const row = Array.isArray(data) ? data?.[0] : data;
+          return { id: cid, full_name: row?.full_name ?? null };
+        })
+      );
 
-      // Fetch candidate profiles
-      const { data: candidateProfileData } = await supabase
-        .from('candidate_profiles')
-        .select('user_id, title, years_experience')
-        .in('user_id', candidateIds);
+      // Fetch public candidate titles via RPC (and years_experience)
+      const candidateProfileResults = await Promise.all(
+        candidateIds.map(async (cid) => {
+          const { data } = await supabase.rpc('get_public_candidate_profile', { profile_user_id: cid });
+          const row = Array.isArray(data) ? data?.[0] : data;
+          return { user_id: cid, title: row?.title ?? null, years_experience: row?.years_experience ?? 0 };
+        })
+      );
 
       // Fetch certifications
       const { data: certData } = await supabase
@@ -67,8 +73,8 @@ const Profiles = () => {
         .in('candidate_id', candidateIds);
 
       // Create lookup maps
-      const profileMap = new Map(profileData?.map(p => [p.id, p]) || []);
-      const candidateProfileMap = new Map(candidateProfileData?.map(cp => [cp.user_id, cp]) || []);
+      const profileMap = new Map(profileResults.map((p) => [p.id, p]));
+      const candidateProfileMap = new Map(candidateProfileResults.map((cp) => [cp.user_id, cp]));
       const certsByCandidate: Record<string, string[]> = {};
       certData?.forEach(cert => {
         if (!certsByCandidate[cert.candidate_id]) {
