@@ -36,6 +36,19 @@ const Leaderboard = () => {
         { id: "5", user_id: "5", full_name: "Carol Davis", title: "Security Analyst", certifications: ["CySA+"], score: 87, community_points: 145, rank: 5 },
         { id: "6", user_id: "6", full_name: "Michael Brown", title: "Security Consultant", certifications: ["CISSP"], score: 85, community_points: 125, rank: 6 },
         { id: "7", user_id: "7", full_name: "Emma Wilson", title: "Penetration Tester", certifications: ["CEH"], score: 84, community_points: 115, rank: 7 },
+        { id: "8", user_id: "8", full_name: "David Chen", title: "Security Engineer", certifications: ["SEC+", "CCNA"], score: 82, community_points: 105, rank: 8 },
+        { id: "9", user_id: "9", full_name: "Sarah Martinez", title: "Threat Hunter", certifications: ["GCIA", "CySA+"], score: 80, community_points: 98, rank: 9 },
+        { id: "10", user_id: "10", full_name: "James Taylor", title: "Security Architect", certifications: ["CISSP", "CISM"], score: 79, community_points: 92, rank: 10 },
+        { id: "11", user_id: "11", full_name: "Lisa Anderson", title: "SOC Analyst", certifications: ["SEC+"], score: 77, community_points: 87, rank: 11 },
+        { id: "12", user_id: "12", full_name: "Kevin Murphy", title: "Security Analyst", certifications: ["CySA+", "CEH"], score: 76, community_points: 82, rank: 12 },
+        { id: "13", user_id: "13", full_name: "Rachel Green", title: "Forensics Analyst", certifications: ["GCFE", "CHFI"], score: 74, community_points: 78, rank: 13 },
+        { id: "14", user_id: "14", full_name: "Thomas White", title: "Penetration Tester", certifications: ["CEH"], score: 72, community_points: 73, rank: 14 },
+        { id: "15", user_id: "15", full_name: "Amanda Lee", title: "Security Engineer", certifications: ["SEC+"], score: 71, community_points: 69, rank: 15 },
+        { id: "16", user_id: "16", full_name: "Daniel Harris", title: "Cloud Security Engineer", certifications: ["CCSP", "SEC+"], score: 69, community_points: 65, rank: 16 },
+        { id: "17", user_id: "17", full_name: "Michelle Clark", title: "Security Analyst", certifications: ["CySA+"], score: 68, community_points: 61, rank: 17 },
+        { id: "18", user_id: "18", full_name: "Ryan Lewis", title: "Application Security Engineer", certifications: ["CSSLP"], score: 66, community_points: 57, rank: 18 },
+        { id: "19", user_id: "19", full_name: "Sophia Walker", title: "SOC Analyst", certifications: ["SEC+"], score: 65, community_points: 53, rank: 19 },
+        { id: "20", user_id: "20", full_name: "Eric Thompson", title: "Security Consultant", certifications: ["CISSP"], score: 63, community_points: 50, rank: 20 },
       ];
       setLeaderboard(mockData);
     } catch (error) {
@@ -54,7 +67,7 @@ const Leaderboard = () => {
 
       <main className="container mx-auto px-4 py-8 animate-fade-in">
         <div className="mb-12">
-          <h1 className="text-4xl font-bold mb-2">Top Talent Spotlight</h1>
+          <h1 className="text-4xl font-bold mb-2">Top 20 Talent Spotlight</h1>
           <p className="text-muted-foreground">
             Each profile is evaluated based on the quality of information, completed courses, and exams passed.
             High-scoring profiles are featured with enhanced visibility to recruiters.
@@ -115,8 +128,8 @@ const Leaderboard = () => {
         {/* Full Leaderboard Table */}
         <Card className="border-border shadow-card">
           <CardHeader>
-            <CardTitle>Leaderboard</CardTitle>
-            <CardDescription>Complete rankings of all candidates</CardDescription>
+            <CardTitle>Top 20 Leaderboard</CardTitle>
+            <CardDescription>Rankings of the highest performing candidates</CardDescription>
           </CardHeader>
           <CardContent>
             <Table>
