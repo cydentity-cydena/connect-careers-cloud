@@ -28,32 +28,71 @@ const Leaderboard = () => {
 
   const fetchLeaderboard = async () => {
     try {
-      // Mock data for now - will connect to real data later
-      const mockData: LeaderboardEntry[] = [
-        { id: "1", user_id: "1", full_name: "John Smith", title: "Security Analyst", certifications: ["CISSP", "CEH", "SEC+"], score: 95, community_points: 250, rank: 1 },
-        { id: "2", user_id: "2", full_name: "Jane Doe", title: "Penetration Tester", certifications: ["OSCP", "CEH"], score: 92, community_points: 215, rank: 2 },
-        { id: "3", user_id: "3", full_name: "Alice Johnson", title: "Incident Responder", certifications: ["GPEN", "CySA+"], score: 90, community_points: 180, rank: 3 },
-        { id: "4", user_id: "4", full_name: "Bob Smith", title: "SOC Analyst", certifications: ["CySA+", "SEC+"], score: 88, community_points: 165, rank: 4 },
-        { id: "5", user_id: "5", full_name: "Carol Davis", title: "Security Analyst", certifications: ["CySA+"], score: 87, community_points: 145, rank: 5 },
-        { id: "6", user_id: "6", full_name: "Michael Brown", title: "Security Consultant", certifications: ["CISSP"], score: 85, community_points: 125, rank: 6 },
-        { id: "7", user_id: "7", full_name: "Emma Wilson", title: "Penetration Tester", certifications: ["CEH"], score: 84, community_points: 115, rank: 7 },
-        { id: "8", user_id: "8", full_name: "David Chen", title: "Security Engineer", certifications: ["SEC+", "CCNA"], score: 82, community_points: 105, rank: 8 },
-        { id: "9", user_id: "9", full_name: "Sarah Martinez", title: "Threat Hunter", certifications: ["GCIA", "CySA+"], score: 80, community_points: 98, rank: 9 },
-        { id: "10", user_id: "10", full_name: "James Taylor", title: "Security Architect", certifications: ["CISSP", "CISM"], score: 79, community_points: 92, rank: 10 },
-        { id: "11", user_id: "11", full_name: "Lisa Anderson", title: "SOC Analyst", certifications: ["SEC+"], score: 77, community_points: 87, rank: 11 },
-        { id: "12", user_id: "12", full_name: "Kevin Murphy", title: "Security Analyst", certifications: ["CySA+", "CEH"], score: 76, community_points: 82, rank: 12 },
-        { id: "13", user_id: "13", full_name: "Rachel Green", title: "Forensics Analyst", certifications: ["GCFE", "CHFI"], score: 74, community_points: 78, rank: 13 },
-        { id: "14", user_id: "14", full_name: "Thomas White", title: "Penetration Tester", certifications: ["CEH"], score: 72, community_points: 73, rank: 14 },
-        { id: "15", user_id: "15", full_name: "Amanda Lee", title: "Security Engineer", certifications: ["SEC+"], score: 71, community_points: 69, rank: 15 },
-        { id: "16", user_id: "16", full_name: "Daniel Harris", title: "Cloud Security Engineer", certifications: ["CCSP", "SEC+"], score: 69, community_points: 65, rank: 16 },
-        { id: "17", user_id: "17", full_name: "Michelle Clark", title: "Security Analyst", certifications: ["CySA+"], score: 68, community_points: 61, rank: 17 },
-        { id: "18", user_id: "18", full_name: "Ryan Lewis", title: "Application Security Engineer", certifications: ["CSSLP"], score: 66, community_points: 57, rank: 18 },
-        { id: "19", user_id: "19", full_name: "Sophia Walker", title: "SOC Analyst", certifications: ["SEC+"], score: 65, community_points: 53, rank: 19 },
-        { id: "20", user_id: "20", full_name: "Eric Thompson", title: "Security Consultant", certifications: ["CISSP"], score: 63, community_points: 50, rank: 20 },
-      ];
-      setLeaderboard(mockData);
+      // Fetch candidate XP data
+      const { data: xpData, error: xpError } = await supabase
+        .from('candidate_xp')
+        .select('candidate_id, total_xp, points_balance, level')
+        .order('total_xp', { ascending: false })
+        .limit(20);
+
+      if (xpError) throw xpError;
+      if (!xpData || xpData.length === 0) {
+        setLeaderboard([]);
+        return;
+      }
+
+      const candidateIds = xpData.map(entry => entry.candidate_id);
+
+      // Fetch profiles
+      const { data: profileData } = await supabase
+        .from('profiles')
+        .select('id, full_name')
+        .in('id', candidateIds);
+
+      // Fetch candidate profiles
+      const { data: candidateProfileData } = await supabase
+        .from('candidate_profiles')
+        .select('user_id, title')
+        .in('user_id', candidateIds);
+
+      // Fetch certifications
+      const { data: certData } = await supabase
+        .from('certifications')
+        .select('candidate_id, name')
+        .in('candidate_id', candidateIds);
+
+      // Create lookup maps
+      const profileMap = new Map(profileData?.map(p => [p.id, p]) || []);
+      const candidateProfileMap = new Map(candidateProfileData?.map(cp => [cp.user_id, cp]) || []);
+      const certsByCandidate: Record<string, string[]> = {};
+      certData?.forEach(cert => {
+        if (!certsByCandidate[cert.candidate_id]) {
+          certsByCandidate[cert.candidate_id] = [];
+        }
+        certsByCandidate[cert.candidate_id].push(cert.name);
+      });
+
+      // Transform to leaderboard format
+      const leaderboardData: LeaderboardEntry[] = xpData.map((entry, index) => {
+        const profile = profileMap.get(entry.candidate_id);
+        const candidateProfile = candidateProfileMap.get(entry.candidate_id);
+        
+        return {
+          id: entry.candidate_id,
+          user_id: entry.candidate_id,
+          full_name: profile?.full_name || 'Unknown',
+          title: candidateProfile?.title || 'Cybersecurity Professional',
+          certifications: certsByCandidate[entry.candidate_id] || [],
+          score: Math.min(100, Math.round(entry.total_xp / 3)),
+          community_points: entry.points_balance || 0,
+          rank: index + 1
+        };
+      });
+
+      setLeaderboard(leaderboardData);
     } catch (error) {
       console.error("Error fetching leaderboard:", error);
+      setLeaderboard([]);
     } finally {
       setLoading(false);
     }

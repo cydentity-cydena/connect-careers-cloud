@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -22,69 +23,84 @@ const Profiles = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Mock data - will connect to real database later
-  const candidates: CandidateProfile[] = [
-    {
-      id: "1",
-      name: "John Doe",
-      title: "Security Analyst",
-      ranking: 1,
-      certifications: ["CompTIA Security+", "CISSP", "CEH"],
-      experience: "5 years",
-      avatar: "🔒",
-      locked: false
-    },
-    {
-      id: "2",
-      name: "Jane Smith",
-      title: "Penetration Tester",
-      ranking: 2,
-      certifications: ["OSCP", "CEH", "CompTIA PenTest+"],
-      experience: "4 years",
-      avatar: "🔒",
-      locked: false
-    },
-    {
-      id: "3",
-      name: "Michael Johnson",
-      title: "Incident Responder",
-      ranking: 3,
-      certifications: ["GCIH", "GCFA", "CompTIA CySA+"],
-      experience: "3 years",
-      avatar: "🔒",
-      locked: false
-    },
-    {
-      id: "4",
-      name: "Emily Davis",
-      title: "SOC Analyst",
-      ranking: 4,
-      certifications: ["CompTIA Security+", "CompTIA CySA+", "CISSP"],
-      experience: "2 years",
-      avatar: "🔒",
-      locked: true
-    },
-    {
-      id: "5",
-      name: "Daniel Brown",
-      title: "Risk Manager",
-      ranking: 5,
-      certifications: ["CRISC", "CISM", "CompTIA Security+"],
-      experience: "6 years",
-      avatar: "🔒",
-      locked: true
-    },
-    {
-      id: "6",
-      name: "Olivia Martinez",
-      title: "Security Consultant",
-      ranking: 6,
-      certifications: ["CISSP", "CISM"],
-      experience: "7 years",
-      avatar: "🔒",
-      locked: true
-    },
-  ];
+  // Fetch real candidate data from database
+  const [candidates, setCandidates] = useState<CandidateProfile[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchCandidates();
+  }, []);
+
+  const fetchCandidates = async () => {
+    try {
+      // Fetch candidate XP data
+      const { data: xpData, error: xpError } = await supabase
+        .from('candidate_xp')
+        .select('candidate_id, total_xp')
+        .order('total_xp', { ascending: false })
+        .limit(20);
+
+      if (xpError) throw xpError;
+      if (!xpData || xpData.length === 0) {
+        setCandidates([]);
+        return;
+      }
+
+      const candidateIds = xpData.map(entry => entry.candidate_id);
+
+      // Fetch profiles
+      const { data: profileData } = await supabase
+        .from('profiles')
+        .select('id, full_name')
+        .in('id', candidateIds);
+
+      // Fetch candidate profiles
+      const { data: candidateProfileData } = await supabase
+        .from('candidate_profiles')
+        .select('user_id, title, years_experience')
+        .in('user_id', candidateIds);
+
+      // Fetch certifications
+      const { data: certData } = await supabase
+        .from('certifications')
+        .select('candidate_id, name')
+        .in('candidate_id', candidateIds);
+
+      // Create lookup maps
+      const profileMap = new Map(profileData?.map(p => [p.id, p]) || []);
+      const candidateProfileMap = new Map(candidateProfileData?.map(cp => [cp.user_id, cp]) || []);
+      const certsByCandidate: Record<string, string[]> = {};
+      certData?.forEach(cert => {
+        if (!certsByCandidate[cert.candidate_id]) {
+          certsByCandidate[cert.candidate_id] = [];
+        }
+        certsByCandidate[cert.candidate_id].push(cert.name);
+      });
+
+      // Transform to candidate profile format
+      const candidateData: CandidateProfile[] = xpData.map((entry, index) => {
+        const profile = profileMap.get(entry.candidate_id);
+        const candidateProfile = candidateProfileMap.get(entry.candidate_id);
+        
+        return {
+          id: entry.candidate_id,
+          name: profile?.full_name || 'Unknown',
+          title: candidateProfile?.title || 'Cybersecurity Professional',
+          ranking: index + 1,
+          certifications: certsByCandidate[entry.candidate_id]?.slice(0, 3) || [],
+          experience: `${candidateProfile?.years_experience || 0} years`,
+          avatar: "🔒",
+          locked: index > 2
+        };
+      });
+
+      setCandidates(candidateData);
+    } catch (error) {
+      console.error("Error fetching candidates:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const filteredCandidates = candidates.filter(
     (candidate) =>
@@ -114,7 +130,13 @@ const Profiles = () => {
           </p>
         </div>
 
-        {/* Search Bar */}
+        {loading ? (
+          <div className="text-center py-16">
+            <p className="text-muted-foreground text-lg">Loading profiles...</p>
+          </div>
+        ) : (
+          <>
+            {/* Search Bar */}
         <div className="mb-8 max-w-2xl mx-auto">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
@@ -203,12 +225,14 @@ const Profiles = () => {
           ))}
         </div>
 
-        {filteredCandidates.length === 0 && (
-          <div className="text-center py-16">
-            <p className="text-muted-foreground text-lg">
-              No candidates found matching your search.
-            </p>
-          </div>
+            {filteredCandidates.length === 0 && (
+              <div className="text-center py-16">
+                <p className="text-muted-foreground text-lg">
+                  No candidates found matching your search.
+                </p>
+              </div>
+            )}
+          </>
         )}
       </main>
     </div>
