@@ -12,7 +12,7 @@ const Index = () => {
       <Navigation />
 
       {/* Hero Section */}
-      <section className="relative pt-24 pb-32 overflow-hidden">
+      <section className="relative pt-16 md:pt-24 pb-20 md:pb-32 overflow-hidden">
         <div 
           className="absolute inset-0 opacity-20"
           style={{
@@ -25,24 +25,24 @@ const Index = () => {
         
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto text-center animate-fade-in">
-            <h1 className="text-5xl md:text-7xl font-bold mb-6">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 md:mb-6">
               The Future of{" "}
               <span className="bg-gradient-cyber bg-clip-text text-transparent">
                 Cyber Recruitment
               </span>
             </h1>
-            <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+            <p className="text-base md:text-xl text-muted-foreground mb-6 md:mb-8 max-w-2xl mx-auto px-2">
               Connect elite cybersecurity talent with cutting-edge opportunities. 
               Skills-based matching, verified certifications, and real-time collaboration.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/auth">
-                <Button variant="hero" size="lg" className="gap-2">
+            <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center px-4">
+              <Link to="/auth" className="w-full sm:w-auto">
+                <Button variant="hero" size="lg" className="gap-2 w-full sm:w-auto">
                   Find Talent <ArrowRight className="h-5 w-5" />
                 </Button>
               </Link>
-              <Link to="/auth">
-                <Button variant="cyber" size="lg">
+              <Link to="/auth" className="w-full sm:w-auto">
+                <Button variant="cyber" size="lg" className="w-full sm:w-auto">
                   Find Jobs
                 </Button>
               </Link>
@@ -55,42 +55,42 @@ const Index = () => {
       </section>
 
       {/* Features */}
-      <section className="py-24 bg-card/30">
+      <section className="py-16 md:py-24 bg-card/30">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16 animate-fade-in">
-            <h2 className="text-4xl font-bold mb-4">Why Choose Cydena?</h2>
-            <p className="text-muted-foreground text-lg">
+          <div className="text-center mb-12 md:mb-16 animate-fade-in">
+            <h2 className="text-3xl md:text-4xl font-bold mb-3 md:mb-4">Why Choose Cydena?</h2>
+            <p className="text-muted-foreground text-base md:text-lg">
               Built specifically for the cybersecurity industry
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-gradient-card backdrop-blur-sm border border-border rounded-lg p-8 hover:scale-105 transition-transform animate-slide-up">
-              <div className="bg-primary/10 w-14 h-14 rounded-lg flex items-center justify-center mb-6">
-                <Users className="h-7 w-7 text-primary" />
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+            <div className="bg-gradient-card backdrop-blur-sm border border-border rounded-lg p-6 md:p-8 hover:scale-105 transition-transform animate-slide-up">
+              <div className="bg-primary/10 w-12 h-12 md:w-14 md:h-14 rounded-lg flex items-center justify-center mb-4 md:mb-6">
+                <Users className="h-6 w-6 md:h-7 md:w-7 text-primary" />
               </div>
-              <h3 className="text-xl font-semibold mb-3">Skills-Based Matching</h3>
-              <p className="text-muted-foreground">
+              <h3 className="text-lg md:text-xl font-semibold mb-2 md:mb-3">Skills-Based Matching</h3>
+              <p className="text-sm md:text-base text-muted-foreground">
                 Match candidates with jobs based on verified skills, certifications, and security clearances
               </p>
             </div>
 
-            <div className="bg-gradient-card backdrop-blur-sm border border-border rounded-lg p-8 hover:scale-105 transition-transform animate-slide-up" style={{animationDelay: '0.1s'}}>
-              <div className="bg-secondary/10 w-14 h-14 rounded-lg flex items-center justify-center mb-6">
-                <Briefcase className="h-7 w-7 text-secondary" />
+            <div className="bg-gradient-card backdrop-blur-sm border border-border rounded-lg p-6 md:p-8 hover:scale-105 transition-transform animate-slide-up" style={{animationDelay: '0.1s'}}>
+              <div className="bg-secondary/10 w-12 h-12 md:w-14 md:h-14 rounded-lg flex items-center justify-center mb-4 md:mb-6">
+                <Briefcase className="h-6 w-6 md:h-7 md:w-7 text-secondary" />
               </div>
-              <h3 className="text-xl font-semibold mb-3">Application Pipeline</h3>
-              <p className="text-muted-foreground">
+              <h3 className="text-lg md:text-xl font-semibold mb-2 md:mb-3">Application Pipeline</h3>
+              <p className="text-sm md:text-base text-muted-foreground">
                 Track candidates through customizable pipeline stages with in-app messaging
               </p>
             </div>
 
-            <div className="bg-gradient-card backdrop-blur-sm border border-border rounded-lg p-8 hover:scale-105 transition-transform animate-slide-up" style={{animationDelay: '0.2s'}}>
-              <div className="bg-accent/10 w-14 h-14 rounded-lg flex items-center justify-center mb-6">
-                <TrendingUp className="h-7 w-7 text-accent" />
+            <div className="bg-gradient-card backdrop-blur-sm border border-border rounded-lg p-6 md:p-8 hover:scale-105 transition-transform animate-slide-up sm:col-span-2 lg:col-span-1" style={{animationDelay: '0.2s'}}>
+              <div className="bg-accent/10 w-12 h-12 md:w-14 md:h-14 rounded-lg flex items-center justify-center mb-4 md:mb-6">
+                <TrendingUp className="h-6 w-6 md:h-7 md:w-7 text-accent" />
               </div>
-              <h3 className="text-xl font-semibold mb-3">Leaderboards & Rankings</h3>
-              <p className="text-muted-foreground">
+              <h3 className="text-lg md:text-xl font-semibold mb-2 md:mb-3">Leaderboards & Rankings</h3>
+              <p className="text-sm md:text-base text-muted-foreground">
                 Showcase top talent with skills-based rankings and endorsement systems
               </p>
             </div>
@@ -99,47 +99,47 @@ const Index = () => {
       </section>
 
       {/* Value Proposition for Employers vs Traditional */}
-      <section className="py-24 relative overflow-hidden">
+      <section className="py-16 md:py-24 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-cyber opacity-5" />
         <div className="container mx-auto px-4 relative z-10">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">
+          <div className="text-center mb-12 md:mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-3 md:mb-4">
               Say Goodbye to <span className="text-destructive">Traditional Recruitment</span>
             </h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+            <p className="text-base md:text-xl text-muted-foreground max-w-3xl mx-auto px-2">
               No more £15,000 agency fees. No more 8-week hiring cycles. No more exclusive contracts.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            <div className="text-center p-6 rounded-lg border border-primary/20 bg-gradient-card hover:scale-105 transition-transform">
-              <div className="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <DollarSign className="h-8 w-8 text-primary" />
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-5xl mx-auto">
+            <div className="text-center p-5 md:p-6 rounded-lg border border-primary/20 bg-gradient-card hover:scale-105 transition-transform">
+              <div className="bg-primary/10 w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center mx-auto mb-3 md:mb-4">
+                <DollarSign className="h-7 w-7 md:h-8 md:w-8 text-primary" />
               </div>
-              <h3 className="text-2xl font-bold mb-2">98% Cost Savings</h3>
-              <p className="text-muted-foreground">Pay £10-£50 per profile vs £15,000 agency fees</p>
+              <h3 className="text-xl md:text-2xl font-bold mb-2">98% Cost Savings</h3>
+              <p className="text-sm md:text-base text-muted-foreground">Pay £10-£50 per profile vs £15,000 agency fees</p>
             </div>
 
-            <div className="text-center p-6 rounded-lg border border-primary/20 bg-gradient-card hover:scale-105 transition-transform" style={{animationDelay: '0.1s'}}>
-              <div className="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Clock className="h-8 w-8 text-primary" />
+            <div className="text-center p-5 md:p-6 rounded-lg border border-primary/20 bg-gradient-card hover:scale-105 transition-transform" style={{animationDelay: '0.1s'}}>
+              <div className="bg-primary/10 w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center mx-auto mb-3 md:mb-4">
+                <Clock className="h-7 w-7 md:h-8 md:w-8 text-primary" />
               </div>
-              <h3 className="text-2xl font-bold mb-2">48 Hours</h3>
-              <p className="text-muted-foreground">Connect with talent in 2 days vs 6-8 weeks</p>
+              <h3 className="text-xl md:text-2xl font-bold mb-2">48 Hours</h3>
+              <p className="text-sm md:text-base text-muted-foreground">Connect with talent in 2 days vs 6-8 weeks</p>
             </div>
 
-            <div className="text-center p-6 rounded-lg border border-primary/20 bg-gradient-card hover:scale-105 transition-transform" style={{animationDelay: '0.2s'}}>
-              <div className="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Target className="h-8 w-8 text-primary" />
+            <div className="text-center p-5 md:p-6 rounded-lg border border-primary/20 bg-gradient-card hover:scale-105 transition-transform sm:col-span-2 lg:col-span-1" style={{animationDelay: '0.2s'}}>
+              <div className="bg-primary/10 w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center mx-auto mb-3 md:mb-4">
+                <Target className="h-7 w-7 md:h-8 md:w-8 text-primary" />
               </div>
-              <h3 className="text-2xl font-bold mb-2">Zero Contracts</h3>
-              <p className="text-muted-foreground">No retainers, no exclusivity, pay as you go</p>
+              <h3 className="text-xl md:text-2xl font-bold mb-2">Zero Contracts</h3>
+              <p className="text-sm md:text-base text-muted-foreground">No retainers, no exclusivity, pay as you go</p>
             </div>
           </div>
 
-          <div className="text-center mt-12">
+          <div className="text-center mt-10 md:mt-12">
             <Link to="/pricing">
-              <Button variant="outline" size="lg" className="gap-2">
+              <Button variant="outline" size="lg" className="gap-2 w-full sm:w-auto">
                 See Full Pricing Comparison <ArrowRight className="h-4 w-4" />
               </Button>
             </Link>

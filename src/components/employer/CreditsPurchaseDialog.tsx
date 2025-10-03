@@ -82,17 +82,17 @@ export const CreditsPurchaseDialog = ({ currentCredits, onPurchaseComplete }: Cr
           Buy Credits
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-4 sm:p-6">
         <DialogHeader>
-          <DialogTitle>Purchase Profile Unlock Credits</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="text-xl md:text-2xl">Purchase Profile Unlock Credits</DialogTitle>
+          <DialogDescription className="text-sm md:text-base">
             Unlock candidate profiles to view full contact information, resumes, and portfolios.
             <br />
             Current balance: <span className="font-bold text-primary">{currentCredits} credits</span>
           </DialogDescription>
         </DialogHeader>
 
-        <div className="grid md:grid-cols-3 gap-4 mt-4">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
           {packages.map((pkg) => (
             <Card
               key={pkg.id}
@@ -100,28 +100,28 @@ export const CreditsPurchaseDialog = ({ currentCredits, onPurchaseComplete }: Cr
             >
               {pkg.popular && (
                 <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                  <span className="bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-bold">
+                  <span className="bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap">
                     MOST POPULAR
                   </span>
                 </div>
               )}
-              <CardHeader>
-                <CardTitle>{pkg.name}</CardTitle>
-                <CardDescription>{pkg.description}</CardDescription>
+              <CardHeader className="p-4 md:p-6">
+                <CardTitle className="text-lg md:text-xl">{pkg.name}</CardTitle>
+                <CardDescription className="text-xs md:text-sm">{pkg.description}</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-3 md:space-y-4 p-4 md:p-6 pt-0">
                 <div>
-                  <p className="text-4xl font-bold">${pkg.price}</p>
-                  <p className="text-sm text-muted-foreground mt-1">
+                  <p className="text-3xl md:text-4xl font-bold">${pkg.price}</p>
+                  <p className="text-xs md:text-sm text-muted-foreground mt-1">
                     ${pkg.perCredit.toFixed(2)} per unlock
                   </p>
-                  <p className="text-2xl font-bold text-primary mt-2">{pkg.credits} Credits</p>
+                  <p className="text-xl md:text-2xl font-bold text-primary mt-2">{pkg.credits} Credits</p>
                 </div>
 
-                <ul className="space-y-2">
+                <ul className="space-y-1.5 md:space-y-2">
                   {pkg.features.map((feature, idx) => (
-                    <li key={idx} className="flex items-center gap-2 text-sm">
-                      <Check className="h-4 w-4 text-primary flex-shrink-0" />
+                    <li key={idx} className="flex items-center gap-2 text-xs md:text-sm">
+                      <Check className="h-3 w-3 md:h-4 md:w-4 text-primary flex-shrink-0" />
                       <span>{feature}</span>
                     </li>
                   ))}
@@ -131,6 +131,7 @@ export const CreditsPurchaseDialog = ({ currentCredits, onPurchaseComplete }: Cr
                   onClick={() => handlePurchase(pkg.id)}
                   disabled={isLoading}
                   className="w-full"
+                  size="lg"
                   variant={pkg.popular ? "default" : "outline"}
                 >
                   {isLoading ? (
@@ -147,9 +148,9 @@ export const CreditsPurchaseDialog = ({ currentCredits, onPurchaseComplete }: Cr
           ))}
         </div>
 
-        <div className="mt-6 p-4 bg-muted rounded-lg">
-          <h4 className="font-semibold mb-2">How it works:</h4>
-          <ol className="list-decimal list-inside space-y-1 text-sm text-muted-foreground">
+        <div className="mt-6 p-3 md:p-4 bg-muted rounded-lg">
+          <h4 className="font-semibold mb-2 text-sm md:text-base">How it works:</h4>
+          <ol className="list-decimal list-inside space-y-1 text-xs md:text-sm text-muted-foreground">
             <li>Purchase a credit package that fits your hiring needs</li>
             <li>Browse candidate profiles and find the perfect match</li>
             <li>Use 1 credit to unlock full contact details and resume</li>
