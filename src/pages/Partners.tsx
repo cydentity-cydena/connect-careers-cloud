@@ -27,6 +27,18 @@ const Partners = () => {
       description: "International Information System Security Certification Consortium.",
       color: "bg-purple-600",
       features: ["CISSP", "SSCP", "CCSP", "ISSAP"]
+    },
+    {
+      name: "TrecCert",
+      description: "Specialized cybersecurity training and certification provider for advanced threat detection.",
+      color: "bg-orange-500",
+      features: ["Advanced Threat Analysis", "Incident Response", "Digital Forensics", "Malware Analysis"]
+    },
+    {
+      name: "Real LMS",
+      description: "Comprehensive learning management system for cybersecurity professionals and organizations.",
+      color: "bg-teal-600",
+      features: ["Custom Training Paths", "Skills Assessment", "Team Management", "Progress Tracking"]
     }
   ];
 
