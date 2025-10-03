@@ -54,8 +54,8 @@ const Navigation = () => {
             <Link to="/training" className="text-sm font-medium hover:text-primary transition-colors">
               Training
             </Link>
-            <Link to="/partners" className="text-sm font-medium hover:text-primary transition-colors">
-              Partners
+            <Link to="/certifications-catalog" className="text-sm font-medium hover:text-primary transition-colors">
+              Certifications
             </Link>
             <Link to="/pricing" className="text-sm font-medium hover:text-primary transition-colors">
               Pricing

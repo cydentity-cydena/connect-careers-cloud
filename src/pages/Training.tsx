@@ -1,169 +1,289 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { BookOpen, Award, GraduationCap } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Shield, Upload, CheckCircle, Zap } from "lucide-react";
 import Navigation from "@/components/Navigation";
-
-interface Course {
-  name: string;
-  description: string;
-  provider: string;
-  roles: string;
-}
+import SEO from "@/components/SEO";
 
 const Training = () => {
-  const courses: Course[] = [
+  const partners = [
     {
-      name: "CompTIA Security+",
-      description: "Essential principles for network security and risk management.",
-      provider: "CompTIA",
-      roles: "Security Administrator, Systems Administrator, Network Engineer"
+      category: "Gamified Training Platforms",
+      description: "Interactive learning with verified completion badges",
+      icon: <Zap className="h-6 w-6" />,
+      providers: [
+        {
+          name: "TryHackMe",
+          description: "Gamified cybersecurity labs with global community. Issues digital completion certificates integrated with Credly.",
+          color: "bg-green-600",
+          features: ["Hands-on Labs", "Completion Badges", "Community Rankings", "Credly Integration"],
+          freeCourses: [
+            { name: "Linux Fundamentals", url: "https://tryhackme.com/room/linuxfundamentalspart1" },
+            { name: "Phishing Analysis", url: "https://tryhackme.com/room/phishingemails1tryoe" }
+          ]
+        },
+        {
+          name: "Hack The Box",
+          description: "Industry-recognized penetration testing labs. HTB Academy issues verified completion badges.",
+          color: "bg-lime-600",
+          features: ["HTB Academy", "Pro Labs", "Verified Badges", "Employer Recognition"],
+          freeCourses: [
+            { name: "Introduction to HTB", url: "https://academy.hackthebox.com/course/preview/introduction-to-academy" }
+          ]
+        },
+        {
+          name: "Immersive Labs",
+          description: "Skills benchmarking platform with strong employer-facing analytics and completion tracking.",
+          color: "bg-purple-600",
+          features: ["Skills Assessment", "Lab Exercises", "Progress Tracking", "Employer Dashboards"]
+        },
+        {
+          name: "LetsDefend",
+          description: "SOC analyst labs with certificates and performance scores. Practical blue team training.",
+          color: "bg-blue-600",
+          features: ["SOC Training", "Incident Response", "Certificates", "Performance Scores"],
+          freeCourses: [
+            { name: "Free SOC Investigation Labs", url: "https://letsdefend.io/cybersecurity-training" }
+          ]
+        }
+      ]
     },
     {
-      name: "CompTIA Cybersecurity Analyst (CySA+)",
-      description: "Focuses on threat detection and response.",
-      provider: "CompTIA",
-      roles: "Security Analyst, Threat Intelligence Analyst, SOC Analyst"
+      category: "Cybersecurity Bootcamps & Academies",
+      description: "Intensive training programs with career-focused certifications",
+      icon: <Shield className="h-6 w-6" />,
+      providers: [
+        {
+          name: "TCM Security Academy",
+          description: "Affordable courses with PNPT certification. Rapidly growing recognition in the industry.",
+          color: "bg-red-600",
+          features: ["PNPT Certification", "Practical Training", "Course Certificates", "Industry Recognition"]
+        },
+        {
+          name: "RangeForce",
+          description: "Modular cyber range with completion badges and existing integration capabilities.",
+          color: "bg-orange-600",
+          features: ["Modular Training", "Team Challenges", "Completion Badges", "API Integration"]
+        },
+        {
+          name: "Cybrary",
+          description: "Extensive library of cybersecurity courses with completion certificates and career paths.",
+          color: "bg-cyan-600",
+          features: ["Course Library", "Career Paths", "Certificates", "Skills Assessments"],
+          freeCourses: [
+            { name: "Free Tier Courses", url: "https://www.cybrary.it/catalog/free" }
+          ]
+        },
+        {
+          name: "INE (eLearnSecurity)",
+          description: "Provider of eJPT and eCPPT certifications. Respected practical security certifications.",
+          color: "bg-indigo-600",
+          features: ["eJPT Certification", "eCPPT Training", "Lab Environment", "Industry Respected"],
+          freeCourses: [
+            { name: "Intro to Pen Testing", url: "https://ine.com/pages/cybersecurity" }
+          ]
+        }
+      ]
     },
     {
-      name: "CompTIA Advanced Security Practitioner (CASP+)",
-      description: "Advanced practitioners covering enterprise security and risk management.",
-      provider: "CompTIA",
-      roles: "Security Architect, Senior Security Engineer"
+      category: "Specialized Training Providers",
+      description: "Niche cybersecurity training with verified completion badges",
+      icon: <Upload className="h-6 w-6" />,
+      providers: [
+        {
+          name: "Blue Team Labs Online",
+          description: "Practical blue team challenges with completion badges. Focused on defensive security skills.",
+          color: "bg-blue-700",
+          features: ["Defensive Security", "Challenge Labs", "Completion Badges", "Practical Skills"],
+          freeCourses: [
+            { name: "Free Tier Challenges", url: "https://blueteamlabs.online/home/challenges" }
+          ]
+        },
+        {
+          name: "Practical DevSecOps",
+          description: "Specialized DevSecOps certifications. Community-driven training for secure development.",
+          color: "bg-teal-600",
+          features: ["DevSecOps Certs", "Pipeline Security", "Cloud Security", "Community Support"]
+        },
+        {
+          name: "PentesterLab",
+          description: "Hands-on web security labs with certificates of completion. Focused on practical exploitation.",
+          color: "bg-red-700",
+          features: ["Web Security", "Practical Labs", "Certificates", "Vulnerability Testing"],
+          freeCourses: [
+            { name: "Web for Pentesters", url: "https://pentesterlab.com/exercises/web_for_pentester/course" }
+          ]
+        },
+        {
+          name: "PortSwigger Academy",
+          description: "Well-known web security training (Burp Suite creators). Issues completion badges for courses.",
+          color: "bg-orange-700",
+          features: ["Web Security", "Burp Suite", "Free Training", "Completion Badges"],
+          freeCourses: [
+            { name: "SQL Injection", url: "https://portswigger.net/web-security/sql-injection" },
+            { name: "Cross-Site Scripting", url: "https://portswigger.net/web-security/cross-site-scripting" }
+          ]
+        }
+      ]
     },
     {
-      name: "Certified Ethical Hacker (CEH)",
-      description: "Focuses on hacking tools, techniques, and methodologies.",
-      provider: "EC-Council",
-      roles: "Ethical Hacker, Penetration Tester, Network Security Specialist"
-    },
-    {
-      name: "Certified Network Defender (CND)",
-      description: "Focuses on network security technologies and operations.",
-      provider: "EC-Council",
-      roles: "Network Administrator, Network Defense Technician"
-    },
-    {
-      name: "Certified Information Security Manager (CISM)",
-      description: "Advanced certification focusing on managing and governing information security programs.",
-      provider: "EC-Council",
-      roles: "Information Security Manager, IT Audit Manager"
-    },
-    {
-      name: "GIAC Security Essentials (GSEC)",
-      description: "Comprehensive information security certification.",
-      provider: "SANS",
-      roles: "Security Professional, Network Administrator"
-    },
-    {
-      name: "GIAC Penetration Tester (GPEN)",
-      description: "Penetration testing and ethical hacking skills.",
-      provider: "SANS",
-      roles: "Penetration Tester, Security Consultant"
-    },
-    {
-      name: "GIAC Incident Handler (GCIH)",
-      description: "Incident handling and computer forensics.",
-      provider: "SANS",
-      roles: "Incident Handler, Security Operations Analyst"
-    },
-    {
-      name: "Certified Information Systems Security Professional (CISSP)",
-      description: "Advanced security certification for experienced professionals.",
-      provider: "ISC2",
-      roles: "Security Consultant, Manager, CISO"
-    },
-    {
-      name: "Systems Security Certified Practitioner (SSCP)",
-      description: "IT administration and security operations certification.",
-      provider: "ISC2",
-      roles: "Systems Administrator, Security Analyst"
-    },
+      category: "Official Certification Bodies",
+      description: "Established certification organizations with global recognition",
+      icon: <CheckCircle className="h-6 w-6" />,
+      providers: [
+        {
+          name: "(ISC)²",
+          description: "Leading cybersecurity certifications body offering CISSP, SSCP, and other industry-standard credentials.",
+          color: "bg-blue-800",
+          features: ["CISSP", "SSCP", "CCSP", "ISSAP"]
+        },
+        {
+          name: "ISACA",
+          description: "Global association for IT governance, risk management, and cybersecurity professionals.",
+          color: "bg-orange-600",
+          features: ["CISA", "CISM", "CRISC", "CGEIT"]
+        }
+      ]
+    }
   ];
-
-  const providers = ["CompTIA", "EC-Council", "SANS", "ISC2"];
-
-  const getProviderIcon = (provider: string) => {
-    const icons: { [key: string]: string } = {
-      "CompTIA": "🔴",
-      "EC-Council": "🔵",
-      "SANS": "🟢",
-      "ISC2": "🟣"
-    };
-    return icons[provider] || "📚";
-  };
 
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
-
-      <main className="container mx-auto px-4 py-8 animate-fade-in">
-        <div className="mb-12">
-          <h1 className="text-4xl font-bold mb-2">Cybersecurity Training Courses</h1>
-          <p className="text-muted-foreground">
-            Advance your career with industry-recognized certifications
-          </p>
-        </div>
-
-        {providers.map((provider, providerIdx) => (
-          <div key={provider} className="mb-12 animate-slide-up" style={{ animationDelay: `${providerIdx * 0.1}s` }}>
-            <div className="flex items-center gap-3 mb-6">
-              <div className="text-4xl">{getProviderIcon(provider)}</div>
-              <h2 className="text-3xl font-bold">{provider} Training Courses</h2>
+      <SEO 
+        title="Free Training | Cydent" 
+        description="Complete free cybersecurity courses from leading training providers and earn points on Cydent." 
+      />
+      <main className="container mx-auto px-4 py-16">
+        <div className="max-w-6xl mx-auto">
+          <div className="mb-12">
+            <h1 className="text-5xl font-bold mb-4 bg-gradient-cyber bg-clip-text text-transparent">
+              Free Training Courses
+            </h1>
+            <p className="text-xl text-muted-foreground mb-6">
+              Complete courses, import certifications, and boost your score with verified training
+            </p>
+            <div className="bg-primary/5 border border-primary/20 rounded-lg p-6 space-y-4">
+              <div>
+                <h2 className="text-lg font-semibold mb-2 text-primary flex items-center gap-2">
+                  <Upload className="h-5 w-5" />
+                  For Candidates
+                </h2>
+                <p className="text-muted-foreground">
+                  Completed training from these partners? Import your certificates and badges directly into your Cydent profile. 
+                  We support Credly, Accredible, and direct badge URLs. Earn +500-700 points for verified certifications!
+                </p>
+              </div>
+              <div>
+                <h2 className="text-lg font-semibold mb-2 text-primary flex items-center gap-2">
+                  <CheckCircle className="h-5 w-5" />
+                  For Training Providers
+                </h2>
+                <p className="text-muted-foreground">
+                  Interested in partnering with Cydent? We showcase your training graduates to employers at no cost. 
+                  Your graduates gain visibility, and you gain a direct talent pipeline. Easy integration with existing badge systems.
+                </p>
+              </div>
             </div>
+          </div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {courses
-                .filter((course) => course.provider === provider)
-                .map((course, idx) => (
-                  <Card
-                    key={idx}
-                    className="border-border shadow-card hover:scale-105 transition-transform"
+          {partners.map((category, idx) => (
+            <div key={idx} className="mb-12">
+              <div className="mb-6">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="bg-primary/10 p-2 rounded-lg text-primary">
+                    {category.icon}
+                  </div>
+                  <h2 className="text-2xl font-bold">{category.category}</h2>
+                </div>
+                <p className="text-muted-foreground">{category.description}</p>
+              </div>
+              <div className="grid md:grid-cols-2 gap-6">
+                {category.providers.map((partner, pIdx) => (
+                  <Card 
+                    key={pIdx}
+                    className="border-border hover:border-primary/50 transition-all hover:scale-[1.02] cursor-pointer"
                   >
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <Award className="h-5 w-5 text-primary" />
-                        {course.name}
-                      </CardTitle>
-                      <CardDescription>{course.description}</CardDescription>
+                    <CardHeader className={`${partner.color} rounded-t-lg text-white`}>
+                      <CardTitle className="text-xl">{partner.name}</CardTitle>
                     </CardHeader>
-                    <CardContent>
-                      <div className="space-y-3">
-                        <div>
-                          <p className="text-sm font-semibold mb-1">Suitable for:</p>
-                          <p className="text-sm text-muted-foreground">
-                            {course.roles}
-                          </p>
-                        </div>
-                        <Button variant="hero" className="w-full gap-2">
-                          <BookOpen className="h-4 w-4" />
-                          Enroll Now
-                        </Button>
+                    <CardContent className="pt-6 space-y-4">
+                      <p className="text-sm text-muted-foreground">
+                        {partner.description}
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {partner.features.map((feature, fIdx) => (
+                          <Badge key={fIdx} variant="secondary" className="text-xs">
+                            {feature}
+                          </Badge>
+                        ))}
                       </div>
+                      {partner.freeCourses && partner.freeCourses.length > 0 && (
+                        <div className="pt-4 border-t border-border">
+                          <p className="text-sm font-semibold mb-2 text-primary">Free Courses:</p>
+                          <div className="space-y-2">
+                            {partner.freeCourses.map((course, cIdx) => (
+                              <a
+                                key={cIdx}
+                                href={course.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
+                              >
+                                <span>→</span>
+                                <span className="underline">{course.name}</span>
+                              </a>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </CardContent>
                   </Card>
                 ))}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
 
-        {/* Career Path Section */}
-        <Card className="border-border shadow-card bg-gradient-card mt-12">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-2xl">
-              <GraduationCap className="h-6 w-6 text-primary" />
-              From Entry-Level to CISO
-            </CardTitle>
-            <CardDescription>Your roadmap to cybersecurity success</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-muted-foreground mb-4">
-              Navigating the path from graduation to becoming a Chief Information Security Officer (CISO)
-              can be challenging with numerous certifications and online resources available. We provide
-              guidance to ensure you are on the right track to achieve your training and career goals.
-            </p>
-            <Button variant="hero">View Career Paths</Button>
-          </CardContent>
-        </Card>
+          {/* Partnership CTA */}
+          <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10">
+            <CardHeader>
+              <CardTitle className="text-2xl">Become a Training Partner</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p className="text-muted-foreground">
+                Are you a training provider? Join our network and give your graduates instant visibility with hiring employers.
+              </p>
+              <div className="grid md:grid-cols-3 gap-4">
+                <div className="flex items-start gap-3">
+                  <div className="bg-primary/10 p-2 rounded-lg">
+                    <CheckCircle className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold mb-1">Free Integration</h3>
+                    <p className="text-sm text-muted-foreground">No cost to join or list your training programs</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="bg-primary/10 p-2 rounded-lg">
+                    <Zap className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold mb-1">Quick Setup</h3>
+                    <p className="text-sm text-muted-foreground">Works with Credly, Accredible, or custom badges</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="bg-primary/10 p-2 rounded-lg">
+                    <Shield className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold mb-1">Talent Pipeline</h3>
+                    <p className="text-sm text-muted-foreground">Direct connection to hiring employers</p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </main>
     </div>
   );

@@ -10,7 +10,7 @@ import Leaderboard from "./pages/Leaderboard";
 import Profiles from "./pages/Profiles";
 import Jobs from "./pages/Jobs";
 import Training from "./pages/Training";
-import Partners from "./pages/Partners";
+import CertificationCatalog from "./pages/CertificationCatalog";
 import Contact from "./pages/Contact";
 import Pricing from "./pages/Pricing";
 import FAQ from "./pages/FAQ";
@@ -39,7 +39,7 @@ const App = () => (
           <Route path="/profiles" element={<Profiles />} />
           <Route path="/jobs" element={<Jobs />} />
           <Route path="/training" element={<Training />} />
-          <Route path="/partners" element={<Partners />} />
+          <Route path="/certifications-catalog" element={<CertificationCatalog />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/faq" element={<FAQ />} />
