@@ -15,13 +15,20 @@ const Partners = () => {
           name: "TryHackMe",
           description: "Gamified cybersecurity labs with global community. Issues digital completion certificates integrated with Credly.",
           color: "bg-green-600",
-          features: ["Hands-on Labs", "Completion Badges", "Community Rankings", "Credly Integration"]
+          features: ["Hands-on Labs", "Completion Badges", "Community Rankings", "Credly Integration"],
+          freeCourses: [
+            { name: "Linux Fundamentals", url: "https://tryhackme.com/room/linuxfundamentalspart1" },
+            { name: "Phishing Analysis", url: "https://tryhackme.com/room/phishingemails1tryoe" }
+          ]
         },
         {
           name: "Hack The Box",
           description: "Industry-recognized penetration testing labs. HTB Academy issues verified completion badges.",
           color: "bg-lime-600",
-          features: ["HTB Academy", "Pro Labs", "Verified Badges", "Employer Recognition"]
+          features: ["HTB Academy", "Pro Labs", "Verified Badges", "Employer Recognition"],
+          freeCourses: [
+            { name: "Introduction to HTB", url: "https://academy.hackthebox.com/course/preview/introduction-to-academy" }
+          ]
         },
         {
           name: "Immersive Labs",
@@ -33,7 +40,10 @@ const Partners = () => {
           name: "LetsDefend",
           description: "SOC analyst labs with certificates and performance scores. Practical blue team training.",
           color: "bg-blue-600",
-          features: ["SOC Training", "Incident Response", "Certificates", "Performance Scores"]
+          features: ["SOC Training", "Incident Response", "Certificates", "Performance Scores"],
+          freeCourses: [
+            { name: "Free SOC Investigation Labs", url: "https://letsdefend.io/cybersecurity-training" }
+          ]
         }
       ]
     },
@@ -58,13 +68,19 @@ const Partners = () => {
           name: "Cybrary",
           description: "Extensive library of cybersecurity courses with completion certificates and career paths.",
           color: "bg-cyan-600",
-          features: ["Course Library", "Career Paths", "Certificates", "Skills Assessments"]
+          features: ["Course Library", "Career Paths", "Certificates", "Skills Assessments"],
+          freeCourses: [
+            { name: "Free Tier Courses", url: "https://www.cybrary.it/catalog/free" }
+          ]
         },
         {
           name: "INE (eLearnSecurity)",
           description: "Provider of eJPT and eCPPT certifications. Respected practical security certifications.",
           color: "bg-indigo-600",
-          features: ["eJPT Certification", "eCPPT Training", "Lab Environment", "Industry Respected"]
+          features: ["eJPT Certification", "eCPPT Training", "Lab Environment", "Industry Respected"],
+          freeCourses: [
+            { name: "Intro to Pen Testing", url: "https://ine.com/pages/cybersecurity" }
+          ]
         }
       ]
     },
@@ -77,7 +93,10 @@ const Partners = () => {
           name: "Blue Team Labs Online",
           description: "Practical blue team challenges with completion badges. Focused on defensive security skills.",
           color: "bg-blue-700",
-          features: ["Defensive Security", "Challenge Labs", "Completion Badges", "Practical Skills"]
+          features: ["Defensive Security", "Challenge Labs", "Completion Badges", "Practical Skills"],
+          freeCourses: [
+            { name: "Free Tier Challenges", url: "https://blueteamlabs.online/home/challenges" }
+          ]
         },
         {
           name: "Practical DevSecOps",
@@ -89,13 +108,20 @@ const Partners = () => {
           name: "PentesterLab",
           description: "Hands-on web security labs with certificates of completion. Focused on practical exploitation.",
           color: "bg-red-700",
-          features: ["Web Security", "Practical Labs", "Certificates", "Vulnerability Testing"]
+          features: ["Web Security", "Practical Labs", "Certificates", "Vulnerability Testing"],
+          freeCourses: [
+            { name: "Web for Pentesters", url: "https://pentesterlab.com/exercises/web_for_pentester/course" }
+          ]
         },
         {
           name: "PortSwigger Academy",
           description: "Well-known web security training (Burp Suite creators). Issues completion badges for courses.",
           color: "bg-orange-700",
-          features: ["Web Security", "Burp Suite", "Free Training", "Completion Badges"]
+          features: ["Web Security", "Burp Suite", "Free Training", "Completion Badges"],
+          freeCourses: [
+            { name: "SQL Injection", url: "https://portswigger.net/web-security/sql-injection" },
+            { name: "Cross-Site Scripting", url: "https://portswigger.net/web-security/cross-site-scripting" }
+          ]
         }
       ]
     },
@@ -180,8 +206,8 @@ const Partners = () => {
                     <CardHeader className={`${partner.color} rounded-t-lg text-white`}>
                       <CardTitle className="text-xl">{partner.name}</CardTitle>
                     </CardHeader>
-                    <CardContent className="pt-6">
-                      <p className="text-sm text-muted-foreground mb-4">
+                    <CardContent className="pt-6 space-y-4">
+                      <p className="text-sm text-muted-foreground">
                         {partner.description}
                       </p>
                       <div className="flex flex-wrap gap-2">
@@ -191,6 +217,25 @@ const Partners = () => {
                           </Badge>
                         ))}
                       </div>
+                      {partner.freeCourses && partner.freeCourses.length > 0 && (
+                        <div className="pt-4 border-t border-border">
+                          <p className="text-sm font-semibold mb-2 text-primary">Free Courses:</p>
+                          <div className="space-y-2">
+                            {partner.freeCourses.map((course, cIdx) => (
+                              <a
+                                key={cIdx}
+                                href={course.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
+                              >
+                                <span>→</span>
+                                <span className="underline">{course.name}</span>
+                              </a>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </CardContent>
                   </Card>
                 ))}
