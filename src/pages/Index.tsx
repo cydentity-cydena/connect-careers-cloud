@@ -1,30 +1,13 @@
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Shield, Users, Briefcase, TrendingUp, ArrowRight } from "lucide-react";
-import { Link } from "react-router-dom";
+import Navigation from "@/components/Navigation";
 import heroImage from "@/assets/hero-bg.jpg";
 
 const Index = () => {
   return (
     <div className="min-h-screen bg-background">
-      {/* Navigation */}
-      <nav className="border-b border-border backdrop-blur-sm fixed top-0 w-full z-50 bg-background/80">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Shield className="h-8 w-8 text-primary" />
-            <span className="text-2xl font-bold bg-gradient-cyber bg-clip-text text-transparent">
-              Cydent
-            </span>
-          </div>
-          <div className="flex items-center gap-4">
-            <Link to="/auth">
-              <Button variant="ghost">Sign In</Button>
-            </Link>
-            <Link to="/auth">
-              <Button variant="hero">Get Started</Button>
-            </Link>
-          </div>
-        </div>
-      </nav>
+      <Navigation />
 
       {/* Hero Section */}
       <section className="relative pt-24 pb-32 overflow-hidden">
@@ -135,10 +118,10 @@ const Index = () => {
       <footer className="border-t border-border py-12">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="flex items-center gap-2">
+            <Link to="/" className="flex items-center gap-2">
               <Shield className="h-6 w-6 text-primary" />
               <span className="text-xl font-bold">Cydent</span>
-            </div>
+            </Link>
             <p className="text-muted-foreground text-sm">
               © 2025 Cydent. All rights reserved.
             </p>
