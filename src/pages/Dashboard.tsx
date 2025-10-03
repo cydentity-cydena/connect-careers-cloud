@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Shield, LogOut, Loader2 } from "lucide-react";
+import { Shield, LogOut, Loader2, Menu, X } from "lucide-react";
 import { toast } from "sonner";
 import CandidateDashboard from "@/components/dashboard/CandidateDashboard";
 import EmployerDashboard from "@/components/dashboard/EmployerDashboard";
@@ -13,6 +13,7 @@ const Dashboard = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [userRole, setUserRole] = useState<string | null>(null);
   const [user, setUser] = useState<any>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     checkUser();
@@ -77,21 +78,132 @@ const Dashboard = () => {
     <div className="min-h-screen bg-background">
       {/* Navigation */}
       <nav className="border-b border-border backdrop-blur-sm sticky top-0 z-50 bg-background/80">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Shield className="h-8 w-8 text-primary" />
-            <span className="text-2xl font-bold bg-gradient-cyber bg-clip-text text-transparent">
-              Cydent
-            </span>
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <Link to="/" className="flex items-center gap-2">
+              <Shield className="h-8 w-8 text-primary" />
+              <span className="text-2xl font-bold bg-gradient-cyber bg-clip-text text-transparent">
+                Cydent
+              </span>
+            </Link>
+
+            {/* Desktop Navigation */}
+            <div className="hidden lg:flex items-center gap-6">
+              <Link to="/" className="text-sm font-medium hover:text-primary transition-colors">
+                Home
+              </Link>
+              <Link to="/leaderboard" className="text-sm font-medium hover:text-primary transition-colors">
+                Leaderboard
+              </Link>
+              <Link to="/profiles" className="text-sm font-medium hover:text-primary transition-colors">
+                Profiles
+              </Link>
+              <Link to="/jobs" className="text-sm font-medium hover:text-primary transition-colors">
+                Jobs
+              </Link>
+              <Link to="/training" className="text-sm font-medium hover:text-primary transition-colors">
+                Training
+              </Link>
+              <Link to="/partners" className="text-sm font-medium hover:text-primary transition-colors">
+                Partners
+              </Link>
+              <Link to="/pricing" className="text-sm font-medium hover:text-primary transition-colors">
+                Pricing
+              </Link>
+              <Link to="/contact" className="text-sm font-medium hover:text-primary transition-colors">
+                Contact
+              </Link>
+
+              <div className="flex items-center gap-2 ml-4 pl-4 border-l border-border">
+                <span className="text-sm text-muted-foreground">
+                  {user?.email}
+                </span>
+                <Button variant="ghost" size="icon" onClick={handleSignOut}>
+                  <LogOut className="h-5 w-5" />
+                </Button>
+              </div>
+            </div>
+
+            {/* Mobile Menu Button */}
+            <div className="flex lg:hidden items-center gap-2">
+              <Button 
+                variant="ghost" 
+                size="icon"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              >
+                {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              </Button>
+            </div>
           </div>
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-muted-foreground">
-              {user?.email}
-            </span>
-            <Button variant="ghost" size="icon" onClick={handleSignOut}>
-              <LogOut className="h-5 w-5" />
-            </Button>
-          </div>
+
+          {/* Mobile Navigation */}
+          {mobileMenuOpen && (
+            <div className="lg:hidden mt-4 pb-4 space-y-3">
+              <Link 
+                to="/" 
+                className="block text-sm font-medium hover:text-primary transition-colors py-2"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Home
+              </Link>
+              <Link 
+                to="/leaderboard" 
+                className="block text-sm font-medium hover:text-primary transition-colors py-2"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Leaderboard
+              </Link>
+              <Link 
+                to="/profiles" 
+                className="block text-sm font-medium hover:text-primary transition-colors py-2"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Profiles
+              </Link>
+              <Link 
+                to="/jobs" 
+                className="block text-sm font-medium hover:text-primary transition-colors py-2"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Jobs
+              </Link>
+              <Link 
+                to="/training" 
+                className="block text-sm font-medium hover:text-primary transition-colors py-2"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Training
+              </Link>
+              <Link 
+                to="/partners" 
+                className="block text-sm font-medium hover:text-primary transition-colors py-2"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Partners
+              </Link>
+              <Link 
+                to="/pricing" 
+                className="block text-sm font-medium hover:text-primary transition-colors py-2"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Pricing
+              </Link>
+              <Link 
+                to="/contact" 
+                className="block text-sm font-medium hover:text-primary transition-colors py-2"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Contact
+              </Link>
+              <div className="pt-3 border-t border-border">
+                <p className="text-xs text-muted-foreground mb-2">{user?.email}</p>
+                <Button variant="outline" size="sm" onClick={handleSignOut} className="w-full">
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Sign Out
+                </Button>
+              </div>
+            </div>
+          )}
         </div>
       </nav>
 
