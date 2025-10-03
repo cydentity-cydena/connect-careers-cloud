@@ -121,6 +121,26 @@ serve(async (req) => {
       console.log('Candidate XP initialized successfully');
     }
 
+    // 5. If employer, create employer credits
+    if (role === 'employer') {
+      const { error: creditsError } = await supabaseAdmin
+        .from('employer_credits')
+        .insert({
+          employer_id: userId,
+          credits: 0,
+          total_purchased: 0,
+        });
+
+      if (creditsError) {
+        console.error('Employer credits initialization failed:', creditsError);
+        // Cleanup
+        await supabaseAdmin.auth.admin.deleteUser(userId);
+        throw new Error('Failed to initialize employer credits');
+      }
+
+      console.log('Employer credits initialized successfully');
+    }
+
     return new Response(
       JSON.stringify({
         success: true,

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -6,8 +7,11 @@ import { Building, Users, Briefcase, TrendingUp, Coins } from "lucide-react";
 import { CreditsPurchaseDialog } from "@/components/employer/CreditsPurchaseDialog";
 
 const EmployerDashboard = () => {
+  const navigate = useNavigate();
   const [credits, setCredits] = useState(0);
   const [userId, setUserId] = useState("");
+  const [jobsCount, setJobsCount] = useState(0);
+  const [applicationsCount, setApplicationsCount] = useState(0);
 
   useEffect(() => {
     getCurrentUser();
@@ -18,7 +22,24 @@ const EmployerDashboard = () => {
     if (user) {
       setUserId(user.id);
       loadCredits(user.id);
+      loadStats(user.id);
     }
+  };
+
+  const loadStats = async (uid: string) => {
+    // Load jobs count
+    const { count: jCount } = await supabase
+      .from('jobs')
+      .select('*', { count: 'exact', head: true })
+      .eq('created_by', uid);
+    setJobsCount(jCount || 0);
+
+    // Load applications count
+    const { count: aCount } = await supabase
+      .from('applications')
+      .select('*, jobs!inner(*)', { count: 'exact', head: true })
+      .eq('jobs.created_by', uid);
+    setApplicationsCount(aCount || 0);
   };
 
   const loadCredits = async (uid: string) => {
@@ -26,7 +47,7 @@ const EmployerDashboard = () => {
       .from('employer_credits')
       .select('credits')
       .eq('employer_id', uid)
-      .single();
+      .maybeSingle();
     
     if (data) {
       setCredits(data.credits);
@@ -67,8 +88,8 @@ const EmployerDashboard = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold text-secondary">0</p>
-            <p className="text-sm text-muted-foreground mt-1">No jobs posted</p>
+            <p className="text-3xl font-bold text-secondary">{jobsCount}</p>
+            <p className="text-sm text-muted-foreground mt-1">{jobsCount === 0 ? 'No jobs posted' : 'Active jobs'}</p>
           </CardContent>
         </Card>
 
@@ -80,8 +101,8 @@ const EmployerDashboard = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold text-accent">0</p>
-            <p className="text-sm text-muted-foreground mt-1">No applications yet</p>
+            <p className="text-3xl font-bold text-accent">{applicationsCount}</p>
+            <p className="text-sm text-muted-foreground mt-1">{applicationsCount === 0 ? 'No applications yet' : 'Total applications'}</p>
           </CardContent>
         </Card>
 
@@ -112,7 +133,7 @@ const EmployerDashboard = () => {
               <p className="text-sm text-muted-foreground">
                 Set up your company profile to attract top cybersecurity talent
               </p>
-              <Button variant="hero" className="w-full">
+              <Button variant="hero" className="w-full" onClick={() => navigate('/company/create')}>
                 Create Company Profile
               </Button>
             </div>
@@ -131,7 +152,7 @@ const EmployerDashboard = () => {
               <p className="text-sm text-muted-foreground">
                 Create job postings with detailed requirements and skill matching
               </p>
-              <Button variant="cyber" className="w-full">
+              <Button variant="cyber" className="w-full" onClick={() => navigate('/jobs/create')}>
                 Post a Job
               </Button>
             </div>
