@@ -38,7 +38,7 @@ const Partners = () => {
       name: "Real LMS",
       description: "Comprehensive learning management system specializing in ISO, Cybersecurity, and AI training for professionals and organizations.",
       color: "bg-teal-600",
-      features: ["Custom Training Paths", "Skills Assessment", "Team Management", "Progress Tracking"]
+      features: ["ISO Certifications", "Custom Training Paths", "Cybersecurity Training", "AI Training Programs"]
     }
   ];
 
