@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,6 +14,8 @@ const CandidateDashboard = () => {
   useEffect(() => {
     getCurrentUser();
   }, []);
+
+  const navigate = useNavigate();
 
   const getCurrentUser = async () => {
     const { data: { user } } = await supabase.auth.getUser();
@@ -95,10 +98,10 @@ const CandidateDashboard = () => {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
-            <Button variant="cyber" className="w-full">
+            <Button variant="cyber" className="w-full" onClick={() => navigate('/profile')}>
               Edit Profile
             </Button>
-            <Button variant="outline" className="w-full">
+            <Button variant="outline" className="w-full" onClick={() => navigate('/profiles')}>
               View Public Profile
             </Button>
           </CardContent>
@@ -115,7 +118,7 @@ const CandidateDashboard = () => {
             <div className="text-center py-4">
               <p className="text-4xl font-bold text-primary mb-2">0</p>
               <p className="text-sm text-muted-foreground mb-4">Applications</p>
-              <Button variant="hero" size="sm">Browse Jobs</Button>
+              <Button variant="hero" size="sm" onClick={() => navigate('/jobs')}>Browse Jobs</Button>
             </div>
           </CardContent>
         </Card>
@@ -128,10 +131,10 @@ const CandidateDashboard = () => {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
-            <Button variant="cyber" className="w-full" size="sm">
+            <Button variant="cyber" className="w-full" size="sm" onClick={() => navigate('/skills')}>
               Add Skills
             </Button>
-            <Button variant="outline" className="w-full" size="sm">
+            <Button variant="outline" className="w-full" size="sm" onClick={() => navigate('/certifications')}>
               Add Certification
             </Button>
           </CardContent>
