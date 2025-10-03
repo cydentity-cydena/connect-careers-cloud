@@ -27,7 +27,7 @@ const CandidateDashboard = () => {
       .from('candidate_xp')
       .select('*')
       .eq('candidate_id', uid)
-      .single();
+      .maybeSingle();
     
     if (data) {
       setXpData(data);

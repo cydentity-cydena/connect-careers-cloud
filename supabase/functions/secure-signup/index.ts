@@ -82,7 +82,7 @@ serve(async (req) => {
 
     console.log('Role assigned successfully:', role);
 
-    // 4. If candidate, create candidate profile
+    // 4. If candidate, create candidate profile and XP data
     if (role === 'candidate') {
       const { error: candidateError } = await supabaseAdmin
         .from('candidate_profiles')
@@ -100,6 +100,25 @@ serve(async (req) => {
       }
 
       console.log('Candidate profile created successfully');
+
+      // Initialize XP data for candidate
+      const { error: xpError } = await supabaseAdmin
+        .from('candidate_xp')
+        .insert({
+          candidate_id: userId,
+          total_xp: 0,
+          level: 1,
+          profile_completion_percent: 0,
+        });
+
+      if (xpError) {
+        console.error('Candidate XP initialization failed:', xpError);
+        // Cleanup
+        await supabaseAdmin.auth.admin.deleteUser(userId);
+        throw new Error('Failed to initialize candidate XP');
+      }
+
+      console.log('Candidate XP initialized successfully');
     }
 
     return new Response(
