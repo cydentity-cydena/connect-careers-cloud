@@ -1,6 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { BookOpen, Award, GraduationCap } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { BookOpen, Award, GraduationCap, CheckCircle } from "lucide-react";
 import Navigation from "@/components/Navigation";
 
 interface Course {
@@ -145,6 +146,57 @@ const CertificationCatalog = () => {
             </div>
           </div>
         ))}
+
+        {/* Career Path Section */}
+        <div className="mb-12">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="bg-primary/10 p-2 rounded-lg text-primary">
+              <CheckCircle className="h-6 w-6" />
+            </div>
+            <h2 className="text-3xl font-bold">Official Certification Bodies</h2>
+          </div>
+          <p className="text-muted-foreground mb-6">
+            Established certification organizations with global recognition
+          </p>
+          
+          <div className="grid md:grid-cols-2 gap-6 mb-12">
+            <Card className="border-border shadow-card hover:scale-105 transition-transform">
+              <CardHeader className="bg-blue-800 rounded-t-lg text-white">
+                <CardTitle className="text-xl">(ISC)²</CardTitle>
+              </CardHeader>
+              <CardContent className="pt-6">
+                <p className="text-sm text-muted-foreground mb-4">
+                  Leading cybersecurity certifications body offering CISSP, SSCP, and other industry-standard credentials.
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {["CISSP", "SSCP", "CCSP", "ISSAP"].map((cert, idx) => (
+                    <Badge key={idx} variant="secondary" className="text-xs">
+                      {cert}
+                    </Badge>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-border shadow-card hover:scale-105 transition-transform">
+              <CardHeader className="bg-orange-600 rounded-t-lg text-white">
+                <CardTitle className="text-xl">ISACA</CardTitle>
+              </CardHeader>
+              <CardContent className="pt-6">
+                <p className="text-sm text-muted-foreground mb-4">
+                  Global association for IT governance, risk management, and cybersecurity professionals.
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {["CISA", "CISM", "CRISC", "CGEIT"].map((cert, idx) => (
+                    <Badge key={idx} variant="secondary" className="text-xs">
+                      {cert}
+                    </Badge>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
 
         {/* Career Path Section */}
         <Card className="border-border shadow-card bg-gradient-card mt-12">

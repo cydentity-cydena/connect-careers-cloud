@@ -180,25 +180,6 @@ const Training = () => {
           ]
         }
       ]
-    },
-    {
-      category: "Official Certification Bodies",
-      description: "Established certification organizations with global recognition",
-      icon: <CheckCircle className="h-6 w-6" />,
-      providers: [
-        {
-          name: "(ISC)²",
-          description: "Leading cybersecurity certifications body offering CISSP, SSCP, and other industry-standard credentials.",
-          color: "bg-blue-800",
-          features: ["CISSP", "SSCP", "CCSP", "ISSAP"]
-        },
-        {
-          name: "ISACA",
-          description: "Global association for IT governance, risk management, and cybersecurity professionals.",
-          color: "bg-orange-600",
-          features: ["CISA", "CISM", "CRISC", "CGEIT"]
-        }
-      ]
     }
   ];
 
