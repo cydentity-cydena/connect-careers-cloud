@@ -1,8 +1,37 @@
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Building, Users, Briefcase, TrendingUp } from "lucide-react";
+import { Building, Users, Briefcase, TrendingUp, Coins } from "lucide-react";
+import { CreditsPurchaseDialog } from "@/components/employer/CreditsPurchaseDialog";
 
 const EmployerDashboard = () => {
+  const [credits, setCredits] = useState(0);
+  const [userId, setUserId] = useState("");
+
+  useEffect(() => {
+    getCurrentUser();
+  }, []);
+
+  const getCurrentUser = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      setUserId(user.id);
+      loadCredits(user.id);
+    }
+  };
+
+  const loadCredits = async (uid: string) => {
+    const { data } = await supabase
+      .from('employer_credits')
+      .select('credits')
+      .eq('employer_id', uid)
+      .single();
+    
+    if (data) {
+      setCredits(data.credits);
+    }
+  };
   return (
     <div className="space-y-8 animate-fade-in">
       <div>
@@ -13,16 +42,20 @@ const EmployerDashboard = () => {
       </div>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card className="border-border shadow-card hover:scale-105 transition-transform">
+        <Card className="border-primary border-2 shadow-lg hover:scale-105 transition-transform">
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-lg">
-              <Building className="h-5 w-5 text-primary" />
-              Company
+              <Coins className="h-5 w-5 text-primary" />
+              Credits Balance
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold text-primary">0</p>
-            <p className="text-sm text-muted-foreground mt-1">Setup required</p>
+            <p className="text-4xl font-bold text-primary">{credits}</p>
+            <p className="text-sm text-muted-foreground mt-1">Profile unlocks available</p>
+            <CreditsPurchaseDialog 
+              currentCredits={credits} 
+              onPurchaseComplete={() => loadCredits(userId)} 
+            />
           </CardContent>
         </Card>
 

@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      achievements: {
+        Row: {
+          category: Database["public"]["Enums"]["achievement_category"]
+          created_at: string
+          description: string
+          icon: string
+          id: string
+          name: string
+          requirement_value: number | null
+          xp_reward: number
+        }
+        Insert: {
+          category: Database["public"]["Enums"]["achievement_category"]
+          created_at?: string
+          description: string
+          icon: string
+          id?: string
+          name: string
+          requirement_value?: number | null
+          xp_reward?: number
+        }
+        Update: {
+          category?: Database["public"]["Enums"]["achievement_category"]
+          created_at?: string
+          description?: string
+          icon?: string
+          id?: string
+          name?: string
+          requirement_value?: number | null
+          xp_reward?: number
+        }
+        Relationships: []
+      }
       applications: {
         Row: {
           applied_at: string
@@ -135,6 +168,39 @@ export type Database = {
           },
         ]
       }
+      candidate_xp: {
+        Row: {
+          candidate_id: string
+          created_at: string
+          id: string
+          last_activity_at: string
+          level: number
+          profile_completion_percent: number
+          total_xp: number
+          updated_at: string
+        }
+        Insert: {
+          candidate_id: string
+          created_at?: string
+          id?: string
+          last_activity_at?: string
+          level?: number
+          profile_completion_percent?: number
+          total_xp?: number
+          updated_at?: string
+        }
+        Update: {
+          candidate_id?: string
+          created_at?: string
+          id?: string
+          last_activity_at?: string
+          level?: number
+          profile_completion_percent?: number
+          total_xp?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       certifications: {
         Row: {
           candidate_id: string
@@ -210,6 +276,63 @@ export type Database = {
           size?: string | null
           updated_at?: string
           website?: string | null
+        }
+        Relationships: []
+      }
+      credit_transactions: {
+        Row: {
+          amount: number
+          created_at: string
+          employer_id: string
+          id: string
+          price: number
+          status: string
+          transaction_type: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          employer_id: string
+          id?: string
+          price: number
+          status?: string
+          transaction_type: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          employer_id?: string
+          id?: string
+          price?: number
+          status?: string
+          transaction_type?: string
+        }
+        Relationships: []
+      }
+      employer_credits: {
+        Row: {
+          created_at: string
+          credits: number
+          employer_id: string
+          id: string
+          total_purchased: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          credits?: number
+          employer_id: string
+          id?: string
+          total_purchased?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          credits?: number
+          employer_id?: string
+          id?: string
+          total_purchased?: number
+          updated_at?: string
         }
         Relationships: []
       }
@@ -343,6 +466,27 @@ export type Database = {
         }
         Relationships: []
       }
+      profile_unlocks: {
+        Row: {
+          candidate_id: string
+          employer_id: string
+          id: string
+          unlocked_at: string
+        }
+        Insert: {
+          candidate_id: string
+          employer_id: string
+          id?: string
+          unlocked_at?: string
+        }
+        Update: {
+          candidate_id?: string
+          employer_id?: string
+          id?: string
+          unlocked_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -397,6 +541,35 @@ export type Database = {
         }
         Relationships: []
       }
+      user_achievements: {
+        Row: {
+          achievement_id: string
+          earned_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          achievement_id: string
+          earned_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          achievement_id?: string
+          earned_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_achievements_achievement_id_fkey"
+            columns: ["achievement_id"]
+            isOneToOne: false
+            referencedRelation: "achievements"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -423,6 +596,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      calculate_profile_completion: {
+        Args: { user_id: string }
+        Returns: number
+      }
       get_public_candidate_profile: {
         Args: { profile_user_id: string }
         Returns: {
@@ -453,6 +630,12 @@ export type Database = {
       }
     }
     Enums: {
+      achievement_category:
+        | "profile"
+        | "skills"
+        | "certifications"
+        | "community"
+        | "training"
       app_role: "candidate" | "employer" | "admin"
       job_type: "full-time" | "part-time" | "contract" | "freelance"
       notification_type:
@@ -596,6 +779,13 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      achievement_category: [
+        "profile",
+        "skills",
+        "certifications",
+        "community",
+        "training",
+      ],
       app_role: ["candidate", "employer", "admin"],
       job_type: ["full-time", "part-time", "contract", "freelance"],
       notification_type: [

@@ -2,3 +2,9 @@ project_id = "wbeomprrrmteftumwljf"
 
 [functions.secure-signup]
 verify_jwt = false
+
+[functions.unlock-profile]
+verify_jwt = true
+
+[functions.purchase-credits]
+verify_jwt = true
