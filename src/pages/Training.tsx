@@ -59,12 +59,6 @@ const Training = () => {
           features: ["PNPT Certification", "Practical Training", "Course Certificates", "Industry Recognition"]
         },
         {
-          name: "RangeForce",
-          description: "Modular cyber range with completion badges and existing integration capabilities.",
-          color: "bg-orange-600",
-          features: ["Modular Training", "Team Challenges", "Completion Badges", "API Integration"]
-        },
-        {
           name: "Cybrary",
           description: "Extensive library of cybersecurity courses with completion certificates and career paths.",
           color: "bg-cyan-600",
@@ -80,6 +74,68 @@ const Training = () => {
           features: ["eJPT Certification", "eCPPT Training", "Lab Environment", "Industry Respected"],
           freeCourses: [
             { name: "Intro to Pen Testing", url: "https://ine.com/pages/cybersecurity" }
+          ]
+        }
+      ]
+    },
+    {
+      category: "Cyber Ranges & Practice Environments",
+      description: "Hands-on cyber ranges with realistic scenarios and free community challenges",
+      icon: <Shield className="h-6 w-6" />,
+      providers: [
+        {
+          name: "CyberDefenders",
+          description: "Blue team training platform with free forensics and incident response challenges.",
+          color: "bg-blue-800",
+          features: ["DFIR Challenges", "Community Labs", "Free Access", "Leaderboards"],
+          freeCourses: [
+            { name: "Free Blue Team Labs", url: "https://cyberdefenders.org/blueteam-ctf-challenges/" }
+          ]
+        },
+        {
+          name: "RangeForce",
+          description: "Modular cyber range with team exercises, free community edition available.",
+          color: "bg-orange-600",
+          features: ["Team Challenges", "Modular Scenarios", "Community Edition", "Completion Badges"],
+          freeCourses: [
+            { name: "Community Range", url: "https://www.rangeforce.com/community-edition" }
+          ]
+        },
+        {
+          name: "NICE Challenge",
+          description: "NIST-backed cyber range offering free realistic scenarios and challenges.",
+          color: "bg-green-700",
+          features: ["Government-Backed", "Realistic Scenarios", "Free Access", "Career Pathways"],
+          freeCourses: [
+            { name: "Workforce Framework Challenges", url: "https://nice-challenge.com/" }
+          ]
+        },
+        {
+          name: "PicoCTF",
+          description: "Free CTF platform by Carnegie Mellon. Great for beginners learning cybersecurity fundamentals.",
+          color: "bg-yellow-600",
+          features: ["Beginner Friendly", "Year-Round Practice", "Free Forever", "Educational Focus"],
+          freeCourses: [
+            { name: "Practice Challenges", url: "https://picoctf.org/practice" }
+          ]
+        },
+        {
+          name: "OverTheWire",
+          description: "Classic wargames platform teaching security concepts through hands-on challenges.",
+          color: "bg-gray-700",
+          features: ["Command Line Skills", "Progressive Difficulty", "100% Free", "Community Driven"],
+          freeCourses: [
+            { name: "Bandit (Linux Basics)", url: "https://overthewire.org/wargames/bandit/" },
+            { name: "Natas (Web Security)", url: "https://overthewire.org/wargames/natas/" }
+          ]
+        },
+        {
+          name: "Root-Me",
+          description: "French cybersecurity platform with 400+ challenges covering all security domains.",
+          color: "bg-red-800",
+          features: ["400+ Challenges", "All Skill Levels", "Free Access", "Virtual Environments"],
+          freeCourses: [
+            { name: "All Challenges", url: "https://www.root-me.org/en/Challenges/" }
           ]
         }
       ]
