@@ -1,12 +1,14 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Shield, Users, Briefcase, TrendingUp, ArrowRight } from "lucide-react";
+import { Shield, Users, Briefcase, TrendingUp, ArrowRight, Clock, DollarSign, Target, CheckCircle } from "lucide-react";
 import Navigation from "@/components/Navigation";
+import SEO from "@/components/SEO";
 import heroImage from "@/assets/hero-bg.jpg";
 
 const Index = () => {
   return (
     <div className="min-h-screen bg-background">
+      <SEO />
       <Navigation />
 
       {/* Hero Section */}
@@ -96,6 +98,110 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Value Proposition for Employers vs Traditional */}
+      <section className="py-24 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-cyber opacity-5" />
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold mb-4">
+              Say Goodbye to <span className="text-destructive">Traditional Recruitment</span>
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              No more £15,000 agency fees. No more 8-week hiring cycles. No more exclusive contracts.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            <div className="text-center p-6 rounded-lg border border-primary/20 bg-gradient-card hover:scale-105 transition-transform">
+              <div className="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <DollarSign className="h-8 w-8 text-primary" />
+              </div>
+              <h3 className="text-2xl font-bold mb-2">98% Cost Savings</h3>
+              <p className="text-muted-foreground">Pay £10-£50 per profile vs £15,000 agency fees</p>
+            </div>
+
+            <div className="text-center p-6 rounded-lg border border-primary/20 bg-gradient-card hover:scale-105 transition-transform" style={{animationDelay: '0.1s'}}>
+              <div className="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Clock className="h-8 w-8 text-primary" />
+              </div>
+              <h3 className="text-2xl font-bold mb-2">48 Hours</h3>
+              <p className="text-muted-foreground">Connect with talent in 2 days vs 6-8 weeks</p>
+            </div>
+
+            <div className="text-center p-6 rounded-lg border border-primary/20 bg-gradient-card hover:scale-105 transition-transform" style={{animationDelay: '0.2s'}}>
+              <div className="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Target className="h-8 w-8 text-primary" />
+              </div>
+              <h3 className="text-2xl font-bold mb-2">Zero Contracts</h3>
+              <p className="text-muted-foreground">No retainers, no exclusivity, pay as you go</p>
+            </div>
+          </div>
+
+          <div className="text-center mt-12">
+            <Link to="/pricing">
+              <Button variant="outline" size="lg" className="gap-2">
+                See Full Pricing Comparison <ArrowRight className="h-4 w-4" />
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* For Candidates Section */}
+      <section className="py-24 bg-card/30">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-4xl font-bold mb-4">
+                Free Forever for <span className="bg-gradient-cyber bg-clip-text text-transparent">Candidates</span>
+              </h2>
+              <p className="text-xl text-muted-foreground">
+                From entry-level to CISO - everyone gets equal access
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="flex items-start gap-3">
+                <CheckCircle className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
+                <div>
+                  <h3 className="font-semibold mb-1">Career Transitioners Welcome</h3>
+                  <p className="text-sm text-muted-foreground">Breaking into cybersecurity? We support entry-level talent with partner certifications</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <CheckCircle className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
+                <div>
+                  <h3 className="font-semibold mb-1">Showcase Your Certifications</h3>
+                  <p className="text-sm text-muted-foreground">CompTIA, CISSP, CEH, SANS - verified credentials get you noticed</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <CheckCircle className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
+                <div>
+                  <h3 className="font-semibold mb-1">Skip the Recruiter Gatekeepers</h3>
+                  <p className="text-sm text-muted-foreground">Apply directly to employers. Message them in-platform. No middleman</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <CheckCircle className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
+                <div>
+                  <h3 className="font-semibold mb-1">Gamified Profile Building</h3>
+                  <p className="text-sm text-muted-foreground">Earn XP, climb the leaderboard, unlock achievements as you grow</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="text-center mt-8">
+              <Link to="/auth">
+                <Button size="lg" className="gap-2">
+                  Create Free Profile <ArrowRight className="h-5 w-5" />
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="py-24 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-cyber opacity-10" />
@@ -115,16 +221,57 @@ const Index = () => {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-border py-12">
+      <footer className="border-t border-border py-12 bg-card/30">
         <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <Link to="/" className="flex items-center gap-2">
-              <Shield className="h-6 w-6 text-primary" />
-              <span className="text-xl font-bold">Cydent</span>
-            </Link>
+          <div className="grid md:grid-cols-4 gap-8 mb-8">
+            <div>
+              <Link to="/" className="flex items-center gap-2 mb-4">
+                <Shield className="h-6 w-6 text-primary" />
+                <span className="text-xl font-bold">Cydent</span>
+              </Link>
+              <p className="text-sm text-muted-foreground">
+                The future of cybersecurity recruitment. Connecting elite talent with cutting-edge opportunities.
+              </p>
+            </div>
+            
+            <div>
+              <h3 className="font-semibold mb-4">Platform</h3>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li><Link to="/leaderboard" className="hover:text-primary transition-colors">Leaderboard</Link></li>
+                <li><Link to="/profiles" className="hover:text-primary transition-colors">Browse Talent</Link></li>
+                <li><Link to="/jobs" className="hover:text-primary transition-colors">Find Jobs</Link></li>
+                <li><Link to="/training" className="hover:text-primary transition-colors">Training</Link></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h3 className="font-semibold mb-4">Company</h3>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li><Link to="/partners" className="hover:text-primary transition-colors">Partners</Link></li>
+                <li><Link to="/pricing" className="hover:text-primary transition-colors">Pricing</Link></li>
+                <li><Link to="/faq" className="hover:text-primary transition-colors">FAQ</Link></li>
+                <li><Link to="/contact" className="hover:text-primary transition-colors">Contact</Link></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h3 className="font-semibold mb-4">Legal</h3>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li><Link to="/terms" className="hover:text-primary transition-colors">Terms of Service</Link></li>
+                <li><Link to="/privacy" className="hover:text-primary transition-colors">Privacy Policy</Link></li>
+              </ul>
+            </div>
+          </div>
+          
+          <div className="border-t border-border pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-muted-foreground text-sm">
               © 2025 Cydent. All rights reserved.
             </p>
+            <div className="flex gap-4 text-sm text-muted-foreground">
+              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Twitter</a>
+              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">LinkedIn</a>
+              <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">GitHub</a>
+            </div>
           </div>
         </div>
       </footer>
