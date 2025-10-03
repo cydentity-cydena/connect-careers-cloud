@@ -7,6 +7,7 @@ import { User, Briefcase, FileText, TrendingUp } from "lucide-react";
 import { ProfileStrengthMeter } from "@/components/gamification/ProfileStrengthMeter";
 import { AchievementBadges } from "@/components/gamification/AchievementBadges";
 import { RecentPointsFeed } from "@/components/rewards/RecentPointsFeed";
+import { BoostYourScore } from "./BoostYourScore";
 
 const CandidateDashboard = () => {
   const [userId, setUserId] = useState<string>("");
@@ -93,6 +94,10 @@ const CandidateDashboard = () => {
 
       {userId && (
         <AchievementBadges userId={userId} />
+      )}
+
+      {userId && (
+        <BoostYourScore />
       )}
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">

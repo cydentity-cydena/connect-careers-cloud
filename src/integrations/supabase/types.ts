@@ -291,6 +291,57 @@ export type Database = {
         }
         Relationships: []
       }
+      course_completions: {
+        Row: {
+          awarded_points: number | null
+          candidate_id: string
+          created_at: string
+          id: string
+          partner_course_id: string
+          proof_type: string
+          proof_url: string | null
+          status: string
+          verified_at: string | null
+        }
+        Insert: {
+          awarded_points?: number | null
+          candidate_id: string
+          created_at?: string
+          id?: string
+          partner_course_id: string
+          proof_type: string
+          proof_url?: string | null
+          status?: string
+          verified_at?: string | null
+        }
+        Update: {
+          awarded_points?: number | null
+          candidate_id?: string
+          created_at?: string
+          id?: string
+          partner_course_id?: string
+          proof_type?: string
+          proof_url?: string | null
+          status?: string
+          verified_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "course_completions_candidate_id_fkey"
+            columns: ["candidate_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "course_completions_partner_course_id_fkey"
+            columns: ["partner_course_id"]
+            isOneToOne: false
+            referencedRelation: "partner_courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       credit_transactions: {
         Row: {
           amount: number
@@ -475,6 +526,57 @@ export type Database = {
           title?: string
           type?: Database["public"]["Enums"]["notification_type"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      partner_courses: {
+        Row: {
+          active: boolean
+          badge_hint: string | null
+          created_at: string
+          est_minutes: number | null
+          expected_proof: string
+          id: string
+          is_free: boolean
+          partner_slug: string
+          reward_amount: number
+          reward_code: string
+          skill_slug: string | null
+          title: string
+          updated_at: string
+          url: string
+        }
+        Insert: {
+          active?: boolean
+          badge_hint?: string | null
+          created_at?: string
+          est_minutes?: number | null
+          expected_proof: string
+          id?: string
+          is_free?: boolean
+          partner_slug: string
+          reward_amount: number
+          reward_code: string
+          skill_slug?: string | null
+          title: string
+          updated_at?: string
+          url: string
+        }
+        Update: {
+          active?: boolean
+          badge_hint?: string | null
+          created_at?: string
+          est_minutes?: number | null
+          expected_proof?: string
+          id?: string
+          is_free?: boolean
+          partner_slug?: string
+          reward_amount?: number
+          reward_code?: string
+          skill_slug?: string | null
+          title?: string
+          updated_at?: string
+          url?: string
         }
         Relationships: []
       }
