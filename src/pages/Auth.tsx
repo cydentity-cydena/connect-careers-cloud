@@ -31,7 +31,6 @@ const nameSchema = z
 const Auth = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const [isSeeding, setIsSeeding] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
@@ -158,22 +157,6 @@ const Auth = () => {
       }
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const handleSeedDemoCandidates = async () => {
-    setIsSeeding(true);
-    try {
-      const { data, error } = await supabase.functions.invoke('seed-demo-candidates');
-      
-      if (error) throw error;
-      
-      toast.success(data.message || "Demo candidates created successfully! You can now log in with demo credentials.");
-    } catch (error: any) {
-      console.error('Seed error:', error);
-      toast.error(error.message || "Failed to seed demo candidates");
-    } finally {
-      setIsSeeding(false);
     }
   };
 
@@ -311,39 +294,6 @@ const Auth = () => {
                 </form>
               </TabsContent>
             </Tabs>
-          </CardContent>
-        </Card>
-
-        {/* Demo Candidates Seeding */}
-        <Card className="border-blue-500/50 bg-blue-950/20">
-          <CardHeader>
-            <CardTitle className="text-sm">Demo Mode</CardTitle>
-            <CardDescription className="text-xs">
-              Seed the platform with 20 demo cybersecurity candidates to explore features
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <Button
-              onClick={handleSeedDemoCandidates}
-              disabled={isSeeding}
-              variant="outline"
-              className="w-full"
-            >
-              {isSeeding ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Creating Demo Candidates...
-                </>
-              ) : (
-                "Seed 20 Demo Candidates"
-              )}
-            </Button>
-            <div className="text-xs text-muted-foreground space-y-1">
-              <p><strong>After seeding, login with:</strong></p>
-              <p>Email: john.smith.demo@cydena.com</p>
-              <p>Password: Demo123!</p>
-              <p className="text-blue-400">Or any other demo account email</p>
-            </div>
           </CardContent>
         </Card>
         </div>
