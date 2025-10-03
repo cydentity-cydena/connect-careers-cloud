@@ -4,7 +4,7 @@ project_id = "wbeomprrrmteftumwljf"
 verify_jwt = false
 
 [functions.seed-demo-candidates]
-verify_jwt = true
+verify_jwt = false
 
 [functions.unlock-profile]
 verify_jwt = true
