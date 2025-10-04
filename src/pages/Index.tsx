@@ -124,7 +124,7 @@ const Index = () => {
               <div className="bg-primary/10 w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center mx-auto mb-3 md:mb-4">
                 <Clock className="h-7 w-7 md:h-8 md:w-8 text-primary" />
               </div>
-              <h3 className="text-xl md:text-2xl font-bold mb-2">48 Hours</h3>
+              <h3 className="text-xl md:text-2xl font-bold mb-2">Instand Access</h3>
               <p className="text-sm md:text-base text-muted-foreground">Connect with talent in 2 days vs 6-8 weeks</p>
             </div>
 
