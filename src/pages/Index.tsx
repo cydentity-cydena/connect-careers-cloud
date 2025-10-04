@@ -125,7 +125,7 @@ const Index = () => {
                 <Clock className="h-7 w-7 md:h-8 md:w-8 text-primary" />
               </div>
               <h3 className="text-xl md:text-2xl font-bold mb-2">Instand Access</h3>
-              <p className="text-sm md:text-base text-muted-foreground">Connect with talent in 2 days vs 6-8 weeks</p>
+              <p className="text-sm md:text-base text-muted-foreground">Connect with talent instantly vs 6-8 weeks</p>
             </div>
 
             <div className="text-center p-5 md:p-6 rounded-lg border border-primary/20 bg-gradient-card hover:scale-105 transition-transform sm:col-span-2 lg:col-span-1" style={{animationDelay: '0.2s'}}>
