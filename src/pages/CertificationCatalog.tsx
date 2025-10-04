@@ -129,7 +129,7 @@ const CertificationCatalog = () => {
       "EC-Council": "🔵",
       "SANS": "🟢",
       "ISC2": "🟣"
-      "Real LMS": "🔴"
+      "Real LMS": "🔴",
     };
     return icons[provider] || "📚";
   };
