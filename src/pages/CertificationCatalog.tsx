@@ -128,8 +128,8 @@ const CertificationCatalog = () => {
       "CompTIA": "🔴",
       "EC-Council": "🔵",
       "SANS": "🟢",
-      "ISC2": "🟣"
-      "Real LMS": "🔴",
+      "ISC2": "🟣",
+      "Real LMS": "🔴"
     };
     return icons[provider] || "📚";
   };
