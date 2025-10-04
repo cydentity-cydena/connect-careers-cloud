@@ -40,7 +40,7 @@ const CertificationCatalog = () => {
       description: "This certification is perfect for professionals who are responsible for auditing AIMS in their organizations or for external clients.",
       provider: "Real LMS",
       roles: "Compliance Officer, Information Security Officer",
-      enrollUrl: "https://thereallms.com/artificial-intelligence-1"
+      enrollUrl: "https://thereallms.com/42001-lead-auditor"
     },
     {
       name: "CompTIA Security+",
