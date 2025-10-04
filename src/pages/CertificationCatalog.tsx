@@ -14,6 +14,34 @@ interface Course {
 
 const CertificationCatalog = () => {
   const courses: Course[] = [
+     {
+      name: "ISO 42001 Essentials",
+      description: "The basics of AI governance, ethical use, compliance requirements, and risk awareness.",
+      provider: "Real LMS",
+      roles: "Compliance Officer, Information Security Officer",
+      enrollUrl: "https://thereallms.com/artificial-intelligence-1"
+    },
+    {
+      name: "ISO 42001 Practitioner",
+      description: "The fundamental concepts, ethical and  regulatory requirements, risk assessments, and AI principles.",
+      provider: "Real LMS",
+      roles: "Compliance Officer, Information Security Officer",
+      enrollUrl: "https://thereallms.com/42001-practitioner"
+    },
+    {
+      name: "ISO 42001 Lead Implementer",
+      description: " This certification is perfect for professionals who are responsible for implementing AIMS in their organizations or for external clients.",
+      provider: "Real LMS",
+      roles: "Compliance Officer, Information Security Officer",
+      enrollUrl: "https://thereallms.com/42001-lead-implementer"
+    },
+    {
+      name: "ISO 42001 Lead Auditor",
+      description: "This certification is perfect for professionals who are responsible for auditing AIMS in their organizations or for external clients.",
+      provider: "Real LMS",
+      roles: "Compliance Officer, Information Security Officer",
+      enrollUrl: "https://thereallms.com/artificial-intelligence-1"
+    },
     {
       name: "CompTIA Security+",
       description: "Essential principles for network security and risk management.",
@@ -93,7 +121,7 @@ const CertificationCatalog = () => {
     },
   ];
 
-  const providers = ["CompTIA", "EC-Council", "SANS", "ISC2"];
+  const providers = ["Real LMS","CompTIA", "EC-Council", "SANS", "ISC2"];
 
   const getProviderIcon = (provider: string) => {
     const icons: { [key: string]: string } = {
@@ -101,6 +129,7 @@ const CertificationCatalog = () => {
       "EC-Council": "🔵",
       "SANS": "🟢",
       "ISC2": "🟣"
+      "Real LMS": "🔴"
     };
     return icons[provider] || "📚";
   };
