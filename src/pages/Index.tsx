@@ -81,7 +81,7 @@ const Index = () => {
               </div>
               <h3 className="text-lg md:text-xl font-semibold mb-2 md:mb-3">Application Pipeline</h3>
               <p className="text-sm md:text-base text-muted-foreground">
-                Track candidates through customizable pipeline stages with in-app messaging
+                Track candidates through customizable pipeline stages with in-app kanban board
               </p>
             </div>
 
