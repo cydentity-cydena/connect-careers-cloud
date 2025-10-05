@@ -7,17 +7,17 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+const WEEKLY_FEATURED_PRICE = 299.00; // $299/week per slot
+
 interface PurchaseRequest {
   partner_name: string;
   partner_slug: string;
-  description?: string;
+  description: string;
   logo_url?: string;
   website_url: string;
   slot_position: number;
-  weeks: number; // 1-4 weeks
+  weeks: number; // number of weeks to purchase
 }
-
-const WEEKLY_PRICE = 299; // $299 per week per slot
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -25,126 +25,124 @@ serve(async (req) => {
   }
 
   try {
-    const supabaseAdmin = createClient(
+    console.log("[PURCHASE-FEATURED-SLOT] Starting request");
+
+    const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
-      { auth: { persistSession: false } }
+      Deno.env.get("SUPABASE_ANON_KEY") ?? ""
     );
 
     const authHeader = req.headers.get("Authorization")!;
     const token = authHeader.replace("Bearer ", "");
-    const { data: userData } = await supabaseAdmin.auth.getUser(token);
-    const user = userData.user;
-
-    if (!user) {
-      throw new Error("Unauthorized");
-    }
-
-    const body: PurchaseRequest = await req.json();
+    const { data: userData, error: userError } = await supabaseClient.auth.getUser(token);
     
-    // Validate weeks (1-4)
-    if (body.weeks < 1 || body.weeks > 4) {
-      throw new Error("Weeks must be between 1 and 4");
+    if (userError || !userData.user) {
+      throw new Error("User not authenticated");
     }
 
-    // Validate slot position (1-4)
-    if (body.slot_position < 1 || body.slot_position > 4) {
-      throw new Error("Slot position must be between 1 and 4");
+    const purchaseData: PurchaseRequest = await req.json();
+    console.log("[PURCHASE-FEATURED-SLOT] Purchase data:", purchaseData);
+
+    // Validate slot position
+    if (purchaseData.slot_position < 1 || purchaseData.slot_position > 4) {
+      throw new Error("Invalid slot position. Must be between 1-4");
     }
 
-    const totalAmount = WEEKLY_PRICE * body.weeks;
+    // Calculate dates and total
     const startDate = new Date();
     const endDate = new Date();
-    endDate.setDate(endDate.getDate() + (body.weeks * 7));
+    endDate.setDate(endDate.getDate() + (purchaseData.weeks * 7));
+    const totalAmount = WEEKLY_FEATURED_PRICE * purchaseData.weeks;
 
-    // Check if slot is available for the requested period
-    const { data: existingSlots } = await supabaseAdmin
-      .from("featured_training_partners")
-      .select("*")
-      .eq("slot_position", body.slot_position)
-      .or(`start_date.lte.${endDate.toISOString()},end_date.gte.${startDate.toISOString()}`)
-      .eq("payment_status", "completed");
-
-    if (existingSlots && existingSlots.length > 0) {
-      throw new Error("This slot is already booked for the selected period");
-    }
-
-    // Initialize Stripe
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
       apiVersion: "2025-08-27.basil",
     });
 
-    // Get or create Stripe customer
-    const customers = await stripe.customers.list({ email: user.email!, limit: 1 });
-    let customerId = customers.data[0]?.id;
+    // Check if customer exists
+    const customers = await stripe.customers.list({
+      email: userData.user.email!,
+      limit: 1,
+    });
 
-    if (!customerId) {
-      const customer = await stripe.customers.create({ email: user.email! });
+    let customerId: string;
+    if (customers.data.length > 0) {
+      customerId = customers.data[0].id;
+    } else {
+      const customer = await stripe.customers.create({
+        email: userData.user.email!,
+      });
       customerId = customer.id;
     }
 
-    // Create pending record
-    const { data: featuredPartner, error: insertError } = await supabaseAdmin
-      .from("featured_training_partners")
-      .insert({
-        partner_name: body.partner_name,
-        partner_slug: body.partner_slug,
-        description: body.description,
-        logo_url: body.logo_url,
-        website_url: body.website_url,
-        slot_position: body.slot_position,
-        start_date: startDate.toISOString(),
-        end_date: endDate.toISOString(),
-        payment_status: "pending",
-        amount_paid: totalAmount,
-        purchased_by: user.id,
-      })
-      .select()
-      .single();
-
-    if (insertError) throw insertError;
-
-    // Create Stripe checkout session
+    // Create checkout session
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       line_items: [
         {
           price_data: {
             currency: "usd",
+            unit_amount: Math.round(totalAmount * 100), // Convert to cents
             product_data: {
-              name: `Featured Training Partner - Slot ${body.slot_position}`,
-              description: `${body.weeks} week${body.weeks > 1 ? 's' : ''} of featured placement`,
+              name: `Featured Training Partner Slot #${purchaseData.slot_position}`,
+              description: `${purchaseData.weeks} week(s) of featured placement for ${purchaseData.partner_name}`,
             },
-            unit_amount: totalAmount * 100, // Convert to cents
           },
           quantity: 1,
         },
       ],
       mode: "payment",
       success_url: `${req.headers.get("origin")}/training?featured=success`,
-      cancel_url: `${req.headers.get("origin")}/training?featured=cancelled`,
+      cancel_url: `${req.headers.get("origin")}/training?featured=canceled`,
       metadata: {
-        featured_partner_id: featuredPartner.id,
+        partner_name: purchaseData.partner_name,
+        partner_slug: purchaseData.partner_slug,
+        slot_position: purchaseData.slot_position.toString(),
+        start_date: startDate.toISOString(),
+        end_date: endDate.toISOString(),
+        user_id: userData.user.id,
       },
     });
 
-    return new Response(
-      JSON.stringify({ 
-        url: session.url,
-        featured_partner_id: featuredPartner.id 
-      }),
-      {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 200,
-      }
+    // Create pending record in database (admin will approve after payment)
+    const supabaseAdmin = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
+
+    const { error: insertError } = await supabaseAdmin
+      .from("featured_training_partners")
+      .insert({
+        partner_name: purchaseData.partner_name,
+        partner_slug: purchaseData.partner_slug,
+        description: purchaseData.description,
+        logo_url: purchaseData.logo_url,
+        website_url: purchaseData.website_url,
+        slot_position: purchaseData.slot_position,
+        start_date: startDate.toISOString(),
+        end_date: endDate.toISOString(),
+        payment_status: "pending",
+        amount_paid: totalAmount,
+        purchased_by: userData.user.id,
+      });
+
+    if (insertError) {
+      console.error("[PURCHASE-FEATURED-SLOT] Insert error:", insertError);
+      throw insertError;
+    }
+
+    console.log("[PURCHASE-FEATURED-SLOT] Success, returning checkout URL");
+    return new Response(JSON.stringify({ url: session.url }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: 200,
+    });
   } catch (error) {
-    console.error("Error in purchase-featured-slot:", error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error("[PURCHASE-FEATURED-SLOT] Error:", errorMessage);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: errorMessage }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 400,
+        status: 500,
       }
     );
   }
