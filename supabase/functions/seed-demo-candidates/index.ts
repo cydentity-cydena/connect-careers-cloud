@@ -6,239 +6,101 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-const demoCandidates = [
-  {
-    email: "john.smith.demo@cydena.com",
-    password: "Demo123!",
-    full_name: "John Smith",
-    profile: { title: "Security Analyst", years_experience: 8, security_clearance: "Secret", linkedin_url: "https://linkedin.com/in/johnsmith", github_url: "https://github.com/johnsmith" },
-    certs: [
-      { name: "CISSP", issuer: "ISC2", issue_date: "2020-03-15", expiry_date: "2026-03-15" },
-      { name: "CEH", issuer: "EC-Council", issue_date: "2019-06-20", expiry_date: "2026-06-20" },
-      { name: "CompTIA Security+", issuer: "CompTIA", issue_date: "2018-01-10" }
-    ],
-    xp: { total_xp: 250, points_balance: 250, level: 5, profile_completion_percent: 95 },
-    location: "Washington, DC",
-    bio: "Experienced security analyst with a passion for threat detection and incident response. CISSP and CEH certified professional with 8+ years in cybersecurity."
-  },
-  {
-    email: "jane.doe.demo@cydena.com",
-    password: "Demo123!",
-    full_name: "Jane Doe",
-    profile: { title: "Penetration Tester", years_experience: 6, linkedin_url: "https://linkedin.com/in/janedoe", github_url: "https://github.com/janedoe", portfolio_url: "https://janedoe.com" },
-    certs: [
-      { name: "OSCP", issuer: "Offensive Security", issue_date: "2021-08-15" },
-      { name: "CEH", issuer: "EC-Council", issue_date: "2020-04-12", expiry_date: "2027-04-12" }
-    ],
-    xp: { total_xp: 215, points_balance: 215, level: 4, profile_completion_percent: 92 },
-    location: "San Francisco, CA",
-    bio: "Penetration tester specializing in web application security. OSCP certified with experience in red team operations."
-  },
-  {
-    email: "alice.johnson.demo@cydena.com",
-    password: "Demo123!",
-    full_name: "Alice Johnson",
-    profile: { title: "Incident Responder", years_experience: 7, security_clearance: "Top Secret", linkedin_url: "https://linkedin.com/in/alicejohnson" },
-    certs: [
-      { name: "GPEN", issuer: "GIAC", issue_date: "2021-02-20", expiry_date: "2025-02-20" },
-      { name: "CompTIA CySA+", issuer: "CompTIA", issue_date: "2020-09-10" }
-    ],
-    xp: { total_xp: 180, points_balance: 180, level: 4, profile_completion_percent: 90 },
-    location: "New York, NY",
-    bio: "Incident response specialist with expertise in digital forensics and malware analysis. GPEN and CySA+ certified."
-  },
-  {
-    email: "bob.smith.demo@cydena.com",
-    password: "Demo123!",
-    full_name: "Bob Smith",
-    profile: { title: "SOC Analyst", years_experience: 4, linkedin_url: "https://linkedin.com/in/bobsmith", github_url: "https://github.com/bobsmith" },
-    certs: [
-      { name: "CompTIA CySA+", issuer: "CompTIA", issue_date: "2022-01-15" },
-      { name: "CompTIA Security+", issuer: "CompTIA", issue_date: "2021-05-20" }
-    ],
-    xp: { total_xp: 165, points_balance: 165, level: 3, profile_completion_percent: 88 },
-    location: "Austin, TX",
-    bio: "SOC analyst with strong skills in SIEM management and threat hunting. CySA+ and Security+ certified."
-  },
-  {
-    email: "carol.davis.demo@cydena.com",
-    password: "Demo123!",
-    full_name: "Carol Davis",
-    profile: { title: "Security Analyst", years_experience: 5, linkedin_url: "https://linkedin.com/in/caroldavis" },
-    certs: [{ name: "CompTIA CySA+", issuer: "CompTIA", issue_date: "2021-11-10" }],
-    xp: { total_xp: 145, points_balance: 145, level: 3, profile_completion_percent: 87 },
-    location: "Seattle, WA",
-    bio: "Security analyst focused on vulnerability management and security architecture. CompTIA CySA+ certified."
-  },
-  {
-    email: "michael.brown.demo@cydena.com",
-    password: "Demo123!",
-    full_name: "Michael Brown",
-    profile: { title: "Security Consultant", years_experience: 10, security_clearance: "Secret", linkedin_url: "https://linkedin.com/in/michaelbrown", portfolio_url: "https://michaelbrown.com" },
-    certs: [{ name: "CISSP", issuer: "ISC2", issue_date: "2018-07-15", expiry_date: "2024-07-15" }],
-    xp: { total_xp: 125, points_balance: 125, level: 3, profile_completion_percent: 85 },
-    location: "Boston, MA",
-    bio: "Security consultant with extensive experience in compliance and risk management. CISSP certified professional."
-  },
-  {
-    email: "emma.wilson.demo@cydena.com",
-    password: "Demo123!",
-    full_name: "Emma Wilson",
-    profile: { title: "Penetration Tester", years_experience: 5, linkedin_url: "https://linkedin.com/in/emmawilson", github_url: "https://github.com/emmawilson" },
-    certs: [{ name: "CEH", issuer: "EC-Council", issue_date: "2021-03-20", expiry_date: "2028-03-20" }],
-    xp: { total_xp: 115, points_balance: 115, level: 2, profile_completion_percent: 84 },
-    location: "Chicago, IL",
-    bio: "Penetration tester with expertise in network security and social engineering. CEH certified professional."
-  },
-  {
-    email: "david.chen.demo@cydena.com",
-    password: "Demo123!",
-    full_name: "David Chen",
-    profile: { title: "Security Engineer", years_experience: 6, linkedin_url: "https://linkedin.com/in/davidchen", github_url: "https://github.com/davidchen" },
-    certs: [
-      { name: "CompTIA Security+", issuer: "CompTIA", issue_date: "2020-08-15" },
-      { name: "CCNA", issuer: "Cisco", issue_date: "2019-12-10", expiry_date: "2025-12-10" }
-    ],
-    xp: { total_xp: 105, points_balance: 105, level: 2, profile_completion_percent: 82 },
-    location: "Los Angeles, CA",
-    bio: "Security engineer specializing in network security and infrastructure hardening. Security+ and CCNA certified."
-  },
-  {
-    email: "sarah.martinez.demo@cydena.com",
-    password: "Demo123!",
-    full_name: "Sarah Martinez",
-    profile: { title: "Threat Hunter", years_experience: 7, security_clearance: "Top Secret", linkedin_url: "https://linkedin.com/in/sarahmartinez" },
-    certs: [
-      { name: "GCIA", issuer: "GIAC", issue_date: "2021-05-15", expiry_date: "2025-05-15" },
-      { name: "CompTIA CySA+", issuer: "CompTIA", issue_date: "2020-03-20" }
-    ],
-    xp: { total_xp: 98, points_balance: 98, level: 2, profile_completion_percent: 80 },
-    location: "Denver, CO",
-    bio: "Threat hunter with advanced skills in malware analysis and threat intelligence. GCIA and CySA+ certified."
-  },
-  {
-    email: "james.taylor.demo@cydena.com",
-    password: "Demo123!",
-    full_name: "James Taylor",
-    profile: { title: "Security Architect", years_experience: 12, security_clearance: "Secret", linkedin_url: "https://linkedin.com/in/jamestaylor", portfolio_url: "https://jamestaylor.com" },
-    certs: [
-      { name: "CISSP", issuer: "ISC2", issue_date: "2017-04-10", expiry_date: "2023-04-10" },
-      { name: "CISM", issuer: "ISACA", issue_date: "2018-09-15", expiry_date: "2024-09-15" }
-    ],
-    xp: { total_xp: 92, points_balance: 92, level: 2, profile_completion_percent: 79 },
-    location: "Atlanta, GA",
-    bio: "Security architect designing enterprise security solutions. CISSP and CISM certified with 12+ years experience."
-  },
-  {
-    email: "lisa.anderson.demo@cydena.com",
-    password: "Demo123!",
-    full_name: "Lisa Anderson",
-    profile: { title: "SOC Analyst", years_experience: 3, linkedin_url: "https://linkedin.com/in/lisaanderson" },
-    certs: [{ name: "CompTIA Security+", issuer: "CompTIA", issue_date: "2022-02-10" }],
-    xp: { total_xp: 87, points_balance: 87, level: 2, profile_completion_percent: 77 },
-    location: "Phoenix, AZ",
-    bio: "SOC analyst with experience in incident detection and response. CompTIA Security+ certified."
-  },
-  {
-    email: "kevin.murphy.demo@cydena.com",
-    password: "Demo123!",
-    full_name: "Kevin Murphy",
-    profile: { title: "Security Analyst", years_experience: 5, linkedin_url: "https://linkedin.com/in/kevinmurphy", github_url: "https://github.com/kevinmurphy" },
-    certs: [
-      { name: "CompTIA CySA+", issuer: "CompTIA", issue_date: "2021-06-15" },
-      { name: "CEH", issuer: "EC-Council", issue_date: "2020-11-20", expiry_date: "2027-11-20" }
-    ],
-    xp: { total_xp: 82, points_balance: 82, level: 2, profile_completion_percent: 76 },
-    location: "Portland, OR",
-    bio: "Security analyst specializing in vulnerability assessment and penetration testing. CySA+ and CEH certified."
-  },
-  {
-    email: "rachel.green.demo@cydena.com",
-    password: "Demo123!",
-    full_name: "Rachel Green",
-    profile: { title: "Forensics Analyst", years_experience: 6, security_clearance: "Secret", linkedin_url: "https://linkedin.com/in/rachelgreen" },
-    certs: [
-      { name: "GCFE", issuer: "GIAC", issue_date: "2021-08-10", expiry_date: "2025-08-10" },
-      { name: "CHFI", issuer: "EC-Council", issue_date: "2020-05-15", expiry_date: "2027-05-15" }
-    ],
-    xp: { total_xp: 78, points_balance: 78, level: 1, profile_completion_percent: 74 },
-    location: "Miami, FL",
-    bio: "Digital forensics analyst with expertise in incident investigation. GCFE and CHFI certified professional."
-  },
-  {
-    email: "thomas.white.demo@cydena.com",
-    password: "Demo123!",
-    full_name: "Thomas White",
-    profile: { title: "Penetration Tester", years_experience: 4, linkedin_url: "https://linkedin.com/in/thomaswhite", github_url: "https://github.com/thomaswhite" },
-    certs: [{ name: "CEH", issuer: "EC-Council", issue_date: "2022-03-20", expiry_date: "2029-03-20" }],
-    xp: { total_xp: 73, points_balance: 73, level: 1, profile_completion_percent: 72 },
-    location: "Dallas, TX",
-    bio: "Penetration tester focused on application security and code review. CEH certified professional."
-  },
-  {
-    email: "amanda.lee.demo@cydena.com",
-    password: "Demo123!",
-    full_name: "Amanda Lee",
-    profile: { title: "Security Engineer", years_experience: 4, linkedin_url: "https://linkedin.com/in/amandalee", github_url: "https://github.com/amandalee" },
-    certs: [{ name: "CompTIA Security+", issuer: "CompTIA", issue_date: "2021-09-10" }],
-    xp: { total_xp: 69, points_balance: 69, level: 1, profile_completion_percent: 71 },
-    location: "San Diego, CA",
-    bio: "Security engineer with strong background in cloud security. CompTIA Security+ certified."
-  },
-  {
-    email: "daniel.harris.demo@cydena.com",
-    password: "Demo123!",
-    full_name: "Daniel Harris",
-    profile: { title: "Cloud Security Engineer", years_experience: 7, linkedin_url: "https://linkedin.com/in/danielharris", github_url: "https://github.com/danielharris", portfolio_url: "https://danielharris.dev" },
-    certs: [
-      { name: "CCSP", issuer: "ISC2", issue_date: "2021-07-15", expiry_date: "2027-07-15" },
-      { name: "CompTIA Security+", issuer: "CompTIA", issue_date: "2020-02-20" }
-    ],
-    xp: { total_xp: 65, points_balance: 65, level: 1, profile_completion_percent: 69 },
-    location: "Minneapolis, MN",
-    bio: "Cloud security engineer specializing in AWS and Azure security. CCSP and Security+ certified."
-  },
-  {
-    email: "michelle.clark.demo@cydena.com",
-    password: "Demo123!",
-    full_name: "Michelle Clark",
-    profile: { title: "Security Analyst", years_experience: 4, linkedin_url: "https://linkedin.com/in/michelleclark" },
-    certs: [{ name: "CompTIA CySA+", issuer: "CompTIA", issue_date: "2022-01-10" }],
-    xp: { total_xp: 61, points_balance: 61, level: 1, profile_completion_percent: 68 },
-    location: "Philadelphia, PA",
-    bio: "Security analyst with expertise in security monitoring and log analysis. CySA+ certified professional."
-  },
-  {
-    email: "ryan.lewis.demo@cydena.com",
-    password: "Demo123!",
-    full_name: "Ryan Lewis",
-    profile: { title: "Application Security Engineer", years_experience: 6, linkedin_url: "https://linkedin.com/in/ryanlewis", github_url: "https://github.com/ryanlewis", portfolio_url: "https://ryanlewis.dev" },
-    certs: [{ name: "CSSLP", issuer: "ISC2", issue_date: "2021-04-15", expiry_date: "2027-04-15" }],
-    xp: { total_xp: 57, points_balance: 57, level: 1, profile_completion_percent: 66 },
-    location: "Charlotte, NC",
-    bio: "Application security engineer focused on secure SDLC. CSSLP certified professional."
-  },
-  {
-    email: "sophia.walker.demo@cydena.com",
-    password: "Demo123!",
-    full_name: "Sophia Walker",
-    profile: { title: "SOC Analyst", years_experience: 3, linkedin_url: "https://linkedin.com/in/sophiawalker" },
-    certs: [{ name: "CompTIA Security+", issuer: "CompTIA", issue_date: "2022-06-20" }],
-    xp: { total_xp: 53, points_balance: 53, level: 1, profile_completion_percent: 65 },
-    location: "Detroit, MI",
-    bio: "SOC analyst with strong analytical and problem-solving skills. Security+ certified."
-  },
-  {
-    email: "eric.thompson.demo@cydena.com",
-    password: "Demo123!",
-    full_name: "Eric Thompson",
-    profile: { title: "Security Consultant", years_experience: 9, security_clearance: "Secret", linkedin_url: "https://linkedin.com/in/ericthompson" },
-    certs: [{ name: "CISSP", issuer: "ISC2", issue_date: "2019-10-15", expiry_date: "2025-10-15" }],
-    xp: { total_xp: 50, points_balance: 50, level: 1, profile_completion_percent: 63 },
-    location: "Las Vegas, NV",
-    bio: "Security consultant specializing in penetration testing and security assessments. CISSP certified."
+// Helper function to generate random candidate data
+function generateCandidate(index: number) {
+  const firstNames = ["John", "Jane", "Alice", "Bob", "Carol", "David", "Emma", "Frank", "Grace", "Henry", "Iris", "Jack", "Kate", "Leo", "Maya", "Nick", "Olivia", "Paul", "Quinn", "Rachel"];
+  const lastNames = ["Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis", "Rodriguez", "Martinez", "Hernandez", "Lopez", "Gonzalez", "Wilson", "Anderson", "Thomas", "Taylor", "Moore", "Jackson", "Martin"];
+  const titles = ["Security Analyst", "Penetration Tester", "SOC Analyst", "Security Engineer", "Threat Hunter", "Incident Responder", "Security Consultant", "Cloud Security Engineer", "Application Security Engineer", "Forensics Analyst"];
+  const locations = ["Washington DC", "San Francisco CA", "New York NY", "Austin TX", "Seattle WA", "Boston MA", "Chicago IL", "Los Angeles CA", "Denver CO", "Atlanta GA"];
+  const clearances = [null, "Secret", "Top Secret"];
+  const certs = [
+    { name: "CISSP", issuer: "ISC2" },
+    { name: "CEH", issuer: "EC-Council" },
+    { name: "CompTIA Security+", issuer: "CompTIA" },
+    { name: "CompTIA CySA+", issuer: "CompTIA" },
+    { name: "OSCP", issuer: "Offensive Security" },
+    { name: "GPEN", issuer: "GIAC" },
+    { name: "GCIA", issuer: "GIAC" },
+    { name: "CCSP", issuer: "ISC2" }
+  ];
+
+  const firstName = firstNames[index % firstNames.length];
+  const lastName = lastNames[Math.floor(index / firstNames.length) % lastNames.length];
+  const title = titles[index % titles.length];
+  const location = locations[index % locations.length];
+  const yearsExp = 2 + (index % 12);
+  const clearance = index % 3 === 0 ? clearances[index % clearances.length] : null;
+  
+  const numCerts = 1 + (index % 3);
+  const selectedCerts = [];
+  for (let i = 0; i < numCerts; i++) {
+    const cert = certs[(index + i) % certs.length];
+    selectedCerts.push({
+      ...cert,
+      issue_date: `${2018 + (index % 7)}-0${1 + (index % 9)}-15`
+    });
   }
-];
+
+  return {
+    email: `${firstName.toLowerCase()}.${lastName.toLowerCase()}.${index}@cydena.demo`,
+    password: "Demo123!",
+    full_name: `${firstName} ${lastName}`,
+    profile: {
+      title,
+      years_experience: yearsExp,
+      ...(clearance ? { security_clearance: clearance } : {}),
+      linkedin_url: `https://linkedin.com/in/${firstName.toLowerCase()}${lastName.toLowerCase()}${index}`,
+      ...(index % 3 === 0 ? { github_url: `https://github.com/${firstName.toLowerCase()}${lastName.toLowerCase()}${index}` } : {})
+    },
+    certs: selectedCerts,
+    xp: {
+      total_xp: 250 - (index * 2),
+      points_balance: 250 - (index * 2),
+      level: Math.max(1, 5 - Math.floor(index / 20)),
+      profile_completion_percent: Math.max(65, 95 - index)
+    },
+    location,
+    bio: `${title} with ${yearsExp} years of experience in cybersecurity. ${selectedCerts.map(c => c.name).join(', ')} certified professional.`
+  };
+}
+
+// Helper function to generate employer data
+function generateEmployer(index: number) {
+  const firstNames = ["Sarah", "Michael", "Jennifer", "William", "Jessica", "James", "Ashley", "Robert", "Amanda", "Christopher"];
+  const lastNames = ["Thompson", "White", "Harris", "Clark", "Lewis", "Walker", "Hall", "Allen", "Young", "King"];
+  const companies = ["TechCorp", "CyberSecure", "SecureNet", "DefenseWorks", "InfoGuard", "DataShield", "NetSecure", "CloudGuard", "CyberDefense", "SecureTech"];
+  
+  const firstName = firstNames[index % firstNames.length];
+  const lastName = lastNames[index % lastNames.length];
+  const companyName = `${companies[index % companies.length]} ${index > 9 ? index : ''}`.trim();
+
+  return {
+    email: `${firstName.toLowerCase()}.${lastName.toLowerCase()}.employer${index}@cydena.demo`,
+    password: "Demo123!",
+    full_name: `${firstName} ${lastName}`,
+    location: `City ${index}`,
+    bio: `HR Manager at ${companyName}`,
+    companyName: companyName,
+    companyIndustry: index % 3 === 0 ? "Technology" : index % 3 === 1 ? "Finance" : "Healthcare"
+  };
+}
+
+// Helper function to generate recruiter data
+function generateRecruiter(index: number) {
+  const names = ["Patricia", "Richard", "Linda", "Joseph", "Barbara"];
+  const lastNames = ["Evans", "Collins", "Stewart", "Morris", "Rogers"];
+  
+  const firstName = names[index % names.length];
+  const lastName = lastNames[index % lastNames.length];
+
+  return {
+    email: `${firstName.toLowerCase()}.${lastName.toLowerCase()}.recruiter${index}@cydena.demo`,
+    password: "Demo123!",
+    full_name: `${firstName} ${lastName}`,
+    location: `Metro ${index}`,
+    bio: `Professional recruiter specializing in cybersecurity talent acquisition.`
+  };
+}
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -250,83 +112,178 @@ serve(async (req) => {
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
 
-    console.log('Starting demo candidates seeding...');
-    const results = [];
+    console.log('Starting demo users seeding...');
+    const results = {
+      candidates: [] as any[],
+      employers: [] as any[],
+      recruiters: [] as any[]
+    };
 
-    for (const candidate of demoCandidates) {
+    // Seed 100 candidates
+    console.log('Seeding 100 candidates...');
+    for (let i = 0; i < 100; i++) {
       try {
-        // Create auth user
+        const candidate = generateCandidate(i);
+        
         const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
           email: candidate.email,
           password: candidate.password,
           email_confirm: true,
-          user_metadata: {
-            full_name: candidate.full_name
-          }
+          user_metadata: { full_name: candidate.full_name }
         });
 
         if (authError) {
-          console.error(`Error creating user ${candidate.email}:`, authError);
-          results.push({ email: candidate.email, success: false, error: authError.message });
+          console.error(`Error creating candidate ${candidate.email}:`, authError);
+          results.candidates.push({ email: candidate.email, success: false, error: authError.message });
           continue;
         }
 
         const userId = authData.user.id;
-        console.log(`Created user: ${candidate.email} with ID: ${userId}`);
 
-        // Update profile with additional data
-        await supabaseAdmin
-          .from('profiles')
-          .update({
-            location: candidate.location,
-            bio: candidate.bio
-          })
-          .eq('id', userId);
+        // Update profile
+        await supabaseAdmin.from('profiles').update({
+          location: candidate.location,
+          bio: candidate.bio
+        }).eq('id', userId);
+
+        // Create candidate role
+        await supabaseAdmin.from('user_roles').insert({
+          user_id: userId,
+          role: 'candidate'
+        });
 
         // Create candidate profile
-        await supabaseAdmin
-          .from('candidate_profiles')
-          .insert({
-            user_id: userId,
-            ...candidate.profile
-          });
+        await supabaseAdmin.from('candidate_profiles').insert({
+          user_id: userId,
+          ...candidate.profile
+        });
 
         // Create certifications
         if (candidate.certs.length > 0) {
-          await supabaseAdmin
-            .from('certifications')
-            .insert(
-              candidate.certs.map(cert => ({
-                candidate_id: userId,
-                ...cert
-              }))
-            );
+          await supabaseAdmin.from('certifications').insert(
+            candidate.certs.map(cert => ({
+              candidate_id: userId,
+              ...cert
+            }))
+          );
         }
 
         // Create candidate XP
-        await supabaseAdmin
-          .from('candidate_xp')
-          .insert({
-            candidate_id: userId,
-            ...candidate.xp
-          });
+        await supabaseAdmin.from('candidate_xp').insert({
+          candidate_id: userId,
+          ...candidate.xp
+        });
 
-        results.push({ email: candidate.email, success: true, userId });
-        console.log(`Successfully seeded: ${candidate.email}`);
+        results.candidates.push({ email: candidate.email, success: true });
+        if (i % 10 === 0) console.log(`Seeded ${i + 1} candidates...`);
 
       } catch (error: any) {
-        console.error(`Error seeding ${candidate.email}:`, error);
-        results.push({ email: candidate.email, success: false, error: error.message });
+        console.error(`Error seeding candidate ${i}:`, error);
+        results.candidates.push({ success: false, error: error.message });
       }
     }
 
-    const successCount = results.filter(r => r.success).length;
-    console.log(`Seeding complete: ${successCount}/${demoCandidates.length} successful`);
+    // Seed 50 employers
+    console.log('Seeding 50 employers...');
+    for (let i = 0; i < 50; i++) {
+      try {
+        const employer = generateEmployer(i);
+        
+        const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
+          email: employer.email,
+          password: employer.password,
+          email_confirm: true,
+          user_metadata: { full_name: employer.full_name }
+        });
+
+        if (authError) {
+          console.error(`Error creating employer ${employer.email}:`, authError);
+          results.employers.push({ email: employer.email, success: false, error: authError.message });
+          continue;
+        }
+
+        const userId = authData.user.id;
+
+        // Update profile
+        await supabaseAdmin.from('profiles').update({
+          location: employer.location,
+          bio: employer.bio
+        }).eq('id', userId);
+
+        // Create employer role
+        await supabaseAdmin.from('user_roles').insert({
+          user_id: userId,
+          role: 'employer'
+        });
+
+        // Create employer credits
+        await supabaseAdmin.from('employer_credits').insert({
+          employer_id: userId,
+          credits: 10,
+          annual_allocation: 100
+        });
+
+        results.employers.push({ email: employer.email, success: true });
+        if (i % 10 === 0) console.log(`Seeded ${i + 1} employers...`);
+
+      } catch (error: any) {
+        console.error(`Error seeding employer ${i}:`, error);
+        results.employers.push({ success: false, error: error.message });
+      }
+    }
+
+    // Seed 5 recruiters
+    console.log('Seeding 5 recruiters...');
+    for (let i = 0; i < 5; i++) {
+      try {
+        const recruiter = generateRecruiter(i);
+        
+        const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
+          email: recruiter.email,
+          password: recruiter.password,
+          email_confirm: true,
+          user_metadata: { full_name: recruiter.full_name }
+        });
+
+        if (authError) {
+          console.error(`Error creating recruiter ${recruiter.email}:`, authError);
+          results.recruiters.push({ email: recruiter.email, success: false, error: authError.message });
+          continue;
+        }
+
+        const userId = authData.user.id;
+
+        // Update profile
+        await supabaseAdmin.from('profiles').update({
+          location: recruiter.location,
+          bio: recruiter.bio
+        }).eq('id', userId);
+
+        // Create recruiter role
+        await supabaseAdmin.from('user_roles').insert({
+          user_id: userId,
+          role: 'recruiter'
+        });
+
+        results.recruiters.push({ email: recruiter.email, success: true });
+        console.log(`Seeded recruiter ${i + 1}...`);
+
+      } catch (error: any) {
+        console.error(`Error seeding recruiter ${i}:`, error);
+        results.recruiters.push({ success: false, error: error.message });
+      }
+    }
+
+    const candidateSuccess = results.candidates.filter(r => r.success).length;
+    const employerSuccess = results.employers.filter(r => r.success).length;
+    const recruiterSuccess = results.recruiters.filter(r => r.success).length;
+    
+    console.log(`Seeding complete: ${candidateSuccess} candidates, ${employerSuccess} employers, ${recruiterSuccess} recruiters`);
 
     return new Response(
       JSON.stringify({ 
         success: true, 
-        message: `Successfully seeded ${successCount} demo candidates`,
+        message: `Seeded ${candidateSuccess} candidates, ${employerSuccess} employers, ${recruiterSuccess} recruiters`,
         results 
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
