@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { UnlockProfileButton } from "@/components/profiles/UnlockProfileButton";
+import { PeerEndorsement } from "@/components/profiles/PeerEndorsement";
 import { Skeleton } from "@/components/ui/skeleton";
 import { 
   Mail, Phone, MapPin, Calendar, Briefcase, Award, 
@@ -404,6 +405,9 @@ export default function ProfileDetail() {
                     </CardContent>
                   </Card>
                 )}
+
+                {/* Peer Endorsements - Always visible */}
+                <PeerEndorsement candidateId={id!} currentUserId={currentUserId} />
               </>
             )}
           </div>
