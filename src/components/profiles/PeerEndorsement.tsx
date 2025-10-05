@@ -112,7 +112,7 @@ export function PeerEndorsement({ candidateId, currentUserId }: PeerEndorsementP
           <div className="space-y-4">
             <div>
               <Label>Select Endorsement Type</Label>
-              <div className="grid grid-cols-2 gap-2 mt-2">
+              <div className="grid grid-cols-2 sm:grid-cols-2 gap-2 mt-2">
                 {ENDORSEMENT_TYPES.map((type) => {
                   const Icon = type.icon;
                   return (
@@ -120,10 +120,10 @@ export function PeerEndorsement({ candidateId, currentUserId }: PeerEndorsementP
                       key={type.value}
                       variant={selectedType === type.value ? "default" : "outline"}
                       onClick={() => setSelectedType(type.value)}
-                      className="justify-start gap-2"
+                      className="justify-start gap-2 text-xs sm:text-sm h-auto py-2 px-3"
                     >
-                      <Icon className="h-4 w-4" />
-                      {type.label}
+                      <Icon className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+                      <span className="truncate">{type.label}</span>
                     </Button>
                   );
                 })}
@@ -164,16 +164,16 @@ export function PeerEndorsement({ candidateId, currentUserId }: PeerEndorsementP
             <h4 className="font-semibold text-sm">Recent Endorsements</h4>
             {endorsements.map((endorsement) => (
               <div key={endorsement.id} className="border rounded-lg p-3 space-y-2">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                   <span className="text-sm font-medium">
                     {endorsement.from_user_name || "Anonymous"}
                   </span>
-                  <Badge variant="secondary" className="text-xs">
+                  <Badge variant="secondary" className="text-xs w-fit">
                     {ENDORSEMENT_TYPES.find((t) => t.value === endorsement.endorsement_type)?.label}
                   </Badge>
                 </div>
                 {endorsement.comment && (
-                  <p className="text-sm text-muted-foreground">{endorsement.comment}</p>
+                  <p className="text-sm text-muted-foreground break-words">{endorsement.comment}</p>
                 )}
                 <p className="text-xs text-muted-foreground">
                   {new Date(endorsement.created_at).toLocaleDateString()}
