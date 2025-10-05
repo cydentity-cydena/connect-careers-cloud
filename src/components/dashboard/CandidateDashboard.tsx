@@ -63,6 +63,52 @@ const CandidateDashboard = () => {
         )}
       </div>
 
+      <Card className="border-border shadow-card">
+        <CardHeader>
+          <CardTitle>Getting Started</CardTitle>
+          <CardDescription>
+            Follow these steps to make the most of your profile
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <div className="flex items-start gap-4">
+              <div className="bg-primary/10 rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
+                <span className="text-primary font-semibold">1</span>
+              </div>
+              <div>
+                <h3 className="font-semibold mb-1">Complete Your Profile</h3>
+                <p className="text-sm text-muted-foreground">
+                  Add your experience, skills, and certifications
+                </p>
+              </div>
+            </div>
+            <div className="flex items-start gap-4">
+              <div className="bg-primary/10 rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
+                <span className="text-primary font-semibold">2</span>
+              </div>
+              <div>
+                <h3 className="font-semibold mb-1">Browse Job Opportunities</h3>
+                <p className="text-sm text-muted-foreground">
+                  Find cybersecurity roles that match your skills
+                </p>
+              </div>
+            </div>
+            <div className="flex items-start gap-4">
+              <div className="bg-primary/10 rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
+                <span className="text-primary font-semibold">3</span>
+              </div>
+              <div>
+                <h3 className="font-semibold mb-1">Apply & Track Progress</h3>
+                <p className="text-sm text-muted-foreground">
+                  Submit applications and communicate with employers
+                </p>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {userId && (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           <ProfileStrengthMeter userId={userId} />
@@ -152,51 +198,6 @@ const CandidateDashboard = () => {
         </Card>
       </div>
 
-      <Card className="border-border shadow-card">
-        <CardHeader>
-          <CardTitle>Getting Started</CardTitle>
-          <CardDescription>
-            Follow these steps to make the most of your profile
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <div className="flex items-start gap-4">
-              <div className="bg-primary/10 rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
-                <span className="text-primary font-semibold">1</span>
-              </div>
-              <div>
-                <h3 className="font-semibold mb-1">Complete Your Profile</h3>
-                <p className="text-sm text-muted-foreground">
-                  Add your experience, skills, and certifications
-                </p>
-              </div>
-            </div>
-            <div className="flex items-start gap-4">
-              <div className="bg-primary/10 rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
-                <span className="text-primary font-semibold">2</span>
-              </div>
-              <div>
-                <h3 className="font-semibold mb-1">Browse Job Opportunities</h3>
-                <p className="text-sm text-muted-foreground">
-                  Find cybersecurity roles that match your skills
-                </p>
-              </div>
-            </div>
-            <div className="flex items-start gap-4">
-              <div className="bg-primary/10 rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
-                <span className="text-primary font-semibold">3</span>
-              </div>
-              <div>
-                <h3 className="font-semibold mb-1">Apply & Track Progress</h3>
-                <p className="text-sm text-muted-foreground">
-                  Submit applications and communicate with employers
-                </p>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 };
