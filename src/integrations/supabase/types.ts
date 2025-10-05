@@ -95,6 +95,7 @@ export type Database = {
           id: string
           linkedin_url: string | null
           portfolio_url: string | null
+          professional_statement: string | null
           resume_url: string | null
           security_clearance: string | null
           title: string | null
@@ -109,6 +110,7 @@ export type Database = {
           id?: string
           linkedin_url?: string | null
           portfolio_url?: string | null
+          professional_statement?: string | null
           resume_url?: string | null
           security_clearance?: string | null
           title?: string | null
@@ -123,6 +125,7 @@ export type Database = {
           id?: string
           linkedin_url?: string | null
           portfolio_url?: string | null
+          professional_statement?: string | null
           resume_url?: string | null
           security_clearance?: string | null
           title?: string | null
@@ -405,6 +408,48 @@ export type Database = {
           price?: number
           status?: string
           transaction_type?: string
+        }
+        Relationships: []
+      }
+      education: {
+        Row: {
+          candidate_id: string
+          created_at: string
+          degree: string
+          description: string | null
+          end_date: string | null
+          field_of_study: string | null
+          gpa: string | null
+          id: string
+          institution: string
+          start_date: string | null
+          updated_at: string
+        }
+        Insert: {
+          candidate_id: string
+          created_at?: string
+          degree: string
+          description?: string | null
+          end_date?: string | null
+          field_of_study?: string | null
+          gpa?: string | null
+          id?: string
+          institution: string
+          start_date?: string | null
+          updated_at?: string
+        }
+        Update: {
+          candidate_id?: string
+          created_at?: string
+          degree?: string
+          description?: string | null
+          end_date?: string | null
+          field_of_study?: string | null
+          gpa?: string | null
+          id?: string
+          institution?: string
+          start_date?: string | null
+          updated_at?: string
         }
         Relationships: []
       }
@@ -751,6 +796,48 @@ export type Database = {
         }
         Relationships: []
       }
+      projects: {
+        Row: {
+          candidate_id: string
+          created_at: string
+          description: string | null
+          end_date: string | null
+          github_url: string | null
+          id: string
+          name: string
+          start_date: string | null
+          tech_stack: string[] | null
+          updated_at: string
+          url: string | null
+        }
+        Insert: {
+          candidate_id: string
+          created_at?: string
+          description?: string | null
+          end_date?: string | null
+          github_url?: string | null
+          id?: string
+          name: string
+          start_date?: string | null
+          tech_stack?: string[] | null
+          updated_at?: string
+          url?: string | null
+        }
+        Update: {
+          candidate_id?: string
+          created_at?: string
+          description?: string | null
+          end_date?: string | null
+          github_url?: string | null
+          id?: string
+          name?: string
+          start_date?: string | null
+          tech_stack?: string[] | null
+          updated_at?: string
+          url?: string | null
+        }
+        Relationships: []
+      }
       reward_points: {
         Row: {
           amount: number
@@ -876,6 +963,48 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      work_history: {
+        Row: {
+          candidate_id: string
+          company: string
+          created_at: string
+          description: string | null
+          end_date: string | null
+          id: string
+          is_current: boolean | null
+          location: string | null
+          role: string
+          start_date: string
+          updated_at: string
+        }
+        Insert: {
+          candidate_id: string
+          company: string
+          created_at?: string
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          is_current?: boolean | null
+          location?: string | null
+          role: string
+          start_date: string
+          updated_at?: string
+        }
+        Update: {
+          candidate_id?: string
+          company?: string
+          created_at?: string
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          is_current?: boolean | null
+          location?: string | null
+          role?: string
+          start_date?: string
+          updated_at?: string
         }
         Relationships: []
       }
