@@ -41,7 +41,7 @@ const Auth = () => {
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const [username, setUsername] = useState("");
-  const [userRole, setUserRole] = useState<"candidate" | "employer">("candidate");
+  const [userRole, setUserRole] = useState<"candidate" | "employer" | "recruiter">("candidate");
 
   useEffect(() => {
     // Check if user is already logged in
@@ -69,11 +69,11 @@ const Auth = () => {
       passwordSchema.parse(password);
       nameSchema.parse(fullName);
       
-      // Username is required for candidates, optional for employers
+      // Username is required for candidates, optional for employers and recruiters
       if (userRole === "candidate") {
         usernameSchema.parse(username);
       } else if (username.trim()) {
-        // If employer provides username, validate it
+        // If employer/recruiter provides username, validate it
         usernameSchema.parse(username);
       }
     } catch (error: any) {
@@ -255,6 +255,7 @@ const Auth = () => {
                       <SelectContent className="bg-background border-border z-50">
                         <SelectItem value="candidate">Candidate</SelectItem>
                         <SelectItem value="employer">Employer</SelectItem>
+                        <SelectItem value="recruiter">Recruiter</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -285,7 +286,7 @@ const Auth = () => {
                     />
                     <p className="text-xs text-muted-foreground">
                       3-20 characters: letters, numbers, underscores only
-                      {userRole === "employer" && " (optional for employers)"}
+                      {(userRole === "employer" || userRole === "recruiter") && " (optional for employers & recruiters)"}
                     </p>
                   </div>
                   <div className="space-y-2">
