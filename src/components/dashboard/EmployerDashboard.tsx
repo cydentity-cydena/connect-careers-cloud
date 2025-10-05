@@ -17,6 +17,7 @@ const EmployerDashboard = () => {
   const [userId, setUserId] = useState("");
   const [jobsCount, setJobsCount] = useState(0);
   const [applicationsCount, setApplicationsCount] = useState(0);
+  const [userName, setUserName] = useState<string>("");
 
   useEffect(() => {
     getCurrentUser();
@@ -28,6 +29,19 @@ const EmployerDashboard = () => {
       setUserId(user.id);
       loadCredits(user.id);
       loadStats(user.id);
+      loadUserProfile(user.id);
+    }
+  };
+
+  const loadUserProfile = async (uid: string) => {
+    const { data } = await supabase
+      .from('profiles')
+      .select('full_name, username')
+      .eq('id', uid)
+      .single();
+    
+    if (data) {
+      setUserName(data.username || data.full_name?.split(' ')[0] || 'Employer');
     }
   };
 
@@ -63,7 +77,7 @@ const EmployerDashboard = () => {
   return (
     <div className="space-y-8 animate-fade-in">
       <div>
-        <h1 className="text-4xl font-bold mb-2">Employer Dashboard</h1>
+        <h1 className="text-4xl font-bold mb-2">Welcome back, {userName}! 👋</h1>
         <p className="text-muted-foreground">
           Manage your company profile, job postings, and application pipeline
         </p>
