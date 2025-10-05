@@ -144,7 +144,6 @@ const Leaderboard = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 md:mb-16 max-w-4xl mx-auto">
             {/* 1st Place - Gold (First on mobile) */}
             <div className="flex flex-col items-center justify-start animate-slide-up md:order-2">
-              <Trophy className="h-6 w-6 md:h-8 md:w-8 text-yellow-500 mb-2" />
               <Link to={`/profiles/${topThree[0]?.user_id}`} className="w-full">
                 <Card className="w-full border-2 border-yellow-500 bg-gradient-to-b from-yellow-300 to-yellow-500 shadow-xl md:transform md:scale-110 hover:scale-105 md:hover:scale-[1.15] transition-transform cursor-pointer">
                   <CardContent className="pt-4 md:pt-6 text-center">
@@ -252,7 +251,6 @@ const Leaderboard = () => {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 md:mb-16 max-w-4xl mx-auto">
                 {/* 1st Place - Purple */}
                 <div className="flex flex-col items-center justify-start animate-slide-up md:order-2">
-                  <Trophy className="h-6 w-6 md:h-8 md:w-8 text-purple-500 mb-2" />
                   <Link to={`/profiles/${communityTopThree[0]?.user_id}`} className="w-full">
                     <Card className="w-full border-2 border-purple-500 bg-gradient-to-b from-purple-300 to-purple-500 shadow-xl md:transform md:scale-110 hover:scale-105 md:hover:scale-[1.15] transition-transform cursor-pointer">
                       <CardContent className="pt-4 md:pt-6 text-center">
