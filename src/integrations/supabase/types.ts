@@ -291,48 +291,6 @@ export type Database = {
         }
         Relationships: []
       }
-      clients: {
-        Row: {
-          company_name: string
-          contact_email: string | null
-          contact_name: string | null
-          contact_phone: string | null
-          created_at: string
-          id: string
-          industry: string | null
-          notes: string | null
-          recruiter_id: string
-          status: string
-          updated_at: string
-        }
-        Insert: {
-          company_name: string
-          contact_email?: string | null
-          contact_name?: string | null
-          contact_phone?: string | null
-          created_at?: string
-          id?: string
-          industry?: string | null
-          notes?: string | null
-          recruiter_id: string
-          status?: string
-          updated_at?: string
-        }
-        Update: {
-          company_name?: string
-          contact_email?: string | null
-          contact_name?: string | null
-          contact_phone?: string | null
-          created_at?: string
-          id?: string
-          industry?: string | null
-          notes?: string | null
-          recruiter_id?: string
-          status?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
       community_activities: {
         Row: {
           activity_type: string
@@ -671,7 +629,6 @@ export type Database = {
       }
       jobs: {
         Row: {
-          client_id: string | null
           company_id: string
           created_at: string
           created_by: string
@@ -689,7 +646,6 @@ export type Database = {
           updated_at: string
         }
         Insert: {
-          client_id?: string | null
           company_id: string
           created_at?: string
           created_by: string
@@ -707,7 +663,6 @@ export type Database = {
           updated_at?: string
         }
         Update: {
-          client_id?: string | null
           company_id?: string
           created_at?: string
           created_by?: string
@@ -725,13 +680,6 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
-          {
-            foreignKeyName: "jobs_client_id_fkey"
-            columns: ["client_id"]
-            isOneToOne: false
-            referencedRelation: "clients"
-            referencedColumns: ["id"]
-          },
           {
             foreignKeyName: "jobs_company_id_fkey"
             columns: ["company_id"]
@@ -904,75 +852,6 @@ export type Database = {
           to_user_id?: string
         }
         Relationships: []
-      }
-      placements: {
-        Row: {
-          candidate_id: string
-          client_id: string
-          commission_amount: number | null
-          commission_rate: number | null
-          commission_status: string
-          created_at: string
-          id: string
-          job_id: string | null
-          notes: string | null
-          placement_date: string
-          position_title: string
-          recruiter_id: string
-          salary_offered: number | null
-          start_date: string | null
-          updated_at: string
-        }
-        Insert: {
-          candidate_id: string
-          client_id: string
-          commission_amount?: number | null
-          commission_rate?: number | null
-          commission_status?: string
-          created_at?: string
-          id?: string
-          job_id?: string | null
-          notes?: string | null
-          placement_date?: string
-          position_title: string
-          recruiter_id: string
-          salary_offered?: number | null
-          start_date?: string | null
-          updated_at?: string
-        }
-        Update: {
-          candidate_id?: string
-          client_id?: string
-          commission_amount?: number | null
-          commission_rate?: number | null
-          commission_status?: string
-          created_at?: string
-          id?: string
-          job_id?: string | null
-          notes?: string | null
-          placement_date?: string
-          position_title?: string
-          recruiter_id?: string
-          salary_offered?: number | null
-          start_date?: string | null
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "placements_client_id_fkey"
-            columns: ["client_id"]
-            isOneToOne: false
-            referencedRelation: "clients"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "placements_job_id_fkey"
-            columns: ["job_id"]
-            isOneToOne: false
-            referencedRelation: "jobs"
-            referencedColumns: ["id"]
-          },
-        ]
       }
       profile_unlocks: {
         Row: {
@@ -1342,7 +1221,7 @@ export type Database = {
         | "certifications"
         | "community"
         | "training"
-      app_role: "candidate" | "employer" | "admin" | "recruiter"
+      app_role: "candidate" | "employer" | "admin"
       job_type: "full-time" | "part-time" | "contract" | "freelance"
       notification_type:
         | "application"
@@ -1492,7 +1371,7 @@ export const Constants = {
         "community",
         "training",
       ],
-      app_role: ["candidate", "employer", "admin", "recruiter"],
+      app_role: ["candidate", "employer", "admin"],
       job_type: ["full-time", "part-time", "contract", "freelance"],
       notification_type: [
         "application",

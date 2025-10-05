@@ -6,7 +6,6 @@ import { Shield, LogOut, Loader2, Menu, X } from "lucide-react";
 import { toast } from "sonner";
 import CandidateDashboard from "@/components/dashboard/CandidateDashboard";
 import EmployerDashboard from "@/components/dashboard/EmployerDashboard";
-import RecruiterDashboard from "@/components/dashboard/RecruiterDashboard";
 import AdminDashboard from "@/components/dashboard/AdminDashboard";
 
 const Dashboard = () => {
@@ -220,7 +219,6 @@ const Dashboard = () => {
       <main className="container mx-auto px-4 py-8">
         {userRole === "candidate" && <CandidateDashboard />}
         {userRole === "employer" && <EmployerDashboard />}
-        {userRole === "recruiter" && <RecruiterDashboard />}
         {userRole === "admin" && <AdminDashboard />}
       </main>
     </div>
