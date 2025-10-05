@@ -53,13 +53,13 @@ export const ProofSubmissionDialog = ({
 
       if (data.status === 'VERIFIED') {
         toast({
-          title: "✅ Verified",
-          description: `+${data.awardedPoints} pts added to your balance!`,
+          title: "✅ Auto-Verified!",
+          description: data.validationMessage || `+${data.awardedPoints} pts added to your balance!`,
         });
       } else {
         toast({
-          title: "⏳ Submitted",
-          description: `We'll verify shortly for +${course.reward_amount} pts.`,
+          title: "⏳ Pending Review",
+          description: data.validationMessage || `We'll verify shortly for +${course.reward_amount} pts.`,
         });
       }
 
@@ -125,6 +125,11 @@ export const ProofSubmissionDialog = ({
               onChange={(e) => setProofUrl(e.target.value)}
               required={proofType !== 'none'}
             />
+            {proofType === 'openbadge' && (
+              <p className="text-xs text-muted-foreground">
+                Complete and import your OpenBadge to auto-verify. Examples: Credly, TryHackMe, HackTheBox badges.
+              </p>
+            )}
             {course.badge_hint && (
               <p className="text-xs text-muted-foreground">{course.badge_hint}</p>
             )}

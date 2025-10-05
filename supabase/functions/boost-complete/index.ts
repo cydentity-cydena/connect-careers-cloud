@@ -5,6 +5,99 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// OpenBadge validation helper
+async function validateOpenBadge(badgeData: any, userEmail: string): Promise<{
+  success: boolean;
+  message: string;
+  issuer?: string;
+  badgeName?: string;
+}> {
+  try {
+    // Support both OpenBadge 2.0 and 3.0 formats
+    
+    // Check for required fields
+    if (!badgeData || typeof badgeData !== 'object') {
+      return { success: false, message: 'Invalid badge data format' };
+    }
+
+    // Extract badge details (supports multiple formats)
+    const badge = badgeData.badge || badgeData;
+    const recipient = badgeData.recipient || badgeData.credentialSubject;
+    const issuer = badgeData.issuer || badge.issuer || badgeData.issuer?.name;
+    const badgeName = badge.name || badge.title || badgeData.name || badgeData.credentialSubject?.achievement?.name;
+    
+    // Validate issuer exists
+    if (!issuer) {
+      return { success: false, message: 'Missing issuer information' };
+    }
+
+    // Validate badge name exists
+    if (!badgeName) {
+      return { success: false, message: 'Missing badge/certification name' };
+    }
+
+    // Extract recipient identity (email)
+    let recipientEmail = null;
+    
+    if (recipient) {
+      // OpenBadge 2.0 format
+      if (recipient.identity) {
+        recipientEmail = recipient.identity.toLowerCase();
+        // Remove mailto: prefix if present
+        if (recipientEmail.startsWith('mailto:')) {
+          recipientEmail = recipientEmail.substring(7);
+        }
+        // Handle hashed identities
+        if (recipient.type === 'email' && recipient.hashed === false) {
+          recipientEmail = recipient.identity.toLowerCase();
+        }
+      }
+      // OpenBadge 3.0 / Verifiable Credentials format
+      else if (recipient.id) {
+        recipientEmail = recipient.id.toLowerCase();
+        if (recipientEmail.startsWith('mailto:')) {
+          recipientEmail = recipientEmail.substring(7);
+        }
+      }
+    }
+
+    // Verify recipient email matches user (optional - some badges don't include recipient)
+    if (recipientEmail) {
+      const normalizedUserEmail = userEmail.toLowerCase().trim();
+      const normalizedRecipientEmail = recipientEmail.toLowerCase().trim();
+      
+      if (normalizedUserEmail !== normalizedRecipientEmail) {
+        return { 
+          success: false, 
+          message: `Badge recipient (${recipientEmail}) doesn't match your account (${userEmail})` 
+        };
+      }
+    } else {
+      console.log('Warning: Badge does not contain recipient email for validation');
+    }
+
+    // Check for verification (optional but good practice)
+    if (badgeData.verification || badgeData.proof) {
+      console.log('Badge contains verification proof');
+    }
+
+    const issuerName = typeof issuer === 'string' ? issuer : (issuer.name || 'Unknown');
+    
+    return {
+      success: true,
+      message: `Verified badge from ${issuerName}`,
+      issuer: issuerName,
+      badgeName: badgeName
+    };
+  } catch (error) {
+    console.error('OpenBadge validation error:', error);
+    return { 
+      success: false, 
+      message: `Validation error: ${error instanceof Error ? error.message : 'Unknown error'}` 
+    };
+  }
+}
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -22,7 +115,7 @@ Deno.serve(async (req) => {
     );
 
     const { data: { user }, error: authError } = await supabase.auth.getUser();
-    if (authError || !user) {
+    if (authError || !user || !user.email) {
       return new Response(JSON.stringify({ error: 'Unauthorized' }), {
         status: 401,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -78,29 +171,58 @@ Deno.serve(async (req) => {
     // Auto-verify OpenBadge if valid URL provided
     let status = 'PENDING';
     let awardedPoints = null;
+    let validationMessage = null;
     
     if (proofType === 'openbadge' && proofUrl) {
-      // Simple validation: check if URL is accessible
+      console.log(`Validating OpenBadge URL: ${proofUrl}`);
+      
       try {
-        const response = await fetch(proofUrl);
-        if (response.ok) {
-          status = 'VERIFIED';
-          awardedPoints = course.reward_amount;
+        // Fetch the badge data
+        const response = await fetch(proofUrl, {
+          headers: { 'Accept': 'application/json, application/ld+json' }
+        });
+        
+        if (!response.ok) {
+          console.warn(`Badge URL returned ${response.status}`);
+          validationMessage = `Badge URL not accessible (HTTP ${response.status})`;
+        } else {
+          const badgeData = await response.json();
+          console.log('Badge data received:', JSON.stringify(badgeData).substring(0, 200));
           
-          // Award points immediately via service role
-          const serviceClient = createClient(
-            Deno.env.get('SUPABASE_URL') ?? '',
-            Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
-          );
+          // Validate OpenBadge structure
+          const isValid = await validateOpenBadge(badgeData, user.email);
+          
+          if (isValid.success) {
+            status = 'VERIFIED';
+            awardedPoints = course.reward_amount;
+            validationMessage = `Auto-verified: ${isValid.message}`;
+            
+            console.log(`OpenBadge validated successfully for ${user.email}`);
+            
+            // Award points immediately via service role
+            const serviceClient = createClient(
+              Deno.env.get('SUPABASE_URL') ?? '',
+              Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+            );
 
-          await serviceClient.rpc('award_points', {
-            p_candidate_id: user.id,
-            p_code: course.reward_code,
-            p_meta: { course_id: partnerCourseId, course_title: course.title }
-          });
+            await serviceClient.rpc('award_points', {
+              p_candidate_id: user.id,
+              p_code: course.reward_code,
+              p_meta: { 
+                course_id: partnerCourseId, 
+                course_title: course.title,
+                badge_issuer: isValid.issuer,
+                badge_name: isValid.badgeName
+              }
+            });
+          } else {
+            console.warn('Badge validation failed:', isValid.message);
+            validationMessage = `Validation failed: ${isValid.message}`;
+          }
         }
       } catch (error) {
-        console.warn('Badge verification failed:', error);
+        console.warn('Badge verification error:', error);
+        validationMessage = `Error fetching badge: ${error instanceof Error ? error.message : 'Unknown error'}`;
       }
     }
 
@@ -133,7 +255,8 @@ Deno.serve(async (req) => {
       JSON.stringify({
         completionId: completion.id,
         status,
-        awardedPoints
+        awardedPoints,
+        validationMessage: validationMessage || (status === 'VERIFIED' ? 'Badge verified successfully' : 'Pending manual review')
       }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
