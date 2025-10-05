@@ -1,10 +1,29 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Shield, Upload, CheckCircle, Zap } from "lucide-react";
+import { Shield, Upload, CheckCircle, Zap, Star, TrendingUp } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import SEO from "@/components/SEO";
+import { supabase } from "@/integrations/supabase/client";
+import { useEffect, useState } from "react";
 
 const Training = () => {
+  const [featuredPartners, setFeaturedPartners] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchFeaturedPartners = async () => {
+      const { data } = await supabase
+        .from("featured_training_partners")
+        .select("*")
+        .order("slot_position");
+      
+      if (data) {
+        setFeaturedPartners(data);
+      }
+    };
+
+    fetchFeaturedPartners();
+  }, []);
+
   const partners = [
     {
       category: "Gamified Training Platforms",
@@ -208,6 +227,57 @@ const Training = () => {
             <p className="text-xl text-muted-foreground mb-6">
               Complete courses, import certifications, and boost your score with verified training
             </p>
+
+            {/* Featured Partners Section */}
+            {featuredPartners.length > 0 && (
+              <div className="mb-12 animate-fade-in">
+                <div className="flex items-center gap-2 mb-6">
+                  <Star className="h-6 w-6 text-yellow-500 fill-yellow-500" />
+                  <h2 className="text-3xl font-bold">Featured Training Partners</h2>
+                  <Star className="h-6 w-6 text-yellow-500 fill-yellow-500" />
+                </div>
+                <div className="grid md:grid-cols-2 gap-6">
+                  {featuredPartners.map((partner) => (
+                    <Card 
+                      key={partner.id}
+                      className="border-2 border-yellow-500/50 bg-gradient-to-br from-yellow-500/5 to-transparent hover:border-yellow-500 transition-all hover:scale-[1.02] cursor-pointer relative overflow-hidden"
+                    >
+                      <div className="absolute top-0 right-0 bg-yellow-500 text-white px-4 py-1 text-xs font-bold rounded-bl-lg flex items-center gap-1">
+                        <TrendingUp className="h-3 w-3" />
+                        FEATURED
+                      </div>
+                      {partner.logo_url && (
+                        <div className="p-6 pb-0">
+                          <img 
+                            src={partner.logo_url} 
+                            alt={partner.partner_name}
+                            className="h-12 object-contain"
+                          />
+                        </div>
+                      )}
+                      <CardHeader>
+                        <CardTitle className="text-2xl text-primary">{partner.partner_name}</CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        {partner.description && (
+                          <p className="text-muted-foreground">
+                            {partner.description}
+                          </p>
+                        )}
+                        <a
+                          href={partner.website_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 text-primary hover:underline font-semibold"
+                        >
+                          Visit Partner Website →
+                        </a>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            )}
             <div className="bg-primary/5 border border-primary/20 rounded-lg p-6 space-y-4">
               <div>
                 <h2 className="text-lg font-semibold mb-2 text-primary flex items-center gap-2">

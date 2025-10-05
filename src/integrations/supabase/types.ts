@@ -399,6 +399,57 @@ export type Database = {
         }
         Relationships: []
       }
+      featured_training_partners: {
+        Row: {
+          amount_paid: number | null
+          created_at: string | null
+          description: string | null
+          end_date: string
+          id: string
+          logo_url: string | null
+          partner_name: string
+          partner_slug: string
+          payment_status: string
+          purchased_by: string | null
+          slot_position: number
+          start_date: string
+          updated_at: string | null
+          website_url: string
+        }
+        Insert: {
+          amount_paid?: number | null
+          created_at?: string | null
+          description?: string | null
+          end_date: string
+          id?: string
+          logo_url?: string | null
+          partner_name: string
+          partner_slug: string
+          payment_status?: string
+          purchased_by?: string | null
+          slot_position: number
+          start_date: string
+          updated_at?: string | null
+          website_url: string
+        }
+        Update: {
+          amount_paid?: number | null
+          created_at?: string | null
+          description?: string | null
+          end_date?: string
+          id?: string
+          logo_url?: string | null
+          partner_name?: string
+          partner_slug?: string
+          payment_status?: string
+          purchased_by?: string | null
+          slot_position?: number
+          start_date?: string
+          updated_at?: string | null
+          website_url?: string
+        }
+        Relationships: []
+      }
       jobs: {
         Row: {
           company_id: string
