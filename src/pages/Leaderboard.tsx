@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Trophy, Medal, Award } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Trophy, Medal, Award, Target, Users } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
@@ -31,7 +32,7 @@ const Leaderboard = () => {
       // Fetch candidate XP data
       const { data: xpData, error: xpError } = await supabase
         .from('candidate_xp')
-        .select('candidate_id, total_xp, points_balance, level')
+        .select('candidate_id, total_xp, community_points, points_balance, level, community_level')
         .order('total_xp', { ascending: false })
         .limit(20);
 
@@ -105,6 +106,7 @@ const Leaderboard = () => {
   };
 
   const topThree = leaderboard.slice(0, 3);
+  const communityTopThree = [...leaderboard].sort((a, b) => b.community_points - a.community_points).slice(0, 3);
   const restOfLeaderboard = leaderboard.slice(3);
 
   return (
@@ -115,10 +117,25 @@ const Leaderboard = () => {
         <div className="mb-8 md:mb-12">
           <h1 className="text-2xl md:text-4xl font-bold mb-2">Top 20 Talent Spotlight</h1>
           <p className="text-sm md:text-base text-muted-foreground">
-            Each profile is evaluated based on the quality of information, completed courses, and exams passed.
-            High-scoring profiles are featured with enhanced visibility to recruiters.
+            Rankings by Professional XP (certifications, skills, courses) and Community Impact (helping others, mentoring)
           </p>
         </div>
+
+        <Tabs defaultValue="professional" className="w-full">
+          <TabsList className="grid w-full grid-cols-2 mb-8">
+            <TabsTrigger value="professional" className="flex items-center gap-2">
+              <Target className="h-4 w-4" />
+              <span className="hidden sm:inline">Professional XP</span>
+              <span className="sm:hidden">Pro XP</span>
+            </TabsTrigger>
+            <TabsTrigger value="community" className="flex items-center gap-2">
+              <Users className="h-4 w-4" />
+              <span className="hidden sm:inline">Community Leaders</span>
+              <span className="sm:hidden">Community</span>
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="professional"  className="space-y-8">
 
         {/* Podium - Top 3 */}
         {topThree.length >= 3 && (
@@ -180,8 +197,8 @@ const Leaderboard = () => {
         {/* Full Leaderboard Table */}
         <Card className="border-border shadow-card">
           <CardHeader>
-            <CardTitle className="text-xl md:text-2xl">Top 20 Leaderboard</CardTitle>
-            <CardDescription className="text-sm">Rankings of the highest performing candidates</CardDescription>
+            <CardTitle className="text-xl md:text-2xl">Top 20 by Professional XP</CardTitle>
+            <CardDescription className="text-sm">Rankings by certifications, courses, and skills</CardDescription>
           </CardHeader>
           <CardContent className="overflow-x-auto">
             <Table>
@@ -192,7 +209,7 @@ const Leaderboard = () => {
                   <TableHead className="hidden md:table-cell text-xs md:text-sm">Desired Job Title</TableHead>
                   <TableHead className="hidden lg:table-cell text-xs md:text-sm">Certifications</TableHead>
                   <TableHead className="text-right text-xs md:text-sm">Score</TableHead>
-                  <TableHead className="hidden sm:table-cell text-right text-xs md:text-sm">Points</TableHead>
+                  <TableHead className="hidden sm:table-cell text-right text-xs md:text-sm">XP</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -218,13 +235,119 @@ const Leaderboard = () => {
                       </div>
                     </TableCell>
                     <TableCell className="text-right font-bold text-primary text-xs md:text-sm">{entry.score}</TableCell>
-                    <TableCell className="hidden sm:table-cell text-right font-semibold text-secondary text-xs md:text-sm">{entry.community_points}</TableCell>
+                    <TableCell className="hidden sm:table-cell text-right font-semibold text-secondary text-xs md:text-sm">{entry.community_points.toLocaleString()}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
           </CardContent>
         </Card>
+          </TabsContent>
+
+          <TabsContent value="community" className="space-y-8">
+            {/* Community Podium - Top 3 */}
+            {communityTopThree.length >= 3 && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 md:mb-16 max-w-4xl mx-auto">
+                {/* 1st Place - Purple */}
+                <div className="flex flex-col items-center justify-start animate-slide-up md:order-2">
+                  <Trophy className="h-6 w-6 md:h-8 md:w-8 text-purple-500 mb-2" />
+                  <Link to={`/profiles/${communityTopThree[0]?.user_id}`} className="w-full">
+                    <Card className="w-full border-2 border-purple-500 bg-gradient-to-b from-purple-300 to-purple-500 shadow-xl md:transform md:scale-110 hover:scale-105 md:hover:scale-[1.15] transition-transform cursor-pointer">
+                      <CardContent className="pt-4 md:pt-6 text-center">
+                        <div className="bg-purple-600 w-16 h-16 md:w-24 md:h-24 rounded-full mx-auto mb-2 md:mb-3 flex items-center justify-center">
+                          <Users className="h-8 w-8 md:h-12 md:w-12 text-white" />
+                        </div>
+                        <h3 className="font-bold text-base md:text-xl text-white mb-1">{communityTopThree[0]?.full_name}</h3>
+                        <p className="text-xs md:text-sm text-purple-100 mb-2 line-clamp-1">{communityTopThree[0]?.title}</p>
+                        <Badge className="bg-purple-700 text-xs">Community Leader</Badge>
+                        <p className="text-xl md:text-3xl font-bold text-white mt-2 md:mt-3">{communityTopThree[0]?.community_points}</p>
+                        <p className="text-xs text-purple-100">community points</p>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                </div>
+
+                {/* 2nd Place */}
+                <div className="flex flex-col items-center justify-end animate-slide-up md:order-1" style={{ animationDelay: '0.1s' }}>
+                  <Link to={`/profiles/${communityTopThree[1]?.user_id}`} className="w-full">
+                    <Card className="w-full border-2 border-purple-400 bg-gradient-to-b from-purple-200 to-purple-300 shadow-lg hover:scale-105 transition-transform cursor-pointer">
+                      <CardContent className="pt-4 md:pt-6 text-center">
+                        <div className="bg-purple-400 w-14 h-14 md:w-20 md:h-20 rounded-full mx-auto mb-2 md:mb-3 flex items-center justify-center">
+                          <Users className="h-7 w-7 md:h-10 md:w-10 text-white" />
+                        </div>
+                        <h3 className="font-bold text-sm md:text-lg text-gray-800 mb-1">{communityTopThree[1]?.full_name}</h3>
+                        <p className="text-xs md:text-sm text-gray-600 mb-2 line-clamp-1">{communityTopThree[1]?.title}</p>
+                        <Badge className="bg-purple-500 text-xs">2nd Place</Badge>
+                        <p className="text-lg md:text-2xl font-bold text-gray-800 mt-2 md:mt-3">{communityTopThree[1]?.community_points}</p>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                </div>
+
+                {/* 3rd Place */}
+                <div className="flex flex-col items-center justify-end animate-slide-up md:order-3" style={{ animationDelay: '0.2s' }}>
+                  <Link to={`/profiles/${communityTopThree[2]?.user_id}`} className="w-full">
+                    <Card className="w-full border-2 border-purple-300 bg-gradient-to-b from-purple-100 to-purple-200 shadow-lg hover:scale-105 transition-transform cursor-pointer">
+                      <CardContent className="pt-4 md:pt-6 text-center">
+                        <div className="bg-purple-300 w-14 h-14 md:w-20 md:h-20 rounded-full mx-auto mb-2 md:mb-3 flex items-center justify-center">
+                          <Users className="h-7 w-7 md:h-10 md:w-10 text-white" />
+                        </div>
+                        <h3 className="font-bold text-sm md:text-lg text-gray-700 mb-1">{communityTopThree[2]?.full_name}</h3>
+                        <p className="text-xs md:text-sm text-gray-500 mb-2 line-clamp-1">{communityTopThree[2]?.title}</p>
+                        <Badge className="bg-purple-400 text-xs">3rd Place</Badge>
+                        <p className="text-lg md:text-2xl font-bold text-gray-700 mt-2 md:mt-3">{communityTopThree[2]?.community_points}</p>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                </div>
+              </div>
+            )}
+
+            {/* Community Leaderboard Table */}
+            <Card className="border-border shadow-card">
+              <CardHeader>
+                <CardTitle className="text-xl md:text-2xl">Top 20 Community Leaders</CardTitle>
+                <CardDescription className="text-sm">Rankings by peer support, mentoring, and community impact</CardDescription>
+              </CardHeader>
+              <CardContent className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="w-12 md:w-16 text-xs md:text-sm">Rank</TableHead>
+                      <TableHead className="text-xs md:text-sm">Name</TableHead>
+                      <TableHead className="hidden md:table-cell text-xs md:text-sm">Desired Job Title</TableHead>
+                      <TableHead className="hidden lg:table-cell text-xs md:text-sm">Impact</TableHead>
+                      <TableHead className="text-right text-xs md:text-sm">Community Pts</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {[...leaderboard]
+                      .sort((a, b) => b.community_points - a.community_points)
+                      .map((entry, index) => (
+                        <TableRow key={entry.id} className="hover:bg-accent/50 cursor-pointer" onClick={() => window.location.href = `/profiles/${entry.user_id}`}>
+                          <TableCell className="font-medium text-xs md:text-sm">#{index + 1}</TableCell>
+                          <TableCell className="font-semibold text-xs md:text-sm">
+                            <Link to={`/profiles/${entry.user_id}`} className="hover:underline">
+                              {entry.full_name}
+                            </Link>
+                          </TableCell>
+                          <TableCell className="hidden md:table-cell text-xs md:text-sm">{entry.title}</TableCell>
+                          <TableCell className="hidden lg:table-cell">
+                            <div className="flex flex-wrap gap-1">
+                              {entry.community_points > 1000 && <Badge variant="secondary" className="text-xs bg-purple-100 text-purple-800">🏆 Leader</Badge>}
+                              {entry.community_points > 500 && <Badge variant="secondary" className="text-xs">⭐ Star</Badge>}
+                              {entry.community_points > 100 && <Badge variant="secondary" className="text-xs">🤝 Helper</Badge>}
+                            </div>
+                          </TableCell>
+                          <TableCell className="text-right font-bold text-purple-600 text-xs md:text-sm">{entry.community_points.toLocaleString()}</TableCell>
+                        </TableRow>
+                      ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </main>
     </div>
   );
