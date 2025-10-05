@@ -42,7 +42,7 @@ export const BoostYourScore = () => {
             Boost Your Score
           </h2>
           <p className="text-muted-foreground mt-1">
-            Free, employer-recognized micro-courses. Complete → import → earn points.
+            <span className="font-semibold text-primary">100% FREE</span> employer-recognized courses. Complete → verify → earn points instantly.
           </p>
         </div>
         {boostData?.pointsBalance !== undefined && (
@@ -57,7 +57,7 @@ export const BoostYourScore = () => {
         <Card className="border-primary/20 bg-primary/5">
           <CardContent className="pt-6">
             <p className="text-sm">
-              💡 <strong>Tip:</strong> Boost your {boostData.recommendedSkill} ranking with these free modules
+              💡 <strong>Tip:</strong> Boost your {boostData.recommendedSkill} ranking with these <strong className="text-green-600">FREE</strong> modules
             </p>
           </CardContent>
         </Card>
@@ -79,9 +79,14 @@ export const BoostYourScore = () => {
             <Card key={course.id} className="hover:border-primary/50 transition-all">
               <CardHeader>
                 <div className="flex justify-between items-start mb-2">
-                  <Badge variant="secondary" className="text-xs">
-                    {course.partner_slug}
-                  </Badge>
+                  <div className="flex gap-1">
+                    <Badge variant="outline" className="text-xs border-green-500 text-green-600">
+                      FREE
+                    </Badge>
+                    <Badge variant="secondary" className="text-xs">
+                      {course.partner_slug}
+                    </Badge>
+                  </div>
                   <Badge className="bg-primary text-primary-foreground">
                     +{course.reward_amount} pts
                   </Badge>
