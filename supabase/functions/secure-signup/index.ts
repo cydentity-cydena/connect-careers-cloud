@@ -11,7 +11,7 @@ interface SignupRequest {
   password: string;
   fullName: string;
   username: string;
-  role: 'candidate' | 'employer';
+  role: 'candidate' | 'employer' | 'recruiter';
 }
 
 serve(async (req) => {
@@ -163,6 +163,26 @@ serve(async (req) => {
       }
 
       console.log('Employer credits initialized successfully');
+    }
+
+    // 6. If recruiter, create employer credits (recruiters use same credit system)
+    if (role === 'recruiter') {
+      const { error: creditsError } = await supabaseAdmin
+        .from('employer_credits')
+        .insert({
+          employer_id: userId,
+          credits: 0,
+          total_purchased: 0,
+        });
+
+      if (creditsError) {
+        console.error('Recruiter credits initialization failed:', creditsError);
+        // Cleanup
+        await supabaseAdmin.auth.admin.deleteUser(userId);
+        throw new Error('Failed to initialize recruiter credits');
+      }
+
+      console.log('Recruiter credits initialized successfully');
     }
 
     return new Response(
