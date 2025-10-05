@@ -78,7 +78,7 @@ const Pricing = () => {
                 <ul className="space-y-2 md:space-y-3 text-sm md:text-base">
                   <li className="flex items-start gap-2">
                     <Check className="h-4 w-4 text-primary mt-1 flex-shrink-0" />
-                    <span>£10-£50 per profile unlock (view full candidate details)</span>
+                    <span>£199-£999/month with bundled unlocks (£3.98-£4.99 per unlock)</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <Check className="h-4 w-4 text-primary mt-1 flex-shrink-0" />
@@ -377,8 +377,8 @@ const Pricing = () => {
               <div className="space-y-3 md:space-y-4">
                 <div>
                   <h4 className="font-semibold mb-2 text-sm md:text-base">Cydena Platform Cost</h4>
-                  <p className="text-2xl md:text-3xl font-bold text-primary">£200</p>
-                  <p className="text-xs md:text-sm text-muted-foreground">View 20 candidates @ £10 each</p>
+                  <p className="text-2xl md:text-3xl font-bold text-primary">£5,988</p>
+                  <p className="text-xs md:text-sm text-muted-foreground">Annual Growth plan (£499/mo) with 100 unlocks</p>
                 </div>
                 <div className="text-xs md:text-sm space-y-1">
                   <p className="text-primary">✓ Zero upfront costs</p>
@@ -386,8 +386,8 @@ const Pricing = () => {
                   <p className="text-primary">✓ Full profile transparency</p>
                 </div>
                 <div className="pt-3 md:pt-4 border-t">
-                  <p className="text-xl md:text-2xl font-bold text-primary">Save £12,300</p>
-                  <p className="text-xs md:text-sm text-muted-foreground">98% cost reduction per hire</p>
+                  <p className="text-xl md:text-2xl font-bold text-primary">Save £6,512</p>
+                  <p className="text-xs md:text-sm text-muted-foreground">52% cost reduction per hire</p>
                 </div>
               </div>
             </div>
