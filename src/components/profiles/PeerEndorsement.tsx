@@ -82,16 +82,22 @@ export function PeerEndorsement({ candidateId, currentUserId }: PeerEndorsementP
   const loadEndorsements = async () => {
     const { data } = await supabase
       .from("peer_endorsements")
-      .select("*, profiles!peer_endorsements_from_user_id_fkey(full_name)")
+      .select("*")
       .eq("to_user_id", candidateId)
       .order("created_at", { ascending: false })
       .limit(10);
 
     if (data) {
-      setEndorsements(data);
+      const enriched = await Promise.all(
+        data.map(async (row) => {
+          const { data: prof } = await supabase.rpc('get_public_profile', { profile_id: row.from_user_id });
+          const p = Array.isArray(prof) ? prof?.[0] : prof;
+          return { ...row, from_user_name: p?.full_name || null };
+        })
+      );
+      setEndorsements(enriched);
     }
   };
-
   useEffect(() => {
     loadEndorsements();
   }, [candidateId]);
@@ -167,7 +173,7 @@ export function PeerEndorsement({ candidateId, currentUserId }: PeerEndorsementP
               <div key={endorsement.id} className="border rounded-lg p-3 space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-medium">
-                    {endorsement.profiles?.full_name || "Anonymous"}
+                    {endorsement.from_user_name || "Anonymous"}
                   </span>
                   <Badge variant="secondary" className="text-xs">
                     {ENDORSEMENT_TYPES.find((t) => t.value === endorsement.endorsement_type)?.label}

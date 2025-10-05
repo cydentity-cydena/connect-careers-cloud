@@ -16,6 +16,7 @@ interface LeaderboardEntry {
   certifications: string[];
   score: number;
   community_points: number;
+  xp: number;
   rank: number;
 }
 
@@ -90,8 +91,9 @@ const Leaderboard = () => {
           full_name: profile?.full_name || 'Unknown',
           title: candidateProfile?.title || 'Cybersecurity Professional',
           certifications: certsByCandidate[entry.candidate_id] || [],
-          score: Math.min(100, Math.round(entry.total_xp / 3)),
-          community_points: entry.points_balance || 0,
+          score: Math.min(100, Math.round((entry as any).total_xp / 3)),
+          community_points: (entry as any).community_points ?? (entry as any).points_balance ?? 0,
+          xp: (entry as any).total_xp ?? 0,
           rank: index + 1
         };
       });
@@ -235,7 +237,7 @@ const Leaderboard = () => {
                       </div>
                     </TableCell>
                     <TableCell className="text-right font-bold text-primary text-xs md:text-sm">{entry.score}</TableCell>
-                    <TableCell className="hidden sm:table-cell text-right font-semibold text-secondary text-xs md:text-sm">{entry.community_points.toLocaleString()}</TableCell>
+                    <TableCell className="hidden sm:table-cell text-right font-semibold text-secondary text-xs md:text-sm">{entry.xp.toLocaleString()}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

@@ -287,6 +287,8 @@ export default function ProfileDetail() {
 
           {/* Main Content */}
           <div className="md:col-span-2 space-y-6">
+            {/* Peer Endorsements - Always visible */}
+            <PeerEndorsement candidateId={id!} currentUserId={currentUserId} />
             {!isUnlocked && (
               <Card className="bg-muted/50 border-dashed">
                 <CardContent className="pt-6 text-center">
@@ -406,8 +408,6 @@ export default function ProfileDetail() {
                   </Card>
                 )}
 
-                {/* Peer Endorsements - Always visible */}
-                <PeerEndorsement candidateId={id!} currentUserId={currentUserId} />
               </>
             )}
           </div>
