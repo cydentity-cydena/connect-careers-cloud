@@ -38,6 +38,7 @@ const Navigation = () => {
     { to: "/", label: "Home" },
     { to: "/leaderboard", label: "Leaderboard" },
     { to: "/profiles", label: "Profiles" },
+    { to: "/community", label: "Community" },
     { to: "/jobs", label: "Jobs" },
     { to: "/training", label: "Training" },
     { to: "/certifications-catalog", label: "Certifications" },

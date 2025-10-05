@@ -47,6 +47,39 @@ export type Database = {
         }
         Relationships: []
       }
+      activity_feed: {
+        Row: {
+          activity_type: string
+          created_at: string
+          description: string | null
+          id: string
+          is_public: boolean | null
+          metadata: Json | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          activity_type: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_public?: boolean | null
+          metadata?: Json | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          activity_type?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_public?: boolean | null
+          metadata?: Json | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       applications: {
         Row: {
           applied_at: string
@@ -892,6 +925,51 @@ export type Database = {
           description?: string | null
           id?: string
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      skill_pathways: {
+        Row: {
+          category: string
+          created_at: string
+          description: string | null
+          estimated_time_months: number | null
+          icon: string | null
+          id: string
+          level: string
+          name: string
+          next_steps: string[] | null
+          recommended_certs: string[] | null
+          required_skills: string[] | null
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          description?: string | null
+          estimated_time_months?: number | null
+          icon?: string | null
+          id?: string
+          level: string
+          name: string
+          next_steps?: string[] | null
+          recommended_certs?: string[] | null
+          required_skills?: string[] | null
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          estimated_time_months?: number | null
+          icon?: string | null
+          id?: string
+          level?: string
+          name?: string
+          next_steps?: string[] | null
+          recommended_certs?: string[] | null
+          required_skills?: string[] | null
+          updated_at?: string
         }
         Relationships: []
       }

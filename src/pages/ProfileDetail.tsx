@@ -10,7 +10,8 @@ import { PeerEndorsement } from "@/components/profiles/PeerEndorsement";
 import { Skeleton } from "@/components/ui/skeleton";
 import { 
   Mail, Phone, MapPin, Calendar, Briefcase, Award, 
-  Github, Linkedin, Globe, FileText, Shield, ArrowLeft 
+  Github, Linkedin, Globe, FileText, Shield, ArrowLeft,
+  Building2, GraduationCap, Code, ExternalLink
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -23,6 +24,9 @@ export default function ProfileDetail() {
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [credits, setCredits] = useState(0);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [workHistory, setWorkHistory] = useState<any[]>([]);
+  const [projects, setProjects] = useState<any[]>([]);
+  const [education, setEducation] = useState<any[]>([]);
 
   useEffect(() => {
     loadProfileData();
@@ -117,6 +121,29 @@ export default function ProfileDetail() {
           certifications: certs || [],
         });
       }
+
+      // Fetch work history, projects, education (public)
+      const [{ data: workData }, { data: projectsData }, { data: educationData }] = await Promise.all([
+        supabase
+          .from('work_history')
+          .select('*')
+          .eq('candidate_id', id)
+          .order('start_date', { ascending: false }),
+        supabase
+          .from('projects')
+          .select('*')
+          .eq('candidate_id', id)
+          .order('start_date', { ascending: false }),
+        supabase
+          .from('education')
+          .select('*')
+          .eq('candidate_id', id)
+          .order('start_date', { ascending: false })
+      ]);
+
+      setWorkHistory(workData || []);
+      setProjects(projectsData || []);
+      setEducation(educationData || []);
 
     } catch (error: any) {
       console.error("Error loading profile:", error);
@@ -411,6 +438,155 @@ export default function ProfileDetail() {
                             >
                               View Credential
                             </a>
+                          )}
+                        </div>
+                      ))}
+                    </CardContent>
+                  </Card>
+                )}
+
+                {/* Work History */}
+                {workHistory.length > 0 && (
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Building2 className="h-5 w-5" />
+                        Work Experience
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                      {workHistory.map((work, idx) => (
+                        <div key={idx} className="border-b last:border-0 pb-6 last:pb-0">
+                          <div className="flex justify-between items-start mb-2">
+                            <div>
+                              <h4 className="font-semibold text-lg">{work.role}</h4>
+                              <p className="text-muted-foreground">{work.company}</p>
+                            </div>
+                            {work.is_current && (
+                              <Badge variant="default">Current</Badge>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-4 text-sm text-muted-foreground mb-2">
+                            {work.start_date && (
+                              <span className="flex items-center gap-1">
+                                <Calendar className="h-3 w-3" />
+                                {new Date(work.start_date).toLocaleDateString()} - {work.end_date ? new Date(work.end_date).toLocaleDateString() : 'Present'}
+                              </span>
+                            )}
+                            {work.location && (
+                              <span className="flex items-center gap-1">
+                                <MapPin className="h-3 w-3" />
+                                {work.location}
+                              </span>
+                            )}
+                          </div>
+                          {work.description && (
+                            <p className="text-sm text-muted-foreground mt-2 whitespace-pre-line">
+                              {work.description}
+                            </p>
+                          )}
+                        </div>
+                      ))}
+                    </CardContent>
+                  </Card>
+                )}
+
+                {/* Projects */}
+                {projects.length > 0 && (
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Code className="h-5 w-5" />
+                        Projects
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                      {projects.map((project, idx) => (
+                        <div key={idx} className="border-b last:border-0 pb-6 last:pb-0">
+                          <h4 className="font-semibold text-lg mb-2">{project.name}</h4>
+                          {project.description && (
+                            <p className="text-sm text-muted-foreground mb-3 whitespace-pre-line">
+                              {project.description}
+                            </p>
+                          )}
+                          {project.tech_stack && project.tech_stack.length > 0 && (
+                            <div className="flex flex-wrap gap-2 mb-3">
+                              {project.tech_stack.map((tech: string, i: number) => (
+                                <Badge key={i} variant="secondary" className="text-xs">
+                                  {tech}
+                                </Badge>
+                              ))}
+                            </div>
+                          )}
+                          <div className="flex flex-wrap gap-3">
+                            {project.url && (
+                              <a 
+                                href={project.url} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="text-sm text-primary hover:underline flex items-center gap-1"
+                              >
+                                <ExternalLink className="h-3 w-3" />
+                                View Project
+                              </a>
+                            )}
+                            {project.github_url && (
+                              <a 
+                                href={project.github_url} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="text-sm text-primary hover:underline flex items-center gap-1"
+                              >
+                                <Github className="h-3 w-3" />
+                                View Code
+                              </a>
+                            )}
+                          </div>
+                          {(project.start_date || project.end_date) && (
+                            <div className="text-xs text-muted-foreground mt-2">
+                              {project.start_date && new Date(project.start_date).toLocaleDateString()}
+                              {project.start_date && project.end_date && ' - '}
+                              {project.end_date && new Date(project.end_date).toLocaleDateString()}
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </CardContent>
+                  </Card>
+                )}
+
+                {/* Education */}
+                {education.length > 0 && (
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <GraduationCap className="h-5 w-5" />
+                        Education
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                      {education.map((edu, idx) => (
+                        <div key={idx} className="border-b last:border-0 pb-6 last:pb-0">
+                          <h4 className="font-semibold text-lg">{edu.degree}</h4>
+                          <p className="text-muted-foreground">{edu.institution}</p>
+                          {edu.field_of_study && (
+                            <p className="text-sm text-muted-foreground mt-1">{edu.field_of_study}</p>
+                          )}
+                          <div className="flex items-center gap-4 text-sm text-muted-foreground mt-2">
+                            {edu.start_date && (
+                              <span className="flex items-center gap-1">
+                                <Calendar className="h-3 w-3" />
+                                {new Date(edu.start_date).toLocaleDateString()} - {edu.end_date ? new Date(edu.end_date).toLocaleDateString() : 'Present'}
+                              </span>
+                            )}
+                            {edu.gpa && (
+                              <span>GPA: {edu.gpa}</span>
+                            )}
+                          </div>
+                          {edu.description && (
+                            <p className="text-sm text-muted-foreground mt-2 whitespace-pre-line">
+                              {edu.description}
+                            </p>
                           )}
                         </div>
                       ))}
