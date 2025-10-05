@@ -171,6 +171,8 @@ export type Database = {
       candidate_xp: {
         Row: {
           candidate_id: string
+          community_level: number
+          community_points: number
           created_at: string
           id: string
           last_activity_at: string
@@ -182,6 +184,8 @@ export type Database = {
         }
         Insert: {
           candidate_id: string
+          community_level?: number
+          community_points?: number
           created_at?: string
           id?: string
           last_activity_at?: string
@@ -193,6 +197,8 @@ export type Database = {
         }
         Update: {
           candidate_id?: string
+          community_level?: number
+          community_points?: number
           created_at?: string
           id?: string
           last_activity_at?: string
@@ -246,6 +252,36 @@ export type Database = {
           signed_webhook?: boolean | null
           webhook_provider?: string | null
           webhook_verified_at?: string | null
+        }
+        Relationships: []
+      }
+      community_activities: {
+        Row: {
+          activity_type: string
+          created_at: string
+          id: string
+          metadata: Json | null
+          points_awarded: number
+          target_user_id: string | null
+          user_id: string
+        }
+        Insert: {
+          activity_type: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          points_awarded?: number
+          target_user_id?: string | null
+          user_id: string
+        }
+        Update: {
+          activity_type?: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          points_awarded?: number
+          target_user_id?: string | null
+          user_id?: string
         }
         Relationships: []
       }
@@ -631,6 +667,33 @@ export type Database = {
         }
         Relationships: []
       }
+      peer_endorsements: {
+        Row: {
+          comment: string | null
+          created_at: string
+          endorsement_type: string
+          from_user_id: string
+          id: string
+          to_user_id: string
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string
+          endorsement_type: string
+          from_user_id: string
+          id?: string
+          to_user_id: string
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string
+          endorsement_type?: string
+          from_user_id?: string
+          id?: string
+          to_user_id?: string
+        }
+        Relationships: []
+      }
       profile_unlocks: {
         Row: {
           candidate_id: string
@@ -818,6 +881,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      award_community_points: {
+        Args: { p_candidate_id: string; p_code: string; p_meta?: Json }
+        Returns: Json
+      }
       award_points: {
         Args: { p_candidate_id: string; p_code: string; p_meta?: Json }
         Returns: Json
