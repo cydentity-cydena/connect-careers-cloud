@@ -22,17 +22,17 @@ type SkillPathway = {
 
 const getCategoryIcon = (category: string) => {
   switch (category) {
-    case 'blue_team': return <Shield className="h-5 w-5" />;
-    case 'red_team': return <Crosshair className="h-5 w-5" />;
-    case 'governance': return <Scale className="h-5 w-5" />;
-    case 'cloud_security': return <Cloud className="h-5 w-5" />;
-    case 'ai_security': return <Brain className="h-5 w-5" />;
+    case 'Blue Team': return <Shield className="h-5 w-5" />;
+    case 'Red Team': return <Crosshair className="h-5 w-5" />;
+    case 'Governance': return <Scale className="h-5 w-5" />;
+    case 'Cloud Security': return <Cloud className="h-5 w-5" />;
+    case 'AI Security': return <Brain className="h-5 w-5" />;
     default: return <Circle className="h-5 w-5" />;
   }
 };
 
 const getLevelColor = (level: string) => {
-  switch (level) {
+  switch (level.toLowerCase()) {
     case 'beginner': return 'bg-green-500/10 text-green-600 dark:text-green-400';
     case 'intermediate': return 'bg-blue-500/10 text-blue-600 dark:text-blue-400';
     case 'advanced': return 'bg-purple-500/10 text-purple-600 dark:text-purple-400';
@@ -97,11 +97,11 @@ export const SkillPathways = () => {
 
   const categories = [
     { value: 'all', label: 'All Pathways' },
-    { value: 'blue_team', label: 'Blue Team', icon: <Shield className="h-4 w-4" /> },
-    { value: 'red_team', label: 'Red Team', icon: <Crosshair className="h-4 w-4" /> },
-    { value: 'governance', label: 'Governance', icon: <Scale className="h-4 w-4" /> },
-    { value: 'cloud_security', label: 'Cloud Security', icon: <Cloud className="h-4 w-4" /> },
-    { value: 'ai_security', label: 'AI Security', icon: <Brain className="h-4 w-4" /> },
+    { value: 'Blue Team', label: 'Blue Team', icon: <Shield className="h-4 w-4" /> },
+    { value: 'Red Team', label: 'Red Team', icon: <Crosshair className="h-4 w-4" /> },
+    { value: 'Governance', label: 'Governance', icon: <Scale className="h-4 w-4" /> },
+    { value: 'Cloud Security', label: 'Cloud Security', icon: <Cloud className="h-4 w-4" /> },
+    { value: 'AI Security', label: 'AI Security', icon: <Brain className="h-4 w-4" /> },
   ];
 
   const filteredPathways = selectedCategory === 'all' 
