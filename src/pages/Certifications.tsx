@@ -90,7 +90,8 @@ const Certifications = () => {
             <Label htmlFor="curl">Credential URL</Label>
             <Input id="curl" value={credentialUrl} onChange={(e) => setCredentialUrl(e.target.value)} />
           </div>
-          <div className="flex justify-end">
+          <div className="flex justify-end gap-3">
+            <Button variant="outline" onClick={() => navigate('/dashboard')}>Cancel</Button>
             <Button onClick={handleAdd} disabled={loading}>{loading ? 'Saving...' : 'Add certification'}</Button>
           </div>
         </CardContent>
