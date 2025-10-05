@@ -138,6 +138,19 @@ const Contact = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
+                  <h3 className="font-semibold mb-1">General Inquiries</h3>
+                  <p className="text-sm text-muted-foreground">
+                    General questions or feedback about our platform
+                  </p>
+                  <a
+                    href="mailto:contact@cydena.com"
+                    className="text-sm text-primary hover:underline"
+                  >
+                    contact@cydena.com
+                  </a>
+                </div>
+
+                <div>
                   <h3 className="font-semibold mb-1">For Candidates</h3>
                   <p className="text-sm text-muted-foreground">
                     Questions about your profile, certifications, or job opportunities
