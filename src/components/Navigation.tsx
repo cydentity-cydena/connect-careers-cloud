@@ -43,6 +43,7 @@ const Navigation = () => {
     { to: "/training", label: "Training" },
     { to: "/certifications-catalog", label: "Certifications" },
     { to: "/pricing", label: "Pricing" },
+    { to: "/roi-calculator", label: "ROI Calculator" },
     { to: "/contact", label: "Contact" },
   ];
 

@@ -94,6 +94,29 @@ const Pricing = () => {
           </CardContent>
         </Card>
 
+        {/* ROI Calculator CTA */}
+        <Card className="mb-12 md:mb-16 border-green-500/30 bg-gradient-to-br from-green-500/5 to-primary/5 animate-slide-up">
+          <CardContent className="p-6 md:p-8">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+              <div className="flex-1 text-center md:text-left">
+                <h3 className="text-xl md:text-2xl font-bold mb-2 flex items-center justify-center md:justify-start gap-2">
+                  <Zap className="h-6 w-6 text-green-500" />
+                  Calculate Your Exact Savings
+                </h3>
+                <p className="text-muted-foreground">
+                  See precisely how much you'll save vs traditional recruitment agencies with our interactive ROI calculator
+                </p>
+              </div>
+              <Link to="/roi-calculator">
+                <Button size="lg" className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white">
+                  Try ROI Calculator
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Pricing Tiers */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-12 md:mb-16">
           {/* Candidates - Free */}

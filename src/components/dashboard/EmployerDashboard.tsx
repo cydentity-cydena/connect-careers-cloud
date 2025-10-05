@@ -172,6 +172,32 @@ const EmployerDashboard = () => {
         </Card>
       </div>
 
+      <Card className="border-green-500/30 shadow-lg bg-gradient-to-br from-green-500/5 to-primary/5">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <TrendingUp className="h-5 w-5 text-green-500" />
+            See Your Cost Savings
+          </CardTitle>
+          <CardDescription>
+            Calculate how much you can save vs traditional recruitment agencies
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <p className="text-sm text-muted-foreground">
+              Compare costs and see your ROI with our interactive calculator. Most employers save 80-90% vs agency fees.
+            </p>
+            <Button 
+              variant="outline" 
+              className="w-full border-green-500/50 hover:bg-green-500/10" 
+              onClick={() => navigate('/roi-calculator')}
+            >
+              Calculate Your Savings
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
       <Card className="border-border shadow-card">
         <CardHeader>
           <CardTitle>Getting Started as an Employer</CardTitle>

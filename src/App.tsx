@@ -24,6 +24,7 @@ import Certifications from "./pages/Certifications";
 import CompanyCreate from "./pages/CompanyCreate";
 import JobCreate from "./pages/JobCreate";
 import Community from "./pages/Community";
+import ROICalculator from "./pages/ROICalculator";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -55,6 +56,7 @@ const App = () => (
           <Route path="/company/create" element={<CompanyCreate />} />
           <Route path="/jobs/create" element={<JobCreate />} />
           <Route path="/community" element={<Community />} />
+          <Route path="/roi-calculator" element={<ROICalculator />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
