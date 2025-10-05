@@ -113,7 +113,7 @@ const CertificationCatalog = () => {
     },
   ];
 
-  const providers = ["Real LMS","CompTIA", "EC-Council", "SANS", "ISC2"];
+  const providers = ["CompTIA", "EC-Council", "SANS", "ISC2"];
 
   const getProviderIcon = (provider: string) => {
     const icons: { [key: string]: string } = {
@@ -121,7 +121,7 @@ const CertificationCatalog = () => {
       "EC-Council": "🔵",
       "SANS": "🟢",
       "ISC2": "🟣",
-      "Real LMS": "🔴"
+  
     };
     return icons[provider] || "📚";
   };
