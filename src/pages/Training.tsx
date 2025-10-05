@@ -366,7 +366,7 @@ const Training = () => {
             </CardHeader>
             <CardContent className="space-y-4">
               <p className="text-muted-foreground">
-                Are you a training provider? Join our network and give your graduates instant visibility with hiring employers.
+                Are you a training provider? Join our network and give your graduates instant visibility with hiring employers. Upgrade to featured placement for premium exposure.
               </p>
               <div className="grid md:grid-cols-3 gap-4">
                 <div className="flex items-start gap-3">
@@ -396,6 +396,15 @@ const Training = () => {
                     <p className="text-sm text-muted-foreground">Direct connection to hiring employers</p>
                   </div>
                 </div>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center pt-4 border-t border-border">
+                <a href="/partnerships" className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-6 py-2">
+                  <Star className="h-4 w-4 mr-2" />
+                  Become a Featured Partner
+                </a>
+                <a href="/contact?subject=Partnership%20Inquiry" className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-6 py-2">
+                  Contact Us
+                </a>
               </div>
             </CardContent>
           </Card>

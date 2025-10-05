@@ -1,0 +1,401 @@
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import Navigation from "@/components/Navigation";
+import SEO from "@/components/SEO";
+import { Check, Star, TrendingUp, Users, BarChart, Sparkles, ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { useState, useEffect } from "react";
+import { toast } from "sonner";
+
+interface PricingTier {
+  name: string;
+  duration: string;
+  price: number;
+  originalPrice?: number;
+  discount?: string;
+  weeks: number;
+  popular?: boolean;
+}
+
+const Partnerships = () => {
+  const [availableSlots, setAvailableSlots] = useState(4);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const checkAvailableSlots = async () => {
+      const { data } = await supabase
+        .from("featured_training_partners")
+        .select("slot_position")
+        .gte("end_date", new Date().toISOString())
+        .eq("payment_status", "completed");
+      
+      if (data) {
+        setAvailableSlots(4 - data.length);
+      }
+    };
+
+    checkAvailableSlots();
+  }, []);
+
+  const pricingTiers: PricingTier[] = [
+    {
+      name: "Weekly Trial",
+      duration: "1 Week",
+      price: 299,
+      weeks: 1,
+    },
+    {
+      name: "Monthly",
+      duration: "4 Weeks",
+      price: 999,
+      originalPrice: 1196,
+      discount: "17% OFF",
+      weeks: 4,
+      popular: true,
+    },
+    {
+      name: "Quarterly",
+      duration: "12 Weeks",
+      price: 2499,
+      originalPrice: 3588,
+      discount: "30% OFF",
+      weeks: 12,
+    },
+    {
+      name: "Annual",
+      duration: "52 Weeks",
+      price: 7999,
+      originalPrice: 15548,
+      discount: "40% OFF",
+      weeks: 52,
+    },
+  ];
+
+  const benefits = [
+    {
+      icon: <Star className="h-6 w-6 text-yellow-500" />,
+      title: "Premium Placement",
+      description: "Top-of-page featured section with eye-catching design and logo display",
+    },
+    {
+      icon: <Users className="h-6 w-6 text-blue-500" />,
+      title: "Direct Candidate Pipeline",
+      description: "Reach active job seekers completing cybersecurity training and certifications",
+    },
+    {
+      icon: <TrendingUp className="h-6 w-6 text-green-500" />,
+      title: "Brand Authority",
+      description: "Position your organization as a trusted training provider in the cybersecurity community",
+    },
+    {
+      icon: <BarChart className="h-6 w-6 text-purple-500" />,
+      title: "Performance Analytics",
+      description: "Track impressions, clicks, and engagement metrics for your featured placement",
+    },
+  ];
+
+  const features = [
+    "Featured slot with custom logo and branding",
+    "Prominent placement above all standard listings",
+    "Direct link to your website and courses",
+    "Custom description and value proposition",
+    "Priority positioning in all search results",
+    "Dedicated slot guarantee (no rotation)",
+    "Monthly performance reports",
+    "Co-marketing opportunities",
+  ];
+
+  const handleContactSales = () => {
+    window.location.href = "/contact?subject=Featured%20Partnership%20Inquiry";
+  };
+
+  return (
+    <>
+      <SEO 
+        title="Featured Training Partnerships - Cydena"
+        description="Become a featured training partner on Cydena and reach thousands of cybersecurity professionals actively seeking training and certifications."
+        keywords="cybersecurity training partnership, featured training provider, cybersecurity education marketing"
+      />
+      <Navigation />
+      
+      <div className="min-h-screen bg-background pt-20">
+        {/* Hero Section */}
+        <section className="relative overflow-hidden bg-gradient-to-b from-primary/10 via-background to-background py-20">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto text-center">
+              <Badge className="mb-4" variant="secondary">
+                <Sparkles className="h-3 w-3 mr-1" />
+                Limited Slots Available
+              </Badge>
+              <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+                Become a Featured Training Partner
+              </h1>
+              <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
+                Reach thousands of cybersecurity professionals actively seeking training, certifications, and career advancement. Get premium visibility with only <span className="font-bold text-primary">{availableSlots} of 4 featured slots</span> available.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button size="lg" className="text-lg" onClick={handleContactSales}>
+                  Get Started
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+                <Button size="lg" variant="outline" asChild>
+                  <Link to="/training">View Example Placement</Link>
+                </Button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Slot Availability Alert */}
+        {availableSlots <= 2 && (
+          <section className="py-8 bg-yellow-500/10 border-y border-yellow-500/20">
+            <div className="container mx-auto px-4">
+              <div className="max-w-4xl mx-auto text-center">
+                <p className="text-lg font-semibold text-yellow-700 dark:text-yellow-400">
+                  ⚠️ Only {availableSlots} featured {availableSlots === 1 ? 'slot' : 'slots'} remaining! Secure your position before they're gone.
+                </p>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Benefits Section */}
+        <section className="py-20">
+          <div className="container mx-auto px-4">
+            <div className="max-w-6xl mx-auto">
+              <div className="text-center mb-16">
+                <h2 className="text-3xl md:text-4xl font-bold mb-4">Why Partner With Cydena?</h2>
+                <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+                  Connect with motivated cybersecurity professionals who are actively investing in their education and career growth
+                </p>
+              </div>
+
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {benefits.map((benefit, index) => (
+                  <Card key={index} className="border-2 hover:border-primary/50 transition-colors">
+                    <CardContent className="pt-6">
+                      <div className="mb-4">{benefit.icon}</div>
+                      <h3 className="text-lg font-bold mb-2">{benefit.title}</h3>
+                      <p className="text-sm text-muted-foreground">{benefit.description}</p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Pricing Section */}
+        <section className="py-20 bg-muted/30">
+          <div className="container mx-auto px-4">
+            <div className="max-w-6xl mx-auto">
+              <div className="text-center mb-16">
+                <h2 className="text-3xl md:text-4xl font-bold mb-4">Flexible Pricing Plans</h2>
+                <p className="text-xl text-muted-foreground">
+                  Choose the duration that works best for your marketing goals
+                </p>
+              </div>
+
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {pricingTiers.map((tier) => (
+                  <Card 
+                    key={tier.name} 
+                    className={`relative ${tier.popular ? 'border-2 border-primary shadow-lg scale-105' : ''}`}
+                  >
+                    {tier.popular && (
+                      <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                        <Badge className="bg-primary text-primary-foreground">Most Popular</Badge>
+                      </div>
+                    )}
+                    <CardHeader>
+                      <CardTitle className="text-center">{tier.name}</CardTitle>
+                      <CardDescription className="text-center">{tier.duration}</CardDescription>
+                      {tier.discount && (
+                        <Badge variant="secondary" className="w-fit mx-auto mt-2">
+                          {tier.discount}
+                        </Badge>
+                      )}
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-center mb-6">
+                        {tier.originalPrice && (
+                          <p className="text-sm text-muted-foreground line-through">
+                            ${tier.originalPrice.toLocaleString()}
+                          </p>
+                        )}
+                        <p className="text-4xl font-bold">${tier.price.toLocaleString()}</p>
+                        <p className="text-sm text-muted-foreground mt-1">
+                          ${Math.round(tier.price / tier.weeks)}/week
+                        </p>
+                      </div>
+                      <Button 
+                        className="w-full" 
+                        variant={tier.popular ? "default" : "outline"}
+                        onClick={handleContactSales}
+                      >
+                        Select Plan
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+
+              <div className="mt-12 text-center">
+                <p className="text-muted-foreground mb-4">
+                  Need a custom plan or have questions? We're here to help.
+                </p>
+                <Button variant="outline" size="lg" onClick={handleContactSales}>
+                  Contact Sales Team
+                </Button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Features List */}
+        <section className="py-20">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto">
+              <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center">
+                Everything Included in Your Featured Partnership
+              </h2>
+              
+              <div className="grid md:grid-cols-2 gap-4">
+                {features.map((feature, index) => (
+                  <div key={index} className="flex items-start gap-3">
+                    <div className="flex-shrink-0 mt-1">
+                      <Check className="h-5 w-5 text-green-500" />
+                    </div>
+                    <p className="text-lg">{feature}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Social Proof / Stats */}
+        <section className="py-20 bg-muted/30">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto">
+              <div className="grid md:grid-cols-3 gap-8 text-center">
+                <div>
+                  <div className="text-4xl md:text-5xl font-bold text-primary mb-2">10,000+</div>
+                  <p className="text-muted-foreground">Monthly Active Users</p>
+                </div>
+                <div>
+                  <div className="text-4xl md:text-5xl font-bold text-primary mb-2">5x</div>
+                  <p className="text-muted-foreground">Average CTR Increase vs Standard Listing</p>
+                </div>
+                <div>
+                  <div className="text-4xl md:text-5xl font-bold text-primary mb-2">92%</div>
+                  <p className="text-muted-foreground">Users Actively Job Seeking</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* FAQ Section */}
+        <section className="py-20">
+          <div className="container mx-auto px-4">
+            <div className="max-w-3xl mx-auto">
+              <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center">
+                Frequently Asked Questions
+              </h2>
+
+              <div className="space-y-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">What's included in a featured slot?</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground">
+                      Your featured placement includes a premium position at the top of the Training page with your logo, custom description, direct website link, and guaranteed visibility to all visitors. You'll also receive monthly performance reports.
+                    </p>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">How many featured slots are available?</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground">
+                      Only 4 featured slots are available at any time to maintain exclusivity and maximize visibility for each partner. Currently, {availableSlots} {availableSlots === 1 ? 'slot is' : 'slots are'} available.
+                    </p>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Can I upgrade or extend my partnership?</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground">
+                      Yes! You can upgrade to a longer duration or extend your partnership at any time. Contact our sales team to discuss your options and receive preferential pricing for extensions.
+                    </p>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">What kind of ROI can I expect?</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground">
+                      Featured partners typically see 5x higher click-through rates compared to standard listings. With our audience of active job seekers and career advancers, you're reaching highly motivated candidates at the perfect moment in their learning journey.
+                    </p>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">How do I get started?</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground">
+                      Simply contact our sales team using the button below. We'll discuss your goals, help you choose the right plan, and get your featured placement live within 48 hours.
+                    </p>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* CTA Section */}
+        <section className="py-20 bg-gradient-to-b from-primary/10 to-background">
+          <div className="container mx-auto px-4">
+            <div className="max-w-3xl mx-auto text-center">
+              <h2 className="text-3xl md:text-4xl font-bold mb-6">
+                Ready to Become a Featured Partner?
+              </h2>
+              <p className="text-xl text-muted-foreground mb-8">
+                Join the leading cybersecurity training providers and reach thousands of motivated professionals today.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button size="lg" className="text-lg" onClick={handleContactSales}>
+                  Get Started Now
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+                <Button size="lg" variant="outline" asChild>
+                  <Link to="/contact">Contact Sales</Link>
+                </Button>
+              </div>
+              {availableSlots <= 2 && (
+                <p className="mt-6 text-sm text-yellow-600 dark:text-yellow-400 font-semibold">
+                  ⏰ Only {availableSlots} {availableSlots === 1 ? 'slot' : 'slots'} remaining!
+                </p>
+              )}
+            </div>
+          </div>
+        </section>
+      </div>
+    </>
+  );
+};
+
+export default Partnerships;
