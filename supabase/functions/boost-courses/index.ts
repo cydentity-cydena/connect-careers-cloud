@@ -54,11 +54,18 @@ Deno.serve(async (req) => {
 
     const completedCourseIds = completedData?.map(c => c.partner_course_id) || [];
 
-    // Fetch active courses not yet completed
+    // Fetch active courses with paid boost placements not yet completed
+    // Only show courses that have active paid boost placements
+    const now = new Date().toISOString();
+    
     let query = supabase
       .from('partner_courses')
       .select('*')
-      .eq('active', true);
+      .eq('active', true)
+      .eq('boost_featured', true)
+      .eq('boost_payment_status', 'completed')
+      .lte('boost_start_date', now)
+      .gte('boost_end_date', now);
     
     // Only filter out completed courses if there are any
     if (completedCourseIds.length > 0) {

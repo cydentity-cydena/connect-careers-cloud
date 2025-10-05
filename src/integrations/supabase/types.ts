@@ -761,6 +761,12 @@ export type Database = {
         Row: {
           active: boolean
           badge_hint: string | null
+          boost_amount_paid: number | null
+          boost_end_date: string | null
+          boost_featured: boolean | null
+          boost_payment_status: string | null
+          boost_purchased_by: string | null
+          boost_start_date: string | null
           created_at: string
           est_minutes: number | null
           expected_proof: string
@@ -777,6 +783,12 @@ export type Database = {
         Insert: {
           active?: boolean
           badge_hint?: string | null
+          boost_amount_paid?: number | null
+          boost_end_date?: string | null
+          boost_featured?: boolean | null
+          boost_payment_status?: string | null
+          boost_purchased_by?: string | null
+          boost_start_date?: string | null
           created_at?: string
           est_minutes?: number | null
           expected_proof: string
@@ -793,6 +805,12 @@ export type Database = {
         Update: {
           active?: boolean
           badge_hint?: string | null
+          boost_amount_paid?: number | null
+          boost_end_date?: string | null
+          boost_featured?: boolean | null
+          boost_payment_status?: string | null
+          boost_purchased_by?: string | null
+          boost_start_date?: string | null
           created_at?: string
           est_minutes?: number | null
           expected_proof?: string

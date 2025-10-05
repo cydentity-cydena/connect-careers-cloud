@@ -12,5 +12,8 @@ verify_jwt = true
 [functions.purchase-credits]
 verify_jwt = true
 
+[functions.purchase-boost-placement]
+verify_jwt = true
+
 [functions.send-contact-email]
 verify_jwt = false

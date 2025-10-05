@@ -23,6 +23,7 @@ interface PricingTier {
 const Partnerships = () => {
   const [availableTrainingSlots, setAvailableTrainingSlots] = useState(4);
   const [availableCertSlots, setAvailableCertSlots] = useState(4);
+  const [availableBoostSlots, setAvailableBoostSlots] = useState(6);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -47,6 +48,20 @@ const Partnerships = () => {
       
       if (certData) {
         setAvailableCertSlots(4 - certData.length);
+      }
+
+      // Check boost placement slots
+      const now = new Date().toISOString();
+      const { data: boostData } = await supabase
+        .from("partner_courses")
+        .select("id")
+        .eq("boost_featured", true)
+        .eq("boost_payment_status", "completed")
+        .lte("boost_start_date", now)
+        .gte("boost_end_date", now);
+      
+      if (boostData) {
+        setAvailableBoostSlots(6 - boostData.length);
       }
     };
 
@@ -87,6 +102,40 @@ const Partnerships = () => {
     },
   ];
 
+  const boostPricingTiers: PricingTier[] = [
+    {
+      name: "Weekly",
+      duration: "1 Week",
+      price: 499,
+      weeks: 1,
+    },
+    {
+      name: "Monthly",
+      duration: "4 Weeks",
+      price: 1699,
+      originalPrice: 1996,
+      discount: "15% OFF",
+      weeks: 4,
+      popular: true,
+    },
+    {
+      name: "Quarterly",
+      duration: "12 Weeks",
+      price: 4499,
+      originalPrice: 5988,
+      discount: "25% OFF",
+      weeks: 12,
+    },
+    {
+      name: "Annual",
+      duration: "52 Weeks",
+      price: 14999,
+      originalPrice: 25948,
+      discount: "42% OFF",
+      weeks: 52,
+    },
+  ];
+
   const benefits = [
     {
       icon: <Star className="h-6 w-6 text-yellow-500" />,
@@ -107,6 +156,29 @@ const Partnerships = () => {
       icon: <BarChart className="h-6 w-6 text-purple-500" />,
       title: "Performance Analytics",
       description: "Track impressions, clicks, and engagement metrics for your featured placement",
+    },
+  ];
+
+  const boostBenefits = [
+    {
+      icon: <TrendingUp className="h-6 w-6 text-primary" />,
+      title: "Dashboard Priority",
+      description: "First section every candidate sees when they log in—maximum visibility guaranteed",
+    },
+    {
+      icon: <Users className="h-6 w-6 text-blue-500" />,
+      title: "Engaged Learners",
+      description: "Candidates actively looking to boost their skills and earn points—highly motivated audience",
+    },
+    {
+      icon: <Award className="h-6 w-6 text-purple-500" />,
+      title: "Auto-Verification",
+      description: "OpenBadge integration means instant verification and immediate value for candidates",
+    },
+    {
+      icon: <Sparkles className="h-6 w-6 text-yellow-500" />,
+      title: "Free-to-Paid Funnel",
+      description: "Candidates try your free course, see the value, then upgrade to paid offerings",
     },
   ];
 
@@ -166,14 +238,18 @@ const Partnerships = () => {
         <section className="py-12">
           <div className="container mx-auto px-4">
             <Tabs defaultValue="training" className="w-full max-w-6xl mx-auto">
-              <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-12">
+              <TabsList className="grid w-full max-w-3xl mx-auto grid-cols-3 mb-12">
                 <TabsTrigger value="training" className="gap-2">
                   <GraduationCap className="h-4 w-4" />
-                  Training Partners
+                  Training Page
+                </TabsTrigger>
+                <TabsTrigger value="boost" className="gap-2">
+                  <TrendingUp className="h-4 w-4" />
+                  Boost Dashboard
                 </TabsTrigger>
                 <TabsTrigger value="certifications" className="gap-2">
                   <Award className="h-4 w-4" />
-                  Certification Providers
+                  Cert Catalog
                 </TabsTrigger>
               </TabsList>
 
@@ -197,6 +273,114 @@ const Partnerships = () => {
                   </Button>
                   <Button size="lg" variant="outline" asChild>
                     <Link to="/training">View Training Example</Link>
+                  </Button>
+                </div>
+              </TabsContent>
+
+              {/* Boost Dashboard Placement Tab */}
+              <TabsContent value="boost" className="space-y-12">
+                {/* Premium Badge */}
+                <div className="text-center">
+                  <Badge className="bg-gradient-to-r from-primary to-purple-600 text-white text-sm px-4 py-1">
+                    <Star className="h-4 w-4 mr-1" />
+                    PREMIUM DASHBOARD PLACEMENT
+                  </Badge>
+                </div>
+
+                {/* Slot Availability Alert */}
+                {availableBoostSlots <= 3 && (
+                  <div className="py-8 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
+                    <div className="text-center">
+                      <p className="text-lg font-semibold text-yellow-700 dark:text-yellow-400">
+                        ⚠️ Only {availableBoostSlots} dashboard {availableBoostSlots === 1 ? 'slot' : 'slots'} remaining!
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Value Proposition */}
+                <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-purple-500/5">
+                  <CardContent className="pt-6">
+                    <div className="flex items-start gap-4">
+                      <TrendingUp className="h-8 w-8 text-primary flex-shrink-0" />
+                      <div>
+                        <h3 className="text-xl font-bold mb-2">Most Valuable Real Estate</h3>
+                        <p className="text-muted-foreground">
+                          Your course appears directly on every candidate's dashboard in the "Boost Your Score" section—the first thing they see when they log in. Maximum visibility, maximum engagement.
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Boost Benefits Grid */}
+                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                  {boostBenefits.map((benefit, index) => (
+                    <Card key={index} className="border-2 hover:border-primary/50 transition-colors">
+                      <CardContent className="pt-6">
+                        <div className="mb-4">{benefit.icon}</div>
+                        <h3 className="text-lg font-bold mb-2">{benefit.title}</h3>
+                        <p className="text-sm text-muted-foreground">{benefit.description}</p>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+
+                {/* Pricing Grid for Boost */}
+                <div>
+                  <h3 className="text-2xl font-bold text-center mb-8">Dashboard Placement Pricing</h3>
+                  <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    {boostPricingTiers.map((tier) => (
+                      <Card 
+                        key={tier.name} 
+                        className={`relative ${tier.popular ? 'border-2 border-primary shadow-lg scale-105' : ''}`}
+                      >
+                        {tier.popular && (
+                          <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                            <Badge className="bg-primary text-primary-foreground">Most Popular</Badge>
+                          </div>
+                        )}
+                        <CardHeader>
+                          <CardTitle className="text-center">{tier.name}</CardTitle>
+                          <CardDescription className="text-center">{tier.duration}</CardDescription>
+                          {tier.discount && (
+                            <Badge variant="secondary" className="w-fit mx-auto mt-2">
+                              {tier.discount}
+                            </Badge>
+                          )}
+                        </CardHeader>
+                        <CardContent>
+                          <div className="text-center mb-6">
+                            {tier.originalPrice && (
+                              <p className="text-sm text-muted-foreground line-through">
+                                ${tier.originalPrice.toLocaleString()}
+                              </p>
+                            )}
+                            <p className="text-4xl font-bold">${tier.price.toLocaleString()}</p>
+                            <p className="text-sm text-muted-foreground mt-1">
+                              ${Math.round(tier.price / tier.weeks)}/week
+                            </p>
+                          </div>
+                          <Button 
+                            className="w-full" 
+                            variant={tier.popular ? "default" : "outline"}
+                            onClick={handleContactSales}
+                          >
+                            Select Plan
+                          </Button>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <Button size="lg" className="text-lg" onClick={handleContactSales}>
+                    Get Boost Dashboard Placement
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
+                  <Button size="lg" variant="outline" asChild>
+                    <a href="https://www.loom.com" target="_blank" rel="noopener noreferrer">View Dashboard Demo</a>
                   </Button>
                 </div>
               </TabsContent>
