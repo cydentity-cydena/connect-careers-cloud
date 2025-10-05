@@ -223,83 +223,62 @@ const CertificationCatalog = () => {
 
         {/* Featured Certifications Section */}
         {featuredCertifications.length > 0 && (
-          <div className="mb-12 animate-fade-in relative">
-            {/* Banner Wrapper */}
-            <div className="border-2 border-primary/30 rounded-xl p-6 md:p-8 bg-gradient-to-br from-primary/5 via-background to-primary/5 shadow-lg relative overflow-hidden">
-              {/* Decorative corner badges */}
-              <div className="absolute top-0 right-0 w-20 h-20 bg-primary/5 rounded-bl-full"></div>
-              <div className="absolute bottom-0 left-0 w-20 h-20 bg-primary/5 rounded-tr-full"></div>
-              
-              {/* Featured Banner Tag */}
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
-                <Badge className="bg-primary text-primary-foreground px-4 py-1.5 text-sm font-semibold shadow-md">
-                  <Star className="h-4 w-4 mr-1.5 fill-current" />
-                  FEATURED CERTIFICATIONS
-                  <Star className="h-4 w-4 ml-1.5 fill-current" />
-                </Badge>
-              </div>
+          <div className="mb-12 animate-fade-in">
+            <div className="mb-6 flex items-center gap-3">
+              <Badge variant="secondary" className="text-sm">
+                <Star className="h-3.5 w-3.5 mr-1.5" />
+                Featured Certifications
+              </Badge>
+            </div>
 
-              <div className="flex items-center justify-center gap-2 mb-8 mt-2">
-                <Star className="h-6 w-6 text-primary/60 fill-primary/60" />
-                <h2 className="text-2xl md:text-3xl font-bold text-center">
-                  Premium Featured Certifications
-                </h2>
-                <Star className="h-6 w-6 text-primary/60 fill-primary/60" />
-              </div>
+            <div className="grid md:grid-cols-2 gap-5">
+              {featuredCertifications.map((cert) => (
+                <Card 
+                  key={cert.id}
+                  className="relative border border-primary/30 bg-card/50 hover:bg-card hover:border-primary/50 transition-all duration-200"
+                >
+                  <div className="absolute top-2 right-2">
+                    <Badge variant="outline" className="text-xs">
+                      <Star className="h-3 w-3 mr-1" />
+                      Featured
+                    </Badge>
+                  </div>
 
-              <div className="grid md:grid-cols-2 gap-6">
-                {featuredCertifications.map((cert) => (
-                  <Card 
-                    key={cert.id}
-                    className="relative border-2 border-primary/20 bg-card shadow-md hover:scale-[1.02] transition-all duration-300 hover:shadow-lg overflow-hidden hover:border-primary/40"
-                  >
-                    {/* Featured ribbon */}
-                    <div className="absolute top-3 -right-8 rotate-45 bg-primary text-primary-foreground px-10 py-0.5 text-xs font-semibold shadow-md">
-                      FEATURED
-                    </div>
-
-                    <CardHeader className="relative">
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-3">
-                            <Badge variant="secondary" className="font-semibold">
-                              <Star className="h-3 w-3 mr-1 fill-current" />
-                              Featured
-                            </Badge>
-                          </div>
-                          <CardTitle className="text-xl mb-2 flex items-center gap-2">
-                            <Award className="h-5 w-5 text-primary" />
-                            {cert.cert_name}
-                          </CardTitle>
-                          <CardDescription className="text-lg font-semibold text-primary">
-                            {cert.provider_name}
-                          </CardDescription>
-                        </div>
-                        {cert.logo_url && (
-                          <img 
-                            src={cert.logo_url} 
-                            alt={`${cert.provider_name} logo`}
-                            className="h-16 w-16 object-contain rounded-lg bg-white dark:bg-gray-800 p-2 shadow-md"
-                          />
-                        )}
+                  <CardHeader>
+                    <div className="flex items-start gap-4">
+                      <div className="flex-1">
+                        <CardTitle className="text-lg mb-1.5 flex items-center gap-2">
+                          <Award className="h-4 w-4 text-primary" />
+                          {cert.cert_name}
+                        </CardTitle>
+                        <CardDescription className="font-medium">
+                          {cert.provider_name}
+                        </CardDescription>
                       </div>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <p className="text-muted-foreground">
-                        {cert.description}
-                      </p>
-                      <a
-                        href={cert.website_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 text-primary hover:underline font-semibold transition-colors"
-                      >
-                        Learn More & Enroll →
-                      </a>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
+                      {cert.logo_url && (
+                        <img 
+                          src={cert.logo_url} 
+                          alt={`${cert.provider_name} logo`}
+                          className="h-12 w-12 object-contain rounded bg-background p-1.5"
+                        />
+                      )}
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <p className="text-sm text-muted-foreground">
+                      {cert.description}
+                    </p>
+                    <a
+                      href={cert.website_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline font-medium"
+                    >
+                      Learn More & Enroll →
+                    </a>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
           </div>
         )}
