@@ -4,8 +4,16 @@ import { Check, X, ArrowRight, Zap, Building2, Users } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import { Link } from "react-router-dom";
 import SEO from "@/components/SEO";
+import { useState } from "react";
 
 const Pricing = () => {
+  const [billingPeriod, setBillingPeriod] = useState<'monthly' | 'annual'>('monthly');
+
+  const getPricing = (monthly: number) => {
+    const annual = Math.round(monthly * 0.85); // 15% discount
+    return billingPeriod === 'monthly' ? monthly : annual;
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <SEO
@@ -117,155 +125,234 @@ const Pricing = () => {
           </CardContent>
         </Card>
 
+        {/* Billing Toggle */}
+        <div className="flex justify-center mb-8 animate-fade-in">
+          <div className="inline-flex border border-border rounded-full p-1 bg-card">
+            <Button
+              variant={billingPeriod === 'monthly' ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => setBillingPeriod('monthly')}
+              className="rounded-full"
+            >
+              Monthly
+            </Button>
+            <Button
+              variant={billingPeriod === 'annual' ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => setBillingPeriod('annual')}
+              className="rounded-full gap-2"
+            >
+              Annual <span className="text-xs bg-primary/20 px-2 py-0.5 rounded-full">Save 15%</span>
+            </Button>
+          </div>
+        </div>
+
         {/* Pricing Tiers */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-12 md:mb-16">
-          {/* Candidates - Free */}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-12 md:mb-16">
+          {/* Employer: Starter */}
           <Card className="border-border shadow-card hover:scale-105 transition-transform animate-slide-up">
-            <CardHeader className="p-5 md:p-6">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="bg-secondary/10 p-2 md:p-3 rounded-lg">
-                  <Users className="h-5 w-5 md:h-6 md:w-6 text-secondary" />
-                </div>
-                <div>
-                  <CardTitle className="text-base md:text-lg">Candidates</CardTitle>
-                  <CardDescription className="text-xs md:text-sm">Entry to Senior Level</CardDescription>
-                </div>
-              </div>
-              <div className="mt-3 md:mt-4">
-                <span className="text-3xl md:text-4xl font-bold">Free</span>
-                <span className="text-sm md:text-base text-muted-foreground ml-2">Forever</span>
+            <CardHeader className="p-5">
+              <CardTitle className="text-base mb-1">Employer — Starter</CardTitle>
+              <div className="mt-3">
+                <span className="text-3xl font-bold">£{getPricing(199)}</span>
+                <span className="text-sm text-muted-foreground ml-2">/mo</span>
               </div>
             </CardHeader>
-            <CardContent className="p-5 md:p-6 pt-0">
-              <ul className="space-y-2 md:space-y-3 mb-5 md:mb-6">
-                <li className="flex items-start gap-2">
-                  <Check className="h-4 w-4 md:h-5 md:w-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-sm md:text-base">Unlimited job applications</span>
+            <CardContent className="p-5 pt-0">
+              <ul className="space-y-2 mb-6">
+                <li className="flex items-start gap-2 text-sm">
+                  <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                  <span>1 hiring seat</span>
                 </li>
-                <li className="flex items-start gap-2">
-                  <Check className="h-4 w-4 md:h-5 md:w-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-sm md:text-base">Skills & certifications showcase</span>
+                <li className="flex items-start gap-2 text-sm">
+                  <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                  <span>50 verified unlocks/year <span className="text-xs text-muted-foreground">(~£3.98 ea)</span></span>
                 </li>
-                <li className="flex items-start gap-2">
-                  <Check className="h-4 w-4 md:h-5 md:w-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-sm md:text-base">Leaderboard visibility</span>
+                <li className="flex items-start gap-2 text-sm">
+                  <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                  <span>Candidate bookmarks & notes</span>
                 </li>
-                <li className="flex items-start gap-2">
-                  <Check className="h-4 w-4 md:h-5 md:w-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-sm md:text-base">Direct messaging with employers</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <Check className="h-4 w-4 md:h-5 md:w-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-sm md:text-base">XP & achievement system</span>
+                <li className="flex items-start gap-2 text-sm">
+                  <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                  <span>Email support</span>
                 </li>
               </ul>
               <Link to="/auth">
-                <Button className="w-full" variant="outline" size="lg">
-                  Sign Up Free
-                </Button>
+                <Button className="w-full" size="sm">Choose Starter</Button>
               </Link>
             </CardContent>
           </Card>
 
-          {/* Small Teams */}
-          <Card className="border-2 border-primary shadow-card hover:scale-105 transition-transform animate-slide-up relative sm:col-span-2 lg:col-span-1" style={{animationDelay: '0.1s'}}>
-            <div className="absolute -top-3 md:-top-4 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground px-3 md:px-4 py-1 rounded-full text-xs md:text-sm font-semibold whitespace-nowrap">
+          {/* Employer: Growth (Most Popular) */}
+          <Card className="border-2 border-primary shadow-card hover:scale-105 transition-transform animate-slide-up relative" style={{animationDelay: '0.1s'}}>
+            <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap">
               Most Popular
             </div>
-            <CardHeader className="p-5 md:p-6">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="bg-primary/10 p-2 md:p-3 rounded-lg">
-                  <Zap className="h-5 w-5 md:h-6 md:w-6 text-primary" />
-                </div>
-                <div>
-                  <CardTitle className="text-base md:text-lg">Small Teams</CardTitle>
-                  <CardDescription className="text-xs md:text-sm">Startups & SMBs</CardDescription>
-                </div>
-              </div>
-              <div className="mt-3 md:mt-4">
-                <span className="text-3xl md:text-4xl font-bold">£10</span>
-                <span className="text-sm md:text-base text-muted-foreground ml-2">per unlock</span>
+            <CardHeader className="p-5">
+              <CardTitle className="text-base mb-1">Employer — Growth</CardTitle>
+              <div className="mt-3">
+                <span className="text-3xl font-bold">£{getPricing(499)}</span>
+                <span className="text-sm text-muted-foreground ml-2">/mo</span>
               </div>
             </CardHeader>
-            <CardContent className="p-5 md:p-6 pt-0">
-              <ul className="space-y-2 md:space-y-3 mb-5 md:mb-6">
-                <li className="flex items-start gap-2">
-                  <Check className="h-4 w-4 md:h-5 md:w-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-sm md:text-base">Unlock full candidate profiles</span>
+            <CardContent className="p-5 pt-0">
+              <ul className="space-y-2 mb-6">
+                <li className="flex items-start gap-2 text-sm">
+                  <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                  <span>3 hiring seats</span>
                 </li>
-                <li className="flex items-start gap-2">
-                  <Check className="h-4 w-4 md:h-5 md:w-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-sm md:text-base">Direct contact information</span>
+                <li className="flex items-start gap-2 text-sm">
+                  <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                  <span>100 verified unlocks/year <span className="text-xs text-muted-foreground">(~£4.99 ea)</span></span>
                 </li>
-                <li className="flex items-start gap-2">
-                  <Check className="h-4 w-4 md:h-5 md:w-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-sm md:text-base">Application pipeline management</span>
+                <li className="flex items-start gap-2 text-sm">
+                  <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                  <span>ATS export (CSV) & basic analytics</span>
                 </li>
-                <li className="flex items-start gap-2">
-                  <Check className="h-4 w-4 md:h-5 md:w-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-sm md:text-base">Post up to 5 active jobs</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <Check className="h-4 w-4 md:h-5 md:w-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-sm md:text-base">Basic analytics</span>
+                <li className="flex items-start gap-2 text-sm">
+                  <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                  <span>Priority support</span>
                 </li>
               </ul>
               <Link to="/auth">
-                <Button className="w-full gap-2" size="lg">
-                  Get Started <ArrowRight className="h-4 w-4" />
-                </Button>
+                <Button className="w-full gap-2" size="sm">Choose Growth <ArrowRight className="h-4 w-4" /></Button>
+              </Link>
+            </CardContent>
+          </Card>
+
+          {/* Employer: Scale */}
+          <Card className="border-border shadow-card hover:scale-105 transition-transform animate-slide-up" style={{animationDelay: '0.2s'}}>
+            <CardHeader className="p-5">
+              <CardTitle className="text-base mb-1">Employer — Scale</CardTitle>
+              <div className="mt-3">
+                <span className="text-3xl font-bold">£{getPricing(999)}</span>
+                <span className="text-sm text-muted-foreground ml-2">/mo</span>
+              </div>
+            </CardHeader>
+            <CardContent className="p-5 pt-0">
+              <ul className="space-y-2 mb-6">
+                <li className="flex items-start gap-2 text-sm">
+                  <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                  <span>6 hiring seats</span>
+                </li>
+                <li className="flex items-start gap-2 text-sm">
+                  <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                  <span>250 verified unlocks/year <span className="text-xs text-muted-foreground">(~£3.99 ea)</span></span>
+                </li>
+                <li className="flex items-start gap-2 text-sm">
+                  <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                  <span>Talent pool sharing & role pipelines</span>
+                </li>
+                <li className="flex items-start gap-2 text-sm">
+                  <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                  <span>Advanced analytics</span>
+                </li>
+              </ul>
+              <Link to="/auth">
+                <Button className="w-full" size="sm">Choose Scale</Button>
+              </Link>
+            </CardContent>
+          </Card>
+
+          {/* Recruiter: Pro */}
+          <Card className="border-border shadow-card hover:scale-105 transition-transform animate-slide-up" style={{animationDelay: '0.3s'}}>
+            <CardHeader className="p-5">
+              <CardTitle className="text-base mb-1">Recruiter — Pro</CardTitle>
+              <div className="mt-3">
+                <span className="text-3xl font-bold">£{getPricing(699)}</span>
+                <span className="text-sm text-muted-foreground ml-2">/mo</span>
+              </div>
+            </CardHeader>
+            <CardContent className="p-5 pt-0">
+              <ul className="space-y-2 mb-6">
+                <li className="flex items-start gap-2 text-sm">
+                  <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                  <span>3 recruiter seats</span>
+                </li>
+                <li className="flex items-start gap-2 text-sm">
+                  <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                  <span>Advanced filters & saved searches</span>
+                </li>
+                <li className="flex items-start gap-2 text-sm">
+                  <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                  <span>100 unlocks/year</span>
+                </li>
+                <li className="flex items-start gap-2 text-sm">
+                  <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                  <span>ATS export & webhooks</span>
+                </li>
+              </ul>
+              <Link to="/auth">
+                <Button className="w-full" variant="outline" size="sm">Choose Recruiter Pro</Button>
               </Link>
             </CardContent>
           </Card>
 
           {/* Enterprise */}
-          <Card className="border-border shadow-card hover:scale-105 transition-transform animate-slide-up sm:col-span-2 lg:col-span-1" style={{animationDelay: '0.2s'}}>
-            <CardHeader className="p-5 md:p-6">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="bg-accent/10 p-2 md:p-3 rounded-lg">
-                  <Building2 className="h-5 w-5 md:h-6 md:w-6 text-accent" />
-                </div>
-                <div>
-                  <CardTitle className="text-base md:text-lg">Enterprise</CardTitle>
-                  <CardDescription className="text-xs md:text-sm">Large Organizations</CardDescription>
-                </div>
-              </div>
-              <div className="mt-3 md:mt-4">
-                <span className="text-3xl md:text-4xl font-bold">Custom</span>
-                <span className="text-sm md:text-base text-muted-foreground ml-2">pricing</span>
+          <Card className="border-border shadow-card hover:scale-105 transition-transform animate-slide-up" style={{animationDelay: '0.4s'}}>
+            <CardHeader className="p-5">
+              <CardTitle className="text-base mb-1">Enterprise</CardTitle>
+              <div className="mt-3">
+                <span className="text-3xl font-bold">Custom</span>
               </div>
             </CardHeader>
-            <CardContent className="p-5 md:p-6 pt-0">
-              <ul className="space-y-2 md:space-y-3 mb-5 md:mb-6">
-                <li className="flex items-start gap-2">
-                  <Check className="h-4 w-4 md:h-5 md:w-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-sm md:text-base">Bulk unlock discounts</span>
+            <CardContent className="p-5 pt-0">
+              <ul className="space-y-2 mb-6">
+                <li className="flex items-start gap-2 text-sm">
+                  <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                  <span>Unlimited seats & SSO</span>
                 </li>
-                <li className="flex items-start gap-2">
-                  <Check className="h-4 w-4 md:h-5 md:w-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-sm md:text-base">Unlimited job postings</span>
+                <li className="flex items-start gap-2 text-sm">
+                  <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                  <span>Private talent pools & internal mobility</span>
                 </li>
-                <li className="flex items-start gap-2">
-                  <Check className="h-4 w-4 md:h-5 md:w-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-sm md:text-base">Advanced analytics & reporting</span>
+                <li className="flex items-start gap-2 text-sm">
+                  <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                  <span>API access (badges, HRIS/ATS)</span>
                 </li>
-                <li className="flex items-start gap-2">
-                  <Check className="h-4 w-4 md:h-5 md:w-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-sm md:text-base">Dedicated account manager</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <Check className="h-4 w-4 md:h-5 md:w-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-sm md:text-base">Custom integrations & API access</span>
+                <li className="flex items-start gap-2 text-sm">
+                  <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                  <span>Dedicated CSM & SLAs</span>
                 </li>
               </ul>
               <Link to="/contact">
-                <Button className="w-full" variant="outline" size="lg">
-                  Contact Sales
-                </Button>
+                <Button className="w-full" variant="outline" size="sm">Talk to Sales</Button>
               </Link>
             </CardContent>
           </Card>
         </div>
+
+        {/* Value Banner */}
+        <Card className="mb-8 border-primary/20 bg-card/50 animate-fade-in">
+          <CardContent className="p-6">
+            <p className="text-sm text-muted-foreground text-center">
+              <strong className="text-foreground">Compare:</strong> Typical agency fee 15–25% of salary (≈ £9k–£15k per hire). Cydena replaces that with flat, budgetable access.
+            </p>
+          </CardContent>
+        </Card>
+
+        {/* Add-ons */}
+        <Card className="mb-12 animate-fade-in">
+          <CardHeader>
+            <CardTitle className="text-xl">Add-ons</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ul className="space-y-2 text-sm">
+              <li className="flex items-start gap-2">
+                <ArrowRight className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                <span><strong>Extra unlocks:</strong> £499 / 100 unlocks (shared team pool)</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <ArrowRight className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                <span><strong>Pay-per-hire option:</strong> £999 success fee (optional, risk-free)</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <ArrowRight className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                <span><strong>Training credits:</strong> Real LMS cohort vouchers (bulk discounts)</span>
+              </li>
+            </ul>
+          </CardContent>
+        </Card>
 
         {/* ROI Calculator */}
         <Card className="border-primary/20 bg-gradient-card animate-fade-in">
