@@ -75,9 +75,15 @@ const Profile = () => {
   const handleSave = async () => {
     if (!userId) return;
     
+    // Require username
+    if (!username) {
+      toast.error('Username is required');
+      return;
+    }
+    
     // Validate username format
     const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
-    if (username && !usernameRegex.test(username)) {
+    if (!usernameRegex.test(username)) {
       toast.error('Username must be 3-20 characters, only letters, numbers, and underscores');
       return;
     }
@@ -123,14 +129,22 @@ const Profile = () => {
             <div className="space-y-3">
               <Label htmlFor="fullName">Full name (private until unlocked)</Label>
               <Input id="fullName" value={fullName} onChange={(e) => setFullName(e.target.value)} />
-              <Label htmlFor="username">Username (public, 3-20 chars)</Label>
+              <Label htmlFor="username">
+                Username (public, 3-20 chars) <span className="text-destructive">*</span>
+              </Label>
               <Input 
                 id="username" 
                 value={username} 
                 onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
                 placeholder="your_username"
                 maxLength={20}
+                required
               />
+              {!username && (
+                <p className="text-xs text-muted-foreground">
+                  ⚠️ Username is required to appear in public profiles
+                </p>
+              )}
               <Label htmlFor="location">Location</Label>
               <Input id="location" value={location} onChange={(e) => setLocation(e.target.value)} />
               <Label htmlFor="avatar">Avatar URL</Label>
