@@ -228,6 +228,56 @@ const Training = () => {
               Complete courses, import certifications, and boost your score with verified training
             </p>
 
+            {/* Partnership CTA - Top Placement */}
+            <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10 mb-12">
+              <CardHeader>
+                <CardTitle className="text-2xl">Become a Training Partner</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-muted-foreground">
+                  Are you a training provider? Join our network and give your graduates instant visibility with hiring employers. Upgrade to featured placement for premium exposure.
+                </p>
+                <div className="grid md:grid-cols-3 gap-4">
+                  <div className="flex items-start gap-3">
+                    <div className="bg-primary/10 p-2 rounded-lg">
+                      <CheckCircle className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold mb-1">Free Integration</h3>
+                      <p className="text-sm text-muted-foreground">No cost to join or list your training programs</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="bg-primary/10 p-2 rounded-lg">
+                      <Zap className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold mb-1">Quick Setup</h3>
+                      <p className="text-sm text-muted-foreground">Works with Credly, Accredible, or custom badges</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="bg-primary/10 p-2 rounded-lg">
+                      <Shield className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold mb-1">Talent Pipeline</h3>
+                      <p className="text-sm text-muted-foreground">Direct connection to hiring employers</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex flex-col sm:flex-row gap-3 justify-center pt-4 border-t border-border">
+                  <a href="/partnerships" className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-6 py-2">
+                    <Star className="h-4 w-4 mr-2" />
+                    Become a Featured Partner
+                  </a>
+                  <a href="/contact?subject=Partnership%20Inquiry" className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-6 py-2">
+                    Contact Us
+                  </a>
+                </div>
+              </CardContent>
+            </Card>
+
             {/* Featured Partners Section */}
             {featuredPartners.length > 0 && (
               <div className="mb-12 animate-fade-in">
@@ -358,56 +408,6 @@ const Training = () => {
               </div>
             </div>
           ))}
-
-          {/* Partnership CTA */}
-          <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10">
-            <CardHeader>
-              <CardTitle className="text-2xl">Become a Training Partner</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <p className="text-muted-foreground">
-                Are you a training provider? Join our network and give your graduates instant visibility with hiring employers. Upgrade to featured placement for premium exposure.
-              </p>
-              <div className="grid md:grid-cols-3 gap-4">
-                <div className="flex items-start gap-3">
-                  <div className="bg-primary/10 p-2 rounded-lg">
-                    <CheckCircle className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold mb-1">Free Integration</h3>
-                    <p className="text-sm text-muted-foreground">No cost to join or list your training programs</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="bg-primary/10 p-2 rounded-lg">
-                    <Zap className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold mb-1">Quick Setup</h3>
-                    <p className="text-sm text-muted-foreground">Works with Credly, Accredible, or custom badges</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="bg-primary/10 p-2 rounded-lg">
-                    <Shield className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold mb-1">Talent Pipeline</h3>
-                    <p className="text-sm text-muted-foreground">Direct connection to hiring employers</p>
-                  </div>
-                </div>
-              </div>
-              <div className="flex flex-col sm:flex-row gap-3 justify-center pt-4 border-t border-border">
-                <a href="/partnerships" className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-6 py-2">
-                  <Star className="h-4 w-4 mr-2" />
-                  Become a Featured Partner
-                </a>
-                <a href="/contact?subject=Partnership%20Inquiry" className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-6 py-2">
-                  Contact Us
-                </a>
-              </div>
-            </CardContent>
-          </Card>
         </div>
       </main>
     </div>
