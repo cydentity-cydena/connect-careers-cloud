@@ -27,6 +27,12 @@ const nameSchema = z
   .min(2, "Name must be at least 2 characters")
   .max(100, "Name must be less than 100 characters")
   .regex(/^[a-zA-Z\s'-]+$/, "Name can only contain letters, spaces, hyphens, and apostrophes");
+const usernameSchema = z
+  .string()
+  .trim()
+  .min(3, "Username must be at least 3 characters")
+  .max(20, "Username must be 20 characters or less")
+  .regex(/^[a-zA-Z0-9_]+$/, "Username can only contain letters, numbers, and underscores");
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -34,6 +40,7 @@ const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
+  const [username, setUsername] = useState("");
   const [userRole, setUserRole] = useState<"candidate" | "employer">("candidate");
 
   useEffect(() => {
@@ -61,6 +68,7 @@ const Auth = () => {
       emailSchema.parse(email);
       passwordSchema.parse(password);
       nameSchema.parse(fullName);
+      usernameSchema.parse(username);
     } catch (error: any) {
       if (error instanceof z.ZodError) {
         toast.error(error.errors[0].message);
@@ -84,6 +92,7 @@ const Auth = () => {
           email: email.trim().toLowerCase(),
           password,
           fullName: fullName.trim(),
+          username: username.trim().toLowerCase(),
           role: userRole,
         },
       });
@@ -231,7 +240,7 @@ const Auth = () => {
               <TabsContent value="signup">
                 <form onSubmit={handleSignUp} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="signup-name">Full Name</Label>
+                    <Label htmlFor="signup-name">Full Name (private)</Label>
                     <Input
                       id="signup-name"
                       type="text"
@@ -240,6 +249,24 @@ const Auth = () => {
                       onChange={(e) => setFullName(e.target.value)}
                       required
                     />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-username">
+                      Username (public) <span className="text-destructive">*</span>
+                    </Label>
+                    <Input
+                      id="signup-username"
+                      type="text"
+                      placeholder="cyber_pro"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
+                      required
+                      minLength={3}
+                      maxLength={20}
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      3-20 characters: letters, numbers, underscores only
+                    </p>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="signup-email">Email</Label>

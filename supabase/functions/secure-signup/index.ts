@@ -10,6 +10,7 @@ interface SignupRequest {
   email: string;
   password: string;
   fullName: string;
+  username: string;
   role: 'candidate' | 'employer';
 }
 
@@ -31,9 +32,26 @@ serve(async (req) => {
       }
     });
 
-    const { email, password, fullName, role }: SignupRequest = await req.json();
+    const { email, password, fullName, username, role }: SignupRequest = await req.json();
 
     console.log('Starting secure signup for:', email, 'with role:', role);
+
+    // Validate username format
+    const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
+    if (!username || !usernameRegex.test(username)) {
+      throw new Error('Invalid username format. Must be 3-20 characters with letters, numbers, and underscores only.');
+    }
+
+    // Check if username already exists
+    const { data: existingUsername } = await supabaseAdmin
+      .from('profiles')
+      .select('username')
+      .eq('username', username.toLowerCase())
+      .maybeSingle();
+
+    if (existingUsername) {
+      throw new Error('Username already taken. Please choose another.');
+    }
 
     // 1. Create auth user
     const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
@@ -53,17 +71,23 @@ serve(async (req) => {
     const userId = authData.user.id;
     console.log('Auth user created:', userId);
 
-    // 2. Create profile (automatically created by trigger, but we verify)
+    // 2. Update profile with username (profile created by trigger)
     const { error: profileError } = await supabaseAdmin
       .from('profiles')
-      .select('id')
-      .eq('id', userId)
-      .single();
+      .update({ 
+        full_name: fullName,
+        username: username.toLowerCase() 
+      })
+      .eq('id', userId);
 
-    if (profileError && profileError.code !== 'PGRST116') {
-      console.error('Profile verification failed:', profileError);
-      // Profile should be created by trigger, if not we have an issue
+    if (profileError) {
+      console.error('Profile update failed:', profileError);
+      // Cleanup: delete the auth user if profile update fails
+      await supabaseAdmin.auth.admin.deleteUser(userId);
+      throw new Error('Failed to update profile with username');
     }
+
+    console.log('Profile updated with username:', username);
 
     // 3. Assign role using service role (bypasses RLS)
     const { error: roleError } = await supabaseAdmin
