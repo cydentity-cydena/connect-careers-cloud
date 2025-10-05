@@ -225,36 +225,36 @@ const CertificationCatalog = () => {
         {featuredCertifications.length > 0 && (
           <div className="mb-12 animate-fade-in relative">
             {/* Banner Wrapper */}
-            <div className="border-4 border-yellow-500 rounded-xl p-6 md:p-8 bg-gradient-to-br from-yellow-50 via-amber-50 to-orange-50 dark:from-yellow-950/20 dark:via-amber-950/20 dark:to-orange-950/20 shadow-2xl relative overflow-hidden">
+            <div className="border-2 border-primary/30 rounded-xl p-6 md:p-8 bg-gradient-to-br from-primary/5 via-background to-primary/5 shadow-lg relative overflow-hidden">
               {/* Decorative corner badges */}
-              <div className="absolute top-0 right-0 w-24 h-24 bg-yellow-500/20 rounded-bl-full"></div>
-              <div className="absolute bottom-0 left-0 w-24 h-24 bg-yellow-500/20 rounded-tr-full"></div>
+              <div className="absolute top-0 right-0 w-20 h-20 bg-primary/5 rounded-bl-full"></div>
+              <div className="absolute bottom-0 left-0 w-20 h-20 bg-primary/5 rounded-tr-full"></div>
               
               {/* Featured Banner Tag */}
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10">
-                <Badge className="bg-gradient-to-r from-yellow-500 to-amber-500 text-white px-6 py-2 text-base font-bold shadow-lg border-2 border-yellow-600">
-                  <Star className="h-5 w-5 mr-2 fill-white" />
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
+                <Badge className="bg-primary text-primary-foreground px-4 py-1.5 text-sm font-semibold shadow-md">
+                  <Star className="h-4 w-4 mr-1.5 fill-current" />
                   FEATURED CERTIFICATIONS
-                  <Star className="h-5 w-5 ml-2 fill-white" />
+                  <Star className="h-4 w-4 ml-1.5 fill-current" />
                 </Badge>
               </div>
 
-              <div className="flex items-center justify-center gap-2 mb-8 mt-4">
-                <Star className="h-8 w-8 text-yellow-600 fill-yellow-600 animate-pulse" />
-                <h2 className="text-3xl md:text-4xl font-bold text-center bg-gradient-to-r from-yellow-700 to-amber-700 bg-clip-text text-transparent">
+              <div className="flex items-center justify-center gap-2 mb-8 mt-2">
+                <Star className="h-6 w-6 text-primary/60 fill-primary/60" />
+                <h2 className="text-2xl md:text-3xl font-bold text-center">
                   Premium Featured Certifications
                 </h2>
-                <Star className="h-8 w-8 text-yellow-600 fill-yellow-600 animate-pulse" />
+                <Star className="h-6 w-6 text-primary/60 fill-primary/60" />
               </div>
 
               <div className="grid md:grid-cols-2 gap-6">
                 {featuredCertifications.map((cert) => (
                   <Card 
                     key={cert.id}
-                    className="relative border-3 border-yellow-400 bg-white dark:bg-gray-900 shadow-xl hover:scale-105 transition-all duration-300 hover:shadow-2xl overflow-hidden"
+                    className="relative border-2 border-primary/20 bg-card shadow-md hover:scale-[1.02] transition-all duration-300 hover:shadow-lg overflow-hidden hover:border-primary/40"
                   >
                     {/* Featured ribbon */}
-                    <div className="absolute top-4 -right-10 rotate-45 bg-gradient-to-r from-yellow-500 to-amber-500 text-white px-12 py-1 text-xs font-bold shadow-lg">
+                    <div className="absolute top-3 -right-8 rotate-45 bg-primary text-primary-foreground px-10 py-0.5 text-xs font-semibold shadow-md">
                       FEATURED
                     </div>
 
@@ -262,13 +262,13 @@ const CertificationCatalog = () => {
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-3">
-                            <Badge className="bg-yellow-500 hover:bg-yellow-600 text-yellow-950 font-bold">
-                              <Star className="h-3 w-3 mr-1 fill-yellow-950" />
+                            <Badge variant="secondary" className="font-semibold">
+                              <Star className="h-3 w-3 mr-1 fill-current" />
                               Featured
                             </Badge>
                           </div>
-                          <CardTitle className="text-2xl mb-2 flex items-center gap-2">
-                            <Award className="h-6 w-6 text-yellow-600" />
+                          <CardTitle className="text-xl mb-2 flex items-center gap-2">
+                            <Award className="h-5 w-5 text-primary" />
                             {cert.cert_name}
                           </CardTitle>
                           <CardDescription className="text-lg font-semibold text-primary">
@@ -292,7 +292,7 @@ const CertificationCatalog = () => {
                         href={cert.website_url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 text-primary hover:underline font-semibold text-lg hover:text-yellow-600 transition-colors"
+                        className="inline-flex items-center gap-2 text-primary hover:underline font-semibold transition-colors"
                       >
                         Learn More & Enroll →
                       </a>
