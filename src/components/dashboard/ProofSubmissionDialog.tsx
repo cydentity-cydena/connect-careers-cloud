@@ -3,7 +3,6 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
@@ -22,17 +21,16 @@ export const ProofSubmissionDialog = ({
   onSuccess,
 }: ProofSubmissionDialogProps) => {
   const { toast } = useToast();
-  const [proofType, setProofType] = useState<string>(course.expected_proof || 'openbadge');
   const [proofUrl, setProofUrl] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!proofUrl.trim() && proofType !== 'none') {
+    if (!proofUrl.trim()) {
       toast({
-        title: "Missing proof",
-        description: "Please provide proof of completion",
+        title: "Missing badge URL",
+        description: "Please provide your OpenBadge link",
         variant: "destructive",
       });
       return;
@@ -44,8 +42,8 @@ export const ProofSubmissionDialog = ({
       const { data, error } = await supabase.functions.invoke('boost-complete', {
         body: {
           partnerCourseId: course.id,
-          proofType,
-          proofUrl: proofUrl.trim() || null,
+          proofType: 'openbadge',
+          proofUrl: proofUrl.trim(),
         },
       });
 
@@ -87,43 +85,21 @@ export const ProofSubmissionDialog = ({
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-3">
-            <Label>Proof Type</Label>
-            <RadioGroup value={proofType} onValueChange={setProofType}>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="openbadge" id="openbadge" />
-                <Label htmlFor="openbadge" className="font-normal cursor-pointer">
-                  OpenBadge Link
-                </Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="pdf" id="pdf" />
-                <Label htmlFor="pdf" className="font-normal cursor-pointer">
-                  Certificate PDF URL
-                </Label>
-              </div>
-            </RadioGroup>
-          </div>
-
           <div className="space-y-2">
-            <Label htmlFor="proofUrl">
-              {proofType === 'openbadge' ? 'Badge URL' : 'PDF URL'}
-            </Label>
+            <Label htmlFor="proofUrl">Badge URL</Label>
             <Input
               id="proofUrl"
               type="url"
-              placeholder="https://..."
+              placeholder="https://www.credly.com/badges/..."
               value={proofUrl}
               onChange={(e) => setProofUrl(e.target.value)}
-              required={proofType !== 'none'}
+              required
             />
-            {proofType === 'openbadge' && (
-              <p className="text-xs text-muted-foreground">
-                Complete and import your OpenBadge to auto-verify. Examples: Credly, TryHackMe, HackTheBox badges.
-              </p>
-            )}
+            <p className="text-xs text-muted-foreground">
+              Complete and import your OpenBadge to auto-verify. Works with: Credly, TryHackMe, HackTheBox, and any OpenBadge-compliant platform.
+            </p>
             {course.badge_hint && (
-              <p className="text-xs text-muted-foreground">{course.badge_hint}</p>
+              <p className="text-xs text-muted-foreground mt-1">{course.badge_hint}</p>
             )}
           </div>
 
