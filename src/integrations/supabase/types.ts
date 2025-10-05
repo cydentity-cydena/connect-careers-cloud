@@ -488,24 +488,33 @@ export type Database = {
       }
       employer_credits: {
         Row: {
+          allocation_reset_date: string | null
+          annual_allocation: number | null
           created_at: string
           credits: number
+          credits_used: number
           employer_id: string
           id: string
           total_purchased: number
           updated_at: string
         }
         Insert: {
+          allocation_reset_date?: string | null
+          annual_allocation?: number | null
           created_at?: string
           credits?: number
+          credits_used?: number
           employer_id: string
           id?: string
           total_purchased?: number
           updated_at?: string
         }
         Update: {
+          allocation_reset_date?: string | null
+          annual_allocation?: number | null
           created_at?: string
           credits?: number
+          credits_used?: number
           employer_id?: string
           id?: string
           total_purchased?: number

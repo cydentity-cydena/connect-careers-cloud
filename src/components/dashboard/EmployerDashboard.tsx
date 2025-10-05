@@ -7,10 +7,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Building, Users, Briefcase, TrendingUp, Coins, Workflow } from "lucide-react";
 import { CreditsPurchaseDialog } from "@/components/employer/CreditsPurchaseDialog";
 import { ApplicationPipeline } from "@/components/employer/ApplicationPipeline";
+import { UnlockUsageTracker } from "@/components/employer/UnlockUsageTracker";
 
 const EmployerDashboard = () => {
   const navigate = useNavigate();
   const [credits, setCredits] = useState(0);
+  const [creditsUsed, setCreditsUsed] = useState(0);
+  const [annualAllocation, setAnnualAllocation] = useState<number | undefined>();
   const [userId, setUserId] = useState("");
   const [jobsCount, setJobsCount] = useState(0);
   const [applicationsCount, setApplicationsCount] = useState(0);
@@ -47,12 +50,14 @@ const EmployerDashboard = () => {
   const loadCredits = async (uid: string) => {
     const { data } = await supabase
       .from('employer_credits')
-      .select('credits')
+      .select('credits, credits_used, annual_allocation')
       .eq('employer_id', uid)
       .maybeSingle();
     
     if (data) {
       setCredits(data.credits);
+      setCreditsUsed(data.credits_used || 0);
+      setAnnualAllocation(data.annual_allocation || undefined);
     }
   };
   return (
@@ -74,6 +79,14 @@ const EmployerDashboard = () => {
         </TabsList>
 
         <TabsContent value="overview" className="space-y-8 mt-6">
+      {/* Usage Tracker */}
+      <UnlockUsageTracker
+        creditsAvailable={credits}
+        creditsUsed={creditsUsed}
+        annualAllocation={annualAllocation}
+        currentTier="Starter"
+      />
+
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
         <Card className="border-primary border-2 shadow-lg hover:scale-105 transition-transform">
           <CardHeader className="pb-3">
