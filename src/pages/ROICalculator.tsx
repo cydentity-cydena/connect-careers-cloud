@@ -19,7 +19,6 @@ export default function ROICalculator() {
   const [subPrice, setSubPrice] = useState(499);
   const [unlockPackPrice, setUnlockPackPrice] = useState(499);
   const [unlocksPerHire, setUnlocksPerHire] = useState(4);
-  const [seats, setSeats] = useState(3);
 
   const [recruiterCost, setRecruiterCost] = useState(0);
   const [cydenaCost, setCydenaCost] = useState(0);
@@ -240,16 +239,6 @@ export default function ROICalculator() {
                         onChange={(e) => setUnlocksPerHire(Number(e.target.value))}
                       />
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="seats">Seats included in subscription</Label>
-                      <Input
-                        id="seats"
-                        type="number"
-                        min="1"
-                        value={seats}
-                        onChange={(e) => setSeats(Number(e.target.value))}
-                      />
-                    </div>
                   </CardContent>
                 </Card>
 
@@ -304,8 +293,8 @@ export default function ROICalculator() {
                   </CardHeader>
                   <CardContent className="space-y-2 text-sm">
                     <p>• Agency fee defaults to <strong>{agencyPct}%</strong> of salary</p>
-                    <p>• Cydena subscription <strong>{formatCurrency(subPrice)}/mo</strong> includes <strong>{seats} seats</strong></p>
-                    <p>• Unlocks shared across seats; bundle is <strong>{formatCurrency(unlockPackPrice)} / 100 unlocks</strong></p>
+                    <p>• Cydena subscription <strong>{formatCurrency(subPrice)}/mo</strong></p>
+                    <p>• Unlock bundle is <strong>{formatCurrency(unlockPackPrice)} / 100 unlocks</strong></p>
                     <p>• Assumes <strong>{totalUnlocks.toLocaleString()} unlocks/year</strong> for the team</p>
                   </CardContent>
                 </Card>
