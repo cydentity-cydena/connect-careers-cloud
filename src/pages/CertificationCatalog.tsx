@@ -223,56 +223,83 @@ const CertificationCatalog = () => {
 
         {/* Featured Certifications Section */}
         {featuredCertifications.length > 0 && (
-          <div className="mb-12 animate-fade-in">
-            <div className="flex items-center gap-2 mb-6">
-              <Star className="h-6 w-6 text-yellow-500 fill-yellow-500" />
-              <h2 className="text-3xl font-bold">Featured Certifications</h2>
-              <Star className="h-6 w-6 text-yellow-500 fill-yellow-500" />
-            </div>
-            <div className="grid md:grid-cols-2 gap-6">
-              {featuredCertifications.map((cert) => (
-                <Card 
-                  key={cert.id}
-                  className="border-2 border-yellow-500/50 bg-gradient-to-br from-yellow-50 to-yellow-100 dark:from-yellow-950/30 dark:to-yellow-900/20 shadow-xl hover:scale-105 transition-transform"
-                >
-                  <CardHeader>
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex-1">
-                        <CardTitle className="text-2xl mb-2 flex items-center gap-2">
-                          <Award className="h-6 w-6 text-yellow-600" />
-                          {cert.cert_name}
-                        </CardTitle>
-                        <CardDescription className="text-lg font-semibold text-primary">
-                          {cert.provider_name}
-                        </CardDescription>
-                      </div>
-                      {cert.logo_url && (
-                        <img 
-                          src={cert.logo_url} 
-                          alt={`${cert.provider_name} logo`}
-                          className="h-16 w-16 object-contain rounded-lg bg-white p-2"
-                        />
-                      )}
+          <div className="mb-12 animate-fade-in relative">
+            {/* Banner Wrapper */}
+            <div className="border-4 border-yellow-500 rounded-xl p-6 md:p-8 bg-gradient-to-br from-yellow-50 via-amber-50 to-orange-50 dark:from-yellow-950/20 dark:via-amber-950/20 dark:to-orange-950/20 shadow-2xl relative overflow-hidden">
+              {/* Decorative corner badges */}
+              <div className="absolute top-0 right-0 w-24 h-24 bg-yellow-500/20 rounded-bl-full"></div>
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-yellow-500/20 rounded-tr-full"></div>
+              
+              {/* Featured Banner Tag */}
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10">
+                <Badge className="bg-gradient-to-r from-yellow-500 to-amber-500 text-white px-6 py-2 text-base font-bold shadow-lg border-2 border-yellow-600">
+                  <Star className="h-5 w-5 mr-2 fill-white" />
+                  FEATURED CERTIFICATIONS
+                  <Star className="h-5 w-5 ml-2 fill-white" />
+                </Badge>
+              </div>
+
+              <div className="flex items-center justify-center gap-2 mb-8 mt-4">
+                <Star className="h-8 w-8 text-yellow-600 fill-yellow-600 animate-pulse" />
+                <h2 className="text-3xl md:text-4xl font-bold text-center bg-gradient-to-r from-yellow-700 to-amber-700 bg-clip-text text-transparent">
+                  Premium Featured Certifications
+                </h2>
+                <Star className="h-8 w-8 text-yellow-600 fill-yellow-600 animate-pulse" />
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-6">
+                {featuredCertifications.map((cert) => (
+                  <Card 
+                    key={cert.id}
+                    className="relative border-3 border-yellow-400 bg-white dark:bg-gray-900 shadow-xl hover:scale-105 transition-all duration-300 hover:shadow-2xl overflow-hidden"
+                  >
+                    {/* Featured ribbon */}
+                    <div className="absolute top-4 -right-10 rotate-45 bg-gradient-to-r from-yellow-500 to-amber-500 text-white px-12 py-1 text-xs font-bold shadow-lg">
+                      FEATURED
                     </div>
-                    <Badge className="bg-yellow-500 text-yellow-950 w-fit">
-                      ⭐ Featured
-                    </Badge>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <p className="text-muted-foreground">
-                      {cert.description}
-                    </p>
-                    <a
-                      href={cert.website_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 text-primary hover:underline font-semibold"
-                    >
-                      Learn More & Enroll →
-                    </a>
-                  </CardContent>
-                </Card>
-              ))}
+
+                    <CardHeader className="relative">
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-3">
+                            <Badge className="bg-yellow-500 hover:bg-yellow-600 text-yellow-950 font-bold">
+                              <Star className="h-3 w-3 mr-1 fill-yellow-950" />
+                              Featured
+                            </Badge>
+                          </div>
+                          <CardTitle className="text-2xl mb-2 flex items-center gap-2">
+                            <Award className="h-6 w-6 text-yellow-600" />
+                            {cert.cert_name}
+                          </CardTitle>
+                          <CardDescription className="text-lg font-semibold text-primary">
+                            {cert.provider_name}
+                          </CardDescription>
+                        </div>
+                        {cert.logo_url && (
+                          <img 
+                            src={cert.logo_url} 
+                            alt={`${cert.provider_name} logo`}
+                            className="h-16 w-16 object-contain rounded-lg bg-white dark:bg-gray-800 p-2 shadow-md"
+                          />
+                        )}
+                      </div>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <p className="text-muted-foreground">
+                        {cert.description}
+                      </p>
+                      <a
+                        href={cert.website_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 text-primary hover:underline font-semibold text-lg hover:text-yellow-600 transition-colors"
+                      >
+                        Learn More & Enroll →
+                      </a>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
             </div>
           </div>
         )}
