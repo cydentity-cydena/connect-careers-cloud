@@ -54,11 +54,10 @@ Deno.serve(async (req) => {
 
     const completedCourseIds = completedData?.map(c => c.partner_course_id) || [];
 
-    // Fetch active courses with paid boost placements not yet completed
-    // Only show courses that have active paid boost placements
+    // First, try to fetch paid boost placements
     const now = new Date().toISOString();
     
-    let query = supabase
+    let boostQuery = supabase
       .from('partner_courses')
       .select('*')
       .eq('active', true)
@@ -67,19 +66,38 @@ Deno.serve(async (req) => {
       .lte('boost_start_date', now)
       .gte('boost_end_date', now);
     
-    // Only filter out completed courses if there are any
     if (completedCourseIds.length > 0) {
-      query = query.not('id', 'in', `(${completedCourseIds.join(',')})`);
+      boostQuery = boostQuery.not('id', 'in', `(${completedCourseIds.join(',')})`);
     }
     
-    const { data: courses, error: coursesError } = await query;
+    const { data: boostCourses } = await boostQuery;
 
-    if (coursesError) {
-      console.error('Error fetching courses:', coursesError);
-      return new Response(JSON.stringify({ error: coursesError.message }), {
-        status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+    // If no paid boosts, fall back to showing regular active courses
+    let courses = boostCourses;
+    
+    if (!boostCourses || boostCourses.length === 0) {
+      console.log('No paid boosts found, fetching regular active courses');
+      let fallbackQuery = supabase
+        .from('partner_courses')
+        .select('*')
+        .eq('active', true)
+        .limit(6); // Show up to 6 example courses
+      
+      if (completedCourseIds.length > 0) {
+        fallbackQuery = fallbackQuery.not('id', 'in', `(${completedCourseIds.join(',')})`);
+      }
+      
+      const { data: fallbackCourses, error: coursesError } = await fallbackQuery;
+      
+      if (coursesError) {
+        console.error('Error fetching fallback courses:', coursesError);
+        return new Response(JSON.stringify({ error: coursesError.message }), {
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+      
+      courses = fallbackCourses;
     }
 
     // Simple personalization: recommend based on skills
