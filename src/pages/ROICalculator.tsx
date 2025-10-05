@@ -55,13 +55,6 @@ export default function ROICalculator() {
     return '£' + amount.toLocaleString('en-GB', { maximumFractionDigits: 0 });
   };
 
-  const arrScenarios = [
-    { stage: 'MVP', employers: 200, avgPrice: 400, arr: 200 * 400 * 12 },
-    { stage: 'Growth', employers: 800, avgPrice: 500, arr: 800 * 500 * 12 },
-    { stage: 'Scale', employers: 2000, avgPrice: 500, arr: 2000 * 500 * 12 },
-    { stage: 'Global', employers: 5000, avgPrice: 700, arr: 5000 * 700 * 12 },
-  ];
-
   const getPricing = (monthly: number) => {
     const annual = Math.round(monthly * 0.85); // 15% discount
     return billingPeriod === 'monthly' ? monthly : annual;
@@ -402,31 +395,6 @@ export default function ROICalculator() {
                   </Card>
                 ))}
               </div>
-
-              {/* ARR Scenarios */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Illustrative ARR Scenarios (Employer-led)</CardTitle>
-                  <CardDescription>Business growth projections based on employer subscriptions</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    {arrScenarios.map((scenario) => (
-                      <Card key={scenario.stage} className="bg-muted/50">
-                        <CardHeader className="pb-3">
-                          <CardTitle className="text-sm text-muted-foreground">{scenario.stage}</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                          <p className="text-2xl font-bold mb-2">{formatCurrency(scenario.arr)}</p>
-                          <p className="text-xs text-muted-foreground">
-                            {scenario.employers.toLocaleString()} employers × {formatCurrency(scenario.avgPrice)}/mo
-                          </p>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
             </TabsContent>
           </Tabs>
         </div>
