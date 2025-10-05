@@ -7,6 +7,7 @@ const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
     "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
 interface ContactEmailRequest {
@@ -23,10 +24,26 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     const { name, email, message }: ContactEmailRequest = await req.json();
 
+    const apiKeyPresent = !!Deno.env.get("RESEND_API_KEY");
+    if (!apiKeyPresent) {
+      console.error("RESEND_API_KEY is not set. Configure the secret to enable email sending.");
+      return new Response(JSON.stringify({ error: "Email service not configured" }), {
+        status: 500,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
+    }
+
+    if (!name || !email || !message) {
+      return new Response(JSON.stringify({ error: "Missing required fields" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
+    }
+
     console.log("Processing contact form submission from:", email);
 
     // Send email to contact@cydena.com
-    const emailResponse = await resend.emails.send({
+    const { data, error } = await resend.emails.send({
       from: "Cydena Contact <onboarding@resend.dev>",
       to: ["contact@cydena.com"],
       replyTo: email,
@@ -48,9 +65,14 @@ const handler = async (req: Request): Promise<Response> => {
       `,
     });
 
-    console.log("Email sent successfully:", emailResponse);
+    if (error) {
+      console.error("Resend error:", error);
+      throw error;
+    }
 
-    return new Response(JSON.stringify({ success: true, data: emailResponse }), {
+    console.log("Email sent successfully:", data);
+
+    return new Response(JSON.stringify({ success: true, data }), {
       status: 200,
       headers: {
         "Content-Type": "application/json",
