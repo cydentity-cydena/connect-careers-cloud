@@ -1,0 +1,147 @@
+import { useState } from 'react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
+import { PlusCircle } from 'lucide-react';
+
+export const CreatePostDialog = () => {
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [activityType, setActivityType] = useState('');
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const { toast } = useToast();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!title || !activityType) {
+      toast({
+        title: "Missing fields",
+        description: "Please fill in all required fields",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast({
+          title: "Not authenticated",
+          description: "Please sign in to post",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const { error } = await supabase
+        .from('activity_feed')
+        .insert({
+          user_id: user.id,
+          activity_type: activityType,
+          title,
+          description: description || null,
+          is_public: true,
+          metadata: {}
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "Success!",
+        description: "Your post has been shared with the community",
+      });
+
+      setOpen(false);
+      setTitle('');
+      setDescription('');
+      setActivityType('');
+      
+      window.location.reload();
+    } catch (error) {
+      console.error('Error creating post:', error);
+      toast({
+        title: "Error",
+        description: "Failed to create post. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button className="gap-2">
+          <PlusCircle className="h-4 w-4" />
+          Share Activity
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Share Your Activity</DialogTitle>
+        </DialogHeader>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="activity-type">Activity Type *</Label>
+            <Select value={activityType} onValueChange={setActivityType}>
+              <SelectTrigger id="activity-type">
+                <SelectValue placeholder="Select type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="certification">Earned Certification</SelectItem>
+                <SelectItem value="achievement">Achievement Unlocked</SelectItem>
+                <SelectItem value="skill">New Skill Learned</SelectItem>
+                <SelectItem value="project">Project Completed</SelectItem>
+                <SelectItem value="milestone">Career Milestone</SelectItem>
+                <SelectItem value="other">Other</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="title">Title *</Label>
+            <Input
+              id="title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="e.g., Completed CISSP Certification"
+              maxLength={200}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="description">Description (Optional)</Label>
+            <Textarea
+              id="description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Share more details about your achievement..."
+              rows={4}
+              maxLength={1000}
+            />
+          </div>
+
+          <div className="flex justify-end gap-2">
+            <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+              Cancel
+            </Button>
+            <Button type="submit" disabled={loading}>
+              {loading ? 'Posting...' : 'Share'}
+            </Button>
+          </div>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+};

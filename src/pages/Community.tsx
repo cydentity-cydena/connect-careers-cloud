@@ -1,12 +1,16 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Button } from '@/components/ui/button';
 import { ActivityFeed } from '@/components/community/ActivityFeed';
 import { SkillPathways } from '@/components/community/SkillPathways';
+import { CreatePostDialog } from '@/components/community/CreatePostDialog';
 import SEO from '@/components/SEO';
-import { TrendingUp, Map, Users } from 'lucide-react';
+import { TrendingUp, Map, Users, ArrowLeft } from 'lucide-react';
 
 const Community = () => {
   const [activeTab, setActiveTab] = useState('feed');
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-background">
@@ -16,11 +20,25 @@ const Community = () => {
       />
       
       <div className="container mx-auto px-4 py-8">
-        <header className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">Community</h1>
-          <p className="text-muted-foreground text-lg">
-            Connect, learn, and grow with the cybersecurity community
-          </p>
+        <div className="mb-6">
+          <Button
+            variant="ghost"
+            onClick={() => navigate(-1)}
+            className="gap-2"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back
+          </Button>
+        </div>
+
+        <header className="mb-8 flex justify-between items-start">
+          <div>
+            <h1 className="text-4xl font-bold mb-2">Community</h1>
+            <p className="text-muted-foreground text-lg">
+              Connect, learn, and grow with the cybersecurity community
+            </p>
+          </div>
+          <CreatePostDialog />
         </header>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
