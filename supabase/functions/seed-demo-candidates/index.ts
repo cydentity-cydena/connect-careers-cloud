@@ -69,10 +69,15 @@ function generateEmployer(index: number) {
   const firstNames = ["Sarah", "Michael", "Jennifer", "William", "Jessica", "James", "Ashley", "Robert", "Amanda", "Christopher"];
   const lastNames = ["Thompson", "White", "Harris", "Clark", "Lewis", "Walker", "Hall", "Allen", "Young", "King"];
   const companies = ["TechCorp", "CyberSecure", "SecureNet", "DefenseWorks", "InfoGuard", "DataShield", "NetSecure", "CloudGuard", "CyberDefense", "SecureTech"];
+  const industries = ["Technology", "Finance", "Healthcare", "Government", "Retail", "Manufacturing", "Education", "Energy"];
+  const sizes = ["1-10", "11-50", "51-200", "201-500", "501-1000", "1000+"];
   
   const firstName = firstNames[index % firstNames.length];
   const lastName = lastNames[index % lastNames.length];
-  const companyName = `${companies[index % companies.length]} ${index > 9 ? index : ''}`.trim();
+  const companyBase = companies[index % companies.length];
+  const companyName = index > 9 ? `${companyBase} ${Math.floor(index / 10)}` : companyBase;
+  const industry = industries[index % industries.length];
+  const size = sizes[index % sizes.length];
 
   return {
     email: `${firstName.toLowerCase()}.${lastName.toLowerCase()}.employer${index}@cydena.demo`,
@@ -80,8 +85,14 @@ function generateEmployer(index: number) {
     full_name: `${firstName} ${lastName}`,
     location: `City ${index}`,
     bio: `HR Manager at ${companyName}`,
-    companyName: companyName,
-    companyIndustry: index % 3 === 0 ? "Technology" : index % 3 === 1 ? "Finance" : "Healthcare"
+    company: {
+      name: companyName,
+      description: `${companyName} is a leading provider of cybersecurity solutions and services in the ${industry.toLowerCase()} sector.`,
+      industry: industry,
+      size: size,
+      location: `City ${index}, State`,
+      website: `https://www.${companyBase.toLowerCase()}.com`
+    }
   };
 }
 
@@ -221,6 +232,17 @@ serve(async (req) => {
           employer_id: userId,
           credits: 10,
           annual_allocation: 100
+        });
+
+        // Create company profile
+        await supabaseAdmin.from('companies').insert({
+          name: employer.company.name,
+          description: employer.company.description,
+          industry: employer.company.industry,
+          size: employer.company.size,
+          location: employer.company.location,
+          website: employer.company.website,
+          created_by: userId
         });
 
         results.employers.push({ email: employer.email, success: true });
