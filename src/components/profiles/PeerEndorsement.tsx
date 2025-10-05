@@ -51,22 +51,15 @@ export function PeerEndorsement({ candidateId, currentUserId }: PeerEndorsementP
       if (endorseError) {
         if (endorseError.code === "23505") {
           toast.error("You've already given this type of endorsement");
+        } else if (endorseError.message.includes("Rate limit exceeded")) {
+          toast.error("Rate limit exceeded: Maximum 10 endorsements per 24 hours");
         } else {
           throw endorseError;
         }
         return;
       }
 
-      // Award community points
-      await supabase.rpc("award_community_points", {
-        p_candidate_id: candidateId,
-        p_code: "PEER_ENDORSEMENT",
-        p_meta: {
-          endorsed_by: currentUserId,
-          type: selectedType,
-        },
-      });
-
+      // Points are now awarded automatically via database trigger
       toast.success("Endorsement sent! They earned 50 community points.");
       setSelectedType(null);
       setComment("");
