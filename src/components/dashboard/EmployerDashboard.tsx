@@ -69,6 +69,52 @@ const EmployerDashboard = () => {
         </p>
       </div>
 
+      <Card className="border-border shadow-card">
+        <CardHeader>
+          <CardTitle>Getting Started as an Employer</CardTitle>
+          <CardDescription>
+            Follow these steps to find the perfect candidates
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <div className="flex items-start gap-4">
+              <div className="bg-primary/10 rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
+                <span className="text-primary font-semibold">1</span>
+              </div>
+              <div>
+                <h3 className="font-semibold mb-1">Create Your Company Profile</h3>
+                <p className="text-sm text-muted-foreground">
+                  Add company details, culture, and what makes you unique
+                </p>
+              </div>
+            </div>
+            <div className="flex items-start gap-4">
+              <div className="bg-primary/10 rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
+                <span className="text-primary font-semibold">2</span>
+              </div>
+              <div>
+                <h3 className="font-semibold mb-1">Post Job Openings</h3>
+                <p className="text-sm text-muted-foreground">
+                  Define roles with required skills and clearances
+                </p>
+              </div>
+            </div>
+            <div className="flex items-start gap-4">
+              <div className="bg-primary/10 rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
+                <span className="text-primary font-semibold">3</span>
+              </div>
+              <div>
+                <h3 className="font-semibold mb-1">Review & Hire</h3>
+                <p className="text-sm text-muted-foreground">
+                  Screen candidates and manage the hiring pipeline
+                </p>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       <Tabs defaultValue="overview" className="w-full">
         <TabsList className="grid w-full max-w-md grid-cols-2">
           <TabsTrigger value="overview">Overview</TabsTrigger>
@@ -211,51 +257,6 @@ const EmployerDashboard = () => {
         </CardContent>
       </Card>
 
-      <Card className="border-border shadow-card">
-        <CardHeader>
-          <CardTitle>Getting Started as an Employer</CardTitle>
-          <CardDescription>
-            Follow these steps to find the perfect candidates
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <div className="flex items-start gap-4">
-              <div className="bg-primary/10 rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
-                <span className="text-primary font-semibold">1</span>
-              </div>
-              <div>
-                <h3 className="font-semibold mb-1">Create Your Company Profile</h3>
-                <p className="text-sm text-muted-foreground">
-                  Add company details, culture, and what makes you unique
-                </p>
-              </div>
-            </div>
-            <div className="flex items-start gap-4">
-              <div className="bg-primary/10 rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
-                <span className="text-primary font-semibold">2</span>
-              </div>
-              <div>
-                <h3 className="font-semibold mb-1">Post Job Openings</h3>
-                <p className="text-sm text-muted-foreground">
-                  Define roles with required skills and clearances
-                </p>
-              </div>
-            </div>
-            <div className="flex items-start gap-4">
-              <div className="bg-primary/10 rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
-                <span className="text-primary font-semibold">3</span>
-              </div>
-              <div>
-                <h3 className="font-semibold mb-1">Review & Hire</h3>
-                <p className="text-sm text-muted-foreground">
-                  Screen candidates and manage the hiring pipeline
-                </p>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
         </TabsContent>
 
         <TabsContent value="pipeline" className="mt-6">
