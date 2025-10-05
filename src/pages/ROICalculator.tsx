@@ -87,7 +87,7 @@ export default function ROICalculator() {
       features: [
         '3 hiring seats',
         '100 verified unlocks/year (~£4.99 ea)',
-        'ATS export (CSV) & basic analytics',
+        'Application pipeline management',
         'Priority support'
       ],
       cta: 'Choose Growth',
@@ -112,7 +112,7 @@ export default function ROICalculator() {
         '3 recruiter seats',
         'Advanced filters & saved searches',
         '100 unlocks/year',
-        'ATS export & webhooks'
+        'Bulk candidate actions'
       ],
       cta: 'Choose Recruiter Pro',
       link: '/auth?mode=signup',
@@ -124,7 +124,7 @@ export default function ROICalculator() {
       features: [
         'Unlimited seats & SSO',
         'Private talent pools & internal mobility',
-        'API access (badges, HRIS/ATS)',
+        'ATS integrations & API access',
         'Dedicated CSM & SLAs'
       ],
       cta: 'Talk to Sales',

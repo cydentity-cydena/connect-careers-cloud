@@ -207,7 +207,7 @@ const Pricing = () => {
                 </li>
                 <li className="flex items-start gap-2 text-sm">
                   <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                  <span>ATS export (CSV) & basic analytics</span>
+                  <span>Application pipeline management</span>
                 </li>
                 <li className="flex items-start gap-2 text-sm">
                   <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
@@ -279,7 +279,7 @@ const Pricing = () => {
                 </li>
                 <li className="flex items-start gap-2 text-sm">
                   <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                  <span>ATS export & webhooks</span>
+                  <span>Bulk candidate actions</span>
                 </li>
               </ul>
               <Link to="/auth">
@@ -308,7 +308,7 @@ const Pricing = () => {
                 </li>
                 <li className="flex items-start gap-2 text-sm">
                   <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                  <span>API access (badges, HRIS/ATS)</span>
+                  <span>ATS integrations & API access</span>
                 </li>
                 <li className="flex items-start gap-2 text-sm">
                   <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
