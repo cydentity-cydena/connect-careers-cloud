@@ -166,7 +166,10 @@ const Pricing = () => {
                 </li>
                 <li className="flex items-start gap-2 text-sm">
                   <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                  <span>50 verified unlocks/year <span className="text-xs text-muted-foreground">(~£3.98 ea)</span></span>
+                  <div>
+                    <div>50 verified unlocks</div>
+                    <div className="text-xs text-muted-foreground">(annual allocation, ~£3.98 ea)</div>
+                  </div>
                 </li>
                 <li className="flex items-start gap-2 text-sm">
                   <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
@@ -203,7 +206,10 @@ const Pricing = () => {
                 </li>
                 <li className="flex items-start gap-2 text-sm">
                   <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                  <span>100 verified unlocks/year <span className="text-xs text-muted-foreground">(~£4.99 ea)</span></span>
+                  <div>
+                    <div>100 verified unlocks</div>
+                    <div className="text-xs text-muted-foreground">(annual allocation, ~£4.99 ea)</div>
+                  </div>
                 </li>
                 <li className="flex items-start gap-2 text-sm">
                   <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
@@ -237,7 +243,10 @@ const Pricing = () => {
                 </li>
                 <li className="flex items-start gap-2 text-sm">
                   <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                  <span>250 verified unlocks/year <span className="text-xs text-muted-foreground">(~£3.99 ea)</span></span>
+                  <div>
+                    <div>250 verified unlocks</div>
+                    <div className="text-xs text-muted-foreground">(annual allocation, ~£3.99 ea)</div>
+                  </div>
                 </li>
                 <li className="flex items-start gap-2 text-sm">
                   <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
@@ -275,7 +284,10 @@ const Pricing = () => {
                 </li>
                 <li className="flex items-start gap-2 text-sm">
                   <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                  <span>100 unlocks/year</span>
+                  <div>
+                    <div>100 unlocks</div>
+                    <div className="text-xs text-muted-foreground">(annual allocation)</div>
+                  </div>
                 </li>
                 <li className="flex items-start gap-2 text-sm">
                   <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
@@ -326,7 +338,8 @@ const Pricing = () => {
         <Card className="mb-8 border-primary/20 bg-card/50 animate-fade-in">
           <CardContent className="p-6">
             <p className="text-sm text-muted-foreground text-center">
-              <strong className="text-foreground">Compare:</strong> Typical agency fee 15–25% of salary (≈ £9k–£15k per hire). Cydena replaces that with flat, budgetable access.
+              <strong className="text-foreground">Compare:</strong> Typical agency fee 15–25% of salary (≈ £9k–£15k per hire). 
+              Cydena replaces that with flat monthly subscriptions and <strong>annual unlock allocations</strong> — predictable, budgetable costs.
             </p>
           </CardContent>
         </Card>

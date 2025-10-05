@@ -73,7 +73,7 @@ export default function ROICalculator() {
       monthlyPrice: 199,
       features: [
         '1 hiring seat',
-        '50 verified unlocks/year (~£3.98 ea)',
+        '50 verified unlocks (annual allocation, ~£3.98 ea)',
         'Candidate bookmarks & notes',
         'Email support'
       ],
@@ -86,7 +86,7 @@ export default function ROICalculator() {
       popular: true,
       features: [
         '3 hiring seats',
-        '100 verified unlocks/year (~£4.99 ea)',
+        '100 verified unlocks (annual allocation, ~£4.99 ea)',
         'Application pipeline management',
         'Priority support'
       ],
@@ -98,7 +98,7 @@ export default function ROICalculator() {
       monthlyPrice: 999,
       features: [
         '6 hiring seats',
-        '250 verified unlocks/year (~£3.99 ea)',
+        '250 verified unlocks (annual allocation, ~£3.99 ea)',
         'Talent pool sharing & role pipelines',
         'Advanced analytics'
       ],
@@ -111,7 +111,7 @@ export default function ROICalculator() {
       features: [
         '3 recruiter seats',
         'Advanced filters & saved searches',
-        '100 unlocks/year',
+        '100 unlocks (annual allocation)',
         'Bulk candidate actions'
       ],
       cta: 'Choose Recruiter Pro',
