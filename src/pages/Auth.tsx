@@ -68,7 +68,14 @@ const Auth = () => {
       emailSchema.parse(email);
       passwordSchema.parse(password);
       nameSchema.parse(fullName);
-      usernameSchema.parse(username);
+      
+      // Username is required for candidates, optional for employers
+      if (userRole === "candidate") {
+        usernameSchema.parse(username);
+      } else if (username.trim()) {
+        // If employer provides username, validate it
+        usernameSchema.parse(username);
+      }
     } catch (error: any) {
       if (error instanceof z.ZodError) {
         toast.error(error.errors[0].message);
@@ -240,6 +247,18 @@ const Auth = () => {
               <TabsContent value="signup">
                 <form onSubmit={handleSignUp} className="space-y-4">
                   <div className="space-y-2">
+                    <Label htmlFor="role">I am a...</Label>
+                    <Select value={userRole} onValueChange={(v: any) => setUserRole(v)}>
+                      <SelectTrigger className="bg-background">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-background border-border z-50">
+                        <SelectItem value="candidate">Candidate</SelectItem>
+                        <SelectItem value="employer">Employer</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
                     <Label htmlFor="signup-name">Full Name (private)</Label>
                     <Input
                       id="signup-name"
@@ -252,7 +271,7 @@ const Auth = () => {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="signup-username">
-                      Username (public) <span className="text-destructive">*</span>
+                      Username (public) {userRole === "candidate" && <span className="text-destructive">*</span>}
                     </Label>
                     <Input
                       id="signup-username"
@@ -260,12 +279,13 @@ const Auth = () => {
                       placeholder="cyber_pro"
                       value={username}
                       onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
-                      required
+                      required={userRole === "candidate"}
                       minLength={3}
                       maxLength={20}
                     />
                     <p className="text-xs text-muted-foreground">
                       3-20 characters: letters, numbers, underscores only
+                      {userRole === "employer" && " (optional for employers)"}
                     </p>
                   </div>
                   <div className="space-y-2">
@@ -290,18 +310,6 @@ const Auth = () => {
                       minLength={12}
                       placeholder="Min 12 chars with uppercase, lowercase, number & special char"
                     />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="role">I am a...</Label>
-                    <Select value={userRole} onValueChange={(v: any) => setUserRole(v)}>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="candidate">Candidate</SelectItem>
-                        <SelectItem value="employer">Employer</SelectItem>
-                      </SelectContent>
-                    </Select>
                   </div>
                   <Button
                     type="submit"
