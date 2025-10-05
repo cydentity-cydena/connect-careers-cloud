@@ -41,18 +41,32 @@ const Dashboard = () => {
 
       setUser(session.user);
 
-      // Get user role
+      // Get all user roles (user may have multiple)
       const { data: roleData, error: roleError } = await supabase
         .from("user_roles")
         .select("role")
-        .eq("user_id", session.user.id)
-        .maybeSingle();
+        .eq("user_id", session.user.id);
 
       if (roleError) {
         console.error("Error fetching role:", roleError);
       }
 
-      setUserRole(roleData?.role ?? null);
+      // Priority: admin > recruiter > employer > candidate
+      let selectedRole = null;
+      if (roleData && roleData.length > 0) {
+        const roles = roleData.map(r => r.role);
+        if (roles.includes('admin')) {
+          selectedRole = 'admin';
+        } else if (roles.includes('recruiter')) {
+          selectedRole = 'recruiter';
+        } else if (roles.includes('employer')) {
+          selectedRole = 'employer';
+        } else if (roles.includes('candidate')) {
+          selectedRole = 'candidate';
+        }
+      }
+
+      setUserRole(selectedRole);
     } catch (error) {
       console.error("Error checking user:", error);
     } finally {
