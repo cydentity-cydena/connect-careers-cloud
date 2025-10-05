@@ -1,8 +1,11 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { BookOpen, Award, GraduationCap, CheckCircle } from "lucide-react";
+import { BookOpen, Award, GraduationCap, CheckCircle, Star } from "lucide-react";
 import Navigation from "@/components/Navigation";
+import { supabase } from "@/integrations/supabase/client";
+import { useEffect, useState } from "react";
+import SEO from "@/components/SEO";
 
 interface Course {
   name: string;
@@ -13,6 +16,23 @@ interface Course {
 }
 
 const CertificationCatalog = () => {
+  const [featuredCertifications, setFeaturedCertifications] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchFeaturedCertifications = async () => {
+      const { data } = await supabase
+        .from("featured_certifications")
+        .select("*")
+        .order("slot_position");
+      
+      if (data) {
+        setFeaturedCertifications(data);
+      }
+    };
+
+    fetchFeaturedCertifications();
+  }, []);
+
   const courses: Course[] = [
      {
       name: "ISO 42001 Essentials",
@@ -137,6 +157,11 @@ const CertificationCatalog = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
+      <SEO 
+        title="Certification Catalog | Cydena"
+        description="Advance your cybersecurity career with industry-recognized professional certifications from top providers."
+        keywords="cybersecurity certifications, CompTIA Security+, CISSP, CEH, GIAC, professional development"
+      />
 
       <main className="container mx-auto px-4 py-8 animate-fade-in">
         <div className="mb-12">
@@ -145,6 +170,112 @@ const CertificationCatalog = () => {
             Advance your career with industry-recognized professional certifications
           </p>
         </div>
+
+        {/* Partnership CTA - Top Placement */}
+        <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10 mb-12">
+          <CardHeader>
+            <CardTitle className="text-2xl">Become a Featured Certification Provider</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-muted-foreground">
+              Are you a certification provider? Get premium visibility and reach thousands of cybersecurity professionals actively pursuing certifications.
+            </p>
+            <div className="grid md:grid-cols-3 gap-4">
+              <div className="flex items-start gap-3">
+                <div className="bg-primary/10 p-2 rounded-lg">
+                  <CheckCircle className="h-5 w-5 text-primary" />
+                </div>
+                <div>
+                  <h3 className="font-semibold mb-1">Prime Visibility</h3>
+                  <p className="text-sm text-muted-foreground">Featured placement at top of catalog</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="bg-primary/10 p-2 rounded-lg">
+                  <Star className="h-5 w-5 text-primary" />
+                </div>
+                <div>
+                  <h3 className="font-semibold mb-1">Targeted Audience</h3>
+                  <p className="text-sm text-muted-foreground">Reach active job seekers and professionals</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="bg-primary/10 p-2 rounded-lg">
+                  <Award className="h-5 w-5 text-primary" />
+                </div>
+                <div>
+                  <h3 className="font-semibold mb-1">Brand Authority</h3>
+                  <p className="text-sm text-muted-foreground">Position as trusted certification body</p>
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center pt-4 border-t border-border">
+              <a href="/partnerships" className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-6 py-2">
+                <Star className="h-4 w-4 mr-2" />
+                Become Featured
+              </a>
+              <a href="/contact?subject=Certification%20Partnership" className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-6 py-2">
+                Contact Us
+              </a>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Featured Certifications Section */}
+        {featuredCertifications.length > 0 && (
+          <div className="mb-12 animate-fade-in">
+            <div className="flex items-center gap-2 mb-6">
+              <Star className="h-6 w-6 text-yellow-500 fill-yellow-500" />
+              <h2 className="text-3xl font-bold">Featured Certifications</h2>
+              <Star className="h-6 w-6 text-yellow-500 fill-yellow-500" />
+            </div>
+            <div className="grid md:grid-cols-2 gap-6">
+              {featuredCertifications.map((cert) => (
+                <Card 
+                  key={cert.id}
+                  className="border-2 border-yellow-500/50 bg-gradient-to-br from-yellow-50 to-yellow-100 dark:from-yellow-950/30 dark:to-yellow-900/20 shadow-xl hover:scale-105 transition-transform"
+                >
+                  <CardHeader>
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex-1">
+                        <CardTitle className="text-2xl mb-2 flex items-center gap-2">
+                          <Award className="h-6 w-6 text-yellow-600" />
+                          {cert.cert_name}
+                        </CardTitle>
+                        <CardDescription className="text-lg font-semibold text-primary">
+                          {cert.provider_name}
+                        </CardDescription>
+                      </div>
+                      {cert.logo_url && (
+                        <img 
+                          src={cert.logo_url} 
+                          alt={`${cert.provider_name} logo`}
+                          className="h-16 w-16 object-contain rounded-lg bg-white p-2"
+                        />
+                      )}
+                    </div>
+                    <Badge className="bg-yellow-500 text-yellow-950 w-fit">
+                      ⭐ Featured
+                    </Badge>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <p className="text-muted-foreground">
+                      {cert.description}
+                    </p>
+                    <a
+                      href={cert.website_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-primary hover:underline font-semibold"
+                    >
+                      Learn More & Enroll →
+                    </a>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
 
         {providers.map((provider, providerIdx) => (
           <div key={provider} className="mb-12 animate-slide-up" style={{ animationDelay: `${providerIdx * 0.1}s` }}>

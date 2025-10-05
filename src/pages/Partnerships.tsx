@@ -3,11 +3,12 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Navigation from "@/components/Navigation";
 import SEO from "@/components/SEO";
-import { Check, Star, TrendingUp, Users, BarChart, Sparkles, ArrowRight } from "lucide-react";
+import { Check, Star, TrendingUp, Users, BarChart, Sparkles, ArrowRight, Award, GraduationCap } from "lucide-react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface PricingTier {
   name: string;
@@ -20,19 +21,32 @@ interface PricingTier {
 }
 
 const Partnerships = () => {
-  const [availableSlots, setAvailableSlots] = useState(4);
+  const [availableTrainingSlots, setAvailableTrainingSlots] = useState(4);
+  const [availableCertSlots, setAvailableCertSlots] = useState(4);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const checkAvailableSlots = async () => {
-      const { data } = await supabase
+      // Check training slots
+      const { data: trainingData } = await supabase
         .from("featured_training_partners")
         .select("slot_position")
         .gte("end_date", new Date().toISOString())
         .eq("payment_status", "completed");
       
-      if (data) {
-        setAvailableSlots(4 - data.length);
+      if (trainingData) {
+        setAvailableTrainingSlots(4 - trainingData.length);
+      }
+
+      // Check certification slots
+      const { data: certData } = await supabase
+        .from("featured_certifications")
+        .select("slot_position")
+        .gte("end_date", new Date().toISOString())
+        .eq("payment_status", "completed");
+      
+      if (certData) {
+        setAvailableCertSlots(4 - certData.length);
       }
     };
 
@@ -130,10 +144,10 @@ const Partnerships = () => {
                 Limited Slots Available
               </Badge>
               <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-                Become a Featured Training Partner
+                Become a Featured Partner
               </h1>
               <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
-                Reach thousands of cybersecurity professionals actively seeking training, certifications, and career advancement. Get premium visibility with only <span className="font-bold text-primary">{availableSlots} of 4 featured slots</span> available.
+                Reach thousands of cybersecurity professionals with premium visibility for your training courses or certifications.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button size="lg" className="text-lg" onClick={handleContactSales}>
@@ -148,18 +162,73 @@ const Partnerships = () => {
           </div>
         </section>
 
-        {/* Slot Availability Alert */}
-        {availableSlots <= 2 && (
-          <section className="py-8 bg-yellow-500/10 border-y border-yellow-500/20">
-            <div className="container mx-auto px-4">
-              <div className="max-w-4xl mx-auto text-center">
-                <p className="text-lg font-semibold text-yellow-700 dark:text-yellow-400">
-                  ⚠️ Only {availableSlots} featured {availableSlots === 1 ? 'slot' : 'slots'} remaining! Secure your position before they're gone.
-                </p>
-              </div>
-            </div>
-          </section>
-        )}
+        {/* Partnership Type Tabs */}
+        <section className="py-12">
+          <div className="container mx-auto px-4">
+            <Tabs defaultValue="training" className="w-full max-w-6xl mx-auto">
+              <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-12">
+                <TabsTrigger value="training" className="gap-2">
+                  <GraduationCap className="h-4 w-4" />
+                  Training Partners
+                </TabsTrigger>
+                <TabsTrigger value="certifications" className="gap-2">
+                  <Award className="h-4 w-4" />
+                  Certification Providers
+                </TabsTrigger>
+              </TabsList>
+
+              {/* Training Partners Tab */}
+              <TabsContent value="training" className="space-y-12">
+                {/* Slot Availability Alert */}
+                {availableTrainingSlots <= 2 && (
+                  <div className="py-8 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
+                    <div className="text-center">
+                      <p className="text-lg font-semibold text-yellow-700 dark:text-yellow-400">
+                        ⚠️ Only {availableTrainingSlots} training {availableTrainingSlots === 1 ? 'slot' : 'slots'} remaining!
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <Button size="lg" className="text-lg" onClick={handleContactSales}>
+                    Get Started as Training Partner
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
+                  <Button size="lg" variant="outline" asChild>
+                    <Link to="/training">View Training Example</Link>
+                  </Button>
+                </div>
+              </TabsContent>
+
+              {/* Certification Providers Tab */}
+              <TabsContent value="certifications" className="space-y-12">
+                {/* Slot Availability Alert */}
+                {availableCertSlots <= 2 && (
+                  <div className="py-8 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
+                    <div className="text-center">
+                      <p className="text-lg font-semibold text-yellow-700 dark:text-yellow-400">
+                        ⚠️ Only {availableCertSlots} certification {availableCertSlots === 1 ? 'slot' : 'slots'} remaining!
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <Button size="lg" className="text-lg" onClick={handleContactSales}>
+                    Get Started as Certification Provider
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
+                  <Button size="lg" variant="outline" asChild>
+                    <Link to="/certifications-catalog">View Certification Example</Link>
+                  </Button>
+                </div>
+              </TabsContent>
+            </Tabs>
+          </div>
+        </section>
+
+        {/* Slot Availability Alert - Removed old version */}
 
         {/* Benefits Section */}
         <section className="py-20">
@@ -324,7 +393,7 @@ const Partnerships = () => {
                   </CardHeader>
                   <CardContent>
                     <p className="text-muted-foreground">
-                      Only 4 featured slots are available at any time to maintain exclusivity and maximize visibility for each partner. Currently, {availableSlots} {availableSlots === 1 ? 'slot is' : 'slots are'} available.
+                      Only 4 featured slots are available at any time for each category (training and certifications) to maintain exclusivity. Training: {availableTrainingSlots} available. Certifications: {availableCertSlots} available.
                     </p>
                   </CardContent>
                 </Card>
@@ -385,11 +454,6 @@ const Partnerships = () => {
                   <Link to="/contact">Contact Sales</Link>
                 </Button>
               </div>
-              {availableSlots <= 2 && (
-                <p className="mt-6 text-sm text-yellow-600 dark:text-yellow-400 font-semibold">
-                  ⏰ Only {availableSlots} {availableSlots === 1 ? 'slot' : 'slots'} remaining!
-                </p>
-              )}
             </div>
           </div>
         </section>

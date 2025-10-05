@@ -522,6 +522,60 @@ export type Database = {
         }
         Relationships: []
       }
+      featured_certifications: {
+        Row: {
+          amount_paid: number | null
+          cert_name: string
+          cert_slug: string
+          created_at: string | null
+          description: string | null
+          end_date: string
+          id: string
+          logo_url: string | null
+          payment_status: string
+          provider_name: string
+          purchased_by: string | null
+          slot_position: number
+          start_date: string
+          updated_at: string | null
+          website_url: string
+        }
+        Insert: {
+          amount_paid?: number | null
+          cert_name: string
+          cert_slug: string
+          created_at?: string | null
+          description?: string | null
+          end_date: string
+          id?: string
+          logo_url?: string | null
+          payment_status?: string
+          provider_name: string
+          purchased_by?: string | null
+          slot_position: number
+          start_date: string
+          updated_at?: string | null
+          website_url: string
+        }
+        Update: {
+          amount_paid?: number | null
+          cert_name?: string
+          cert_slug?: string
+          created_at?: string | null
+          description?: string | null
+          end_date?: string
+          id?: string
+          logo_url?: string | null
+          payment_status?: string
+          provider_name?: string
+          purchased_by?: string | null
+          slot_position?: number
+          start_date?: string
+          updated_at?: string | null
+          website_url?: string
+        }
+        Relationships: []
+      }
       featured_training_partners: {
         Row: {
           amount_paid: number | null
