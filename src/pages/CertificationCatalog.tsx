@@ -225,33 +225,34 @@ const CertificationCatalog = () => {
         {featuredCertifications.length > 0 && (
           <div className="mb-12 animate-fade-in">
             <div className="mb-6 flex items-center gap-3">
-              <Badge variant="secondary" className="text-sm">
-                <Star className="h-3.5 w-3.5 mr-1.5" />
+              <h2 className="text-3xl font-bold flex items-center gap-3">
+                <Star className="h-8 w-8 text-purple-500" />
                 Featured Certifications
-              </Badge>
+                <Star className="h-8 w-8 text-purple-500" />
+              </h2>
             </div>
 
             <div className="grid md:grid-cols-2 gap-5">
               {featuredCertifications.map((cert) => (
                 <Card 
                   key={cert.id}
-                  className="relative border border-primary/30 bg-card/50 hover:bg-card hover:border-primary/50 transition-all duration-200"
+                  className="relative border-[3px] border-purple-500 bg-gradient-to-br from-purple-500/5 to-purple-500/10 hover:from-purple-500/10 hover:to-purple-500/15 transition-all duration-200"
                 >
-                  <div className="absolute top-2 right-2">
-                    <Badge variant="outline" className="text-xs">
-                      <Star className="h-3 w-3 mr-1" />
-                      Featured
+                  <div className="absolute top-3 right-3">
+                    <Badge className="bg-purple-500 text-white border-0 px-3 py-1">
+                      <Star className="h-3.5 w-3.5 mr-1.5" />
+                      FEATURED
                     </Badge>
                   </div>
 
-                  <CardHeader>
+                  <CardHeader className="pb-3">
                     <div className="flex items-start gap-4">
                       <div className="flex-1">
-                        <CardTitle className="text-lg mb-1.5 flex items-center gap-2">
-                          <Award className="h-4 w-4 text-primary" />
+                        <CardTitle className="text-xl mb-2 flex items-center gap-2">
+                          <Award className="h-5 w-5 text-purple-500" />
                           {cert.cert_name}
                         </CardTitle>
-                        <CardDescription className="font-medium">
+                        <CardDescription className="font-semibold text-base">
                           {cert.provider_name}
                         </CardDescription>
                       </div>
@@ -259,20 +260,20 @@ const CertificationCatalog = () => {
                         <img 
                           src={cert.logo_url} 
                           alt={`${cert.provider_name} logo`}
-                          className="h-12 w-12 object-contain rounded bg-background p-1.5"
+                          className="h-14 w-14 object-contain rounded bg-background p-2 border border-purple-500/20"
                         />
                       )}
                     </div>
                   </CardHeader>
-                  <CardContent className="space-y-3">
-                    <p className="text-sm text-muted-foreground">
+                  <CardContent className="space-y-4">
+                    <p className="text-sm text-muted-foreground leading-relaxed">
                       {cert.description}
                     </p>
                     <a
                       href={cert.website_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline font-medium"
+                      className="inline-flex items-center gap-2 text-sm text-purple-500 hover:text-purple-400 hover:underline font-semibold transition-colors"
                     >
                       Learn More & Enroll →
                     </a>
