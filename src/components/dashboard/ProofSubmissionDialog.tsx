@@ -102,20 +102,12 @@ export const ProofSubmissionDialog = ({
                   Certificate PDF URL
                 </Label>
               </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="screenshot" id="screenshot" />
-                <Label htmlFor="screenshot" className="font-normal cursor-pointer">
-                  Screenshot URL
-                </Label>
-              </div>
             </RadioGroup>
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="proofUrl">
-              {proofType === 'openbadge' ? 'Badge URL' : 
-               proofType === 'pdf' ? 'PDF URL' : 
-               'Screenshot URL'}
+              {proofType === 'openbadge' ? 'Badge URL' : 'PDF URL'}
             </Label>
             <Input
               id="proofUrl"
