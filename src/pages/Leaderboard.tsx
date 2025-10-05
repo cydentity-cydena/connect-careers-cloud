@@ -11,7 +11,7 @@ import Navigation from "@/components/Navigation";
 interface LeaderboardEntry {
   id: string;
   user_id: string;
-  full_name: string;
+  username: string;
   title: string;
   certifications: string[];
   score: number;
@@ -45,12 +45,12 @@ const Leaderboard = () => {
 
       const candidateIds = xpData.map(entry => entry.candidate_id);
 
-      // Fetch public profile names via RPC (RLS-safe)
+      // Fetch public profile usernames via RPC (RLS-safe)
       const profileResults = await Promise.all(
         candidateIds.map(async (cid) => {
           const { data } = await supabase.rpc('get_public_profile', { profile_id: cid });
           const row = Array.isArray(data) ? data?.[0] : data;
-          return { id: cid, full_name: row?.full_name ?? null };
+          return { id: cid, username: row?.username ?? null };
         })
       );
 
@@ -88,7 +88,7 @@ const Leaderboard = () => {
         return {
           id: entry.candidate_id,
           user_id: entry.candidate_id,
-          full_name: profile?.full_name || 'Unknown',
+          username: profile?.username || 'anonymous',
           title: candidateProfile?.title || 'Cybersecurity Professional',
           certifications: certsByCandidate[entry.candidate_id] || [],
           score: Math.min(100, Math.round((entry as any).total_xp / 3)),
@@ -151,7 +151,7 @@ const Leaderboard = () => {
                     <div className="bg-yellow-600 w-16 h-16 md:w-24 md:h-24 rounded-full mx-auto mb-2 md:mb-3 flex items-center justify-center">
                       <Trophy className="h-8 w-8 md:h-12 md:w-12 text-white" />
                     </div>
-                    <h3 className="font-bold text-base md:text-xl text-gray-900 mb-1">{topThree[0]?.full_name}</h3>
+                    <h3 className="font-bold text-base md:text-xl text-gray-900 mb-1">@{topThree[0]?.username}</h3>
                     <p className="text-xs md:text-sm text-gray-700 mb-2 line-clamp-1">{topThree[0]?.title}</p>
                     <Badge className="bg-yellow-700 text-xs">1st Place</Badge>
                     <p className="text-xl md:text-3xl font-bold text-gray-900 mt-2 md:mt-3">{topThree[0]?.score}</p>
@@ -168,7 +168,7 @@ const Leaderboard = () => {
                     <div className="bg-gray-400 w-14 h-14 md:w-20 md:h-20 rounded-full mx-auto mb-2 md:mb-3 flex items-center justify-center">
                       <Medal className="h-7 w-7 md:h-10 md:w-10 text-white" />
                     </div>
-                    <h3 className="font-bold text-sm md:text-lg text-gray-800 mb-1">{topThree[1]?.full_name}</h3>
+                    <h3 className="font-bold text-sm md:text-lg text-gray-800 mb-1">@{topThree[1]?.username}</h3>
                     <p className="text-xs md:text-sm text-gray-600 mb-2 line-clamp-1">{topThree[1]?.title}</p>
                     <Badge className="bg-gray-500 text-xs">2nd Place</Badge>
                     <p className="text-lg md:text-2xl font-bold text-gray-800 mt-2 md:mt-3">{topThree[1]?.score}</p>
@@ -185,7 +185,7 @@ const Leaderboard = () => {
                     <div className="bg-orange-700 w-14 h-14 md:w-20 md:h-20 rounded-full mx-auto mb-2 md:mb-3 flex items-center justify-center">
                       <Award className="h-7 w-7 md:h-10 md:w-10 text-white" />
                     </div>
-                    <h3 className="font-bold text-sm md:text-lg text-white mb-1">{topThree[2]?.full_name}</h3>
+                    <h3 className="font-bold text-sm md:text-lg text-white mb-1">@{topThree[2]?.username}</h3>
                     <p className="text-xs md:text-sm text-orange-100 mb-2 line-clamp-1">{topThree[2]?.title}</p>
                     <Badge className="bg-orange-800 text-xs">3rd Place</Badge>
                     <p className="text-lg md:text-2xl font-bold text-white mt-2 md:mt-3">{topThree[2]?.score}</p>
@@ -220,7 +220,7 @@ const Leaderboard = () => {
                     <TableCell className="font-medium text-xs md:text-sm">#{entry.rank}</TableCell>
                     <TableCell className="font-semibold text-xs md:text-sm">
                       <Link to={`/profiles/${entry.user_id}`} className="hover:underline">
-                        {entry.full_name}
+                        @{entry.username}
                       </Link>
                     </TableCell>
                     <TableCell className="hidden md:table-cell text-xs md:text-sm">{entry.title}</TableCell>
@@ -259,7 +259,7 @@ const Leaderboard = () => {
                         <div className="bg-purple-600 w-16 h-16 md:w-24 md:h-24 rounded-full mx-auto mb-2 md:mb-3 flex items-center justify-center">
                           <Users className="h-8 w-8 md:h-12 md:w-12 text-white" />
                         </div>
-                        <h3 className="font-bold text-base md:text-xl text-white mb-1">{communityTopThree[0]?.full_name}</h3>
+                        <h3 className="font-bold text-base md:text-xl text-white mb-1">@{communityTopThree[0]?.username}</h3>
                         <p className="text-xs md:text-sm text-purple-100 mb-2 line-clamp-1">{communityTopThree[0]?.title}</p>
                         <Badge className="bg-purple-700 text-xs">Community Leader</Badge>
                         <p className="text-xl md:text-3xl font-bold text-white mt-2 md:mt-3">{communityTopThree[0]?.community_points}</p>
@@ -277,7 +277,7 @@ const Leaderboard = () => {
                         <div className="bg-purple-400 w-14 h-14 md:w-20 md:h-20 rounded-full mx-auto mb-2 md:mb-3 flex items-center justify-center">
                           <Users className="h-7 w-7 md:h-10 md:w-10 text-white" />
                         </div>
-                        <h3 className="font-bold text-sm md:text-lg text-gray-800 mb-1">{communityTopThree[1]?.full_name}</h3>
+                        <h3 className="font-bold text-sm md:text-lg text-gray-800 mb-1">@{communityTopThree[1]?.username}</h3>
                         <p className="text-xs md:text-sm text-gray-600 mb-2 line-clamp-1">{communityTopThree[1]?.title}</p>
                         <Badge className="bg-purple-500 text-xs">2nd Place</Badge>
                         <p className="text-lg md:text-2xl font-bold text-gray-800 mt-2 md:mt-3">{communityTopThree[1]?.community_points}</p>
@@ -294,7 +294,7 @@ const Leaderboard = () => {
                         <div className="bg-purple-300 w-14 h-14 md:w-20 md:h-20 rounded-full mx-auto mb-2 md:mb-3 flex items-center justify-center">
                           <Users className="h-7 w-7 md:h-10 md:w-10 text-white" />
                         </div>
-                        <h3 className="font-bold text-sm md:text-lg text-gray-700 mb-1">{communityTopThree[2]?.full_name}</h3>
+                        <h3 className="font-bold text-sm md:text-lg text-gray-700 mb-1">@{communityTopThree[2]?.username}</h3>
                         <p className="text-xs md:text-sm text-gray-500 mb-2 line-clamp-1">{communityTopThree[2]?.title}</p>
                         <Badge className="bg-purple-400 text-xs">3rd Place</Badge>
                         <p className="text-lg md:text-2xl font-bold text-gray-700 mt-2 md:mt-3">{communityTopThree[2]?.community_points}</p>
@@ -330,7 +330,7 @@ const Leaderboard = () => {
                           <TableCell className="font-medium text-xs md:text-sm">#{index + 1}</TableCell>
                           <TableCell className="font-semibold text-xs md:text-sm">
                             <Link to={`/profiles/${entry.user_id}`} className="hover:underline">
-                              {entry.full_name}
+                              @{entry.username}
                             </Link>
                           </TableCell>
                           <TableCell className="hidden md:table-cell text-xs md:text-sm">{entry.title}</TableCell>

@@ -85,7 +85,7 @@ export function PeerEndorsement({ candidateId, currentUserId }: PeerEndorsementP
         data.map(async (row) => {
           const { data: prof } = await supabase.rpc('get_public_profile', { profile_id: row.from_user_id });
           const p = Array.isArray(prof) ? prof?.[0] : prof;
-          return { ...row, from_user_name: p?.full_name || null };
+          return { ...row, from_user_name: p?.username ? `@${p.username}` : 'Anonymous' };
         })
       );
       setEndorsements(enriched);
