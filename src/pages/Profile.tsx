@@ -14,6 +14,7 @@ const Profile = () => {
   const [userId, setUserId] = useState<string | null>(null);
 
   const [fullName, setFullName] = useState('');
+  const [username, setUsername] = useState('');
   const [location, setLocation] = useState('');
   const [bio, setBio] = useState('');
   const [avatarUrl, setAvatarUrl] = useState('');
@@ -37,12 +38,13 @@ const Profile = () => {
       // Load profile
       const { data: profile } = await supabase
         .from('profiles')
-        .select('full_name, location, bio, avatar_url')
+        .select('full_name, username, location, bio, avatar_url')
         .eq('id', session.user.id)
         .maybeSingle();
 
       if (profile) {
         setFullName(profile.full_name ?? '');
+        setUsername(profile.username ?? '');
         setLocation(profile.location ?? '');
         setBio(profile.bio ?? '');
         setAvatarUrl(profile.avatar_url ?? '');
@@ -72,13 +74,28 @@ const Profile = () => {
 
   const handleSave = async () => {
     if (!userId) return;
+    
+    // Validate username format
+    const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
+    if (username && !usernameRegex.test(username)) {
+      toast.error('Username must be 3-20 characters, only letters, numbers, and underscores');
+      return;
+    }
+    
     setLoading(true);
     try {
       const { error: pErr } = await supabase
         .from('profiles')
-        .update({ full_name: fullName, location, bio, avatar_url: avatarUrl })
+        .update({ full_name: fullName, username, location, bio, avatar_url: avatarUrl })
         .eq('id', userId);
-      if (pErr) throw pErr;
+      if (pErr) {
+        if (pErr.message?.includes('profiles_username_unique')) {
+          toast.error('Username already taken');
+        } else {
+          throw pErr;
+        }
+        return;
+      }
 
       const { error: cErr } = await supabase
         .from('candidate_profiles')
@@ -104,8 +121,16 @@ const Profile = () => {
         <CardContent className="space-y-6">
           <div className="grid md:grid-cols-2 gap-6">
             <div className="space-y-3">
-              <Label htmlFor="fullName">Full name</Label>
+              <Label htmlFor="fullName">Full name (private until unlocked)</Label>
               <Input id="fullName" value={fullName} onChange={(e) => setFullName(e.target.value)} />
+              <Label htmlFor="username">Username (public, 3-20 chars)</Label>
+              <Input 
+                id="username" 
+                value={username} 
+                onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
+                placeholder="your_username"
+                maxLength={20}
+              />
               <Label htmlFor="location">Location</Label>
               <Input id="location" value={location} onChange={(e) => setLocation(e.target.value)} />
               <Label htmlFor="avatar">Avatar URL</Label>

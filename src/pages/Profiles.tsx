@@ -10,7 +10,7 @@ import Navigation from "@/components/Navigation";
 
 interface CandidateProfile {
   id: string;
-  name: string;
+  username: string;
   title: string;
   ranking: number;
   certifications: string[];
@@ -48,12 +48,12 @@ const Profiles = () => {
 
       const candidateIds = xpData.map(entry => entry.candidate_id);
 
-      // Fetch public profile names via RPC (RLS-safe)
+      // Fetch public profile usernames via RPC (RLS-safe)
       const profileResults = await Promise.all(
         candidateIds.map(async (cid) => {
           const { data } = await supabase.rpc('get_public_profile', { profile_id: cid });
           const row = Array.isArray(data) ? data?.[0] : data;
-          return { id: cid, full_name: row?.full_name ?? null };
+          return { id: cid, username: row?.username ?? null };
         })
       );
 
@@ -90,7 +90,7 @@ const Profiles = () => {
         
         return {
           id: entry.candidate_id,
-          name: profile?.full_name || 'Unknown',
+          username: profile?.username || 'user_anonymous',
           title: candidateProfile?.title || 'Cybersecurity Professional',
           ranking: index + 1,
           certifications: certsByCandidate[entry.candidate_id]?.slice(0, 3) || [],
@@ -110,7 +110,7 @@ const Profiles = () => {
 
   const filteredCandidates = candidates.filter(
     (candidate) =>
-      candidate.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      candidate.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
       candidate.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       candidate.certifications.some((cert) =>
         cert.toLowerCase().includes(searchQuery.toLowerCase())
@@ -171,7 +171,7 @@ const Profiles = () => {
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
-                      <h3 className="font-bold text-lg">{candidate.name}</h3>
+                      <h3 className="font-bold text-lg">@{candidate.username}</h3>
                       {candidate.ranking <= 3 && (
                         <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
                       )}

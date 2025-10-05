@@ -60,13 +60,16 @@ export default function ProfileDetail() {
       let profileData: any = null;
       const { data: directProfile } = await supabase
         .from("profiles")
-        .select("id, full_name, avatar_url, location, bio, email")
+        .select("id, full_name, username, avatar_url, location, bio, email")
         .eq("id", id)
         .maybeSingle();
 
       if (directProfile) {
         profileData = { ...directProfile };
-        if (!unlocked) profileData.email = null;
+        if (!unlocked) {
+          profileData.email = null;
+          profileData.full_name = null; // Hide real name until unlocked
+        }
       } else {
         const { data: rpcProfile } = await supabase.rpc('get_public_profile', { profile_id: id });
         const row = Array.isArray(rpcProfile) ? rpcProfile?.[0] : rpcProfile;
@@ -178,12 +181,19 @@ export default function ProfileDetail() {
                 <div className="flex flex-col items-center text-center mb-6">
                   <div className="w-32 h-32 rounded-full bg-gradient-cyber flex items-center justify-center text-5xl mb-4">
                     {profile.avatar_url ? (
-                      <img src={profile.avatar_url} alt={profile.full_name} className="rounded-full" />
+                      <img src={profile.avatar_url} alt={profile.username || "User"} className="rounded-full" />
                     ) : (
                       "👤"
                     )}
                   </div>
-                  <h1 className="text-2xl font-bold mb-2">{profile.full_name || "Anonymous"}</h1>
+                  {isUnlocked && profile.full_name ? (
+                    <>
+                      <h1 className="text-2xl font-bold mb-1">{profile.full_name}</h1>
+                      <p className="text-sm text-muted-foreground mb-2">@{profile.username || "anonymous"}</p>
+                    </>
+                  ) : (
+                    <h1 className="text-2xl font-bold mb-2">@{profile.username || "anonymous"}</h1>
+                  )}
                   {candidateProfile?.title && (
                     <p className="text-muted-foreground mb-4">{candidateProfile.title}</p>
                   )}
