@@ -20,12 +20,31 @@ const Contact = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    
-    toast.success("Message sent successfully! We'll get back to you soon.");
-    setFormData({ name: "", email: "", message: "" });
-    setIsSubmitting(false);
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-contact-email`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+          },
+          body: JSON.stringify(formData),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to send message");
+      }
+
+      toast.success("Message sent successfully! We'll get back to you soon.");
+      setFormData({ name: "", email: "", message: "" });
+    } catch (error) {
+      console.error("Error sending message:", error);
+      toast.error("Failed to send message. Please try again or email us directly.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (
