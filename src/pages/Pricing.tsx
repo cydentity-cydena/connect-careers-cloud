@@ -377,8 +377,8 @@ const Pricing = () => {
               <div className="space-y-3 md:space-y-4">
                 <div>
                   <h4 className="font-semibold mb-2 text-sm md:text-base">Cydena Platform Cost</h4>
-                  <p className="text-2xl md:text-3xl font-bold text-primary">£200</p>
-                  <p className="text-xs md:text-sm text-muted-foreground">View 20 candidates @ £10 each</p>
+                  <p className="text-2xl md:text-3xl font-bold text-primary">£2,388</p>
+                  <p className="text-xs md:text-sm text-muted-foreground">Starter plan: £199/mo with 50 unlocks/year</p>
                 </div>
                 <div className="text-xs md:text-sm space-y-1">
                   <p className="text-primary">✓ Zero upfront costs</p>
@@ -386,8 +386,8 @@ const Pricing = () => {
                   <p className="text-primary">✓ Full profile transparency</p>
                 </div>
                 <div className="pt-3 md:pt-4 border-t">
-                  <p className="text-xl md:text-2xl font-bold text-primary">Save £12,300</p>
-                  <p className="text-xs md:text-sm text-muted-foreground">98% cost reduction per hire</p>
+                  <p className="text-xl md:text-2xl font-bold text-primary">Save £10,112</p>
+                  <p className="text-xs md:text-sm text-muted-foreground">81% cost reduction per hire</p>
                 </div>
               </div>
             </div>
