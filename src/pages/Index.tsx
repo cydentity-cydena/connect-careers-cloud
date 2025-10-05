@@ -116,8 +116,8 @@ const Index = () => {
               <div className="bg-primary/10 w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center mx-auto mb-3 md:mb-4">
                 <DollarSign className="h-7 w-7 md:h-8 md:w-8 text-primary" />
               </div>
-              <h3 className="text-xl md:text-2xl font-bold mb-2">98% Cost Savings</h3>
-              <p className="text-sm md:text-base text-muted-foreground">Pay £10-£50 per profile vs £15,000 agency fees</p>
+              <h3 className="text-xl md:text-2xl font-bold mb-2">52-90% Cost Savings</h3>
+              <p className="text-sm md:text-base text-muted-foreground">£199-£999/mo subscription vs £15,000 agency fees</p>
             </div>
 
             <div className="text-center p-5 md:p-6 rounded-lg border border-primary/20 bg-gradient-card hover:scale-105 transition-transform" style={{animationDelay: '0.1s'}}>
