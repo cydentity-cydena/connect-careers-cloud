@@ -3,9 +3,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Briefcase, Clock, UserCheck, FileCheck, XCircle, CheckCircle2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Briefcase, Clock, UserCheck, FileCheck, XCircle, CheckCircle2, Users, Search, Eye, MessageCircle, UserPlus } from "lucide-react";
 import { ApplicationCard } from "./ApplicationCard";
 import { toast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
 type PipelineStage = "applied" | "screening" | "interview" | "offer" | "rejected" | "hired";
 
@@ -27,6 +30,21 @@ interface Application {
   };
   job: {
     title: string;
+  };
+}
+
+interface UnlockedCandidate {
+  id: string;
+  candidate_id: string;
+  unlocked_at: string;
+  profile: {
+    full_name: string;
+    username: string;
+    avatar_url: string | null;
+  };
+  candidate_profile: {
+    title: string;
+    years_experience: number;
   };
 }
 
@@ -70,13 +88,58 @@ const stageConfig = {
 };
 
 export const ApplicationPipeline = () => {
+  const navigate = useNavigate();
   const [applications, setApplications] = useState<Application[]>([]);
+  const [unlockedCandidates, setUnlockedCandidates] = useState<UnlockedCandidate[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedJob, setSelectedJob] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    fetchApplications();
+    fetchData();
   }, [selectedJob]);
+
+  const fetchData = async () => {
+    await Promise.all([fetchApplications(), fetchUnlockedCandidates()]);
+  };
+
+  const fetchUnlockedCandidates = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      // Get unlocked candidates that don't have applications yet
+      const { data: unlocks, error } = await supabase
+        .from('profile_unlocks')
+        .select(`
+          id,
+          candidate_id,
+          unlocked_at,
+          profile:profiles!profile_unlocks_candidate_id_fkey(
+            full_name,
+            username,
+            avatar_url
+          ),
+          candidate_profile:candidate_profiles!profile_unlocks_candidate_id_fkey(
+            title,
+            years_experience
+          )
+        `)
+        .eq('employer_id', user.id)
+        .order('unlocked_at', { ascending: false });
+
+      if (error) throw error;
+
+      // Filter out candidates who already have applications
+      const candidatesWithoutApps = (unlocks || []).filter(unlock => 
+        !applications.some(app => app.candidate_id === unlock.candidate_id)
+      );
+
+      setUnlockedCandidates(candidatesWithoutApps as any);
+    } catch (error) {
+      console.error('Error fetching unlocked candidates:', error);
+    }
+  };
 
   const fetchApplications = async () => {
     try {
@@ -169,7 +232,22 @@ export const ApplicationPipeline = () => {
   };
 
   const getApplicationsByStage = (stage: PipelineStage) => {
-    return applications.filter(app => app.stage === stage);
+    return applications.filter(app => {
+      const matchesStage = app.stage === stage;
+      const matchesSearch = searchQuery === "" || 
+        app.profile.full_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        app.job.title.toLowerCase().includes(searchQuery.toLowerCase());
+      return matchesStage && matchesSearch;
+    });
+  };
+
+  const getFilteredUnlockedCandidates = () => {
+    if (searchQuery === "") return unlockedCandidates;
+    return unlockedCandidates.filter(candidate =>
+      candidate.profile.full_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      candidate.profile.username?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      candidate.candidate_profile?.title?.toLowerCase().includes(searchQuery.toLowerCase())
+    );
   };
 
   if (loading) {
@@ -178,17 +256,104 @@ export const ApplicationPipeline = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
           <h2 className="text-3xl font-bold">Application Pipeline</h2>
           <p className="text-muted-foreground">Track candidates through customizable pipeline stages</p>
         </div>
-        <Badge variant="secondary" className="text-lg px-4 py-2">
-          {applications.length} Total Applications
-        </Badge>
+        <div className="flex items-center gap-3">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Search candidates..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-9 w-64"
+            />
+          </div>
+          <Badge variant="secondary" className="text-lg px-4 py-2">
+            {applications.length} Applications
+          </Badge>
+          <Badge variant="outline" className="text-lg px-4 py-2 border-primary text-primary">
+            {unlockedCandidates.length} In Talent Pool
+          </Badge>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-7 gap-4">
+        {/* Talent Pool Column */}
+        <Card className="border-2 border-primary/50 bg-primary/5">
+          <CardHeader className="pb-3">
+            <CardTitle className="flex items-center justify-between text-base">
+              <div className="flex items-center gap-2">
+                <div className="bg-primary rounded-full p-1.5">
+                  <Users className="h-4 w-4 text-white" />
+                </div>
+                <span>Talent Pool</span>
+              </div>
+              <Badge variant="outline" className="text-primary">
+                {getFilteredUnlockedCandidates().length}
+              </Badge>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-2">
+            <ScrollArea className="h-[500px] pr-2">
+              <div className="space-y-2">
+                {getFilteredUnlockedCandidates().map((candidate) => (
+                  <Card key={candidate.id} className="p-3 hover:border-primary/50 transition-all cursor-pointer">
+                    <div className="space-y-2">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <h4 className="font-semibold text-sm">{candidate.profile.full_name}</h4>
+                          {candidate.candidate_profile?.title && (
+                            <p className="text-xs text-muted-foreground">{candidate.candidate_profile.title}</p>
+                          )}
+                          {candidate.candidate_profile?.years_experience > 0 && (
+                            <p className="text-xs text-muted-foreground mt-1">
+                              {candidate.candidate_profile.years_experience} yrs exp
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex gap-1">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="flex-1 h-8 text-xs"
+                          onClick={() => navigate(`/profiles/${candidate.candidate_id}`)}
+                        >
+                          <Eye className="h-3 w-3 mr-1" />
+                          View
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="default"
+                          className="flex-1 h-8 text-xs"
+                          onClick={() => {
+                            toast({
+                              title: "Coming Soon",
+                              description: "Direct messaging feature will be available soon",
+                            });
+                          }}
+                        >
+                          <MessageCircle className="h-3 w-3 mr-1" />
+                          Message
+                        </Button>
+                      </div>
+                    </div>
+                  </Card>
+                ))}
+                {getFilteredUnlockedCandidates().length === 0 && (
+                  <div className="text-center py-8 text-muted-foreground text-sm">
+                    {searchQuery ? "No matching candidates" : "No unlocked candidates yet"}
+                  </div>
+                )}
+              </div>
+            </ScrollArea>
+          </CardContent>
+        </Card>
+
+        {/* Pipeline Stages */}
         {(Object.keys(stageConfig) as PipelineStage[]).map((stage) => {
           const config = stageConfig[stage];
           const stageApplications = getApplicationsByStage(stage);
@@ -221,7 +386,7 @@ export const ApplicationPipeline = () => {
                     ))}
                     {stageApplications.length === 0 && (
                       <div className="text-center py-8 text-muted-foreground text-sm">
-                        No applications
+                        {searchQuery ? "No matching applications" : "No applications"}
                       </div>
                     )}
                   </div>
