@@ -12,6 +12,7 @@ import { useNavigate } from 'react-router-dom';
 
 export default function ROICalculator() {
   const navigate = useNavigate();
+  const [billingPeriod, setBillingPeriod] = useState<'monthly' | 'annual'>('monthly');
   const [hires, setHires] = useState(10);
   const [salary, setSalary] = useState(60000);
   const [agencyPct, setAgencyPct] = useState(20);
@@ -62,31 +63,74 @@ export default function ROICalculator() {
     { stage: 'Global', employers: 5000, avgPrice: 700, arr: 5000 * 700 * 12 },
   ];
 
+  const getPricing = (monthly: number) => {
+    const annual = Math.round(monthly * 0.85); // 15% discount
+    return billingPeriod === 'monthly' ? monthly : annual;
+  };
+
   const pricingTiers = [
     {
-      name: 'Starter',
-      price: '£299',
-      period: '/mo',
-      features: ['1 seat', '50 unlocks / year', 'Verified profiles', 'Email support'],
+      name: 'Employer — Starter',
+      monthlyPrice: 199,
+      features: [
+        '1 hiring seat',
+        '50 verified unlocks/year (~£3.98 ea)',
+        'Candidate bookmarks & notes',
+        'Email support'
+      ],
       cta: 'Choose Starter',
       link: '/auth?mode=signup',
     },
     {
-      name: 'Growth',
-      price: '£499',
-      period: '/mo',
+      name: 'Employer — Growth',
+      monthlyPrice: 499,
       popular: true,
-      features: ['3 seats', '100 unlocks / year', 'ATS export & basic analytics', 'Priority support'],
+      features: [
+        '3 hiring seats',
+        '100 verified unlocks/year (~£4.99 ea)',
+        'ATS export (CSV) & basic analytics',
+        'Priority support'
+      ],
       cta: 'Choose Growth',
       link: '/auth?mode=signup',
     },
     {
+      name: 'Employer — Scale',
+      monthlyPrice: 999,
+      features: [
+        '6 hiring seats',
+        '250 verified unlocks/year (~£3.99 ea)',
+        'Talent pool sharing & role pipelines',
+        'Advanced analytics'
+      ],
+      cta: 'Choose Scale',
+      link: '/auth?mode=signup',
+    },
+    {
+      name: 'Recruiter — Pro',
+      monthlyPrice: 699,
+      features: [
+        '3 recruiter seats',
+        'Advanced filters & saved searches',
+        '100 unlocks/year',
+        'ATS export & webhooks'
+      ],
+      cta: 'Choose Recruiter Pro',
+      link: '/auth?mode=signup',
+      variant: 'recruiter' as const,
+    },
+    {
       name: 'Enterprise',
-      price: 'Custom',
-      period: '',
-      features: ['Unlimited seats', 'Private talent pools', 'Advanced analytics & SSO', 'Dedicated CSM'],
+      monthlyPrice: null,
+      features: [
+        'Unlimited seats & SSO',
+        'Private talent pools & internal mobility',
+        'API access (badges, HRIS/ATS)',
+        'Dedicated CSM & SLAs'
+      ],
       cta: 'Talk to Sales',
       link: '/contact',
+      variant: 'enterprise' as const,
     },
   ];
 
@@ -296,37 +340,71 @@ export default function ROICalculator() {
             </TabsContent>
 
             <TabsContent value="pricing" className="space-y-8">
+              {/* Billing Toggle */}
+              <div className="flex justify-center mb-8">
+                <div className="inline-flex border border-border rounded-full p-1 bg-card">
+                  <Button
+                    variant={billingPeriod === 'monthly' ? 'default' : 'ghost'}
+                    size="sm"
+                    onClick={() => setBillingPeriod('monthly')}
+                    className="rounded-full"
+                  >
+                    Monthly
+                  </Button>
+                  <Button
+                    variant={billingPeriod === 'annual' ? 'default' : 'ghost'}
+                    size="sm"
+                    onClick={() => setBillingPeriod('annual')}
+                    className="rounded-full gap-2"
+                  >
+                    Annual <span className="text-xs bg-primary/20 px-2 py-0.5 rounded-full">Save 15%</span>
+                  </Button>
+                </div>
+              </div>
+
               {/* Pricing Tiers */}
-              <div className="grid md:grid-cols-3 gap-6">
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
                 {pricingTiers.map((tier) => (
                   <Card 
                     key={tier.name}
-                    className={tier.popular ? 'border-primary shadow-lg shadow-primary/20' : ''}
+                    className={`
+                      ${tier.popular ? 'border-2 border-primary shadow-lg shadow-primary/20 relative' : 'border-border'}
+                      ${tier.variant === 'recruiter' ? 'border-border' : ''}
+                      ${tier.variant === 'enterprise' ? 'border-border' : ''}
+                      hover:scale-105 transition-transform
+                    `}
                   >
                     {tier.popular && (
-                      <div className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground text-center py-2 rounded-t-lg text-sm font-semibold">
+                      <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap">
                         Most Popular
                       </div>
                     )}
-                    <CardHeader>
-                      <CardTitle>{tier.name}</CardTitle>
-                      <div className="mt-4">
-                        <span className="text-4xl font-bold">{tier.price}</span>
-                        {tier.period && <span className="text-muted-foreground">{tier.period}</span>}
+                    <CardHeader className="p-5">
+                      <CardTitle className="text-base mb-3">{tier.name}</CardTitle>
+                      <div>
+                        {tier.monthlyPrice !== null ? (
+                          <>
+                            <span className="text-3xl font-bold">£{getPricing(tier.monthlyPrice)}</span>
+                            <span className="text-sm text-muted-foreground ml-2">/mo</span>
+                          </>
+                        ) : (
+                          <span className="text-3xl font-bold">Custom</span>
+                        )}
                       </div>
                     </CardHeader>
-                    <CardContent className="space-y-6">
-                      <ul className="space-y-3">
+                    <CardContent className="p-5 pt-0 space-y-6">
+                      <ul className="space-y-2">
                         {tier.features.map((feature, i) => (
-                          <li key={i} className="flex items-center gap-2 text-sm">
-                            <CheckCircle2 className="w-4 h-4 text-primary flex-shrink-0" />
-                            {feature}
+                          <li key={i} className="flex items-start gap-2 text-sm">
+                            <CheckCircle2 className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
+                            <span>{feature}</span>
                           </li>
                         ))}
                       </ul>
                       <Button 
                         className="w-full"
                         variant={tier.popular ? 'default' : 'outline'}
+                        size="sm"
                         onClick={() => navigate(tier.link)}
                       >
                         {tier.cta}
