@@ -4,8 +4,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Shield, Crosshair, Scale, Cloud, Brain, Clock, CheckCircle2, Circle, ArrowRight } from 'lucide-react';
+import { Shield, Crosshair, Scale, Cloud, Brain, Clock, CheckCircle2, Circle, ArrowRight, BookOpen } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
+import { PathwayCoursesDialog } from './PathwayCoursesDialog';
 
 type SkillPathway = {
   id: string;
@@ -18,6 +19,15 @@ type SkillPathway = {
   next_steps: string[];
   estimated_time_months: number | null;
   icon: string | null;
+};
+
+type PathwayCourse = {
+  id: string;
+  title: string;
+  url: string;
+  partner_slug: string;
+  sequence_order: number;
+  is_required: boolean;
 };
 
 const getCategoryIcon = (category: string) => {
@@ -46,11 +56,20 @@ export const SkillPathways = () => {
   const [loading, setLoading] = useState(true);
   const [userSkills, setUserSkills] = useState<Set<string>>(new Set());
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [pathwayCourses, setPathwayCourses] = useState<Record<string, PathwayCourse[]>>({});
+  const [selectedPathway, setSelectedPathway] = useState<SkillPathway | null>(null);
+  const [coursesDialogOpen, setCoursesDialogOpen] = useState(false);
 
   useEffect(() => {
     loadPathways();
     loadUserSkills();
   }, []);
+
+  useEffect(() => {
+    if (pathways.length > 0) {
+      loadPathwayCourses();
+    }
+  }, [pathways]);
 
   const loadPathways = async () => {
     try {
@@ -89,10 +108,57 @@ export const SkillPathways = () => {
     }
   };
 
+  const loadPathwayCourses = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('pathway_courses')
+        .select(`
+          id,
+          sequence_order,
+          is_required,
+          pathway_id,
+          partner_courses (
+            id,
+            title,
+            url,
+            partner_slug
+          )
+        `);
+
+      if (error) throw error;
+
+      const coursesByPathway: Record<string, PathwayCourse[]> = {};
+      data?.forEach((item: any) => {
+        if (!coursesByPathway[item.pathway_id]) {
+          coursesByPathway[item.pathway_id] = [];
+        }
+        if (item.partner_courses) {
+          coursesByPathway[item.pathway_id].push({
+            id: item.partner_courses.id,
+            title: item.partner_courses.title,
+            url: item.partner_courses.url,
+            partner_slug: item.partner_courses.partner_slug,
+            sequence_order: item.sequence_order,
+            is_required: item.is_required,
+          });
+        }
+      });
+
+      setPathwayCourses(coursesByPathway);
+    } catch (error) {
+      console.error('Error loading pathway courses:', error);
+    }
+  };
+
   const calculateProgress = (pathway: SkillPathway) => {
     if (!pathway.required_skills || pathway.required_skills.length === 0) return 0;
     const matchedSkills = pathway.required_skills.filter(skill => userSkills.has(skill)).length;
     return Math.round((matchedSkills / pathway.required_skills.length) * 100);
+  };
+
+  const handleStartLearning = (pathway: SkillPathway) => {
+    setSelectedPathway(pathway);
+    setCoursesDialogOpen(true);
   };
 
   const categories = [
@@ -214,7 +280,18 @@ export const SkillPathways = () => {
                   </div>
                 )}
 
-                <Button className="w-full" variant={isComplete ? "default" : "outline"}>
+                {pathwayCourses[pathway.id] && pathwayCourses[pathway.id].length > 0 && (
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
+                    <BookOpen className="h-4 w-4" />
+                    <span>{pathwayCourses[pathway.id].length} courses</span>
+                  </div>
+                )}
+
+                <Button 
+                  className="w-full" 
+                  variant={isComplete ? "default" : "outline"}
+                  onClick={() => handleStartLearning(pathway)}
+                >
                   {isComplete ? "Review Pathway" : "Start Learning"}
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
@@ -231,6 +308,15 @@ export const SkillPathways = () => {
             <p>No pathways found for this category.</p>
           </CardContent>
         </Card>
+      )}
+
+      {selectedPathway && (
+        <PathwayCoursesDialog
+          open={coursesDialogOpen}
+          onOpenChange={setCoursesDialogOpen}
+          pathwayName={selectedPathway.name}
+          courses={pathwayCourses[selectedPathway.id] || []}
+        />
       )}
     </div>
   );
