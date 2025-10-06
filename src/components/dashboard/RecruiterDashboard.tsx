@@ -205,7 +205,7 @@ const RecruiterDashboard = () => {
                   <p className="text-sm text-muted-foreground">
                     Add companies you recruit for and manage their hiring needs
                   </p>
-                  <Button variant="hero" className="w-full">
+                  <Button variant="hero" className="w-full" onClick={() => navigate('/clients/create')}>
                     <Building2 className="h-4 w-4 mr-2" />
                     Add Client Company
                   </Button>
@@ -274,7 +274,7 @@ const RecruiterDashboard = () => {
                   <div className="space-y-4">
                     <Building2 className="h-12 w-12 mx-auto opacity-50" />
                     <p>No clients yet. Add your first client to get started!</p>
-                    <Button variant="hero">
+                    <Button variant="hero" onClick={() => navigate('/clients/create')}>
                       <Building2 className="h-4 w-4 mr-2" />
                       Add First Client
                     </Button>
