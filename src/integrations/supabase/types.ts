@@ -878,6 +878,48 @@ export type Database = {
         }
         Relationships: []
       }
+      pathway_courses: {
+        Row: {
+          course_id: string
+          created_at: string | null
+          id: string
+          is_required: boolean | null
+          pathway_id: string
+          sequence_order: number
+        }
+        Insert: {
+          course_id: string
+          created_at?: string | null
+          id?: string
+          is_required?: boolean | null
+          pathway_id: string
+          sequence_order?: number
+        }
+        Update: {
+          course_id?: string
+          created_at?: string | null
+          id?: string
+          is_required?: boolean | null
+          pathway_id?: string
+          sequence_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pathway_courses_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "partner_courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pathway_courses_pathway_id_fkey"
+            columns: ["pathway_id"]
+            isOneToOne: false
+            referencedRelation: "skill_pathways"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       peer_endorsements: {
         Row: {
           comment: string | null
