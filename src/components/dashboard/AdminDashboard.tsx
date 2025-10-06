@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Shield, Users, Briefcase, AlertCircle, UserCog } from "lucide-react";
 import { SeedDemoCandidates } from "@/components/admin/SeedDemoCandidates";
+import { toast } from "sonner";
 
 const AdminDashboard = () => {
+  const navigate = useNavigate();
   const [totalUsers, setTotalUsers] = useState(0);
   const [candidatesCount, setCandidatesCount] = useState(0);
   const [employersCount, setEmployersCount] = useState(0);
@@ -170,19 +173,31 @@ const AdminDashboard = () => {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="text-center p-4 rounded-lg border border-border hover:bg-accent/50 cursor-pointer transition-colors">
+            <div 
+              onClick={() => navigate('/profiles')}
+              className="text-center p-4 rounded-lg border border-border hover:bg-accent/50 cursor-pointer transition-colors"
+            >
               <Users className="h-6 w-6 mx-auto mb-2 text-primary" />
               <p className="text-sm font-medium">User Management</p>
             </div>
-            <div className="text-center p-4 rounded-lg border border-border hover:bg-accent/50 cursor-pointer transition-colors">
+            <div 
+              onClick={() => navigate('/jobs')}
+              className="text-center p-4 rounded-lg border border-border hover:bg-accent/50 cursor-pointer transition-colors"
+            >
               <Briefcase className="h-6 w-6 mx-auto mb-2 text-secondary" />
               <p className="text-sm font-medium">Job Moderation</p>
             </div>
-            <div className="text-center p-4 rounded-lg border border-border hover:bg-accent/50 cursor-pointer transition-colors">
+            <div 
+              onClick={() => navigate('/skills')}
+              className="text-center p-4 rounded-lg border border-border hover:bg-accent/50 cursor-pointer transition-colors"
+            >
               <Shield className="h-6 w-6 mx-auto mb-2 text-accent" />
               <p className="text-sm font-medium">Skills Library</p>
             </div>
-            <div className="text-center p-4 rounded-lg border border-border hover:bg-accent/50 cursor-pointer transition-colors">
+            <div 
+              onClick={() => toast.info("Role management interface coming soon")}
+              className="text-center p-4 rounded-lg border border-border hover:bg-accent/50 cursor-pointer transition-colors"
+            >
               <UserCog className="h-6 w-6 mx-auto mb-2 text-orange-500" />
               <p className="text-sm font-medium">Role Management</p>
             </div>
