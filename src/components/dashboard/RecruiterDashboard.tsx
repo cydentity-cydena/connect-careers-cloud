@@ -252,6 +252,7 @@ const RecruiterDashboard = () => {
                 <Button 
                   variant="outline" 
                   className="w-full border-green-500/50 hover:bg-green-500/10"
+                  onClick={() => navigate('/placements')}
                 >
                   View All Placements
                 </Button>

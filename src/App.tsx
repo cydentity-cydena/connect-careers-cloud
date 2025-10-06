@@ -23,6 +23,7 @@ import Skills from "./pages/Skills";
 import Certifications from "./pages/Certifications";
 import CompanyCreate from "./pages/CompanyCreate";
 import ClientCreate from "./pages/ClientCreate";
+import Placements from "./pages/Placements";
 import JobCreate from "./pages/JobCreate";
 import Community from "./pages/Community";
 import ROICalculator from "./pages/ROICalculator";
@@ -57,6 +58,7 @@ const App = () => (
           <Route path="/certifications" element={<Certifications />} />
           <Route path="/company/create" element={<CompanyCreate />} />
           <Route path="/clients/create" element={<ClientCreate />} />
+          <Route path="/placements" element={<Placements />} />
           <Route path="/jobs/create" element={<JobCreate />} />
           <Route path="/community" element={<Community />} />
           <Route path="/roi-calculator" element={<ROICalculator />} />
