@@ -257,7 +257,7 @@ const Auth = () => {
                     <div className="flex items-center gap-2 text-sm">
                       <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />
                       <span className="font-medium text-green-700 dark:text-green-400">
-                        100% Free Forever - No credit card required
+                        100% Free - No credit card required
                       </span>
                     </div>
                   </div>
@@ -271,7 +271,7 @@ const Auth = () => {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent className="bg-background border-border z-50">
-                        <SelectItem value="candidate">Candidate (Free Forever) ✨</SelectItem>
+                        <SelectItem value="candidate">Candidate (Free) ✨</SelectItem>
                         <SelectItem value="employer">Employer</SelectItem>
                         <SelectItem value="recruiter">Recruiter</SelectItem>
                       </SelectContent>

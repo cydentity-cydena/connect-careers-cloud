@@ -64,9 +64,9 @@ const CandidateDashboard = () => {
             <CheckCircle className="h-5 w-5 text-green-500" />
           </div>
           <div>
-            <h3 className="font-semibold text-lg mb-1">🎉 100% Free Forever</h3>
+            <h3 className="font-semibold text-lg mb-1">🎉 100% Free</h3>
             <p className="text-sm text-muted-foreground">
-              You have complete access to all candidate features at no cost. Browse jobs, showcase your skills, and connect with employers - always free.
+              You have complete access to all candidate features at no cost. Browse jobs, showcase your skills, and connect with employers.
             </p>
           </div>
         </div>
