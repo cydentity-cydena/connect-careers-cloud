@@ -38,7 +38,7 @@ const Training = () => {
           color: "bg-green-600",
           features: ["Hands-on Labs", "Completion Badges", "Community Rankings", "Credly Integration"],
           freeCourses: [
-            { name: "Linux Fundamentals", url: "https://tryhackme.com/room/linuxfundamentalspart1" },
+            { name: "Linux Fundamentals", url: "https://tryhackme.com/r/room/linuxfundamentalspart1" },
             { name: "Phishing Analysis", url: "https://tryhackme.com/room/phishingemails1tryoe" }
           ]
         },
@@ -48,7 +48,7 @@ const Training = () => {
           color: "bg-lime-600",
           features: ["HTB Academy", "Pro Labs", "Verified Badges", "Employer Recognition"],
           freeCourses: [
-            { name: "Introduction to HTB", url: "https://academy.hackthebox.com/course/preview/introduction-to-academy" }
+            { name: "Introduction to HTB", url: "https://academy.hackthebox.com/course/preview/intro-to-academy" }
           ]
         },
         {
@@ -128,7 +128,7 @@ const Training = () => {
           color: "bg-orange-600",
           features: ["Team Challenges", "Modular Scenarios", "Community Edition", "Completion Badges"],
           freeCourses: [
-            { name: "Community Range", url: "https://www.rangeforce.com/community-edition" }
+            { name: "Community Range", url: "https://www.rangeforce.com/free-edition" }
           ]
         },
         {
@@ -196,7 +196,7 @@ const Training = () => {
           color: "bg-red-700",
           features: ["Web Security", "Practical Labs", "Certificates", "Vulnerability Testing"],
           freeCourses: [
-            { name: "Web for Pentesters", url: "https://pentesterlab.com/exercises/web_for_pentester/course" }
+            { name: "Web for Pentesters", url: "https://pentesterlab.com/exercises/web-for-pentester" }
           ]
         },
         {
