@@ -9,15 +9,36 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 const Navigation = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState<any>(null);
+  const [userRole, setUserRole] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
+    const fetchUserRole = async (userId: string) => {
+      const { data } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', userId)
+        .single();
+      
+      setUserRole(data?.role || null);
+    };
+
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user);
+      if (session?.user) {
+        fetchUserRole(session.user.id);
+      } else {
+        setUserRole(null);
+      }
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user);
+      if (session?.user) {
+        fetchUserRole(session.user.id);
+      } else {
+        setUserRole(null);
+      }
     });
 
     return () => subscription.unsubscribe();
@@ -34,7 +55,7 @@ const Navigation = () => {
     setMobileMenuOpen(false);
   };
 
-  const navLinks = [
+  const allNavLinks = [
     { to: "/", label: "Home" },
     { to: "/leaderboard", label: "Leaderboard" },
     { to: "/profiles", label: "Profiles" },
@@ -42,10 +63,14 @@ const Navigation = () => {
     { to: "/jobs", label: "Jobs" },
     { to: "/training", label: "Training" },
     { to: "/certifications-catalog", label: "Certifications" },
-    { to: "/pricing", label: "Pricing" },
-    { to: "/roi-calculator", label: "ROI Calculator" },
+    { to: "/pricing", label: "Pricing", hideForRoles: ["candidate"] },
+    { to: "/roi-calculator", label: "ROI Calculator", hideForRoles: ["candidate"] },
     { to: "/contact", label: "Contact" },
   ];
+
+  const navLinks = allNavLinks.filter(
+    link => !link.hideForRoles || !userRole || !link.hideForRoles.includes(userRole)
+  );
 
   return (
     <nav className="border-b border-border backdrop-blur-sm sticky top-0 z-50 bg-background/95">
