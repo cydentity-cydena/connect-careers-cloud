@@ -123,9 +123,11 @@ const Dashboard = () => {
               <Link to="/partners" className="text-sm font-medium hover:text-primary transition-colors">
                 Partners
               </Link>
-              <Link to="/pricing" className="text-sm font-medium hover:text-primary transition-colors">
-                Pricing
-              </Link>
+              {userRole !== 'candidate' && (
+                <Link to="/pricing" className="text-sm font-medium hover:text-primary transition-colors">
+                  Pricing
+                </Link>
+              )}
               <Link to="/contact" className="text-sm font-medium hover:text-primary transition-colors">
                 Contact
               </Link>
@@ -204,13 +206,15 @@ const Dashboard = () => {
               >
                 Partners
               </Link>
-              <Link 
-                to="/pricing" 
-                className="block text-sm font-medium hover:text-primary transition-colors py-2"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Pricing
-              </Link>
+              {userRole !== 'candidate' && (
+                <Link 
+                  to="/pricing" 
+                  className="block text-sm font-medium hover:text-primary transition-colors py-2"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Pricing
+                </Link>
+              )}
               <Link 
                 to="/contact" 
                 className="block text-sm font-medium hover:text-primary transition-colors py-2"
