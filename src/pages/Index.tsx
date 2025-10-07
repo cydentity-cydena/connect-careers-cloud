@@ -153,7 +153,7 @@ const Index = () => {
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
               <h2 className="text-4xl font-bold mb-4">
-                Free Forever for <span className="bg-gradient-cyber bg-clip-text text-transparent">Candidates</span>
+                Free for <span className="bg-gradient-cyber bg-clip-text text-transparent">Candidates</span>
               </h2>
               <p className="text-xl text-muted-foreground">
                 From entry-level to CISO - everyone gets equal access
