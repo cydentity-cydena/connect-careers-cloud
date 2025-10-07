@@ -1,10 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Shield, Upload, CheckCircle, Zap, Star, TrendingUp } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import SEO from "@/components/SEO";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 const Training = () => {
   const [featuredPartners, setFeaturedPartners] = useState<any[]>([]);
@@ -267,13 +269,17 @@ const Training = () => {
                   </div>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-3 justify-center pt-4 border-t border-border">
-                  <a href="/partnerships" className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-6 py-2">
-                    <Star className="h-4 w-4 mr-2" />
-                    Become a Featured Partner
-                  </a>
-                  <a href="/contact?subject=Partnership%20Inquiry" className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-6 py-2">
-                    Contact Us
-                  </a>
+                  <Link to="/partnerships">
+                    <Button className="w-full sm:w-auto">
+                      <Star className="h-4 w-4 mr-2" />
+                      Become a Featured Partner
+                    </Button>
+                  </Link>
+                  <Link to="/contact?subject=Partnership%20Inquiry">
+                    <Button variant="outline" className="w-full sm:w-auto">
+                      Contact Us
+                    </Button>
+                  </Link>
                 </div>
               </CardContent>
             </Card>
