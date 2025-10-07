@@ -19,12 +19,12 @@ const CareerAssistant = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isAuthChecking, setIsAuthChecking] = useState(true);
   const [userContext, setUserContext] = useState<any>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     checkAuth();
-    loadUserContext();
   }, []);
 
   useEffect(() => {
@@ -32,10 +32,20 @@ const CareerAssistant = () => {
   }, [messages]);
 
   const checkAuth = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      toast.error("Please sign in to use the Career Assistant");
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast.error("Please sign in to use the Career Assistant");
+        navigate("/auth");
+        return;
+      }
+      // Only load context if user is authenticated
+      await loadUserContext();
+    } catch (error) {
+      console.error("Auth check error:", error);
       navigate("/auth");
+    } finally {
+      setIsAuthChecking(false);
     }
   };
 
@@ -190,6 +200,25 @@ const CareerAssistant = () => {
       prompt: "What certifications should I pursue next to advance my cybersecurity career?",
     },
   ];
+
+  // Show loading while checking authentication
+  if (isAuthChecking) {
+    return (
+      <div className="min-h-screen bg-background">
+        <SEO 
+          title="AI Career Assistant - Cydena"
+          description="Get personalized career guidance, job recommendations, and resume optimization powered by AI"
+        />
+        <Navigation />
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="text-center">
+            <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-primary" />
+            <p className="text-muted-foreground">Verifying access...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
