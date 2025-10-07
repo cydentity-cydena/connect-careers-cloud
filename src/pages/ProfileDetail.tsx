@@ -28,6 +28,7 @@ export default function ProfileDetail() {
   const [workHistory, setWorkHistory] = useState<any[]>([]);
   const [projects, setProjects] = useState<any[]>([]);
   const [education, setEducation] = useState<any[]>([]);
+  const [resumes, setResumes] = useState<any[]>([]);
 
   useEffect(() => {
     loadProfileData();
@@ -123,28 +124,45 @@ export default function ProfileDetail() {
         });
       }
 
-      // Fetch work history, projects, education (public)
+      // Fetch work history, projects, education
+      const workPromise = supabase
+        .from('work_history')
+        .select('*')
+        .eq('candidate_id', id)
+        .order('start_date', { ascending: false });
+      
+      const projectsPromise = supabase
+        .from('projects')
+        .select('*')
+        .eq('candidate_id', id)
+        .order('start_date', { ascending: false });
+      
+      const educationPromise = supabase
+        .from('education')
+        .select('*')
+        .eq('candidate_id', id)
+        .order('start_date', { ascending: false });
+
       const [{ data: workData }, { data: projectsData }, { data: educationData }] = await Promise.all([
-        supabase
-          .from('work_history')
-          .select('*')
-          .eq('candidate_id', id)
-          .order('start_date', { ascending: false }),
-        supabase
-          .from('projects')
-          .select('*')
-          .eq('candidate_id', id)
-          .order('start_date', { ascending: false }),
-        supabase
-          .from('education')
-          .select('*')
-          .eq('candidate_id', id)
-          .order('start_date', { ascending: false })
+        workPromise,
+        projectsPromise,
+        educationPromise
       ]);
 
       setWorkHistory(workData || []);
       setProjects(projectsData || []);
       setEducation(educationData || []);
+
+      // Fetch resumes if unlocked
+      if (unlocked) {
+        const { data: resumesData } = await supabase
+          .from('candidate_resumes')
+          .select('id, resume_name, resume_type, resume_url, is_primary, created_at')
+          .eq('candidate_id', id)
+          .order('is_primary', { ascending: false });
+        
+        setResumes(resumesData || []);
+      }
 
     } catch (error: any) {
       console.error("Error loading profile:", error);
@@ -447,6 +465,43 @@ export default function ProfileDetail() {
                               View Credential
                             </a>
                           )}
+                        </div>
+                      ))}
+                    </CardContent>
+                  </Card>
+                )}
+
+                {/* Resumes (Unlocked Only) */}
+                {isUnlocked && resumes.length > 0 && (
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <FileText className="h-5 w-5" />
+                        Resumes
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      {resumes.map((resume: any) => (
+                        <div
+                          key={resume.id}
+                          className="flex items-center gap-3 p-3 border rounded-lg hover:bg-muted/50 transition-colors"
+                        >
+                          <FileText className="h-5 w-5 text-muted-foreground" />
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium truncate">{resume.resume_name}</p>
+                            <p className="text-xs text-muted-foreground capitalize">
+                              {resume.resume_type}
+                              {resume.is_primary && " • Primary"}
+                            </p>
+                          </div>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => window.open(resume.resume_url, '_blank')}
+                          >
+                            <ExternalLink className="h-4 w-4 mr-1" />
+                            View
+                          </Button>
                         </div>
                       ))}
                     </CardContent>

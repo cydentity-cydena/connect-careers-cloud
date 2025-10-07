@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Briefcase, MapPin, DollarSign, Clock, Search } from "lucide-react";
 import Navigation from "@/components/Navigation";
+import { ApplyJobDialog } from "@/components/jobs/ApplyJobDialog";
 
 interface Job {
   id: string;
@@ -195,9 +196,11 @@ const Jobs = () => {
                   )}
 
                   <div className="flex gap-3 pt-2">
-                    <Button variant="hero" className="flex-1">
-                      Apply Now
-                    </Button>
+                    <ApplyJobDialog jobId={job.id} jobTitle={job.title}>
+                      <Button variant="hero" className="flex-1">
+                        Apply Now
+                      </Button>
+                    </ApplyJobDialog>
                     <Button variant="cyber" className="flex-1">
                       View Details
                     </Button>

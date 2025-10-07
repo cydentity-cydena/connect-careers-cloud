@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { FileText, Upload, Trash2, Star } from "lucide-react";
+import { FileText, Upload, Trash2, Star, Eye, Download } from "lucide-react";
 import { toast } from "sonner";
 
 interface Resume {
@@ -122,6 +122,21 @@ export const MultipleResumesManager = () => {
     }
   };
 
+  const handleDownload = (resumeUrl: string, resumeName: string) => {
+    // Create a temporary link and trigger download
+    const link = document.createElement('a');
+    link.href = resumeUrl;
+    link.download = `${resumeName}.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    toast.success("Resume downloaded");
+  };
+
+  const handleView = (resumeUrl: string) => {
+    window.open(resumeUrl, '_blank');
+  };
+
   const handleDelete = async (resumeId: string) => {
     try {
       const { error } = await supabase
@@ -215,11 +230,28 @@ export const MultipleResumesManager = () => {
                   </span>
                 )}
                 <div className="flex gap-2">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleView(resume.resume_url)}
+                    title="View resume"
+                  >
+                    <Eye className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleDownload(resume.resume_url, resume.resume_name)}
+                    title="Download resume"
+                  >
+                    <Download className="h-4 w-4" />
+                  </Button>
                   {!resume.is_primary && (
                     <Button
                       variant="ghost"
                       size="sm"
                       onClick={() => handleSetPrimary(resume.id)}
+                      title="Set as primary"
                     >
                       Set Primary
                     </Button>
@@ -228,6 +260,7 @@ export const MultipleResumesManager = () => {
                     variant="ghost"
                     size="sm"
                     onClick={() => handleDelete(resume.id)}
+                    title="Delete resume"
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>

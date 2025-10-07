@@ -87,6 +87,7 @@ export type Database = {
           cover_letter: string | null
           id: string
           job_id: string
+          resume_id: string | null
           stage: Database["public"]["Enums"]["pipeline_stage"]
           status_notes: string | null
           updated_at: string
@@ -97,6 +98,7 @@ export type Database = {
           cover_letter?: string | null
           id?: string
           job_id: string
+          resume_id?: string | null
           stage?: Database["public"]["Enums"]["pipeline_stage"]
           status_notes?: string | null
           updated_at?: string
@@ -107,6 +109,7 @@ export type Database = {
           cover_letter?: string | null
           id?: string
           job_id?: string
+          resume_id?: string | null
           stage?: Database["public"]["Enums"]["pipeline_stage"]
           status_notes?: string | null
           updated_at?: string
@@ -117,6 +120,13 @@ export type Database = {
             columns: ["job_id"]
             isOneToOne: false
             referencedRelation: "jobs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "applications_resume_id_fkey"
+            columns: ["resume_id"]
+            isOneToOne: false
+            referencedRelation: "candidate_resumes"
             referencedColumns: ["id"]
           },
         ]
