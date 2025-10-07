@@ -7,6 +7,8 @@ import { User, Briefcase, FileText, TrendingUp, CheckCircle } from "lucide-react
 import { ProfileStrengthMeter } from "@/components/gamification/ProfileStrengthMeter";
 import { AchievementBadges } from "@/components/gamification/AchievementBadges";
 import { RecentPointsFeed } from "@/components/rewards/RecentPointsFeed";
+import { ProfileViewsNotification } from "./ProfileViewsNotification";
+import { MultipleResumesManager } from "./MultipleResumesManager";
 import { BoostYourScore } from "./BoostYourScore";
 
 const CandidateDashboard = () => {
@@ -138,6 +140,14 @@ const CandidateDashboard = () => {
           </div>
         </CardContent>
       </Card>
+
+      {/* Profile Views & Multiple Resumes */}
+      {userId && (
+        <div className="grid gap-6 md:grid-cols-2">
+          <ProfileViewsNotification />
+          <MultipleResumesManager />
+        </div>
+      )}
 
       {userId && (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">

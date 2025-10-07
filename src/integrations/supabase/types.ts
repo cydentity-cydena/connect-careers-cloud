@@ -169,6 +169,39 @@ export type Database = {
         }
         Relationships: []
       }
+      candidate_resumes: {
+        Row: {
+          candidate_id: string
+          created_at: string
+          id: string
+          is_primary: boolean | null
+          resume_name: string
+          resume_type: string
+          resume_url: string
+          updated_at: string
+        }
+        Insert: {
+          candidate_id: string
+          created_at?: string
+          id?: string
+          is_primary?: boolean | null
+          resume_name: string
+          resume_type?: string
+          resume_url: string
+          updated_at?: string
+        }
+        Update: {
+          candidate_id?: string
+          created_at?: string
+          id?: string
+          is_primary?: boolean | null
+          resume_name?: string
+          resume_type?: string
+          resume_url?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       candidate_skills: {
         Row: {
           candidate_id: string
@@ -483,6 +516,33 @@ export type Database = {
           price?: number
           status?: string
           transaction_type?: string
+        }
+        Relationships: []
+      }
+      direct_messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          is_read: boolean | null
+          recipient_id: string
+          sender_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          is_read?: boolean | null
+          recipient_id: string
+          sender_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          is_read?: boolean | null
+          recipient_id?: string
+          sender_id?: string
         }
         Relationships: []
       }
@@ -1036,6 +1096,38 @@ export type Database = {
           unlocked_at?: string
         }
         Relationships: []
+      }
+      profile_views: {
+        Row: {
+          candidate_id: string
+          employer_id: string
+          id: string
+          job_id: string | null
+          viewed_at: string
+        }
+        Insert: {
+          candidate_id: string
+          employer_id: string
+          id?: string
+          job_id?: string | null
+          viewed_at?: string
+        }
+        Update: {
+          candidate_id?: string
+          employer_id?: string
+          id?: string
+          job_id?: string | null
+          viewed_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profile_views_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "jobs"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {

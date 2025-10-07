@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { UnlockProfileButton } from "@/components/profiles/UnlockProfileButton";
 import { PeerEndorsement } from "@/components/profiles/PeerEndorsement";
+import { DirectMessageButton } from "@/components/messaging/DirectMessageButton";
 import { Skeleton } from "@/components/ui/skeleton";
 import { 
   Mail, Phone, MapPin, Calendar, Briefcase, Award, 
@@ -226,16 +227,23 @@ export default function ProfileDetail() {
                   )}
                 </div>
 
-                {!isUnlocked && (
-                  <div className="mb-6">
+                <div className="mb-6 space-y-2">
+                  {!isUnlocked && (
                     <UnlockProfileButton
                       candidateId={id!}
                       isUnlocked={isUnlocked}
                       onUnlock={handleUnlockSuccess}
                       remainingCredits={credits}
                     />
-                  </div>
-                )}
+                  )}
+                  {isUnlocked && currentUserId && (
+                    <DirectMessageButton
+                      recipientId={id!}
+                      recipientName={profile.full_name || profile.username || "Candidate"}
+                      variant="default"
+                    />
+                  )}
+                </div>
 
                 {isUnlocked && (
                   <div className="space-y-3">
