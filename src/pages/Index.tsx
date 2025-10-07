@@ -54,8 +54,63 @@ const Index = () => {
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000,transparent)] opacity-20" />
       </section>
 
-      {/* Features */}
+      {/* For Candidates Section - Moved to top for visibility */}
       <section className="py-16 md:py-24 bg-card/30">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                Free for <span className="bg-gradient-cyber bg-clip-text text-transparent">Candidates</span>
+              </h2>
+              <p className="text-lg md:text-xl text-muted-foreground">
+                From entry-level to CISO - everyone gets equal access
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="flex items-start gap-3">
+                <CheckCircle className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
+                <div>
+                  <h3 className="font-semibold mb-1">Career Transitioners Welcome</h3>
+                  <p className="text-sm text-muted-foreground">Breaking into cybersecurity? We support entry-level talent with partner certifications</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <CheckCircle className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
+                <div>
+                  <h3 className="font-semibold mb-1">Showcase Your Certifications</h3>
+                  <p className="text-sm text-muted-foreground">CompTIA, CISSP, CEH, SANS - verified credentials get you noticed</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <CheckCircle className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
+                <div>
+                  <h3 className="font-semibold mb-1">Skip the Recruiter Gatekeepers</h3>
+                  <p className="text-sm text-muted-foreground">Apply directly to employers. Message them in-platform. No middleman</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <CheckCircle className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
+                <div>
+                  <h3 className="font-semibold mb-1">Gamified Profile Building</h3>
+                  <p className="text-sm text-muted-foreground">Earn XP, climb the leaderboard, unlock achievements as you grow</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="text-center mt-8">
+              <Link to="/auth">
+                <Button size="lg" className="gap-2">
+                  Create Free Profile <ArrowRight className="h-5 w-5" />
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features */}
+      <section className="py-16 md:py-24">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12 md:mb-16 animate-fade-in">
             <h2 className="text-3xl md:text-4xl font-bold mb-3 md:mb-4">Why Choose Cydena?</h2>
@@ -143,61 +198,6 @@ const Index = () => {
                 See Full Pricing Comparison <ArrowRight className="h-4 w-4" />
               </Button>
             </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* For Candidates Section */}
-      <section className="py-24 bg-card/30">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-4xl font-bold mb-4">
-                Free for <span className="bg-gradient-cyber bg-clip-text text-transparent">Candidates</span>
-              </h2>
-              <p className="text-xl text-muted-foreground">
-                From entry-level to CISO - everyone gets equal access
-              </p>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-6">
-              <div className="flex items-start gap-3">
-                <CheckCircle className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
-                <div>
-                  <h3 className="font-semibold mb-1">Career Transitioners Welcome</h3>
-                  <p className="text-sm text-muted-foreground">Breaking into cybersecurity? We support entry-level talent with partner certifications</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <CheckCircle className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
-                <div>
-                  <h3 className="font-semibold mb-1">Showcase Your Certifications</h3>
-                  <p className="text-sm text-muted-foreground">CompTIA, CISSP, CEH, SANS - verified credentials get you noticed</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <CheckCircle className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
-                <div>
-                  <h3 className="font-semibold mb-1">Skip the Recruiter Gatekeepers</h3>
-                  <p className="text-sm text-muted-foreground">Apply directly to employers. Message them in-platform. No middleman</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <CheckCircle className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
-                <div>
-                  <h3 className="font-semibold mb-1">Gamified Profile Building</h3>
-                  <p className="text-sm text-muted-foreground">Earn XP, climb the leaderboard, unlock achievements as you grow</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="text-center mt-8">
-              <Link to="/auth">
-                <Button size="lg" className="gap-2">
-                  Create Free Profile <ArrowRight className="h-5 w-5" />
-                </Button>
-              </Link>
-            </div>
           </div>
         </div>
       </section>
