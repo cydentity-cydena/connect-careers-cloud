@@ -122,14 +122,20 @@ const Auth = () => {
     } catch (error: any) {
       console.error('Signup error:', error);
       
-      if (error.message?.includes('already registered')) {
-        toast.error("This email is already registered. Please sign in instead.");
-      } else if (error.message?.includes('Invalid email')) {
+      const errorMessage = error.message || '';
+      
+      if (errorMessage.includes('already registered') || errorMessage.includes('already taken') || errorMessage.includes('email_exists')) {
+        toast.error("This email is already registered. Please sign in or use a different email.");
+      } else if (errorMessage.includes('Username already taken')) {
+        toast.error("Username already taken. Please choose another.");
+      } else if (errorMessage.includes('Invalid email')) {
         toast.error("Please enter a valid email address.");
-      } else if (error.message?.includes('Password')) {
+      } else if (errorMessage.includes('Password') || errorMessage.includes('password')) {
         toast.error("Password does not meet requirements. Use 12+ characters with mixed case, numbers, and symbols.");
+      } else if (errorMessage.includes('Username') || errorMessage.includes('username')) {
+        toast.error(errorMessage);
       } else {
-        toast.error(error.message || "Failed to create account. Please try again.");
+        toast.error(errorMessage || "Failed to create account. Please try again.");
       }
     } finally {
       setIsLoading(false);
