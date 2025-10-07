@@ -43,9 +43,72 @@ You are knowledgeable about cybersecurity certifications (CISSP, Security+, CEH,
 
 Be conversational, encouraging, and specific. Provide actionable advice.`;
 
-    // Add user context to system prompt
+    // Add comprehensive user context to system prompt
     if (context) {
-      systemPrompt += `\n\nCandidate Context:\n${JSON.stringify(context, null, 2)}`;
+      systemPrompt += `\n\n=== CANDIDATE PROFILE ===`;
+      
+      if (context.profile) {
+        systemPrompt += `\n\nBasic Info:
+- Name: ${context.profile.full_name || 'Not provided'}
+- Username: ${context.profile.username || 'Not provided'}
+- Location: ${context.profile.location || 'Not provided'}
+- Title: ${context.profile.title || 'Not provided'}
+- Years of Experience: ${context.profile.years_experience || 0}
+- Security Clearance: ${context.profile.security_clearance || 'None'}
+- Willing to Relocate: ${context.profile.willing_to_relocate ? 'Yes' : 'No'}
+- Professional Statement: ${context.profile.professional_statement || 'Not provided'}
+- LinkedIn: ${context.profile.linkedin_url || 'Not provided'}
+- GitHub: ${context.profile.github_url || 'Not provided'}
+- Portfolio: ${context.profile.portfolio_url || 'Not provided'}`;
+      }
+
+      if (context.resumes?.length > 0) {
+        systemPrompt += `\n\nResumes (${context.resumes.length} uploaded):`;
+        context.resumes.forEach((r: any) => {
+          systemPrompt += `\n- ${r.name} (${r.type})${r.primary ? ' [PRIMARY]' : ''}`;
+        });
+        systemPrompt += `\nNote: Resume files are uploaded but cannot be directly read by the AI. Base recommendations on other profile data.`;
+      }
+
+      if (context.skills?.length > 0) {
+        systemPrompt += `\n\nSkills (${context.skills.length}):`;
+        context.skills.forEach((s: any) => {
+          systemPrompt += `\n- ${s.name}${s.category ? ` (${s.category})` : ''} - ${s.years_experience} years, Level ${s.proficiency}/5`;
+        });
+      }
+
+      if (context.certifications?.length > 0) {
+        systemPrompt += `\n\nCertifications (${context.certifications.length}):`;
+        context.certifications.forEach((c: any) => {
+          systemPrompt += `\n- ${c.name} by ${c.issuer}${c.expires ? ` (expires: ${c.expires})` : ''}`;
+        });
+      }
+
+      if (context.workHistory?.length > 0) {
+        systemPrompt += `\n\nWork History (${context.workHistory.length} positions):`;
+        context.workHistory.forEach((w: any) => {
+          systemPrompt += `\n- ${w.role} at ${w.company} (${w.period})${w.location ? ` - ${w.location}` : ''}`;
+          if (w.description) systemPrompt += `\n  ${w.description}`;
+        });
+      }
+
+      if (context.education?.length > 0) {
+        systemPrompt += `\n\nEducation (${context.education.length} degrees):`;
+        context.education.forEach((e: any) => {
+          systemPrompt += `\n- ${e.degree} in ${e.field} from ${e.institution} (${e.period})${e.gpa ? ` - GPA: ${e.gpa}` : ''}`;
+        });
+      }
+
+      if (context.projects?.length > 0) {
+        systemPrompt += `\n\nProjects (${context.projects.length}):`;
+        context.projects.forEach((p: any) => {
+          systemPrompt += `\n- ${p.name} (${p.period})`;
+          if (p.description) systemPrompt += `\n  ${p.description}`;
+          if (p.technologies) systemPrompt += `\n  Tech: ${p.technologies.join(', ')}`;
+        });
+      }
+
+      systemPrompt += `\n\n=== END PROFILE ===\n\nUse this comprehensive profile data to provide personalized, specific recommendations and guidance.`;
     }
 
     console.log("Making request to Lovable AI Gateway");

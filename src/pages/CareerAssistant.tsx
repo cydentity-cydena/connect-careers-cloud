@@ -54,32 +54,116 @@ const CareerAssistant = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
+      // Load base profile
+      const { data: baseProfile } = await supabase
+        .from("profiles")
+        .select("full_name, username, location, bio")
+        .eq("id", user.id)
+        .maybeSingle();
+
       // Load candidate profile
-      const { data: profile } = await supabase
+      const { data: candidateProfile } = await supabase
         .from("candidate_profiles")
         .select("*")
         .eq("user_id", user.id)
-        .single();
+        .maybeSingle();
 
-      // Load skills
+      // Load skills with details
       const { data: skills } = await supabase
         .from("candidate_skills")
-        .select("*, skill:skills(name)")
+        .select("*, skill:skills(name, category)")
         .eq("candidate_id", user.id);
 
       // Load certifications
       const { data: certs } = await supabase
         .from("certifications")
-        .select("name, issuer")
+        .select("name, issuer, issue_date, expiry_date, credential_url")
         .eq("candidate_id", user.id);
 
-      setUserContext({
-        profile,
-        skills: skills?.map(s => s.skill?.name),
-        certifications: certs?.map(c => c.name),
-      });
+      // Load resumes
+      const { data: resumes } = await supabase
+        .from("candidate_resumes")
+        .select("resume_name, resume_type, resume_url, is_primary")
+        .eq("candidate_id", user.id)
+        .order("is_primary", { ascending: false });
 
-      console.log("Loaded user context:", { profile, skills, certs });
+      // Load work history
+      const { data: workHistory } = await supabase
+        .from("work_history")
+        .select("company, role, location, start_date, end_date, is_current, description")
+        .eq("candidate_id", user.id)
+        .order("start_date", { ascending: false });
+
+      // Load education
+      const { data: education } = await supabase
+        .from("education")
+        .select("institution, degree, field_of_study, start_date, end_date, gpa, description")
+        .eq("candidate_id", user.id)
+        .order("start_date", { ascending: false });
+
+      // Load projects
+      const { data: projects } = await supabase
+        .from("projects")
+        .select("name, description, url, github_url, tech_stack, start_date, end_date")
+        .eq("candidate_id", user.id)
+        .order("start_date", { ascending: false });
+
+      const context = {
+        profile: {
+          ...baseProfile,
+          ...candidateProfile,
+        },
+        skills: skills?.map(s => ({
+          name: s.skill?.name,
+          category: s.skill?.category,
+          years_experience: s.years_experience,
+          proficiency: s.proficiency_level,
+        })) || [],
+        certifications: certs?.map(c => ({
+          name: c.name,
+          issuer: c.issuer,
+          issued: c.issue_date,
+          expires: c.expiry_date,
+          url: c.credential_url,
+        })) || [],
+        resumes: resumes?.map(r => ({
+          name: r.resume_name,
+          type: r.resume_type,
+          url: r.resume_url,
+          primary: r.is_primary,
+        })) || [],
+        workHistory: workHistory?.map(w => ({
+          company: w.company,
+          role: w.role,
+          location: w.location,
+          current: w.is_current,
+          period: w.is_current 
+            ? `${w.start_date} - Present` 
+            : `${w.start_date} - ${w.end_date}`,
+          description: w.description,
+        })) || [],
+        education: education?.map(e => ({
+          institution: e.institution,
+          degree: e.degree,
+          field: e.field_of_study,
+          period: `${e.start_date} - ${e.end_date}`,
+          gpa: e.gpa,
+          description: e.description,
+        })) || [],
+        projects: projects?.map(p => ({
+          name: p.name,
+          description: p.description,
+          url: p.url,
+          github: p.github_url,
+          technologies: p.tech_stack,
+          period: p.end_date 
+            ? `${p.start_date} - ${p.end_date}`
+            : `${p.start_date} - Ongoing`,
+        })) || [],
+      };
+
+      setUserContext(context);
+      console.log("Loaded comprehensive user context:", context);
     } catch (error) {
       console.error("Error loading context:", error);
     }
