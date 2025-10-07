@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Shield, Loader2 } from "lucide-react";
+import { Shield, Loader2, CheckCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -251,6 +251,18 @@ const Auth = () => {
               </TabsContent>
 
               <TabsContent value="signup">
+                {/* Free for Candidates Badge */}
+                {userRole === "candidate" && (
+                  <div className="mb-4 bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/20 rounded-lg p-3">
+                    <div className="flex items-center gap-2 text-sm">
+                      <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />
+                      <span className="font-medium text-green-700 dark:text-green-400">
+                        100% Free Forever - No credit card required
+                      </span>
+                    </div>
+                  </div>
+                )}
+                
                 <form onSubmit={handleSignUp} className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="role">I am a...</Label>
@@ -259,7 +271,7 @@ const Auth = () => {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent className="bg-background border-border z-50">
-                        <SelectItem value="candidate">Candidate</SelectItem>
+                        <SelectItem value="candidate">Candidate (Free Forever) ✨</SelectItem>
                         <SelectItem value="employer">Employer</SelectItem>
                         <SelectItem value="recruiter">Recruiter</SelectItem>
                       </SelectContent>

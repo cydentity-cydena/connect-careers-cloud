@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { User, Briefcase, FileText, TrendingUp } from "lucide-react";
+import { User, Briefcase, FileText, TrendingUp, CheckCircle } from "lucide-react";
 import { ProfileStrengthMeter } from "@/components/gamification/ProfileStrengthMeter";
 import { AchievementBadges } from "@/components/gamification/AchievementBadges";
 import { RecentPointsFeed } from "@/components/rewards/RecentPointsFeed";
@@ -55,6 +55,21 @@ const CandidateDashboard = () => {
   };
   return (
     <div className="space-y-8 animate-fade-in">
+      {/* Free Access Banner */}
+      <div className="bg-gradient-to-r from-green-500/10 via-green-400/10 to-emerald-500/10 border border-green-500/20 rounded-lg p-4 md:p-6">
+        <div className="flex items-start gap-3">
+          <div className="bg-green-500/10 rounded-full p-2 flex-shrink-0">
+            <CheckCircle className="h-5 w-5 text-green-500" />
+          </div>
+          <div>
+            <h3 className="font-semibold text-lg mb-1">🎉 100% Free Forever</h3>
+            <p className="text-sm text-muted-foreground">
+              You have complete access to all candidate features at no cost. Browse jobs, showcase your skills, and connect with employers - always free.
+            </p>
+          </div>
+        </div>
+      </div>
+
       <div>
         <h1 className="text-4xl font-bold mb-2">Welcome back, {userName}! 👋</h1>
         <p className="text-muted-foreground">
