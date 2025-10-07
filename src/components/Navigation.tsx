@@ -63,14 +63,23 @@ const Navigation = () => {
     { to: "/jobs", label: "Jobs" },
     { to: "/training", label: "Training" },
     { to: "/certifications-catalog", label: "Certifications" },
+    { to: "/career-assistant", label: "AI Assistant", showForRoles: ["candidate"] },
     { to: "/pricing", label: "Pricing", hideForRoles: ["candidate"] },
     { to: "/roi-calculator", label: "ROI Calculator", hideForRoles: ["candidate"] },
     { to: "/contact", label: "Contact" },
   ];
 
-  const navLinks = allNavLinks.filter(
-    link => !link.hideForRoles || !userRole || !link.hideForRoles.includes(userRole)
-  );
+  const navLinks = allNavLinks.filter(link => {
+    // Hide if hideForRoles includes current role
+    if (link.hideForRoles && userRole && link.hideForRoles.includes(userRole)) {
+      return false;
+    }
+    // Show only if showForRoles includes current role (or if no showForRoles specified)
+    if (link.showForRoles && (!userRole || !link.showForRoles.includes(userRole))) {
+      return false;
+    }
+    return true;
+  });
 
   return (
     <nav className="border-b border-border backdrop-blur-sm sticky top-0 z-50 bg-background/95">
