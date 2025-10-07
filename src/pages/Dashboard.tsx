@@ -125,8 +125,8 @@ const Dashboard = () => {
                   AI Assistant
                 </Link>
               )}
-              <Link to="/partners" className="text-sm font-medium hover:text-primary transition-colors">
-                Partners
+              <Link to="/certifications-catalog" className="text-sm font-medium hover:text-primary transition-colors">
+                Certifications
               </Link>
               {userRole !== 'candidate' && (
                 <Link to="/pricing" className="text-sm font-medium hover:text-primary transition-colors">
@@ -214,11 +214,11 @@ const Dashboard = () => {
                 </Link>
               )}
               <Link 
-                to="/partners" 
+                to="/certifications-catalog" 
                 className="block text-sm font-medium hover:text-primary transition-colors py-2"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                Partners
+                Certifications
               </Link>
               {userRole !== 'candidate' && (
                 <Link 
