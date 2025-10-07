@@ -11,6 +11,7 @@ import Leaderboard from "./pages/Leaderboard";
 import Profiles from "./pages/Profiles";
 import ProfileDetail from "./pages/ProfileDetail";
 import Jobs from "./pages/Jobs";
+import JobDetail from "./pages/JobDetail";
 import Training from "./pages/Training";
 import CertificationCatalog from "./pages/CertificationCatalog";
 import Contact from "./pages/Contact";
@@ -47,6 +48,7 @@ const App = () => (
           <Route path="/profiles" element={<Profiles />} />
           <Route path="/profiles/:id" element={<ProfileDetail />} />
           <Route path="/jobs" element={<Jobs />} />
+          <Route path="/jobs/:id" element={<JobDetail />} />
           <Route path="/training" element={<Training />} />
           <Route path="/certifications-catalog" element={<CertificationCatalog />} />
           <Route path="/contact" element={<Contact />} />
