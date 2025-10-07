@@ -120,6 +120,11 @@ const Dashboard = () => {
               <Link to="/training" className="text-sm font-medium hover:text-primary transition-colors">
                 Training
               </Link>
+              {userRole === 'candidate' && (
+                <Link to="/career-assistant" className="text-sm font-medium hover:text-primary transition-colors">
+                  AI Assistant
+                </Link>
+              )}
               <Link to="/partners" className="text-sm font-medium hover:text-primary transition-colors">
                 Partners
               </Link>
@@ -199,6 +204,15 @@ const Dashboard = () => {
               >
                 Training
               </Link>
+              {userRole === 'candidate' && (
+                <Link 
+                  to="/career-assistant" 
+                  className="block text-sm font-medium hover:text-primary transition-colors py-2"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  AI Assistant
+                </Link>
+              )}
               <Link 
                 to="/partners" 
                 className="block text-sm font-medium hover:text-primary transition-colors py-2"
