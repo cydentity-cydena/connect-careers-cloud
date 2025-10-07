@@ -101,7 +101,7 @@ const Dashboard = () => {
             </Link>
 
             {/* Desktop Navigation */}
-            <div className="hidden lg:flex items-center gap-6">
+            <div className="hidden xl:flex items-center gap-6">
               <Link to="/" className="text-sm font-medium hover:text-primary transition-colors">
                 Home
               </Link>
@@ -148,7 +148,7 @@ const Dashboard = () => {
             </div>
 
             {/* Mobile Menu Button */}
-            <div className="flex lg:hidden items-center gap-2">
+            <div className="flex xl:hidden items-center gap-2">
               <Button 
                 variant="ghost" 
                 size="icon"
@@ -161,7 +161,7 @@ const Dashboard = () => {
 
           {/* Mobile Navigation */}
           {mobileMenuOpen && (
-            <div className="lg:hidden mt-4 pb-4 space-y-3">
+            <div className="xl:hidden mt-4 pb-4 space-y-3">
               <Link 
                 to="/" 
                 className="block text-sm font-medium hover:text-primary transition-colors py-2"
