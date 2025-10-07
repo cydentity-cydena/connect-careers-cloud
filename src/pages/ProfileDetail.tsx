@@ -153,12 +153,13 @@ export default function ProfileDetail() {
       setProjects(projectsData || []);
       setEducation(educationData || []);
 
-      // Fetch resumes if unlocked
+      // Fetch resumes if unlocked (only visible ones for employers)
       if (unlocked) {
         const { data: resumesData } = await supabase
           .from('candidate_resumes')
-          .select('id, resume_name, resume_type, resume_url, is_primary, created_at')
+          .select('id, resume_name, resume_type, resume_url, is_primary, created_at, is_visible_to_employers')
           .eq('candidate_id', id)
+          .eq('is_visible_to_employers', true) // Only show resumes candidate made visible
           .order('is_primary', { ascending: false });
         
         setResumes(resumesData || []);

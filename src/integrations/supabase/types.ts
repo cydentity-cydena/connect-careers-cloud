@@ -185,6 +185,7 @@ export type Database = {
           created_at: string
           id: string
           is_primary: boolean | null
+          is_visible_to_employers: boolean | null
           resume_name: string
           resume_type: string
           resume_url: string
@@ -195,6 +196,7 @@ export type Database = {
           created_at?: string
           id?: string
           is_primary?: boolean | null
+          is_visible_to_employers?: boolean | null
           resume_name: string
           resume_type?: string
           resume_url: string
@@ -205,6 +207,7 @@ export type Database = {
           created_at?: string
           id?: string
           is_primary?: boolean | null
+          is_visible_to_employers?: boolean | null
           resume_name?: string
           resume_type?: string
           resume_url?: string

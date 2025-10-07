@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { FileText, Upload, Trash2, Star, Eye, Download } from "lucide-react";
+import { FileText, Upload, Trash2, Star, Eye, Download, EyeOff } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 
 interface Resume {
@@ -14,6 +15,7 @@ interface Resume {
   resume_type: string;
   resume_url: string;
   is_primary: boolean;
+  is_visible_to_employers: boolean;
 }
 
 export const MultipleResumesManager = () => {
@@ -154,6 +156,27 @@ export const MultipleResumesManager = () => {
     }
   };
 
+  const handleToggleVisibility = async (resumeId: string, currentVisibility: boolean) => {
+    try {
+      const { error } = await supabase
+        .from("candidate_resumes")
+        .update({ is_visible_to_employers: !currentVisibility })
+        .eq("id", resumeId);
+
+      if (error) throw error;
+
+      toast.success(
+        !currentVisibility
+          ? "Resume is now visible to employers"
+          : "Resume is now hidden from employers"
+      );
+      loadResumes();
+    } catch (error) {
+      console.error("Error toggling visibility:", error);
+      toast.error("Failed to update visibility");
+    }
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -220,15 +243,40 @@ export const MultipleResumesManager = () => {
               >
                 <FileText className="h-5 w-5 text-muted-foreground" />
                 <div className="flex-1 min-w-0">
-                  <p className="font-medium truncate">{resume.resume_name}</p>
+                  <div className="flex items-center gap-2 mb-1">
+                    <p className="font-medium truncate">{resume.resume_name}</p>
+                    {resume.is_primary && (
+                      <span className="flex items-center gap-1 text-xs font-medium text-primary">
+                        <Star className="h-3 w-3 fill-current" />
+                        Primary
+                      </span>
+                    )}
+                  </div>
                   <p className="text-xs text-muted-foreground capitalize">{resume.resume_type}</p>
+                  <div className="flex items-center gap-2 mt-1">
+                    <Switch
+                      checked={resume.is_visible_to_employers}
+                      onCheckedChange={() => handleToggleVisibility(resume.id, resume.is_visible_to_employers)}
+                      id={`visibility-${resume.id}`}
+                    />
+                    <label 
+                      htmlFor={`visibility-${resume.id}`}
+                      className="text-xs text-muted-foreground cursor-pointer flex items-center gap-1"
+                    >
+                      {resume.is_visible_to_employers ? (
+                        <>
+                          <Eye className="h-3 w-3" />
+                          Visible to employers
+                        </>
+                      ) : (
+                        <>
+                          <EyeOff className="h-3 w-3" />
+                          Hidden from employers
+                        </>
+                      )}
+                    </label>
+                  </div>
                 </div>
-                {resume.is_primary && (
-                  <span className="flex items-center gap-1 text-xs font-medium text-primary">
-                    <Star className="h-3 w-3 fill-current" />
-                    Primary
-                  </span>
-                )}
                 <div className="flex gap-2">
                   <Button
                     variant="ghost"
