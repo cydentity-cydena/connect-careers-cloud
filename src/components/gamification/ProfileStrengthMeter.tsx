@@ -1,17 +1,26 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { Trophy, CheckCircle2, Circle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Trophy, CheckCircle2, ChevronRight, ArrowRight } from "lucide-react";
 
 interface ProfileStrengthMeterProps {
   userId: string;
 }
 
+interface MissingField {
+  label: string;
+  route: string;
+  section?: string;
+}
+
 export const ProfileStrengthMeter = ({ userId }: ProfileStrengthMeterProps) => {
+  const navigate = useNavigate();
   const [completion, setCompletion] = useState(0);
-  const [missingFields, setMissingFields] = useState<string[]>([]);
+  const [missingFields, setMissingFields] = useState<MissingField[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -20,7 +29,7 @@ export const ProfileStrengthMeter = ({ userId }: ProfileStrengthMeterProps) => {
 
   const calculateCompletion = async () => {
     try {
-      const missing: string[] = [];
+      const missing: MissingField[] = [];
       let score = 0;
 
       // Check profile
@@ -32,16 +41,16 @@ export const ProfileStrengthMeter = ({ userId }: ProfileStrengthMeterProps) => {
 
       if (profile) {
         if (profile.full_name) score += 10;
-        else missing.push('Full name');
+        else missing.push({ label: 'Add your full name', route: '/profile', section: 'name' });
         
         if (profile.bio) score += 10;
-        else missing.push('Bio');
+        else missing.push({ label: 'Write a professional bio', route: '/profile', section: 'bio' });
         
         if (profile.location) score += 10;
-        else missing.push('Location');
+        else missing.push({ label: 'Add your location', route: '/profile', section: 'location' });
         
         if (profile.avatar_url) score += 10;
-        else missing.push('Profile photo');
+        else missing.push({ label: 'Upload a profile photo', route: '/profile', section: 'avatar' });
       }
 
       // Check candidate profile
@@ -53,16 +62,16 @@ export const ProfileStrengthMeter = ({ userId }: ProfileStrengthMeterProps) => {
 
       if (candidateProfile) {
         if (candidateProfile.title) score += 10;
-        else missing.push('Job title');
+        else missing.push({ label: 'Add your job title', route: '/profile', section: 'title' });
         
         if (candidateProfile.years_experience > 0) score += 10;
-        else missing.push('Years of experience');
+        else missing.push({ label: 'Add years of experience', route: '/profile', section: 'experience' });
         
         if (candidateProfile.resume_url) score += 10;
-        else missing.push('Resume');
+        else missing.push({ label: 'Upload your resume', route: '/profile', section: 'resume' });
         
         if (candidateProfile.linkedin_url) score += 10;
-        else missing.push('LinkedIn URL');
+        else missing.push({ label: 'Connect LinkedIn profile', route: '/profile', section: 'linkedin' });
       }
 
       // Check skills
@@ -72,7 +81,7 @@ export const ProfileStrengthMeter = ({ userId }: ProfileStrengthMeterProps) => {
         .eq('candidate_id', userId);
 
       if (skills && skills.length > 0) score += 10;
-      else missing.push('Skills');
+      else missing.push({ label: 'Add your skills', route: '/skills' });
 
       // Check certifications
       const { data: certs } = await supabase
@@ -81,7 +90,7 @@ export const ProfileStrengthMeter = ({ userId }: ProfileStrengthMeterProps) => {
         .eq('candidate_id', userId);
 
       if (certs && certs.length > 0) score += 10;
-      else missing.push('Certifications');
+      else missing.push({ label: 'Add certifications', route: '/certifications' });
 
       setCompletion(score);
       setMissingFields(missing);
@@ -120,25 +129,58 @@ export const ProfileStrengthMeter = ({ userId }: ProfileStrengthMeterProps) => {
             <span className="text-muted-foreground">Completion</span>
             <span className="font-bold">{completion}%</span>
           </div>
-          <Progress value={completion} className="h-3" />
+          <Progress 
+            value={completion} 
+            className="h-3 cursor-pointer hover:scale-105 transition-transform" 
+            onClick={() => navigate('/profile')}
+          />
         </div>
 
-        {missingFields.length > 0 && (
-          <div className="space-y-2">
-            <p className="text-sm font-medium">Complete your profile:</p>
-            <ul className="space-y-1">
-              {missingFields.slice(0, 5).map((field) => (
-                <li key={field} className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Circle className="h-3 w-3" />
-                  {field}
-                </li>
+        {completion === 100 ? (
+          <div className="flex items-center gap-2 text-sm text-green-600 font-medium p-3 bg-green-50 dark:bg-green-950/20 rounded-lg">
+            <CheckCircle2 className="h-5 w-5 flex-shrink-0" />
+            <span>Profile complete! You're 3x more likely to be discovered by employers.</span>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <p className="text-sm font-medium">Next steps to boost your profile:</p>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => navigate('/profile')}
+                className="text-xs h-7"
+              >
+                Edit Profile
+              </Button>
+            </div>
+            <div className="space-y-2">
+              {missingFields.slice(0, 5).map((field, index) => (
+                <button
+                  key={index}
+                  onClick={() => navigate(field.route)}
+                  className="w-full flex items-center justify-between gap-2 text-sm text-muted-foreground hover:text-primary p-2 rounded-lg hover:bg-accent/50 transition-all group"
+                >
+                  <div className="flex items-center gap-2">
+                    <div className="h-5 w-5 rounded-full border-2 border-muted-foreground/30 group-hover:border-primary flex items-center justify-center flex-shrink-0">
+                      <div className="h-2 w-2 rounded-full bg-muted-foreground/30 group-hover:bg-primary" />
+                    </div>
+                    <span className="text-left">{field.label}</span>
+                  </div>
+                  <ChevronRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                </button>
               ))}
-            </ul>
-            {completion === 100 && (
-              <div className="flex items-center gap-2 text-sm text-green-600 font-medium pt-2">
-                <CheckCircle2 className="h-4 w-4" />
-                Profile complete! You're 3x more likely to be discovered by employers.
-              </div>
+            </div>
+            {missingFields.length > 0 && (
+              <Button 
+                variant="cyber" 
+                size="sm" 
+                onClick={() => navigate('/profile')}
+                className="w-full mt-2"
+              >
+                <ArrowRight className="h-4 w-4 mr-2" />
+                Complete Profile Now
+              </Button>
             )}
           </div>
         )}
