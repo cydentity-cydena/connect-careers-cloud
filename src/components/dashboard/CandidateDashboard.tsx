@@ -11,6 +11,7 @@ import { ProfileViewsNotification } from "./ProfileViewsNotification";
 import { MultipleResumesManager } from "./MultipleResumesManager";
 import { BoostYourScore } from "./BoostYourScore";
 import { UsernameChangeDialog } from "./UsernameChangeDialog";
+import { ApplicationTracker } from "./ApplicationTracker";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 
@@ -283,7 +284,7 @@ const CandidateDashboard = () => {
         <BoostYourScore />
       )}
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div id="active-applications" className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         <Card className="border-border shadow-card hover:scale-105 transition-transform">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -323,21 +324,7 @@ const CandidateDashboard = () => {
           </CardContent>
         </Card>
 
-        <Card id="active-applications" className="border-border shadow-card hover:scale-105 transition-transform">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Briefcase className="h-5 w-5 text-secondary" />
-              Active Applications
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-center py-4">
-              <p className="text-4xl font-bold text-primary mb-2">0</p>
-              <p className="text-sm text-muted-foreground mb-4">Applications</p>
-              <Button variant="hero" size="sm" onClick={() => navigate('/jobs')}>Browse Jobs</Button>
-            </div>
-          </CardContent>
-        </Card>
+        <ApplicationTracker />
 
         <Card className="border-border shadow-card hover:scale-105 transition-transform">
           <CardHeader>
