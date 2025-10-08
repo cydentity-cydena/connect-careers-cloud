@@ -3,7 +3,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Trophy, Award, Briefcase, GraduationCap, ThumbsUp, User, Code, BookOpen } from 'lucide-react';
+import { Trophy, Award, Briefcase, GraduationCap, ThumbsUp, User, Code, BookOpen, Sparkles } from 'lucide-react';
+import { PostComments } from './PostComments';
 import { formatDistanceToNow } from 'date-fns';
 
 type Activity = {
@@ -31,6 +32,7 @@ const getActivityIcon = (type: string) => {
     case 'endorsement_received': return <ThumbsUp className={iconClass} />;
     case 'project_added': return <Code className={iconClass} />;
     case 'skill_added': return <BookOpen className={iconClass} />;
+    case 'daily_content': return <Sparkles className={iconClass} />;
     default: return <User className={iconClass} />;
   }
 };
@@ -43,6 +45,7 @@ const getActivityColor = (type: string) => {
     case 'education_added': return 'bg-purple-500/10 text-purple-600 dark:text-purple-400';
     case 'endorsement_received': return 'bg-green-500/10 text-green-600 dark:text-green-400';
     case 'project_added': return 'bg-orange-500/10 text-orange-600 dark:text-orange-400';
+    case 'daily_content': return 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400';
     default: return 'bg-muted text-muted-foreground';
   }
 };
@@ -188,6 +191,8 @@ export const ActivityFeed = ({ limit = 20 }: { limit?: number }) => {
                     ))}
                   </div>
                 )}
+
+                <PostComments postId={activity.id} />
               </div>
             </div>
           </CardContent>
