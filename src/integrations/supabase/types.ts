@@ -1037,51 +1037,54 @@ export type Database = {
       placements: {
         Row: {
           candidate_id: string
-          client_id: string
+          client_id: string | null
           commission_amount: number | null
           commission_rate: number | null
           commission_status: string
           created_at: string
+          employer_id: string | null
           id: string
           job_id: string | null
           notes: string | null
           placement_date: string
           position_title: string
-          recruiter_id: string
+          recruiter_id: string | null
           salary_offered: number | null
           start_date: string | null
           updated_at: string
         }
         Insert: {
           candidate_id: string
-          client_id: string
+          client_id?: string | null
           commission_amount?: number | null
           commission_rate?: number | null
           commission_status?: string
           created_at?: string
+          employer_id?: string | null
           id?: string
           job_id?: string | null
           notes?: string | null
           placement_date?: string
           position_title: string
-          recruiter_id: string
+          recruiter_id?: string | null
           salary_offered?: number | null
           start_date?: string | null
           updated_at?: string
         }
         Update: {
           candidate_id?: string
-          client_id?: string
+          client_id?: string | null
           commission_amount?: number | null
           commission_rate?: number | null
           commission_status?: string
           created_at?: string
+          employer_id?: string | null
           id?: string
           job_id?: string | null
           notes?: string | null
           placement_date?: string
           position_title?: string
-          recruiter_id?: string
+          recruiter_id?: string | null
           salary_offered?: number | null
           start_date?: string | null
           updated_at?: string

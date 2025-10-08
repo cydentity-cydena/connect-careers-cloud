@@ -88,7 +88,7 @@ serve(async (req) => {
     const { error: placementError } = await supabaseClient
       .from('placements')
       .insert({
-        recruiter_id: user.id,
+        employer_id: user.id,
         candidate_id,
         job_id,
         position_title,
