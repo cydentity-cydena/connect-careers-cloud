@@ -39,16 +39,58 @@ export const PostComments = ({ postId }: { postId: string }) => {
 
   useEffect(() => {
     getCurrentUser();
+  }, []);
+
+  useEffect(() => {
     loadCommentCount();
     
     if (showComments) {
       loadComments();
     }
-    
-    // Always subscribe to new comments for count updates
-    const unsubscribe = subscribeToComments();
-    return unsubscribe;
   }, [showComments, postId]);
+
+  useEffect(() => {
+    // Always subscribe to new comments for real-time updates
+    const channel = supabase
+      .channel(`comments-${postId}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'post_comments',
+          filter: `post_id=eq.${postId}`
+        },
+        () => {
+          if (showComments) {
+            loadComments();
+          } else {
+            loadCommentCount();
+          }
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'DELETE',
+          schema: 'public',
+          table: 'post_comments',
+          filter: `post_id=eq.${postId}`
+        },
+        () => {
+          if (showComments) {
+            loadComments();
+          } else {
+            loadCommentCount();
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [postId, showComments]);
 
   const getCurrentUser = async () => {
     const { data: { user } } = await supabase.auth.getUser();
@@ -96,47 +138,6 @@ export const PostComments = ({ postId }: { postId: string }) => {
     }
   };
 
-  const subscribeToComments = () => {
-    const channel = supabase
-      .channel(`comments-${postId}`)
-      .on(
-        'postgres_changes',
-        {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'post_comments',
-          filter: `post_id=eq.${postId}`
-        },
-        () => {
-          if (showComments) {
-            loadComments();
-          } else {
-            loadCommentCount();
-          }
-        }
-      )
-      .on(
-        'postgres_changes',
-        {
-          event: 'DELETE',
-          schema: 'public',
-          table: 'post_comments',
-          filter: `post_id=eq.${postId}`
-        },
-        () => {
-          if (showComments) {
-            loadComments();
-          } else {
-            loadCommentCount();
-          }
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -173,6 +174,28 @@ export const PostComments = ({ postId }: { postId: string }) => {
         return;
       }
 
+      // Get current user profile for optimistic update
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('username, avatar_url, full_name')
+        .eq('id', user.id)
+        .single();
+
+      // Optimistic update - add comment immediately to UI
+      const optimisticComment: Comment = {
+        id: `temp-${Date.now()}`,
+        post_id: postId,
+        user_id: user.id,
+        content: validated.content,
+        created_at: new Date().toISOString(),
+        profiles: profile || { username: 'You', avatar_url: null, full_name: null }
+      };
+
+      setComments(prev => [...prev, optimisticComment]);
+      setCommentCount(prev => prev + 1);
+      setNewComment('');
+
+      // Insert to database - real-time subscription will update with actual data
       const { error } = await supabase
         .from('post_comments')
         .insert({
@@ -181,9 +204,13 @@ export const PostComments = ({ postId }: { postId: string }) => {
           content: validated.content
         });
 
-      if (error) throw error;
+      if (error) {
+        // Remove optimistic comment on error
+        setComments(prev => prev.filter(c => c.id !== optimisticComment.id));
+        setCommentCount(prev => prev - 1);
+        throw error;
+      }
 
-      setNewComment('');
       toast({
         title: "Comment posted",
         description: "Your comment has been added"
