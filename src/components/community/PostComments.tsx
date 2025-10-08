@@ -122,6 +122,24 @@ export const PostComments = ({ postId }: { postId: string }) => {
         return;
       }
 
+      // Moderate comment content before posting
+      const { data: moderationResult, error: moderationError } = await supabase.functions.invoke('moderate-content', {
+        body: { content: validated.content }
+      });
+
+      if (moderationError) {
+        console.error('Moderation error:', moderationError);
+        // Continue with posting if moderation service fails
+      } else if (moderationResult && !moderationResult.appropriate) {
+        toast({
+          title: "Comment not allowed",
+          description: moderationResult.reason || "Your comment contains inappropriate content. Please revise and try again.",
+          variant: "destructive"
+        });
+        setLoading(false);
+        return;
+      }
+
       const { error } = await supabase
         .from('post_comments')
         .insert({

@@ -43,6 +43,25 @@ export const CreatePostDialog = () => {
         return;
       }
 
+      // Moderate content before posting
+      const contentToModerate = `${title}\n${description}`;
+      const { data: moderationResult, error: moderationError } = await supabase.functions.invoke('moderate-content', {
+        body: { content: contentToModerate }
+      });
+
+      if (moderationError) {
+        console.error('Moderation error:', moderationError);
+        // Continue with posting if moderation service fails
+      } else if (moderationResult && !moderationResult.appropriate) {
+        toast({
+          title: "Content not allowed",
+          description: moderationResult.reason || "Your post contains inappropriate content for our professional community. Please revise and try again.",
+          variant: "destructive",
+        });
+        setLoading(false);
+        return;
+      }
+
       const { error } = await supabase
         .from('activity_feed')
         .insert({
