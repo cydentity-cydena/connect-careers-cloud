@@ -482,7 +482,7 @@ const Pricing = () => {
                 </div>
                 <div className="text-xs md:text-sm space-y-1">
                   <p className="text-primary">✓ Zero upfront costs</p>
-                  <p className="text-primary">✓ 48-hour candidate access</p>
+                  <p className="text-primary">✓ Instant candidate access</p>
                   <p className="text-primary">✓ Full profile transparency</p>
                 </div>
                 <div className="pt-3 md:pt-4 border-t">
