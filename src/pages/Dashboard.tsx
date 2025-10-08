@@ -67,9 +67,9 @@ const Dashboard = () => {
       }
 
       // If no role found and we haven't retried too many times, retry after a delay
-      if (!selectedRole && retryCount < 3) {
-        console.log(`No role found, retrying (${retryCount + 1}/3)...`);
-        setTimeout(() => checkUser(retryCount + 1), 1000);
+      if (!selectedRole && retryCount < 10) {
+        console.log(`No role found, retrying (${retryCount + 1}/10)...`);
+        setTimeout(() => checkUser(retryCount + 1), 700);
         return;
       }
 

@@ -110,16 +110,18 @@ serve(async (req) => {
       console.log('Auth user created:', userId);
     }
 
-    // 2. Update profile with full_name and username (if provided)
-    const profileUpdate: any = { full_name: fullName };
+    const profileUpdate: any = { id: userId, full_name: fullName };
     if (username && username.trim()) {
       profileUpdate.username = username.toLowerCase();
     }
 
     const { error: profileError } = await supabaseAdmin
       .from('profiles')
-      .update(profileUpdate)
-      .eq('id', userId);
+      .upsert({
+        id: userId,
+        email,
+        ...profileUpdate,
+      }, { onConflict: 'id' });
 
     if (profileError) {
       console.error('Profile update failed:', profileError);

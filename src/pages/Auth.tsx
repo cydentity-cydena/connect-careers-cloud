@@ -55,6 +55,7 @@ const Auth = () => {
   const [userRole, setUserRole] = useState<"candidate" | "employer" | "recruiter">("candidate");
   const [showOAuthRoleDialog, setShowOAuthRoleDialog] = useState(false);
   const [pendingOAuthProvider, setPendingOAuthProvider] = useState<'google' | 'linkedin_oidc' | null>(null);
+  const [completeProfileMode, setCompleteProfileMode] = useState(false);
 
   useEffect(() => {
     // Check if user is already logged in
@@ -65,39 +66,61 @@ const Auth = () => {
           .from('profiles')
           .select('full_name')
           .eq('id', session.user.id)
-          .single();
+          .maybeSingle();
+
+        const { data: roles } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', session.user.id);
+        
+        const storedRole = sessionStorage.getItem('oauth_role') as 'candidate' | 'employer' | 'recruiter' | null;
+        const storedUsername = sessionStorage.getItem('oauth_username');
+        const storedFullName = sessionStorage.getItem('oauth_fullname');
+
+        if (storedRole && storedFullName) {
+          handleOAuthProfileCompletion(session.user, storedRole, storedFullName, storedUsername);
+          return;
+        }
+
+        if (!roles || roles.length === 0) {
+          // No role yet (first-time OAuth via Sign In). Ask to complete candidate profile.
+          setCompleteProfileMode(true);
+          setPendingOAuthProvider(null);
+          setShowOAuthRoleDialog(true);
+          return;
+        }
         
         if (profile && profile.full_name) {
           navigate("/dashboard");
-        } else {
-          // Profile incomplete, handle OAuth completion
-          const storedRole = sessionStorage.getItem('oauth_role') as 'candidate' | 'employer' | 'recruiter' | null;
-          const storedUsername = sessionStorage.getItem('oauth_username');
-          const storedFullName = sessionStorage.getItem('oauth_fullname');
-          
-          if (storedRole && storedFullName) {
-            handleOAuthProfileCompletion(session.user, storedRole, storedFullName, storedUsername);
-          }
         }
       }
     });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_IN' && session) {
-        // Check if this is OAuth signin
-        const storedRole = sessionStorage.getItem('oauth_role') as 'candidate' | 'employer' | 'recruiter' | null;
-        
-        if (storedRole) {
-          // This is OAuth flow, complete profile setup
+        setTimeout(async () => {
+          const storedRole = sessionStorage.getItem('oauth_role') as 'candidate' | 'employer' | 'recruiter' | null;
           const storedUsername = sessionStorage.getItem('oauth_username');
           const storedFullName = sessionStorage.getItem('oauth_fullname');
-          
-          if (storedFullName) {
+
+          if (storedRole && storedFullName) {
             await handleOAuthProfileCompletion(session.user, storedRole, storedFullName, storedUsername);
+            return;
           }
-        } else {
-          navigate("/dashboard");
-        }
+
+          const { data: roles } = await supabase
+            .from('user_roles')
+            .select('role')
+            .eq('user_id', session.user.id);
+
+          if (!roles || roles.length === 0) {
+            setCompleteProfileMode(true);
+            setPendingOAuthProvider(null);
+            setShowOAuthRoleDialog(true);
+          } else {
+            navigate('/dashboard');
+          }
+        }, 0);
       }
     });
 
@@ -178,6 +201,16 @@ const Auth = () => {
     }
   };
 
+  const finishProfileAfterOAuth = async () => {
+    try {
+      setIsLoading(true);
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
+      await handleOAuthProfileCompletion(session.user, 'candidate', fullName || 'User', username || null);
+    } finally {
+      setIsLoading(false);
+    }
+  };
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     
