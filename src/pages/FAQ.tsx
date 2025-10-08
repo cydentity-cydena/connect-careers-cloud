@@ -7,6 +7,33 @@ import { Button } from "@/components/ui/button";
 import { MessageCircle } from "lucide-react";
 
 const FAQ = () => {
+  const recruiterFAQs = [
+    {
+      question: "Can recruitment agencies use Cydena?",
+      answer: "Yes! Agencies can manage multiple client requisitions, build candidate shortlists, and present qualified cybersecurity professionals to clients. Each recruiter gets their own dashboard to track placements."
+    },
+    {
+      question: "How do I manage multiple clients?",
+      answer: "Create separate companies for each client under your account. Post jobs, track candidates, and manage pipelines independently per client. Enterprise plans support unlimited client accounts."
+    },
+    {
+      question: "What's the fee structure for agency placements?",
+      answer: "Agencies pay the same unlock fees as direct employers (£10-£15 per profile). No placement fees, no success charges, no contracts. You keep 100% of your client fees."
+    },
+    {
+      question: "Can I create candidate shortlists for clients?",
+      answer: "Yes! Save candidates to custom lists, add notes, and track which candidates you've presented to which clients. Manage multiple requisitions across different client companies."
+    },
+    {
+      question: "Do you offer volume discounts for agencies?",
+      answer: "Yes! Agencies placing 10+ candidates per month qualify for discounted unlock rates and priority support. Contact us for custom agency pricing."
+    },
+    {
+      question: "Can I white-label Cydena for my clients?",
+      answer: "Custom branding and white-label options are available for Enterprise agencies. Your clients see your branding while you use our platform infrastructure."
+    }
+  ];
+
   const candidateFAQs = [
     {
       question: "Is Cydena really free for candidates?",
@@ -149,8 +176,28 @@ const FAQ = () => {
             </CardContent>
           </Card>
 
-          {/* Technical Questions */}
+          {/* For Recruiters & Agencies */}
           <Card className="mb-8 animate-slide-up" style={{animationDelay: '0.2s'}}>
+            <CardHeader>
+              <CardTitle className="text-2xl">For Recruiters & Agencies</CardTitle>
+              <CardDescription>Questions about using Cydena for recruitment agencies</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Accordion type="single" collapsible className="w-full">
+                {recruiterFAQs.map((faq, index) => (
+                  <AccordionItem key={index} value={`recruiter-${index}`}>
+                    <AccordionTrigger className="text-left">{faq.question}</AccordionTrigger>
+                    <AccordionContent className="text-muted-foreground">
+                      {faq.answer}
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </CardContent>
+          </Card>
+
+          {/* Technical Questions */}
+          <Card className="mb-8 animate-slide-up" style={{animationDelay: '0.3s'}}>
             <CardHeader>
               <CardTitle className="text-2xl">Technical & Security</CardTitle>
               <CardDescription>Questions about platform security and features</CardDescription>
