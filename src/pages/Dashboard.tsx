@@ -30,7 +30,7 @@ const Dashboard = () => {
     return () => subscription.unsubscribe();
   }, [navigate]);
 
-  const checkUser = async () => {
+  const checkUser = async (retryCount = 0) => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       
@@ -64,6 +64,13 @@ const Dashboard = () => {
         } else if (roles.includes('candidate')) {
           selectedRole = 'candidate';
         }
+      }
+
+      // If no role found and we haven't retried too many times, retry after a delay
+      if (!selectedRole && retryCount < 3) {
+        console.log(`No role found, retrying (${retryCount + 1}/3)...`);
+        setTimeout(() => checkUser(retryCount + 1), 1000);
+        return;
       }
 
       setUserRole(selectedRole);
@@ -254,6 +261,13 @@ const Dashboard = () => {
         {userRole === "employer" && <EmployerDashboard />}
         {userRole === "recruiter" && <RecruiterDashboard />}
         {userRole === "admin" && <AdminDashboard />}
+        {!userRole && (
+          <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
+            <Loader2 className="h-8 w-8 animate-spin text-primary mb-4" />
+            <h2 className="text-xl font-semibold mb-2">Setting up your account...</h2>
+            <p className="text-muted-foreground">This should only take a moment.</p>
+          </div>
+        )}
       </main>
     </div>
   );
