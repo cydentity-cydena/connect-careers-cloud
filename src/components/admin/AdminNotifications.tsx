@@ -1,18 +1,17 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Bell, CheckCheck } from "lucide-react";
+import { formatDistanceToNow } from "date-fns";
 import { Button } from "@/components/ui/button";
-import { Bell, Check, X } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 import { useEffect } from "react";
-import { toast } from "sonner";
-import { Badge } from "@/components/ui/badge";
-import { useNavigate } from "react-router-dom";
 
 export const AdminNotifications = () => {
+  const { toast } = useToast();
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
 
-  const { data: notifications, isLoading } = useQuery({
+  const { data: notifications, refetch } = useQuery({
     queryKey: ["admin-notifications"],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -23,35 +22,6 @@ export const AdminNotifications = () => {
 
       if (error) throw error;
       return data;
-    },
-  });
-
-  const markAsReadMutation = useMutation({
-    mutationFn: async (notificationId: string) => {
-      const { error } = await supabase
-        .from("notifications")
-        .update({ is_read: true })
-        .eq("id", notificationId);
-
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin-notifications"] });
-    },
-  });
-
-  const markAllAsReadMutation = useMutation({
-    mutationFn: async () => {
-      const { error } = await supabase
-        .from("notifications")
-        .update({ is_read: true })
-        .eq("is_read", false);
-
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin-notifications"] });
-      toast.success("All notifications marked as read");
     },
   });
 
@@ -66,9 +36,8 @@ export const AdminNotifications = () => {
           schema: "public",
           table: "notifications",
         },
-        (payload) => {
-          queryClient.invalidateQueries({ queryKey: ["admin-notifications"] });
-          toast.info("New notification received");
+        () => {
+          refetch();
         }
       )
       .subscribe();
@@ -76,88 +45,109 @@ export const AdminNotifications = () => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [queryClient]);
+  }, [refetch]);
+
+  const markAsReadMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase
+        .from("notifications")
+        .update({ is_read: true })
+        .eq("id", id);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-notifications"] });
+      toast({
+        title: "Notification marked as read",
+      });
+    },
+  });
+
+  const markAllAsReadMutation = useMutation({
+    mutationFn: async () => {
+      const { error } = await supabase
+        .from("notifications")
+        .update({ is_read: true })
+        .eq("is_read", false);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-notifications"] });
+      toast({
+        title: "All notifications marked as read",
+      });
+    },
+  });
 
   const unreadCount = notifications?.filter((n) => !n.is_read).length || 0;
 
-  const handleNotificationClick = (notification: any) => {
-    markAsReadMutation.mutate(notification.id);
-    if (notification.link) {
-      navigate(notification.link);
-    }
-  };
-
   return (
     <Card>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-        <div className="flex items-center gap-2">
-          <Bell className="h-5 w-5" />
-          <CardTitle>Notifications</CardTitle>
+      <CardHeader>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Bell className="h-5 w-5" />
+            <div>
+              <CardTitle>Recent Activity</CardTitle>
+              <CardDescription>
+                {unreadCount > 0 && `${unreadCount} unread notification${unreadCount > 1 ? "s" : ""}`}
+              </CardDescription>
+            </div>
+          </div>
           {unreadCount > 0 && (
-            <Badge variant="destructive" className="ml-2">
-              {unreadCount}
-            </Badge>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => markAllAsReadMutation.mutate()}
+            >
+              <CheckCheck className="h-4 w-4 mr-2" />
+              Mark all as read
+            </Button>
           )}
         </div>
-        {unreadCount > 0 && (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => markAllAsReadMutation.mutate()}
-            disabled={markAllAsReadMutation.isPending}
-          >
-            <Check className="h-4 w-4 mr-2" />
-            Mark all read
-          </Button>
-        )}
       </CardHeader>
       <CardContent>
-        {isLoading ? (
-          <p className="text-muted-foreground">Loading notifications...</p>
-        ) : notifications && notifications.length > 0 ? (
-          <div className="space-y-2">
-            {notifications.map((notification) => (
+        <div className="space-y-3">
+          {notifications?.length === 0 ? (
+            <p className="text-muted-foreground text-sm">No notifications yet</p>
+          ) : (
+            notifications?.map((notification) => (
               <div
                 key={notification.id}
-                className={`p-3 rounded-lg border cursor-pointer transition-colors ${
+                className={`p-3 rounded-lg border ${
                   notification.is_read
                     ? "bg-background"
-                    : "bg-accent/50 border-primary/20"
+                    : "bg-primary/5 border-primary/20"
                 }`}
-                onClick={() => handleNotificationClick(notification)}
               >
                 <div className="flex items-start justify-between gap-2">
-                  <div className="flex-1 space-y-1">
+                  <div className="flex-1">
                     <p className="font-medium text-sm">{notification.title}</p>
                     <p className="text-sm text-muted-foreground">
                       {notification.message}
                     </p>
-                    <p className="text-xs text-muted-foreground">
-                      {new Date(notification.created_at).toLocaleString()}
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {formatDistanceToNow(new Date(notification.created_at), {
+                        addSuffix: true,
+                      })}
                     </p>
                   </div>
                   {!notification.is_read && (
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        markAsReadMutation.mutate(notification.id);
-                      }}
-                      disabled={markAsReadMutation.isPending}
+                      onClick={() => markAsReadMutation.mutate(notification.id)}
                     >
-                      <X className="h-4 w-4" />
+                      Mark read
                     </Button>
                   )}
                 </div>
               </div>
-            ))}
-          </div>
-        ) : (
-          <p className="text-muted-foreground text-center py-4">
-            No notifications yet
-          </p>
-        )}
+            ))
+          )}
+        </div>
       </CardContent>
     </Card>
   );
