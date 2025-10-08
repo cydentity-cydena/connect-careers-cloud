@@ -612,7 +612,9 @@ export type Database = {
       employer_credits: {
         Row: {
           allocation_reset_date: string | null
+          allocation_year: number | null
           annual_allocation: number | null
+          annual_unlocks_used: number | null
           created_at: string
           credits: number
           credits_used: number
@@ -623,7 +625,9 @@ export type Database = {
         }
         Insert: {
           allocation_reset_date?: string | null
+          allocation_year?: number | null
           annual_allocation?: number | null
+          annual_unlocks_used?: number | null
           created_at?: string
           credits?: number
           credits_used?: number
@@ -634,7 +638,9 @@ export type Database = {
         }
         Update: {
           allocation_reset_date?: string | null
+          allocation_year?: number | null
           annual_allocation?: number | null
+          annual_unlocks_used?: number | null
           created_at?: string
           credits?: number
           credits_used?: number
@@ -1399,6 +1405,39 @@ export type Database = {
         }
         Relationships: []
       }
+      team_members: {
+        Row: {
+          created_at: string | null
+          id: string
+          invited_at: string | null
+          invited_by: string | null
+          organization_id: string
+          role: string
+          status: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          invited_at?: string | null
+          invited_by?: string | null
+          organization_id: string
+          role?: string
+          status?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          invited_at?: string | null
+          invited_by?: string | null
+          organization_id?: string
+          role?: string
+          status?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_achievements: {
         Row: {
           achievement_id: string
@@ -1622,6 +1661,18 @@ export type Database = {
           location: string
           username: string
         }[]
+      }
+      get_tier_overage_price: {
+        Args: { tier_name: Database["public"]["Enums"]["subscription_tier"] }
+        Returns: number
+      }
+      get_tier_seat_limit: {
+        Args: { tier_name: Database["public"]["Enums"]["subscription_tier"] }
+        Returns: number
+      }
+      get_tier_unlock_limit: {
+        Args: { tier_name: Database["public"]["Enums"]["subscription_tier"] }
+        Returns: number
       }
       has_role: {
         Args: {
