@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Trophy, Award, Briefcase, GraduationCap, ThumbsUp, User, Code, BookOpen, Sparkles, Trash2, Edit } from 'lucide-react';
 import { PostComments } from './PostComments';
+import { PostReactions } from './PostReactions';
 import { formatDistanceToNow } from 'date-fns';
 import { useToast } from '@/hooks/use-toast';
 import {
@@ -310,6 +311,7 @@ export const ActivityFeed = ({ limit = 20 }: { limit?: number }) => {
                     </div>
                   )}
 
+                  <PostReactions postId={activity.id} />
                   <PostComments postId={activity.id} />
                 </div>
               </div>

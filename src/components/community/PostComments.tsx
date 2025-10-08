@@ -7,6 +7,7 @@ import { MessageCircle, Send, Trash2 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { useToast } from '@/hooks/use-toast';
 import { z } from 'zod';
+import { CommentReactions } from './CommentReactions';
 
 type Comment = {
   id: string;
@@ -306,6 +307,7 @@ export const PostComments = ({ postId }: { postId: string }) => {
                     Delete
                   </Button>
                 )}
+                <CommentReactions commentId={comment.id} />
               </div>
             </div>
           ))}
