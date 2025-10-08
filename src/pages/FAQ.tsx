@@ -30,7 +30,7 @@ const FAQ = () => {
     },
     {
       question: "How do employers see my profile?",
-      answer: "Employers see your basic information (name, title, years of experience, certifications) for free. To see your full profile with contact details and resume, they must unlock it using credits. You'll be notified when someone unlocks your profile."
+      answer: "Employers see your basic information (username, title, years of experience, certifications) for free. To see your full profile with your real name, contact details, and resume, they must unlock it using credits. You'll be notified when someone unlocks your profile."
     },
     {
       question: "Can I apply for multiple jobs at once?",
