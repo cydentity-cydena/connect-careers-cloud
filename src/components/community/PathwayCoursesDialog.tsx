@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ExternalLink, CheckCircle2 } from 'lucide-react';
@@ -25,7 +27,23 @@ export const PathwayCoursesDialog = ({
   pathwayName, 
   courses 
 }: PathwayCoursesDialogProps) => {
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const sortedCourses = [...courses].sort((a, b) => a.sequence_order - b.sequence_order);
+
+  const handleStartCourse = (course: Course) => {
+    setSelectedCourse(course);
+    setConfirmDialogOpen(true);
+  };
+
+  const handleConfirmEnrollment = () => {
+    if (selectedCourse) {
+      window.open(selectedCourse.url, '_blank');
+      // Here you could also add logic to track enrollment in the database
+    }
+    setConfirmDialogOpen(false);
+    setSelectedCourse(null);
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -60,7 +78,7 @@ export const PathwayCoursesDialog = ({
                 <Button 
                   size="sm" 
                   variant="outline"
-                  onClick={() => window.open(course.url, '_blank')}
+                  onClick={() => handleStartCourse(course)}
                   className="gap-2"
                 >
                   Start Course
@@ -78,6 +96,29 @@ export const PathwayCoursesDialog = ({
           </div>
         )}
       </DialogContent>
+
+      <AlertDialog open={confirmDialogOpen} onOpenChange={setConfirmDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Enroll in Course?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This course will be added to your dashboard as enrolled. You'll be redirected to the training provider's website to begin.
+              {selectedCourse && (
+                <div className="mt-3 p-3 rounded-lg bg-muted/50 border">
+                  <p className="font-medium text-foreground">{selectedCourse.title}</p>
+                  <p className="text-xs mt-1">Provider: {selectedCourse.partner_slug}</p>
+                </div>
+              )}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>No, Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirmEnrollment}>
+              Yes, Enroll Me
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Dialog>
   );
 };
