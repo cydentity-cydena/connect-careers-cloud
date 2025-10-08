@@ -78,7 +78,7 @@ const Pricing = () => {
                 <ul className="space-y-2 md:space-y-3 text-sm md:text-base">
                   <li className="flex items-start gap-2">
                     <Check className="h-4 w-4 text-primary mt-1 flex-shrink-0" />
-                    <span>£199-£999/month with bundled unlocks (£3.98-£4.99 per unlock)</span>
+                    <span>£99-£699/month + pay-per-unlock after allocation</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <Check className="h-4 w-4 text-primary mt-1 flex-shrink-0" />
@@ -154,7 +154,7 @@ const Pricing = () => {
             <CardHeader className="p-5">
               <CardTitle className="text-base mb-1">Employer — Starter</CardTitle>
               <div className="mt-3">
-                <span className="text-3xl font-bold">£{getPricing(199)}</span>
+                <span className="text-3xl font-bold">£{getPricing(99)}</span>
                 <span className="text-sm text-muted-foreground ml-2">/mo</span>
               </div>
             </CardHeader>
@@ -167,8 +167,8 @@ const Pricing = () => {
                 <li className="flex items-start gap-2 text-sm">
                   <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
                   <div>
-                    <div>50 verified unlocks</div>
-                    <div className="text-xs text-muted-foreground">(annual allocation, ~£3.98 ea)</div>
+                    <div>10 verified unlocks/year</div>
+                    <div className="text-xs text-muted-foreground">then £15 per unlock</div>
                   </div>
                 </li>
                 <li className="flex items-start gap-2 text-sm">
@@ -194,7 +194,7 @@ const Pricing = () => {
             <CardHeader className="p-5">
               <CardTitle className="text-base mb-1">Employer — Growth</CardTitle>
               <div className="mt-3">
-                <span className="text-3xl font-bold">£{getPricing(499)}</span>
+                <span className="text-3xl font-bold">£{getPricing(299)}</span>
                 <span className="text-sm text-muted-foreground ml-2">/mo</span>
               </div>
             </CardHeader>
@@ -207,8 +207,8 @@ const Pricing = () => {
                 <li className="flex items-start gap-2 text-sm">
                   <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
                   <div>
-                    <div>100 verified unlocks</div>
-                    <div className="text-xs text-muted-foreground">(annual allocation, ~£4.99 ea)</div>
+                    <div>25 verified unlocks/year</div>
+                    <div className="text-xs text-muted-foreground">then £12 per unlock</div>
                   </div>
                 </li>
                 <li className="flex items-start gap-2 text-sm">
@@ -231,7 +231,7 @@ const Pricing = () => {
             <CardHeader className="p-5">
               <CardTitle className="text-base mb-1">Employer — Scale</CardTitle>
               <div className="mt-3">
-                <span className="text-3xl font-bold">£{getPricing(999)}</span>
+                <span className="text-3xl font-bold">£{getPricing(699)}</span>
                 <span className="text-sm text-muted-foreground ml-2">/mo</span>
               </div>
             </CardHeader>
@@ -244,8 +244,8 @@ const Pricing = () => {
                 <li className="flex items-start gap-2 text-sm">
                   <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
                   <div>
-                    <div>250 verified unlocks</div>
-                    <div className="text-xs text-muted-foreground">(annual allocation, ~£3.99 ea)</div>
+                    <div>75 verified unlocks/year</div>
+                    <div className="text-xs text-muted-foreground">then £10 per unlock</div>
                   </div>
                 </li>
                 <li className="flex items-start gap-2 text-sm">
@@ -268,7 +268,7 @@ const Pricing = () => {
             <CardHeader className="p-5">
               <CardTitle className="text-base mb-1">Recruiter — Pro</CardTitle>
               <div className="mt-3">
-                <span className="text-3xl font-bold">£{getPricing(699)}</span>
+                <span className="text-3xl font-bold">£{getPricing(499)}</span>
                 <span className="text-sm text-muted-foreground ml-2">/mo</span>
               </div>
             </CardHeader>
@@ -285,8 +285,8 @@ const Pricing = () => {
                 <li className="flex items-start gap-2 text-sm">
                   <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
                   <div>
-                    <div>100 unlocks</div>
-                    <div className="text-xs text-muted-foreground">(annual allocation)</div>
+                    <div>50 unlocks/year</div>
+                    <div className="text-xs text-muted-foreground">then £10 per unlock</div>
                   </div>
                 </li>
                 <li className="flex items-start gap-2 text-sm">
@@ -339,7 +339,7 @@ const Pricing = () => {
           <CardContent className="p-6">
             <p className="text-sm text-muted-foreground text-center">
               <strong className="text-foreground">Compare:</strong> Typical agency fee 15–25% of salary (≈ £9k–£15k per hire). 
-              Cydena replaces that with flat monthly subscriptions and <strong>annual unlock allocations</strong> — predictable, budgetable costs.
+              Cydena replaces that with affordable monthly subscriptions + pay-per-unlock after your allocation — still <strong>70-80% cheaper than agencies</strong>.
             </p>
           </CardContent>
         </Card>
@@ -347,13 +347,22 @@ const Pricing = () => {
         {/* Add-ons */}
         <Card className="mb-12 animate-fade-in">
           <CardHeader>
-            <CardTitle className="text-xl">Add-ons</CardTitle>
+            <CardTitle className="text-xl">Pay-Per-Unlock Pricing</CardTitle>
+            <CardDescription>After your annual allocation, unlock additional candidates as needed</CardDescription>
           </CardHeader>
           <CardContent>
             <ul className="space-y-2 text-sm">
               <li className="flex items-start gap-2">
                 <ArrowRight className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                <span><strong>Extra unlocks:</strong> £499 / 100 unlocks (shared team pool)</span>
+                <span><strong>Starter tier:</strong> £15 per unlock</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <ArrowRight className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                <span><strong>Growth tier:</strong> £12 per unlock</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <ArrowRight className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                <span><strong>Scale & Recruiter tiers:</strong> £10 per unlock</span>
               </li>
               <li className="flex items-start gap-2">
                 <ArrowRight className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
