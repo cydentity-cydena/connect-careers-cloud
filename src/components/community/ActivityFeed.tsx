@@ -135,7 +135,7 @@ export const ActivityFeed = ({ limit = 20 }: { limit?: number }) => {
           description,
           metadata,
           created_at,
-          profiles!activity_feed_user_id_fkey (
+          profiles (
             username,
             avatar_url,
             full_name
