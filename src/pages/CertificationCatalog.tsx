@@ -193,65 +193,76 @@ const CertificationCatalog = () => {
           </CardContent>
         </Card>
 
-        {/* Featured Certifications Section */}
+        {/* Featured Certifications Section - Tiered Display */}
         {featuredCertifications.length > 0 && (
           <div className="mb-12 animate-fade-in">
             <div className="mb-6 flex items-center gap-3">
               <h2 className="text-3xl font-bold flex items-center gap-3">
-                <Star className="h-8 w-8 text-purple-500" />
+                <Star className="h-8 w-8 text-purple-500 fill-purple-500" />
                 Featured Certifications
-                <Star className="h-8 w-8 text-purple-500" />
+                <Star className="h-8 w-8 text-purple-500 fill-purple-500" />
               </h2>
             </div>
 
             <div className="grid md:grid-cols-2 gap-5">
-              {featuredCertifications.map((cert) => (
-                <Card 
-                  key={cert.id}
-                  className="relative border-[3px] border-purple-500 bg-gradient-to-br from-purple-500/5 to-purple-500/10 hover:from-purple-500/10 hover:to-purple-500/15 transition-all duration-200"
-                >
-                  <div className="absolute top-3 right-3">
-                    <Badge className="bg-purple-500 text-white border-0 px-3 py-1">
-                      <Star className="h-3.5 w-3.5 mr-1.5" />
-                      FEATURED
-                    </Badge>
-                  </div>
+              {featuredCertifications.map((cert) => {
+                const defaultStyles = { border: "border-2 border-purple-500/50", bg: "from-purple-500/5 to-transparent", badge: "bg-purple-500", size: "scale-90", label: "FEATURED", icon: "text-purple-500" };
+                const slotStyles = {
+                  1: { border: "border-4 border-yellow-500", bg: "from-yellow-500/15 to-yellow-500/5", badge: "bg-yellow-500", size: "scale-105", label: "PREMIUM", icon: "text-yellow-500" },
+                  2: { border: "border-3 border-orange-500/70", bg: "from-orange-500/10 to-orange-500/5", badge: "bg-orange-500", size: "scale-100", label: "FEATURED", icon: "text-orange-500" },
+                  3: { border: "border-2 border-blue-500/60", bg: "from-blue-500/8 to-blue-500/3", badge: "bg-blue-500", size: "scale-95", label: "FEATURED", icon: "text-blue-500" },
+                  4: { border: "border-2 border-purple-500/50", bg: "from-purple-500/5 to-transparent", badge: "bg-purple-500", size: "scale-90", label: "FEATURED", icon: "text-purple-500" },
+                }[cert.slot_position as 1 | 2 | 3 | 4] || defaultStyles;
 
-                  <CardHeader className="pb-3">
-                    <div className="flex items-start gap-4">
-                      <div className="flex-1">
-                        <CardTitle className="text-xl mb-2 flex items-center gap-2">
-                          <Award className="h-5 w-5 text-purple-500" />
-                          {cert.cert_name}
-                        </CardTitle>
-                        <CardDescription className="font-semibold text-base">
-                          {cert.provider_name}
-                        </CardDescription>
-                      </div>
-                      {cert.logo_url && (
-                        <img 
-                          src={cert.logo_url} 
-                          alt={`${cert.provider_name} logo`}
-                          className="h-14 w-14 object-contain rounded bg-background p-2 border border-purple-500/20"
-                        />
-                      )}
+                return (
+                  <Card
+                    key={cert.id}
+                    className={`relative ${slotStyles.border} ${slotStyles.size} bg-gradient-to-br ${slotStyles.bg} hover:scale-[1.02] transition-all duration-200`}
+                  >
+                    <div className="absolute top-3 right-3 z-10">
+                      <Badge className={`${slotStyles.badge} text-white border-0 px-3 py-1`}>
+                        {cert.slot_position === 1 && <Star className="h-3.5 w-3.5 mr-1.5 fill-white" />}
+                        <Star className="h-3.5 w-3.5 mr-1.5" />
+                        {slotStyles.label}
+                      </Badge>
                     </div>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                      {cert.description}
-                    </p>
-                    <a
-                      href={cert.website_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 text-sm text-purple-500 hover:text-purple-400 hover:underline font-semibold transition-colors"
-                    >
-                      Learn More & Enroll →
-                    </a>
-                  </CardContent>
-                </Card>
-              ))}
+
+                    <CardHeader className="pb-3">
+                      <div className="flex items-start gap-4">
+                        <div className="flex-1">
+                          <CardTitle className={`${cert.slot_position === 1 ? 'text-2xl' : 'text-xl'} mb-2 flex items-center gap-2`}>
+                            <Award className={`h-5 w-5 ${slotStyles.icon}`} />
+                            {cert.cert_name}
+                          </CardTitle>
+                          <CardDescription className="font-semibold text-base">
+                            {cert.provider_name}
+                          </CardDescription>
+                        </div>
+                        {cert.logo_url && (
+                          <img 
+                            src={cert.logo_url} 
+                            alt={`${cert.provider_name} logo`}
+                            className={`h-14 w-14 object-contain rounded bg-background p-2 ${slotStyles.border} border`}
+                          />
+                        )}
+                      </div>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <p className="text-sm text-muted-foreground leading-relaxed">
+                        {cert.description}
+                      </p>
+                      <a
+                        href={cert.website_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`inline-flex items-center gap-2 text-sm ${slotStyles.icon} hover:underline font-semibold transition-colors`}
+                      >
+                        Learn More & Enroll →
+                      </a>
+                    </CardContent>
+                  </Card>
+                );
+              })}
             </div>
           </div>
         )}

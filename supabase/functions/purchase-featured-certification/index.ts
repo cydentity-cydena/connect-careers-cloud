@@ -7,7 +7,21 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-const WEEKLY_FEATURED_PRICE = 299.00; // $299/week per slot
+// Tiered pricing per week by slot position (same as training partners)
+const SLOT_PRICING = {
+  1: { weeklyPrice: 399.00, priceId: "price_1SG4ycFnZFXoJvyLWNgE0o02" },
+  2: { weeklyPrice: 349.00, priceId: "price_1SG4ynDOcfakZuIaAMyU78YG" },
+  3: { weeklyPrice: 299.00, priceId: "price_1SG4yxFnZFXoJvyL1PIVJ7Mo" },
+  4: { weeklyPrice: 249.00, priceId: "price_1SG4z7DOcfakZuIaql09IhKv" },
+};
+
+// Volume discount tiers
+const getVolumeDiscount = (weeks: number): number => {
+  if (weeks >= 12) return 0.20; // 20% off for 12+ weeks
+  if (weeks >= 8) return 0.15;  // 15% off for 8-11 weeks
+  if (weeks >= 4) return 0.10;  // 10% off for 4-7 weeks
+  return 0; // No discount for 1-3 weeks
+};
 
 interface PurchaseRequest {
   cert_name: string;
@@ -17,7 +31,8 @@ interface PurchaseRequest {
   logo_url?: string;
   website_url: string;
   slot_position: number;
-  weeks: number; // number of weeks to purchase
+  weeks: number;
+  start_date?: string; // Optional: allow future scheduling
 }
 
 serve(async (req) => {
@@ -49,11 +64,45 @@ serve(async (req) => {
       throw new Error("Invalid slot position. Must be between 1-4");
     }
 
-    // Calculate dates and total
-    const startDate = new Date();
-    const endDate = new Date();
+    // Validate weeks
+    if (purchaseData.weeks < 1) {
+      throw new Error("Minimum purchase is 1 week");
+    }
+
+    // Get pricing for the selected slot
+    const slotPricing = SLOT_PRICING[purchaseData.slot_position as keyof typeof SLOT_PRICING];
+    if (!slotPricing) {
+      throw new Error("Invalid slot pricing configuration");
+    }
+
+    // Calculate dates
+    const startDate = purchaseData.start_date ? new Date(purchaseData.start_date) : new Date();
+    const endDate = new Date(startDate);
     endDate.setDate(endDate.getDate() + (purchaseData.weeks * 7));
-    const totalAmount = WEEKLY_FEATURED_PRICE * purchaseData.weeks;
+
+    // Check for slot conflicts in the requested date range
+    const supabaseAdmin = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+    );
+
+    const { data: conflicts } = await supabaseAdmin
+      .from("featured_certifications")
+      .select("id, start_date, end_date")
+      .eq("slot_position", purchaseData.slot_position)
+      .eq("payment_status", "completed")
+      .or(`and(start_date.lte.${endDate.toISOString()},end_date.gte.${startDate.toISOString()})`);
+
+    if (conflicts && conflicts.length > 0) {
+      throw new Error(`Slot ${purchaseData.slot_position} is already booked for these dates. Please choose different dates or another slot.`);
+    }
+
+    // Calculate total with volume discount
+    const baseTotal = slotPricing.weeklyPrice * purchaseData.weeks;
+    const discount = getVolumeDiscount(purchaseData.weeks);
+    const totalAmount = baseTotal * (1 - discount);
+    
+    console.log(`[PURCHASE-FEATURED-CERT] Pricing: $${slotPricing.weeklyPrice}/week × ${purchaseData.weeks} weeks = $${baseTotal}, Discount: ${discount * 100}%, Final: $${totalAmount}`);
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
       apiVersion: "2025-08-27.basil",
@@ -75,7 +124,7 @@ serve(async (req) => {
       customerId = customer.id;
     }
 
-    // Create checkout session
+    // Create checkout session with calculated pricing
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       line_items: [
@@ -84,8 +133,14 @@ serve(async (req) => {
             currency: "usd",
             unit_amount: Math.round(totalAmount * 100), // Convert to cents
             product_data: {
-              name: `Featured Certification Slot #${purchaseData.slot_position}`,
-              description: `${purchaseData.weeks} week(s) of featured placement for ${purchaseData.cert_name}`,
+              name: `Featured Certification - Slot #${purchaseData.slot_position}`,
+              description: `${purchaseData.weeks} week(s) for ${purchaseData.cert_name}${discount > 0 ? ` (${discount * 100}% volume discount)` : ''}`,
+              metadata: {
+                slot_position: purchaseData.slot_position.toString(),
+                base_weekly_price: slotPricing.weeklyPrice.toString(),
+                weeks: purchaseData.weeks.toString(),
+                discount_percent: (discount * 100).toString(),
+              },
             },
           },
           quantity: 1,
@@ -102,15 +157,14 @@ serve(async (req) => {
         start_date: startDate.toISOString(),
         end_date: endDate.toISOString(),
         user_id: userData.user.id,
+        weeks: purchaseData.weeks.toString(),
+        base_price: baseTotal.toString(),
+        discount_applied: discount.toString(),
+        final_amount: totalAmount.toString(),
       },
     });
 
-    // Create pending record in database (admin will approve after payment)
-    const supabaseAdmin = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
-    );
-
+    // Create pending record in database
     const { error: insertError } = await supabaseAdmin
       .from("featured_certifications")
       .insert({
@@ -134,7 +188,16 @@ serve(async (req) => {
     }
 
     console.log("[PURCHASE-FEATURED-CERT] Success, returning checkout URL");
-    return new Response(JSON.stringify({ url: session.url }), {
+    return new Response(JSON.stringify({ 
+      url: session.url,
+      pricing: {
+        weeklyRate: slotPricing.weeklyPrice,
+        weeks: purchaseData.weeks,
+        subtotal: baseTotal,
+        discount: discount * 100,
+        total: totalAmount
+      }
+    }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
     });

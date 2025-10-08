@@ -70,35 +70,35 @@ const Partnerships = () => {
 
   const pricingTiers: PricingTier[] = [
     {
-      name: "Weekly Trial",
-      duration: "1 Week",
-      price: 299,
+      name: "Trial",
+      duration: "1-3 Weeks",
+      price: 249, // Starting at Slot 4 price
       weeks: 1,
     },
     {
       name: "Monthly",
-      duration: "4 Weeks",
+      duration: "4-7 Weeks",
       price: 999,
       originalPrice: 1196,
-      discount: "17% OFF",
+      discount: "10% OFF",
       weeks: 4,
       popular: true,
     },
     {
       name: "Quarterly",
-      duration: "12 Weeks",
-      price: 2499,
-      originalPrice: 3588,
-      discount: "30% OFF",
-      weeks: 12,
+      duration: "8-11 Weeks",
+      price: 2379,
+      originalPrice: 2796,
+      discount: "15% OFF",
+      weeks: 8,
     },
     {
       name: "Annual",
-      duration: "52 Weeks",
-      price: 7999,
-      originalPrice: 15548,
-      discount: "40% OFF",
-      weeks: 52,
+      duration: "12+ Weeks",
+      price: 3832,
+      originalPrice: 4788,
+      discount: "20% OFF",
+      weeks: 12,
     },
   ];
 
@@ -502,6 +502,101 @@ const Partnerships = () => {
                 <Button variant="outline" size="lg" onClick={handleContactSales}>
                   Contact Sales Team
                 </Button>
+              </div>
+
+              {/* Slot Position Pricing */}
+              <div className="mt-20">
+                <h3 className="text-2xl font-bold text-center mb-4">Premium Slot Positions</h3>
+                <p className="text-center text-muted-foreground mb-8">
+                  Choose your slot position for maximum visibility. Higher slots = more traffic.
+                </p>
+                
+                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                  <Card className="border-4 border-yellow-500 bg-gradient-to-br from-yellow-500/15 to-yellow-500/5 scale-105">
+                    <CardHeader>
+                      <div className="flex items-center justify-between mb-2">
+                        <CardTitle className="text-2xl">Slot 1</CardTitle>
+                        <Badge className="bg-yellow-500">PREMIUM</Badge>
+                      </div>
+                      <CardDescription>Top position, maximum visibility</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-center">
+                        <p className="text-5xl font-bold text-yellow-600 mb-2">$399</p>
+                        <p className="text-sm text-muted-foreground">/week</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="border-3 border-orange-500/70 bg-gradient-to-br from-orange-500/10 to-orange-500/5">
+                    <CardHeader>
+                      <div className="flex items-center justify-between mb-2">
+                        <CardTitle className="text-2xl">Slot 2</CardTitle>
+                        <Badge className="bg-orange-500">FEATURED</Badge>
+                      </div>
+                      <CardDescription>High visibility placement</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-center">
+                        <p className="text-5xl font-bold text-orange-600 mb-2">$349</p>
+                        <p className="text-sm text-muted-foreground">/week</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="border-2 border-blue-500/60 bg-gradient-to-br from-blue-500/8 to-blue-500/3">
+                    <CardHeader>
+                      <div className="flex items-center justify-between mb-2">
+                        <CardTitle className="text-2xl">Slot 3</CardTitle>
+                        <Badge className="bg-blue-500">FEATURED</Badge>
+                      </div>
+                      <CardDescription>Prominent featured position</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-center">
+                        <p className="text-5xl font-bold text-blue-600 mb-2">$299</p>
+                        <p className="text-sm text-muted-foreground">/week</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="border-2 border-purple-500/50 bg-gradient-to-br from-purple-500/5 to-transparent">
+                    <CardHeader>
+                      <div className="flex items-center justify-between mb-2">
+                        <CardTitle className="text-2xl">Slot 4</CardTitle>
+                        <Badge className="bg-purple-500">FEATURED</Badge>
+                      </div>
+                      <CardDescription>Featured section placement</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-center">
+                        <p className="text-5xl font-bold text-purple-600 mb-2">$249</p>
+                        <p className="text-sm text-muted-foreground">/week</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                <div className="mt-8 p-6 bg-primary/5 border border-primary/20 rounded-lg">
+                  <h4 className="font-semibold text-lg mb-3 flex items-center gap-2">
+                    <TrendingUp className="h-5 w-5 text-primary" />
+                    Volume Discounts Applied Automatically
+                  </h4>
+                  <ul className="space-y-2 text-muted-foreground">
+                    <li className="flex items-center gap-2">
+                      <Check className="h-4 w-4 text-green-500" />
+                      <span>4-7 weeks: <strong>10% off</strong> total price</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <Check className="h-4 w-4 text-green-500" />
+                      <span>8-11 weeks: <strong>15% off</strong> total price</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <Check className="h-4 w-4 text-green-500" />
+                      <span>12+ weeks: <strong>20% off</strong> total price</span>
+                    </li>
+                  </ul>
+                </div>
               </div>
             </div>
           </div>

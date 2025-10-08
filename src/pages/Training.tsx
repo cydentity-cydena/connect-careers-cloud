@@ -284,7 +284,7 @@ const Training = () => {
               </CardContent>
             </Card>
 
-            {/* Featured Partners Section */}
+            {/* Featured Partners Section - Tiered Display */}
             {featuredPartners.length > 0 && (
               <div className="mb-12 animate-fade-in">
                 <div className="flex items-center gap-2 mb-6">
@@ -293,44 +293,57 @@ const Training = () => {
                   <Star className="h-6 w-6 text-yellow-500 fill-yellow-500" />
                 </div>
                 <div className="grid md:grid-cols-2 gap-6">
-                  {featuredPartners.map((partner) => (
-                    <Card 
-                      key={partner.id}
-                      className="border-2 border-yellow-500/50 bg-gradient-to-br from-yellow-500/5 to-transparent hover:border-yellow-500 transition-all hover:scale-[1.02] cursor-pointer relative overflow-hidden"
-                    >
-                      <div className="absolute top-0 right-0 bg-yellow-500 text-white px-4 py-1 text-xs font-bold rounded-bl-lg flex items-center gap-1">
-                        <TrendingUp className="h-3 w-3" />
-                        FEATURED
-                      </div>
-                      {partner.logo_url && (
-                        <div className="p-6 pb-0">
-                          <img 
-                            src={partner.logo_url} 
-                            alt={partner.partner_name}
-                            className="h-12 object-contain"
-                          />
+                  {featuredPartners.map((partner) => {
+                    const defaultStyles = { border: "border-2 border-purple-500/50", bg: "from-purple-500/5 to-transparent", badge: "bg-purple-500", size: "scale-90", label: "FEATURED" };
+                    const slotStyles = {
+                      1: { border: "border-4 border-yellow-500", bg: "from-yellow-500/15 to-yellow-500/5", badge: "bg-yellow-500", size: "scale-105", label: "PREMIUM" },
+                      2: { border: "border-3 border-orange-500/70", bg: "from-orange-500/10 to-orange-500/5", badge: "bg-orange-500", size: "scale-100", label: "FEATURED" },
+                      3: { border: "border-2 border-blue-500/60", bg: "from-blue-500/8 to-blue-500/3", badge: "bg-blue-500", size: "scale-95", label: "FEATURED" },
+                      4: { border: "border-2 border-purple-500/50", bg: "from-purple-500/5 to-transparent", badge: "bg-purple-500", size: "scale-90", label: "FEATURED" },
+                    }[partner.slot_position as 1 | 2 | 3 | 4] || defaultStyles;
+
+                    return (
+                      <Card
+                        key={partner.id}
+                        className={`${slotStyles.border} ${slotStyles.size} bg-gradient-to-br ${slotStyles.bg} hover:scale-[1.02] transition-all cursor-pointer relative overflow-hidden`}
+                      >
+                        <div className={`absolute top-0 right-0 ${slotStyles.badge} text-white px-4 py-1 text-xs font-bold rounded-bl-lg flex items-center gap-1 z-10`}>
+                          {partner.slot_position === 1 && <Star className="h-3 w-3 fill-white" />}
+                          <TrendingUp className="h-3 w-3" />
+                          {slotStyles.label}
                         </div>
-                      )}
-                      <CardHeader>
-                        <CardTitle className="text-2xl text-primary">{partner.partner_name}</CardTitle>
-                      </CardHeader>
-                      <CardContent className="space-y-4">
-                        {partner.description && (
-                          <p className="text-muted-foreground">
-                            {partner.description}
-                          </p>
+                        {partner.logo_url && (
+                          <div className="p-6 pb-0">
+                            <img 
+                              src={partner.logo_url} 
+                              alt={partner.partner_name}
+                              className="h-12 object-contain"
+                            />
+                          </div>
                         )}
-                        <a
-                          href={partner.website_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-2 text-primary hover:underline font-semibold"
-                        >
-                          Visit Partner Website →
-                        </a>
-                      </CardContent>
-                    </Card>
-                  ))}
+                        <CardHeader>
+                          <CardTitle className={`${partner.slot_position === 1 ? 'text-3xl' : 'text-2xl'} text-primary`}>
+                            {partner.partner_name}
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                          {partner.description && (
+                            <p className="text-muted-foreground">
+                              {partner.description}
+                            </p>
+                          )}
+                          <a
+                            href={partner.website_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-2 text-primary hover:underline font-semibold"
+                          >
+                            Visit Partner Website →
+                          </a>
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
                 </div>
               </div>
             )}
