@@ -4,7 +4,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Building2, Users, Briefcase, TrendingUp, DollarSign, UserPlus, Bug } from "lucide-react";
+import { Building2, Users, Briefcase, TrendingUp, DollarSign, UserPlus, Bug, Award, ListChecks } from "lucide-react";
+import RecruiterClientsList from "./RecruiterClientsList";
+import RecruiterPlacements from "./RecruiterPlacements";
 
 const RecruiterDashboard = () => {
   const navigate = useNavigate();
@@ -155,9 +157,10 @@ const RecruiterDashboard = () => {
       </Card>
 
       <Tabs defaultValue="overview" className="w-full">
-        <TabsList className="grid w-full max-w-md grid-cols-2">
+        <TabsList className="grid w-full max-w-2xl grid-cols-3">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="clients">Clients</TabsTrigger>
+          <TabsTrigger value="placements">Placements</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-8 mt-6">
@@ -259,56 +262,128 @@ const RecruiterDashboard = () => {
             </Card>
           </div>
 
-          <Card className="border-green-500/30 shadow-lg bg-gradient-to-br from-green-500/5 to-primary/5">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <TrendingUp className="h-5 w-5 text-green-500" />
-                Track Your Placements
-              </CardTitle>
-              <CardDescription>
-                Manage candidate placements and commission tracking
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <p className="text-sm text-muted-foreground">
-                  View all your placements, track commission status, and manage client relationships
-                </p>
-                <Button 
-                  variant="outline" 
-                  className="w-full border-green-500/50 hover:bg-green-500/10"
-                  onClick={() => navigate('/placements')}
-                >
-                  View All Placements
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+          <div className="grid md:grid-cols-2 gap-6">
+            <Card className="border-green-500/30 shadow-lg bg-gradient-to-br from-green-500/5 to-primary/5">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <TrendingUp className="h-5 w-5 text-green-500" />
+                  Track Your Placements
+                </CardTitle>
+                <CardDescription>
+                  Manage candidate placements and commission tracking
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <p className="text-sm text-muted-foreground">
+                    View all your placements, track commission status, and manage client relationships
+                  </p>
+                  <Button 
+                    variant="outline" 
+                    className="w-full border-green-500/50 hover:bg-green-500/10"
+                    onClick={() => navigate('/placements')}
+                  >
+                    View All Placements
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {placementsCount >= 10 && (
+              <Card className="border-accent/30 shadow-lg bg-gradient-to-br from-accent/5 to-primary/5">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Award className="h-5 w-5 text-accent" />
+                    Volume Discount Eligible!
+                  </CardTitle>
+                  <CardDescription>
+                    You qualify for agency pricing
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <p className="text-sm text-muted-foreground">
+                      With {placementsCount} placements, you're eligible for discounted unlock rates and priority support
+                    </p>
+                    <Button 
+                      variant="outline" 
+                      className="w-full border-accent/50 hover:bg-accent/10"
+                      onClick={() => navigate('/contact')}
+                    >
+                      Contact for Agency Pricing
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            <Card className="border-border shadow-card">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <ListChecks className="h-5 w-5 text-primary" />
+                  Candidate Shortlists
+                </CardTitle>
+                <CardDescription>
+                  Build shortlists for client presentations
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <p className="text-sm text-muted-foreground">
+                    Browse profiles, save top candidates, and create custom shortlists for each client requisition
+                  </p>
+                  <Button 
+                    variant="outline" 
+                    className="w-full"
+                    onClick={() => navigate('/profiles')}
+                  >
+                    Browse Candidates
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
 
         <TabsContent value="clients" className="mt-6">
           <Card className="border-border shadow-card">
             <CardHeader>
-              <CardTitle>Your Clients</CardTitle>
-              <CardDescription>
-                Manage companies you recruit for
-              </CardDescription>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle>Your Clients</CardTitle>
+                  <CardDescription>
+                    Manage companies you recruit for
+                  </CardDescription>
+                </div>
+                <Button variant="hero" onClick={() => navigate('/clients/create')}>
+                  <Building2 className="h-4 w-4 mr-2" />
+                  Add Client
+                </Button>
+              </div>
             </CardHeader>
             <CardContent>
-              <div className="text-center py-8 text-muted-foreground">
-                {clientsCount === 0 ? (
-                  <div className="space-y-4">
-                    <Building2 className="h-12 w-12 mx-auto opacity-50" />
-                    <p>No clients yet. Add your first client to get started!</p>
-                    <Button variant="hero" onClick={() => navigate('/clients/create')}>
-                      <Building2 className="h-4 w-4 mr-2" />
-                      Add First Client
-                    </Button>
-                  </div>
-                ) : (
-                  <p>Client list will be displayed here</p>
-                )}
+              <RecruiterClientsList recruiterId={userId} />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="placements" className="mt-6">
+          <Card className="border-border shadow-card">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle>Recent Placements</CardTitle>
+                  <CardDescription>
+                    Your latest successful placements
+                  </CardDescription>
+                </div>
+                <Button variant="outline" onClick={() => navigate('/placements')}>
+                  View All
+                </Button>
               </div>
+            </CardHeader>
+            <CardContent>
+              <RecruiterPlacements recruiterId={userId} />
             </CardContent>
           </Card>
         </TabsContent>
