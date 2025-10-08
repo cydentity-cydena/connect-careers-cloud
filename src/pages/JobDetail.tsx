@@ -18,6 +18,7 @@ import {
   ExternalLink
 } from "lucide-react";
 import { ApplyJobDialog } from "@/components/jobs/ApplyJobDialog";
+import { VerifiedBadge } from "@/components/verification/VerifiedBadge";
 import SEO from "@/components/SEO";
 
 interface Job {
@@ -41,6 +42,7 @@ interface Job {
     location: string;
     website: string;
     logo_url: string | null;
+    created_by: string;
   };
 }
 
@@ -49,6 +51,7 @@ const JobDetail = () => {
   const navigate = useNavigate();
   const [job, setJob] = useState<Job | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isVerified, setIsVerified] = useState(false);
 
   useEffect(() => {
     loadJob();
@@ -78,7 +81,8 @@ const JobDetail = () => {
             size,
             location,
             website,
-            logo_url
+            logo_url,
+            created_by
           )
         `)
         .eq("id", id)
@@ -87,6 +91,17 @@ const JobDetail = () => {
 
       if (error) throw error;
       setJob(data as Job);
+
+      // Fetch verification status
+      if (data?.company?.created_by) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("is_verified")
+          .eq("id", data.company.created_by)
+          .single();
+
+        setIsVerified(profile?.is_verified || false);
+      }
     } catch (error) {
       console.error("Error loading job:", error);
       toast.error("Failed to load job details");
@@ -180,9 +195,12 @@ const JobDetail = () => {
                   )}
                   <div>
                     <CardTitle className="text-3xl mb-1">{job.title}</CardTitle>
-                    <p className="text-lg text-muted-foreground font-semibold">
-                      {job.company.name}
-                    </p>
+                    <div className="flex items-center gap-2">
+                      <p className="text-lg text-muted-foreground font-semibold">
+                        {job.company.name}
+                      </p>
+                      {isVerified && <VerifiedBadge />}
+                    </div>
                   </div>
                 </div>
 

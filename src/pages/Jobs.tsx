@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Briefcase, MapPin, DollarSign, Clock, Search } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import { ApplyJobDialog } from "@/components/jobs/ApplyJobDialog";
+import { VerifiedBadge } from "@/components/verification/VerifiedBadge";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -15,6 +16,7 @@ interface Job {
   title: string;
   company: {
     name: string;
+    created_by: string;
   };
   location: string | null;
   job_type: string;
@@ -27,11 +29,16 @@ interface Job {
   description: string;
 }
 
+interface CompanyVerification {
+  [key: string]: boolean;
+}
+
 const Jobs = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
+  const [verifiedCompanies, setVerifiedCompanies] = useState<CompanyVerification>({});
 
   useEffect(() => {
     loadJobs();
@@ -53,13 +60,30 @@ const Jobs = () => {
           required_clearance,
           remote_allowed,
           created_at,
-          company:companies(name)
+          company:companies(name, created_by)
         `)
         .eq("is_active", true)
         .order("created_at", { ascending: false });
 
       if (error) throw error;
       setJobs(data || []);
+
+      // Fetch verification status for all companies
+      if (data && data.length > 0) {
+        const companyOwnerIds = [...new Set(data.map(job => job.company.created_by))];
+        const { data: profiles, error: profileError } = await supabase
+          .from("profiles")
+          .select("id, is_verified")
+          .in("id", companyOwnerIds);
+
+        if (!profileError && profiles) {
+          const verificationMap: CompanyVerification = {};
+          profiles.forEach(profile => {
+            verificationMap[profile.id] = profile.is_verified || false;
+          });
+          setVerifiedCompanies(verificationMap);
+        }
+      }
     } catch (error) {
       console.error("Error loading jobs:", error);
       toast.error("Failed to load jobs");
@@ -142,9 +166,12 @@ const Jobs = () => {
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <CardTitle className="text-2xl mb-2">{job.title}</CardTitle>
-                      <CardDescription className="text-base font-semibold text-foreground">
-                        {job.company.name}
-                      </CardDescription>
+                      <div className="flex items-center gap-2">
+                        <CardDescription className="text-base font-semibold text-foreground">
+                          {job.company.name}
+                        </CardDescription>
+                        {verifiedCompanies[job.company.created_by] && <VerifiedBadge />}
+                      </div>
                     </div>
                     <Badge variant={job.remote_allowed ? "default" : "secondary"}>
                       {job.remote_allowed ? "Remote" : "On-site"}
