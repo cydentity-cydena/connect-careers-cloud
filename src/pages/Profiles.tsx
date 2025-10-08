@@ -5,8 +5,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Search, Lock, Star, Eye } from "lucide-react";
+import { Search, Lock, Star, Eye, Shield } from "lucide-react";
 import Navigation from "@/components/Navigation";
+import { useToast } from "@/hooks/use-toast";
 
 interface CandidateProfile {
   id: string;
@@ -21,15 +22,59 @@ interface CandidateProfile {
 
 const Profiles = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
-
-  // Fetch real candidate data from database
   const [candidates, setCandidates] = useState<CandidateProfile[]>([]);
   const [loading, setLoading] = useState(true);
+  const [userRole, setUserRole] = useState<string | null>(null);
+  const [checkingAccess, setCheckingAccess] = useState(true);
 
   useEffect(() => {
-    fetchCandidates();
+    checkUserAccess();
   }, []);
+
+  const checkUserAccess = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast({
+          title: "Authentication required",
+          description: "Please sign in to view candidate profiles",
+          variant: "destructive"
+        });
+        navigate('/auth');
+        return;
+      }
+
+      // Check if user is employer or recruiter
+      const { data: roleData, error } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', user.id)
+        .in('role', ['employer', 'recruiter', 'admin'])
+        .single();
+
+      if (error || !roleData) {
+        setUserRole('unauthorized');
+        setCheckingAccess(false);
+        return;
+      }
+
+      setUserRole(roleData.role);
+      setCheckingAccess(false);
+      fetchCandidates();
+    } catch (error) {
+      console.error('Error checking access:', error);
+      setCheckingAccess(false);
+    }
+  };
+
+  useEffect(() => {
+    if (userRole && userRole !== 'unauthorized') {
+      fetchCandidates();
+    }
+  }, [userRole]);
 
   const fetchCandidates = async () => {
     try {
@@ -129,19 +174,41 @@ const Profiles = () => {
       <Navigation />
 
       <main className="container mx-auto px-4 py-8 animate-fade-in">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">Candidate Profiles</h1>
-          <p className="text-muted-foreground">
-            Browse and connect with verified cybersecurity professionals
-          </p>
-        </div>
-
-        {loading ? (
+        {checkingAccess ? (
           <div className="text-center py-16">
-            <p className="text-muted-foreground text-lg">Loading profiles...</p>
+            <p className="text-muted-foreground text-lg">Checking access...</p>
+          </div>
+        ) : userRole === 'unauthorized' ? (
+          <div className="max-w-2xl mx-auto text-center py-16">
+            <Shield className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
+            <h1 className="text-3xl font-bold mb-4">Access Restricted</h1>
+            <p className="text-muted-foreground mb-6">
+              This page is only accessible to employers and recruiters. Candidate profiles are private and only visible to hiring organizations.
+            </p>
+            <div className="space-y-4">
+              <p className="text-sm text-muted-foreground">
+                Are you an employer looking to find talent?
+              </p>
+              <Button onClick={() => navigate('/pricing')}>
+                View Employer Plans
+              </Button>
+            </div>
           </div>
         ) : (
           <>
+            <div className="mb-8">
+              <h1 className="text-4xl font-bold mb-2">Candidate Profiles</h1>
+              <p className="text-muted-foreground">
+                Browse and connect with verified cybersecurity professionals
+              </p>
+            </div>
+
+            {loading ? (
+              <div className="text-center py-16">
+                <p className="text-muted-foreground text-lg">Loading profiles...</p>
+              </div>
+            ) : (
+              <>
             {/* Search Bar */}
         <div className="mb-8 max-w-2xl mx-auto">
           <div className="relative">
@@ -237,8 +304,10 @@ const Profiles = () => {
                   No candidates found matching your search.
                 </p>
               </div>
-            )}
-          </>
+              )}
+            </>
+          )}
+        </>
         )}
       </main>
     </div>
