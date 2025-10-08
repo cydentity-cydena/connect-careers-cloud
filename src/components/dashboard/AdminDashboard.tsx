@@ -191,8 +191,8 @@ const AdminDashboard = () => {
       <Tabs defaultValue="users" className="space-y-4">
         <TabsList>
           <TabsTrigger value="users">User Management</TabsTrigger>
-          <TabsTrigger value="jobs">Job Moderation</TabsTrigger>
           <TabsTrigger value="roles">Role Management</TabsTrigger>
+          <TabsTrigger value="jobs">Job Moderation</TabsTrigger>
         </TabsList>
 
         <TabsContent value="users">
