@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { User, Briefcase, FileText, TrendingUp, CheckCircle, ArrowRight } from "lucide-react";
+import { User, Briefcase, FileText, TrendingUp, CheckCircle, ArrowRight, Eye } from "lucide-react";
 import { ProfileStrengthMeter } from "@/components/gamification/ProfileStrengthMeter";
 import { AchievementBadges } from "@/components/gamification/AchievementBadges";
 import { RecentPointsFeed } from "@/components/rewards/RecentPointsFeed";
@@ -196,6 +196,33 @@ const CandidateDashboard = () => {
       {userId && (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           <ProfileStrengthMeter userId={userId} />
+          
+          {/* Preview Your Profile Card */}
+          <Card className="border-border shadow-card">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Eye className="h-5 w-5 text-primary" />
+                Preview Your Profile
+              </CardTitle>
+              <CardDescription>
+                See how employers view your profile
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground mb-4">
+                View your profile exactly as it appears to hiring managers and recruiters. Make sure your information is accurate and professional.
+              </p>
+              <Button 
+                onClick={() => navigate(`/profiles/${userId}`)}
+                className="w-full gap-2"
+                variant="outline"
+              >
+                <Eye className="h-4 w-4" />
+                Preview Profile
+              </Button>
+            </CardContent>
+          </Card>
+          
           <Card className="border-border shadow-card">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">

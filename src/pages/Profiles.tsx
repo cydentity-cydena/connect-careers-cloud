@@ -47,12 +47,11 @@ const Profiles = () => {
         return;
       }
 
-      // Check if user is employer or recruiter
+      // Check if user is employer, recruiter, admin, or candidate
       const { data: roleData, error } = await supabase
         .from('user_roles')
         .select('role')
         .eq('user_id', user.id)
-        .in('role', ['employer', 'recruiter', 'admin'])
         .single();
 
       if (error || !roleData) {
@@ -61,9 +60,25 @@ const Profiles = () => {
         return;
       }
 
-      setUserRole(roleData.role);
-      setCheckingAccess(false);
-      fetchCandidates();
+      // Employers, recruiters, and admins can browse all profiles
+      // Candidates can only see their own profile for preview
+      if (['employer', 'recruiter', 'admin'].includes(roleData.role)) {
+        setUserRole(roleData.role);
+        setCheckingAccess(false);
+        fetchCandidates();
+      } else if (roleData.role === 'candidate') {
+        setUserRole('candidate');
+        setCheckingAccess(false);
+        // Redirect candidates directly to their own profile for preview
+        toast({
+          title: "Profile Preview",
+          description: "Viewing your profile as employers see it",
+        });
+        navigate(`/profiles/${user.id}`);
+      } else {
+        setUserRole('unauthorized');
+        setCheckingAccess(false);
+      }
     } catch (error) {
       console.error('Error checking access:', error);
       setCheckingAccess(false);

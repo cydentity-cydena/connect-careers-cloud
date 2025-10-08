@@ -12,7 +12,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { 
   Mail, Phone, MapPin, Calendar, Briefcase, Award, 
   Github, Linkedin, Globe, FileText, Shield, ArrowLeft,
-  Building2, GraduationCap, Code, ExternalLink
+  Building2, GraduationCap, Code, ExternalLink, Eye, Info
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -233,6 +233,8 @@ export default function ProfileDetail() {
     );
   }
 
+  const isOwnProfile = currentUserId === id;
+
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
@@ -240,12 +242,31 @@ export default function ProfileDetail() {
       <main className="container mx-auto px-4 py-8">
         <Button 
           variant="ghost" 
-          onClick={() => navigate("/profiles")}
+          onClick={() => navigate(isOwnProfile ? "/dashboard" : "/profiles")}
           className="mb-6 gap-2"
         >
           <ArrowLeft className="h-4 w-4" />
-          Back to Profiles
+          {isOwnProfile ? "Back to Dashboard" : "Back to Profiles"}
         </Button>
+
+        {isOwnProfile && (
+          <div className="mb-6 bg-blue-500/10 border border-blue-500/20 rounded-lg p-4">
+            <div className="flex items-start gap-3">
+              <div className="bg-blue-500/10 rounded-full p-2 flex-shrink-0">
+                <Eye className="h-5 w-5 text-blue-500" />
+              </div>
+              <div className="flex-1">
+                <h3 className="font-semibold text-lg mb-1 flex items-center gap-2">
+                  <Info className="h-4 w-4" />
+                  Profile Preview Mode
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  You're viewing your profile exactly as employers and recruiters see it. Make sure all information is accurate and up-to-date. To edit your profile, go to your <Button variant="link" className="h-auto p-0 text-sm" onClick={() => navigate('/profile')}>Profile Settings</Button>.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className="grid md:grid-cols-3 gap-6">
           {/* Sidebar - Public Info */}
