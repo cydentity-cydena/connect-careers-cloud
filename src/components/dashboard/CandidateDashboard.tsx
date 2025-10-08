@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { User, Briefcase, FileText, TrendingUp, CheckCircle, ArrowRight, Eye } from "lucide-react";
+import { User, Briefcase, FileText, TrendingUp, CheckCircle, ArrowRight, Eye, Bug } from "lucide-react";
 import { ProfileStrengthMeter } from "@/components/gamification/ProfileStrengthMeter";
 import { AchievementBadges } from "@/components/gamification/AchievementBadges";
 import { RecentPointsFeed } from "@/components/rewards/RecentPointsFeed";
@@ -245,6 +245,32 @@ const CandidateDashboard = () => {
               </div>
             </CardContent>
           </Card>
+          
+          <Card className="border-border shadow-card bg-primary/5">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Bug className="h-5 w-5 text-primary" />
+                Report a Bug
+              </CardTitle>
+              <CardDescription>
+                Help us improve Cydena
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground mb-4">
+                Found an issue? Let us know and we'll fix it!
+              </p>
+              <Button 
+                onClick={() => navigate('/bug-report')}
+                variant="outline"
+                className="w-full gap-2"
+              >
+                <Bug className="h-4 w-4" />
+                Report Bug
+              </Button>
+            </CardContent>
+          </Card>
+          
           <RecentPointsFeed userId={userId} limit={5} />
         </div>
       )}

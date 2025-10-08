@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Building2, Users, Briefcase, TrendingUp, DollarSign, UserPlus } from "lucide-react";
+import { Building2, Users, Briefcase, TrendingUp, DollarSign, UserPlus, Bug } from "lucide-react";
 
 const RecruiterDashboard = () => {
   const navigate = useNavigate();
@@ -126,6 +126,31 @@ const RecruiterDashboard = () => {
               </div>
             </div>
           </div>
+        </CardContent>
+      </Card>
+
+      <Card className="border-border shadow-card bg-primary/5">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Bug className="h-5 w-5 text-primary" />
+            Report a Bug
+          </CardTitle>
+          <CardDescription>
+            Help us improve the platform
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-muted-foreground mb-4">
+            Found something broken? Let us know!
+          </p>
+          <Button 
+            variant="outline" 
+            className="w-full gap-2"
+            onClick={() => navigate('/bug-report')}
+          >
+            <Bug className="h-4 w-4" />
+            Report Bug
+          </Button>
         </CardContent>
       </Card>
 

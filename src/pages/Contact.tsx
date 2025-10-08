@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Mail, MessageSquare, Send } from "lucide-react";
+import { Mail, MessageSquare, Send, Bug } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -188,6 +188,31 @@ const Contact = () => {
                     partners@cydena.com
                   </a>
                 </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-border shadow-card bg-primary/5">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Bug className="h-5 w-5 text-primary" />
+                  Found a Bug?
+                </CardTitle>
+                <CardDescription>
+                  Help us improve Cydena by reporting issues
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Encountered a broken link, course issue, or something not working right? Let us know!
+                </p>
+                <Button 
+                  variant="outline" 
+                  className="w-full gap-2"
+                  onClick={() => window.location.href = '/bug-report'}
+                >
+                  <Bug className="h-4 w-4" />
+                  Report a Bug
+                </Button>
               </CardContent>
             </Card>
 
