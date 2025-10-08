@@ -53,7 +53,7 @@ const FAQ = () => {
     },
     {
       question: "How quickly can I start interviewing candidates?",
-      answer: "Most employers connect with qualified candidates within 48 hours. Browse profiles immediately after signing up, unlock the ones you like, and reach out directly. No waiting for a recruiter to send you CVs."
+      answer: "Instantly! Browse profiles immediately after signing up, unlock qualified candidates, and connect with them directly via email, phone, or in-platform messaging. No waiting for a recruiter to send you CVs - you're in control from day one."
     },
     {
       question: "What if I unlock a profile and they're not interested?",
