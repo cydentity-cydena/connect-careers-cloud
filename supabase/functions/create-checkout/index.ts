@@ -12,12 +12,12 @@ const logStep = (step: string, details?: any) => {
   console.log(`[CREATE-CHECKOUT] ${step}${detailsStr}`);
 };
 
-// Tier to price ID mapping
+// Tier to price ID mapping - Cydena Stripe Account
 const TIER_PRICES: Record<string, string> = {
-  'employer_starter': 'price_1SG2n2FnZFXoJvyLkjI5aoMI',
-  'employer_growth': 'price_1SG2nbFnZFXoJvyLkAKznYqi',
-  'employer_scale': 'price_1SG2nqFnZFXoJvyLU2rLqOXz',
-  'recruiter_pro': 'price_1SG2oLFnZFXoJvyLlP8GNZuX',
+  'employer_starter': 'price_1SG35MDOcfakZuIamZqqT7mn',
+  'employer_growth': 'price_1SG35YDOcfakZuIasvamb8aS',
+  'employer_scale': 'price_1SG35iDOcfakZuIaarlVZp2y',
+  'recruiter_pro': 'price_1SG35uDOcfakZuIa2H5BFOFe',
 };
 
 serve(async (req) => {
