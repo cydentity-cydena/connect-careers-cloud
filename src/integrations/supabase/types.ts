@@ -1449,6 +1449,51 @@ export type Database = {
         }
         Relationships: []
       }
+      user_subscriptions: {
+        Row: {
+          cancel_at_period_end: boolean | null
+          created_at: string
+          current_period_end: string | null
+          current_period_start: string | null
+          id: string
+          status: string
+          stripe_customer_id: string | null
+          stripe_price_id: string
+          stripe_subscription_id: string | null
+          tier: Database["public"]["Enums"]["subscription_tier"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          cancel_at_period_end?: boolean | null
+          created_at?: string
+          current_period_end?: string | null
+          current_period_start?: string | null
+          id?: string
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_price_id: string
+          stripe_subscription_id?: string | null
+          tier: Database["public"]["Enums"]["subscription_tier"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          cancel_at_period_end?: boolean | null
+          created_at?: string
+          current_period_end?: string | null
+          current_period_start?: string | null
+          id?: string
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_price_id?: string
+          stripe_subscription_id?: string | null
+          tier?: Database["public"]["Enums"]["subscription_tier"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       verification_requests: {
         Row: {
           additional_info: string | null
@@ -1609,6 +1654,12 @@ export type Database = {
         | "rejected"
         | "hired"
       priority_level: "low" | "medium" | "high"
+      subscription_tier:
+        | "employer_starter"
+        | "employer_growth"
+        | "employer_scale"
+        | "recruiter_pro"
+        | "enterprise"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1761,6 +1812,13 @@ export const Constants = {
         "hired",
       ],
       priority_level: ["low", "medium", "high"],
+      subscription_tier: [
+        "employer_starter",
+        "employer_growth",
+        "employer_scale",
+        "recruiter_pro",
+        "enterprise",
+      ],
     },
   },
 } as const

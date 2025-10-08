@@ -1,17 +1,38 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Check, X, ArrowRight, Zap, Building2, Users } from "lucide-react";
+import { Check, X, ArrowRight, Zap, Building2, Users, Loader2 } from "lucide-react";
 import Navigation from "@/components/Navigation";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import SEO from "@/components/SEO";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSubscription } from "@/hooks/useSubscription";
+import { supabase } from "@/integrations/supabase/client";
 
 const Pricing = () => {
+  const navigate = useNavigate();
   const [billingPeriod, setBillingPeriod] = useState<'monthly' | 'annual'>('monthly');
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [checkingAuth, setCheckingAuth] = useState(true);
+  const { createCheckout, tier: currentTier, loading: subscriptionLoading } = useSubscription();
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setIsAuthenticated(!!session);
+      setCheckingAuth(false);
+    });
+  }, []);
 
   const getPricing = (monthly: number) => {
     const annual = Math.round(monthly * 0.85); // 15% discount
     return billingPeriod === 'monthly' ? monthly : annual;
+  };
+
+  const handleTierSelect = async (tierKey: string) => {
+    if (!isAuthenticated) {
+      navigate('/auth');
+      return;
+    }
+    await createCheckout(tierKey);
   };
 
   return (
@@ -180,9 +201,14 @@ const Pricing = () => {
                   <span>Email support</span>
                 </li>
               </ul>
-              <Link to="/auth">
-                <Button className="w-full" size="sm">Choose Starter</Button>
-              </Link>
+              <Button 
+                className="w-full" 
+                size="sm"
+                onClick={() => handleTierSelect('employer_starter')}
+                disabled={checkingAuth || currentTier === 'employer_starter'}
+              >
+                {currentTier === 'employer_starter' ? 'Current Plan' : 'Choose Starter'}
+              </Button>
             </CardContent>
           </Card>
 
@@ -220,9 +246,16 @@ const Pricing = () => {
                   <span>Priority support</span>
                 </li>
               </ul>
-              <Link to="/auth">
-                <Button className="w-full gap-2" size="sm">Choose Growth <ArrowRight className="h-4 w-4" /></Button>
-              </Link>
+              <Button 
+                className="w-full gap-2" 
+                size="sm"
+                onClick={() => handleTierSelect('employer_growth')}
+                disabled={checkingAuth || currentTier === 'employer_growth'}
+              >
+                {currentTier === 'employer_growth' ? 'Current Plan' : (
+                  <>Choose Growth <ArrowRight className="h-4 w-4" /></>
+                )}
+              </Button>
             </CardContent>
           </Card>
 
@@ -257,9 +290,14 @@ const Pricing = () => {
                   <span>Advanced analytics</span>
                 </li>
               </ul>
-              <Link to="/auth">
-                <Button className="w-full" size="sm">Choose Scale</Button>
-              </Link>
+              <Button 
+                className="w-full" 
+                size="sm"
+                onClick={() => handleTierSelect('employer_scale')}
+                disabled={checkingAuth || currentTier === 'employer_scale'}
+              >
+                {currentTier === 'employer_scale' ? 'Current Plan' : 'Choose Scale'}
+              </Button>
             </CardContent>
           </Card>
 
@@ -294,9 +332,15 @@ const Pricing = () => {
                   <span>Bulk candidate actions</span>
                 </li>
               </ul>
-              <Link to="/auth">
-                <Button className="w-full" variant="outline" size="sm">Choose Recruiter Pro</Button>
-              </Link>
+              <Button 
+                className="w-full" 
+                variant="outline" 
+                size="sm"
+                onClick={() => handleTierSelect('recruiter_pro')}
+                disabled={checkingAuth || currentTier === 'recruiter_pro'}
+              >
+                {currentTier === 'recruiter_pro' ? 'Current Plan' : 'Choose Recruiter Pro'}
+              </Button>
             </CardContent>
           </Card>
 

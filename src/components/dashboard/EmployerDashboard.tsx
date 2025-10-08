@@ -9,6 +9,7 @@ import { CreditsPurchaseDialog } from "@/components/employer/CreditsPurchaseDial
 import { ApplicationPipeline } from "@/components/employer/ApplicationPipeline";
 import { UnlockUsageTracker } from "@/components/employer/UnlockUsageTracker";
 import { VerificationRequestDialog } from "@/components/verification/VerificationRequestDialog";
+import { SubscriptionStatus } from "@/components/subscription/SubscriptionStatus";
 import { useQuery } from "@tanstack/react-query";
 
 const EmployerDashboard = () => {
@@ -122,6 +123,9 @@ const EmployerDashboard = () => {
           </CardContent>
         </Card>
       )}
+
+      {/* Subscription Status */}
+      <SubscriptionStatus />
 
       <Card className="border-border shadow-card">
         <CardHeader>
