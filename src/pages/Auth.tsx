@@ -473,6 +473,39 @@ const Auth = () => {
                       "Create Account"
                     )}
                   </Button>
+
+                  <div className="relative my-4">
+                    <div className="absolute inset-0 flex items-center">
+                      <span className="w-full border-t" />
+                    </div>
+                    <div className="relative flex justify-center text-xs uppercase">
+                      <span className="bg-background px-2 text-muted-foreground">
+                        Or for candidates
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <div className="grid grid-cols-2 gap-4">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => handleOAuthSignIn('google')}
+                      >
+                        Google
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => handleOAuthSignIn('linkedin_oidc')}
+                      >
+                        LinkedIn
+                      </Button>
+                    </div>
+                    <p className="text-xs text-center text-muted-foreground">
+                      OAuth creates candidate accounts only
+                    </p>
+                  </div>
                 </form>
               </TabsContent>
             </Tabs>
