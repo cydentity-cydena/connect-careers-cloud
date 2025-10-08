@@ -6,6 +6,10 @@ import { Shield, Users, Briefcase, AlertCircle, UserCog, CheckCircle } from "luc
 import { SeedDemoCandidates } from "@/components/admin/SeedDemoCandidates";
 import { VerificationReviewPanel } from "@/components/admin/VerificationReviewPanel";
 import { AdminNotifications } from "@/components/admin/AdminNotifications";
+import { UserManagement } from "@/components/admin/UserManagement";
+import { JobModeration } from "@/components/admin/JobModeration";
+import { RoleManagement } from "@/components/admin/RoleManagement";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 
 const AdminDashboard = () => {
@@ -183,46 +187,70 @@ const AdminDashboard = () => {
       {/* Verification Review Panel */}
       <VerificationReviewPanel />
 
-      <Card className="border-border shadow-card">
-        <CardHeader>
-          <CardTitle>Admin Actions</CardTitle>
-          <CardDescription>
-            Platform management tools
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div 
-              onClick={() => navigate('/profiles')}
-              className="text-center p-4 rounded-lg border border-border hover:bg-accent/50 cursor-pointer transition-colors"
-            >
-              <Users className="h-6 w-6 mx-auto mb-2 text-primary" />
-              <p className="text-sm font-medium">User Management</p>
-            </div>
-            <div 
-              onClick={() => navigate('/jobs')}
-              className="text-center p-4 rounded-lg border border-border hover:bg-accent/50 cursor-pointer transition-colors"
-            >
-              <Briefcase className="h-6 w-6 mx-auto mb-2 text-secondary" />
-              <p className="text-sm font-medium">Job Moderation</p>
-            </div>
-            <div 
-              onClick={() => navigate('/skills')}
-              className="text-center p-4 rounded-lg border border-border hover:bg-accent/50 cursor-pointer transition-colors"
-            >
-              <Shield className="h-6 w-6 mx-auto mb-2 text-accent" />
-              <p className="text-sm font-medium">Skills Library</p>
-            </div>
-            <div 
-              onClick={() => toast.info("Role management interface coming soon")}
-              className="text-center p-4 rounded-lg border border-border hover:bg-accent/50 cursor-pointer transition-colors"
-            >
-              <UserCog className="h-6 w-6 mx-auto mb-2 text-orange-500" />
-              <p className="text-sm font-medium">Role Management</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Admin Management Tabs */}
+      <Tabs defaultValue="overview" className="space-y-4">
+        <TabsList>
+          <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="users">User Management</TabsTrigger>
+          <TabsTrigger value="jobs">Job Moderation</TabsTrigger>
+          <TabsTrigger value="roles">Role Management</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="overview">
+          <Card className="border-border shadow-card">
+            <CardHeader>
+              <CardTitle>Admin Actions</CardTitle>
+              <CardDescription>
+                Platform management tools
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div 
+                  onClick={() => document.querySelector('[value="users"]')?.dispatchEvent(new Event('click', { bubbles: true }))}
+                  className="text-center p-4 rounded-lg border border-border hover:bg-accent/50 cursor-pointer transition-colors"
+                >
+                  <Users className="h-6 w-6 mx-auto mb-2 text-primary" />
+                  <p className="text-sm font-medium">User Management</p>
+                </div>
+                <div 
+                  onClick={() => document.querySelector('[value="jobs"]')?.dispatchEvent(new Event('click', { bubbles: true }))}
+                  className="text-center p-4 rounded-lg border border-border hover:bg-accent/50 cursor-pointer transition-colors"
+                >
+                  <Briefcase className="h-6 w-6 mx-auto mb-2 text-secondary" />
+                  <p className="text-sm font-medium">Job Moderation</p>
+                </div>
+                <div 
+                  onClick={() => navigate('/skills')}
+                  className="text-center p-4 rounded-lg border border-border hover:bg-accent/50 cursor-pointer transition-colors"
+                >
+                  <Shield className="h-6 w-6 mx-auto mb-2 text-accent" />
+                  <p className="text-sm font-medium">Skills Library</p>
+                </div>
+                <div 
+                  onClick={() => document.querySelector('[value="roles"]')?.dispatchEvent(new Event('click', { bubbles: true }))}
+                  className="text-center p-4 rounded-lg border border-border hover:bg-accent/50 cursor-pointer transition-colors"
+                >
+                  <UserCog className="h-6 w-6 mx-auto mb-2 text-orange-500" />
+                  <p className="text-sm font-medium">Role Management</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="users">
+          <UserManagement />
+        </TabsContent>
+
+        <TabsContent value="jobs">
+          <JobModeration />
+        </TabsContent>
+
+        <TabsContent value="roles">
+          <RoleManagement />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
