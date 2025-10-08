@@ -99,7 +99,11 @@ const Navigation = () => {
               <Link
                 key={link.to}
                 to={link.to}
-                className="text-sm font-medium hover:text-primary transition-colors whitespace-nowrap"
+                className={`text-sm font-medium transition-colors whitespace-nowrap ${
+                  link.to === "/" 
+                    ? "text-accent hover:text-accent/80 font-semibold" 
+                    : "hover:text-primary"
+                }`}
               >
                 {link.label}
               </Link>
@@ -108,12 +112,18 @@ const Navigation = () => {
             {user ? (
               <>
                 <Link to="/dashboard">
-                  <Button variant="ghost" size="sm">
+                  <Button variant="hero" size="sm" className="font-semibold">
                     Dashboard
                   </Button>
                 </Link>
-                <Button variant="ghost" size="sm" onClick={handleSignOut}>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={handleSignOut}
+                  className="flex flex-col items-center gap-0.5 h-auto py-1.5 px-3"
+                >
                   <LogOut className="h-4 w-4" />
+                  <span className="text-xs">Sign Out</span>
                 </Button>
               </>
             ) : (
@@ -129,7 +139,7 @@ const Navigation = () => {
           <div className="lg:hidden flex items-center gap-2">
             {user && (
               <Link to="/dashboard" onClick={handleNavClick}>
-                <Button variant="ghost" size="sm">
+                <Button variant="hero" size="sm" className="font-semibold">
                   Dashboard
                 </Button>
               </Link>
@@ -150,7 +160,11 @@ const Navigation = () => {
                         key={link.to}
                         to={link.to}
                         onClick={handleNavClick}
-                        className="text-base font-medium hover:text-primary transition-colors py-2"
+                        className={`text-base font-medium transition-colors py-2 ${
+                          link.to === "/" 
+                            ? "text-accent hover:text-accent/80 font-semibold" 
+                            : "hover:text-primary"
+                        }`}
                       >
                         {link.label}
                       </Link>
