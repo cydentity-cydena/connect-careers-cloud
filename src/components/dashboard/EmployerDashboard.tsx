@@ -4,10 +4,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Building, Users, Briefcase, TrendingUp, Coins, Workflow } from "lucide-react";
+import { Building, Users, Briefcase, TrendingUp, Coins, Workflow, CheckCircle } from "lucide-react";
 import { CreditsPurchaseDialog } from "@/components/employer/CreditsPurchaseDialog";
 import { ApplicationPipeline } from "@/components/employer/ApplicationPipeline";
 import { UnlockUsageTracker } from "@/components/employer/UnlockUsageTracker";
+import { VerificationRequestDialog } from "@/components/verification/VerificationRequestDialog";
+import { useQuery } from "@tanstack/react-query";
 
 const EmployerDashboard = () => {
   const navigate = useNavigate();
@@ -18,6 +20,20 @@ const EmployerDashboard = () => {
   const [jobsCount, setJobsCount] = useState(0);
   const [applicationsCount, setApplicationsCount] = useState(0);
   const [userName, setUserName] = useState<string>("");
+
+  const { data: verificationRequest } = useQuery({
+    queryKey: ['verification-request', userId],
+    queryFn: async () => {
+      if (!userId) return null;
+      const { data } = await supabase
+        .from('verification_requests')
+        .select('*')
+        .eq('user_id', userId)
+        .maybeSingle();
+      return data;
+    },
+    enabled: !!userId,
+  });
 
   useEffect(() => {
     getCurrentUser();
@@ -82,6 +98,30 @@ const EmployerDashboard = () => {
           Manage your company profile, job postings, and application pipeline
         </p>
       </div>
+
+      {/* Verification Banner */}
+      {userId && verificationRequest?.status !== 'approved' && (
+        <Card className="border-primary/30 shadow-lg bg-gradient-to-br from-primary/5 to-secondary/5">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <CheckCircle className="h-5 w-5 text-primary" />
+              Get Your Verification Badge
+            </CardTitle>
+            <CardDescription>
+              Verified businesses get higher visibility and candidate trust
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-start justify-between gap-4">
+              <p className="text-sm text-muted-foreground">
+                Complete a quick verification to show candidates you're a legitimate business. 
+                Verified employers see 3x more applications on average.
+              </p>
+              <VerificationRequestDialog userId={userId} existingRequest={verificationRequest} />
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       <Card className="border-border shadow-card">
         <CardHeader>

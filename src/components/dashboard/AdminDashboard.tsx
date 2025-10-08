@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Shield, Users, Briefcase, AlertCircle, UserCog } from "lucide-react";
+import { Shield, Users, Briefcase, AlertCircle, UserCog, CheckCircle } from "lucide-react";
 import { SeedDemoCandidates } from "@/components/admin/SeedDemoCandidates";
+import { VerificationReviewPanel } from "@/components/admin/VerificationReviewPanel";
 import { toast } from "sonner";
 
 const AdminDashboard = () => {
@@ -163,6 +164,9 @@ const AdminDashboard = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Verification Review Panel */}
+      <VerificationReviewPanel />
 
       <Card className="border-border shadow-card">
         <CardHeader>

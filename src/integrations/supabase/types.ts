@@ -1197,10 +1197,12 @@ export type Database = {
           email: string
           full_name: string | null
           id: string
+          is_verified: boolean | null
           location: string | null
           updated_at: string
           username: string | null
           username_changes: number | null
+          verified_at: string | null
         }
         Insert: {
           avatar_url?: string | null
@@ -1209,10 +1211,12 @@ export type Database = {
           email: string
           full_name?: string | null
           id: string
+          is_verified?: boolean | null
           location?: string | null
           updated_at?: string
           username?: string | null
           username_changes?: number | null
+          verified_at?: string | null
         }
         Update: {
           avatar_url?: string | null
@@ -1221,10 +1225,12 @@ export type Database = {
           email?: string
           full_name?: string | null
           id?: string
+          is_verified?: boolean | null
           location?: string | null
           updated_at?: string
           username?: string | null
           username_changes?: number | null
+          verified_at?: string | null
         }
         Relationships: []
       }
@@ -1440,6 +1446,54 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      verification_requests: {
+        Row: {
+          additional_info: string | null
+          business_registration_number: string | null
+          company_name: string
+          company_website: string
+          created_at: string
+          id: string
+          rejection_reason: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          updated_at: string
+          user_id: string
+          verification_documents: string[] | null
+        }
+        Insert: {
+          additional_info?: string | null
+          business_registration_number?: string | null
+          company_name: string
+          company_website: string
+          created_at?: string
+          id?: string
+          rejection_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+          verification_documents?: string[] | null
+        }
+        Update: {
+          additional_info?: string | null
+          business_registration_number?: string | null
+          company_name?: string
+          company_website?: string
+          created_at?: string
+          id?: string
+          rejection_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+          verification_documents?: string[] | null
         }
         Relationships: []
       }
