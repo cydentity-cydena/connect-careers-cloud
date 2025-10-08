@@ -61,66 +61,13 @@ const Auth = () => {
     // Check if user is already logged in
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (session) {
-        // Check if profile setup is complete
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('full_name')
-          .eq('id', session.user.id)
-          .maybeSingle();
-
-        const { data: roles } = await supabase
-          .from('user_roles')
-          .select('role')
-          .eq('user_id', session.user.id);
-        
-        const storedRole = sessionStorage.getItem('oauth_role') as 'candidate' | 'employer' | 'recruiter' | null;
-        const storedUsername = sessionStorage.getItem('oauth_username');
-        const storedFullName = sessionStorage.getItem('oauth_fullname');
-
-        if (storedRole && storedFullName) {
-          handleOAuthProfileCompletion(session.user, storedRole, storedFullName, storedUsername);
-          return;
-        }
-
-        if (!roles || roles.length === 0) {
-          // No role yet (first-time OAuth via Sign In). Ask to complete candidate profile.
-          setCompleteProfileMode(true);
-          setPendingOAuthProvider(null);
-          setShowOAuthRoleDialog(true);
-          return;
-        }
-        
-        if (profile && profile.full_name) {
-          navigate("/dashboard");
-        }
+        navigate("/dashboard");
       }
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_IN' && session) {
-        setTimeout(async () => {
-          const storedRole = sessionStorage.getItem('oauth_role') as 'candidate' | 'employer' | 'recruiter' | null;
-          const storedUsername = sessionStorage.getItem('oauth_username');
-          const storedFullName = sessionStorage.getItem('oauth_fullname');
-
-          if (storedRole && storedFullName) {
-            await handleOAuthProfileCompletion(session.user, storedRole, storedFullName, storedUsername);
-            return;
-          }
-
-          const { data: roles } = await supabase
-            .from('user_roles')
-            .select('role')
-            .eq('user_id', session.user.id);
-
-          if (!roles || roles.length === 0) {
-            setCompleteProfileMode(true);
-            setPendingOAuthProvider(null);
-            setShowOAuthRoleDialog(true);
-          } else {
-            navigate('/dashboard');
-          }
-        }, 0);
+        navigate('/dashboard');
       }
     });
 

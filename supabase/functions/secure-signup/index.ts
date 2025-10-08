@@ -66,6 +66,7 @@ serve(async (req) => {
     }
 
     let userId: string;
+    let existingUser: any = null;
 
     // For OAuth completion, user already exists
     if (isOAuthCompletion) {
@@ -84,6 +85,7 @@ serve(async (req) => {
       }
       
       userId = user.id;
+      existingUser = user;
       console.log('OAuth completion for existing user:', userId);
     } else {
       // Regular signup - create new user
@@ -110,23 +112,33 @@ serve(async (req) => {
       console.log('Auth user created:', userId);
     }
 
+    // Auto-generate username for OAuth candidates if not provided
+    let finalUsername = username;
+    if (isOAuthCompletion && role === 'candidate' && !username) {
+      const randomSuffix = Math.random().toString(36).substring(2, 8);
+      finalUsername = `user_${randomSuffix}`;
+      console.log('Auto-generated username for OAuth candidate:', finalUsername);
+    }
+
     const profileUpdate: any = { id: userId, full_name: fullName };
-    if (username && username.trim()) {
-      profileUpdate.username = username.toLowerCase();
+    if (finalUsername && finalUsername.trim()) {
+      profileUpdate.username = finalUsername.toLowerCase();
     }
 
     const { error: profileError } = await supabaseAdmin
       .from('profiles')
       .upsert({
         id: userId,
-        email,
+        email: existingUser?.email || email,
         ...profileUpdate,
       }, { onConflict: 'id' });
 
     if (profileError) {
       console.error('Profile update failed:', profileError);
-      // Cleanup: delete the auth user if profile update fails
-      await supabaseAdmin.auth.admin.deleteUser(userId);
+      // Cleanup: delete the auth user if profile update fails (only for new signups)
+      if (!isOAuthCompletion) {
+        await supabaseAdmin.auth.admin.deleteUser(userId);
+      }
       throw new Error('Failed to update profile');
     }
 

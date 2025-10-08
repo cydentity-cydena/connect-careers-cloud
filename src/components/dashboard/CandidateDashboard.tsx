@@ -10,6 +10,9 @@ import { RecentPointsFeed } from "@/components/rewards/RecentPointsFeed";
 import { ProfileViewsNotification } from "./ProfileViewsNotification";
 import { MultipleResumesManager } from "./MultipleResumesManager";
 import { BoostYourScore } from "./BoostYourScore";
+import { UsernameChangeDialog } from "./UsernameChangeDialog";
+import { useQuery } from "@tanstack/react-query";
+import { Link } from "react-router-dom";
 
 const CandidateDashboard = () => {
   const [userId, setUserId] = useState<string>("");
@@ -55,6 +58,28 @@ const CandidateDashboard = () => {
       setXpData(data);
     }
   };
+
+  const { data: { user } } = useQuery({
+    queryKey: ['current-user'],
+    queryFn: async () => {
+      const { data } = await supabase.auth.getUser();
+      return data;
+    },
+  });
+
+  const { data: profile } = useQuery({
+    queryKey: ['profile', user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*, username_changes')
+        .eq('id', user?.id)
+        .single();
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!user?.id,
+  });
   return (
     <div className="space-y-8 animate-fade-in">
       {/* Free Access Banner */}
@@ -191,16 +216,38 @@ const CandidateDashboard = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <User className="h-5 w-5 text-primary" />
-              Profile Actions
+              Profile
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-2">
-            <Button variant="cyber" className="w-full" onClick={() => navigate('/profile')}>
-              Edit Profile
-            </Button>
-            <Button variant="outline" className="w-full" onClick={() => navigate('/profiles')}>
-              View Public Profile
-            </Button>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <p className="text-sm">
+                <span className="font-medium">Name:</span> {profile?.full_name || 'Not set'}
+              </p>
+              <div className="flex items-center justify-between gap-2">
+                <p className="text-sm">
+                  <span className="font-medium">Username:</span> @{profile?.username || 'Not set'}
+                </p>
+                {profile?.username && user?.id && (
+                  <UsernameChangeDialog 
+                    currentUsername={profile.username}
+                    usernameChanges={profile.username_changes || 0}
+                    userId={user.id}
+                  />
+                )}
+              </div>
+              <p className="text-sm">
+                <span className="font-medium">Email:</span> {profile?.email}
+              </p>
+            </div>
+            <div className="space-y-2">
+              <Button variant="cyber" className="w-full" onClick={() => navigate('/profile')}>
+                Edit Profile
+              </Button>
+              <Button variant="outline" className="w-full" onClick={() => navigate('/profiles')}>
+                View Public Profile
+              </Button>
+            </div>
           </CardContent>
         </Card>
 
