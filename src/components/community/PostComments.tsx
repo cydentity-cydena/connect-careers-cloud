@@ -61,12 +61,11 @@ export const PostComments = ({ postId }: { postId: string }) => {
           table: 'post_comments',
           filter: `post_id=eq.${postId}`
         },
-        () => {
-          if (showComments) {
-            loadComments();
-          } else {
-            loadCommentCount();
-          }
+        (payload) => {
+          console.log('New comment received:', payload);
+          loadCommentCount();
+          // Always reload comments if section is open
+          loadComments();
         }
       )
       .on(
@@ -78,11 +77,9 @@ export const PostComments = ({ postId }: { postId: string }) => {
           filter: `post_id=eq.${postId}`
         },
         () => {
-          if (showComments) {
-            loadComments();
-          } else {
-            loadCommentCount();
-          }
+          console.log('Comment deleted');
+          loadCommentCount();
+          loadComments();
         }
       )
       .subscribe();
@@ -90,7 +87,7 @@ export const PostComments = ({ postId }: { postId: string }) => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [postId, showComments]);
+  }, [postId]);
 
   const getCurrentUser = async () => {
     const { data: { user } } = await supabase.auth.getUser();
@@ -180,6 +177,11 @@ export const PostComments = ({ postId }: { postId: string }) => {
         .select('username, avatar_url, full_name')
         .eq('id', user.id)
         .single();
+
+      // Ensure comments section is open
+      if (!showComments) {
+        setShowComments(true);
+      }
 
       // Optimistic update - add comment immediately to UI
       const optimisticComment: Comment = {
