@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Shield, Users, Briefcase, AlertCircle, UserCog, CheckCircle } from "lucide-react";
 import { SeedDemoCandidates } from "@/components/admin/SeedDemoCandidates";
 import { VerificationReviewPanel } from "@/components/admin/VerificationReviewPanel";
+import { AdminNotifications } from "@/components/admin/AdminNotifications";
 import { toast } from "sonner";
 
 const AdminDashboard = () => {
@@ -77,6 +78,9 @@ const AdminDashboard = () => {
           Platform overview and moderation tools
         </p>
       </div>
+
+      {/* Notifications Section */}
+      <AdminNotifications />
 
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
         <Card className="border-border shadow-card hover:scale-105 transition-transform">
