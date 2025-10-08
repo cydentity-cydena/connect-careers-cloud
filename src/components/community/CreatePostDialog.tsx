@@ -110,7 +110,12 @@ export const CreatePostDialog = () => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="title">Title *</Label>
+            <div className="flex items-center justify-between">
+              <Label htmlFor="title">Title *</Label>
+              <span className={`text-xs ${title.length > 180 ? 'text-destructive' : 'text-muted-foreground'}`}>
+                {title.length}/200
+              </span>
+            </div>
             <Input
               id="title"
               value={title}
@@ -121,7 +126,12 @@ export const CreatePostDialog = () => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description">Description (Optional)</Label>
+            <div className="flex items-center justify-between">
+              <Label htmlFor="description">Description (Optional)</Label>
+              <span className={`text-xs ${description.length > 900 ? 'text-destructive' : 'text-muted-foreground'}`}>
+                {description.length}/1000
+              </span>
+            </div>
             <Textarea
               id="description"
               value={description}
