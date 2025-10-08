@@ -16,7 +16,8 @@ const AdminDashboard = () => {
   const [recruitersCount, setRecruitersCount] = useState(0);
   const [activeJobsCount, setActiveJobsCount] = useState(0);
   const [applicationsCount, setApplicationsCount] = useState(0);
-  const [companiesCount, setCompaniesCount] = useState(0);
+  const [employerCompaniesCount, setEmployerCompaniesCount] = useState(0);
+  const [clientCompaniesCount, setClientCompaniesCount] = useState(0);
 
   useEffect(() => {
     loadStats();
@@ -63,11 +64,17 @@ const AdminDashboard = () => {
       .select('*', { count: 'exact', head: true });
     setApplicationsCount(aCount || 0);
 
-    // Companies
-    const { count: compCount } = await supabase
+    // Employer Companies (companies table - actual platform companies)
+    const { count: empCompCount } = await supabase
       .from('companies')
       .select('*', { count: 'exact', head: true });
-    setCompaniesCount(compCount || 0);
+    setEmployerCompaniesCount(empCompCount || 0);
+
+    // Client Companies (clients table - recruiter clients)
+    const { count: clientCount } = await supabase
+      .from('clients')
+      .select('*', { count: 'exact', head: true });
+    setClientCompaniesCount(clientCount || 0);
   };
 
   return (
@@ -126,12 +133,12 @@ const AdminDashboard = () => {
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-lg">
               <AlertCircle className="h-5 w-5 text-orange-500" />
-              Companies
+              Platform Companies
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold text-orange-500">{companiesCount}</p>
-            <p className="text-sm text-muted-foreground mt-1">Registered</p>
+            <p className="text-3xl font-bold text-orange-500">{employerCompaniesCount}</p>
+            <p className="text-sm text-muted-foreground mt-1">Employer Profiles</p>
           </CardContent>
         </Card>
       </div>
@@ -161,8 +168,12 @@ const AdminDashboard = () => {
                 <span className="font-semibold">{recruitersCount}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-sm text-muted-foreground">Companies</span>
-                <span className="font-semibold">{companiesCount}</span>
+                <span className="text-sm text-muted-foreground">Platform Companies</span>
+                <span className="font-semibold">{employerCompaniesCount}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">Client Companies</span>
+                <span className="font-semibold">{clientCompaniesCount}</span>
               </div>
             </div>
           </CardContent>
