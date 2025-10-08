@@ -22,9 +22,29 @@ serve(async (req) => {
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
+    console.log("Fetching recent cybersecurity news...");
+
+    // Fetch recent cyber news for context
+    let newsContext = "";
+    try {
+      const newsResponse = await fetch("https://news.google.com/rss/search?q=cybersecurity+OR+infosec+OR+data+breach+when:1d&hl=en-US&gl=US&ceid=US:en");
+      const newsXml = await newsResponse.text();
+      
+      // Extract titles from RSS feed (basic parsing)
+      const titleMatches = newsXml.match(/<title><!\[CDATA\[(.*?)\]\]><\/title>/g);
+      if (titleMatches && titleMatches.length > 1) {
+        newsContext = titleMatches.slice(1, 6) // Skip first (feed title), get next 5
+          .map(t => t.replace(/<title><!\[CDATA\[/, '').replace(/\]\]><\/title>/, ''))
+          .join('\n');
+        console.log("Retrieved news context:", newsContext);
+      }
+    } catch (e) {
+      console.error("Failed to fetch news, continuing without context:", e);
+    }
+
     console.log("Generating daily cybersecurity content...");
 
-    // Generate content using Lovable AI
+    // Generate content using Lovable AI with real news context
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -36,19 +56,23 @@ serve(async (req) => {
         messages: [
           {
             role: "system",
-            content: `You are a cybersecurity content creator for the Cydena community platform. Generate engaging, professional content about cybersecurity trends, tips, certifications, or career advice. Keep it concise, actionable, and relevant to cybersecurity professionals.`
+            content: `You are a cybersecurity content creator for the Cydena community platform. Generate engaging, professional content about cybersecurity trends, tips, certifications, or career advice. Keep it concise, actionable, and relevant to cybersecurity professionals. Use recent news when available to make content timely and relevant.`
           },
           {
             role: "user",
-            content: `Generate a community post for today. Choose one of these topics randomly:
-            1. Daily Security Tip (practical advice)
-            2. Industry News Insight (recent trends or threats)
-            3. Certification Spotlight (highlight a certification)
-            4. Career Growth Tip (professional development)
-            5. Tool Recommendation (useful security tool)
-            
-            Format as JSON with: { "title": "...", "description": "...", "activity_type": "daily_content", "tags": ["tag1", "tag2"] }
-            Keep title under 100 chars, description 200-400 chars. Use 2-3 relevant tags.`
+            content: `Generate a community post for today based on recent cybersecurity news or best practices.
+
+${newsContext ? `Recent cybersecurity headlines:\n${newsContext}\n\nUse these headlines as inspiration but create original, actionable content. Focus on what professionals can learn or do.` : 'Create original content about a relevant cybersecurity topic.'}
+
+Choose one of these formats:
+1. Daily Security Tip (practical advice based on current threats)
+2. Industry News Insight (analyze trends or recent incidents)
+3. Certification Spotlight (highlight a relevant certification)
+4. Career Growth Tip (professional development)
+5. Tool Recommendation (useful security tool)
+
+Format as JSON with: { "title": "...", "description": "...", "activity_type": "daily_content", "tags": ["tag1", "tag2"] }
+Keep title under 100 chars, description 200-400 chars. Use 2-3 relevant tags.`
           }
         ],
       }),
