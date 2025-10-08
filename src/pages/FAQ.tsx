@@ -13,6 +13,10 @@ const FAQ = () => {
       answer: "Yes! 100% free forever for all candidates, from entry-level to CISO. No hidden fees, no premium tiers. We believe in giving cybersecurity professionals equal access to opportunities."
     },
     {
+      question: "Can I track my applications in real-time?",
+      answer: "Absolutely! Unlike other platforms where applications go into a black hole, Cydena shows you exactly where your application stands. You'll see when it moves from 'Applied' to 'Under Review' to 'Offer Extended' - all in real-time on your dashboard. Employers update the status as they progress, so you're never left wondering."
+    },
+    {
       question: "How does the leaderboard work?",
       answer: "The leaderboard ranks candidates based on profile completion, certifications, skills, and activity on the platform. The more you engage and showcase your expertise, the higher you rank, giving you more visibility to employers."
     },

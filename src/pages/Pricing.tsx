@@ -111,7 +111,7 @@ const Pricing = () => {
                   </li>
                   <li className="flex items-start gap-2">
                     <Check className="h-4 w-4 text-primary mt-1 flex-shrink-0" />
-                    <span>Connect with candidates instantly</span>
+                    <span>Real-time candidate tracking pipeline</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <Check className="h-4 w-4 text-primary mt-1 flex-shrink-0" />

@@ -71,6 +71,13 @@ const Index = () => {
               <div className="flex items-start gap-3">
                 <CheckCircle className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
                 <div>
+                  <h3 className="font-semibold mb-1">Real-Time Application Tracking</h3>
+                  <p className="text-sm text-muted-foreground">Never wonder where your application stands - watch it progress from Applied → Under Review → Offer in real-time</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <CheckCircle className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
+                <div>
                   <h3 className="font-semibold mb-1">Career Transitioners Welcome</h3>
                   <p className="text-sm text-muted-foreground">Breaking into cybersecurity? We support entry-level talent with partner certifications</p>
                 </div>
@@ -94,6 +101,13 @@ const Index = () => {
                 <div>
                   <h3 className="font-semibold mb-1">Gamified Profile Building</h3>
                   <p className="text-sm text-muted-foreground">Earn XP, climb the leaderboard, unlock achievements as you grow</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <CheckCircle className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
+                <div>
+                  <h3 className="font-semibold mb-1">No Application Black Holes</h3>
+                  <p className="text-sm text-muted-foreground">See employer updates, status notes, and timeline of your application progress</p>
                 </div>
               </div>
             </div>
