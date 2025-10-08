@@ -13,7 +13,17 @@ import Navigation from "@/components/Navigation";
 import { z } from "zod";
 
 // Validation schemas
+const publicEmailDomains = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'aol.com', 'icloud.com', 'mail.com', 'protonmail.com', 'live.com', 'msn.com'];
+
 const emailSchema = z.string().email("Invalid email address").max(255, "Email too long");
+
+const professionalEmailSchema = z.string()
+  .email("Invalid email address")
+  .max(255, "Email too long")
+  .refine((email) => {
+    const domain = email.split('@')[1]?.toLowerCase();
+    return !publicEmailDomains.includes(domain);
+  }, { message: "Please use a professional/company email address, not a personal email" });
 const passwordSchema = z
   .string()
   .min(12, "Password must be at least 12 characters")
@@ -65,7 +75,12 @@ const Auth = () => {
     
     // Validate inputs
     try {
-      emailSchema.parse(email);
+      // Use professional email validation for employers/recruiters
+      if (userRole === 'employer' || userRole === 'recruiter') {
+        professionalEmailSchema.parse(email);
+      } else {
+        emailSchema.parse(email);
+      }
       passwordSchema.parse(password);
       nameSchema.parse(fullName);
       
@@ -247,6 +262,50 @@ const Auth = () => {
                       "Sign In"
                     )}
                   </Button>
+
+                  <div className="relative my-4">
+                    <div className="absolute inset-0 flex items-center">
+                      <span className="w-full border-t" />
+                    </div>
+                    <div className="relative flex justify-center text-xs uppercase">
+                      <span className="bg-background px-2 text-muted-foreground">
+                        Or continue with
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={async () => {
+                        const { error } = await supabase.auth.signInWithOAuth({
+                          provider: 'google',
+                          options: {
+                            redirectTo: `${window.location.origin}/dashboard`
+                          }
+                        });
+                        if (error) toast.error(error.message);
+                      }}
+                    >
+                      Google
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={async () => {
+                        const { error } = await supabase.auth.signInWithOAuth({
+                          provider: 'linkedin_oidc',
+                          options: {
+                            redirectTo: `${window.location.origin}/dashboard`
+                          }
+                        });
+                        if (error) toast.error(error.message);
+                      }}
+                    >
+                      LinkedIn
+                    </Button>
+                  </div>
                 </form>
               </TabsContent>
 
@@ -312,11 +371,16 @@ const Auth = () => {
                     <Input
                       id="signup-email"
                       type="email"
-                      placeholder="you@example.com"
+                      placeholder={(userRole === 'employer' || userRole === 'recruiter') ? "you@yourcompany.com" : "you@example.com"}
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
                     />
+                    {(userRole === 'employer' || userRole === 'recruiter') && (
+                      <p className="text-xs text-muted-foreground">
+                        Professional/company email required (not Gmail, Yahoo, etc.)
+                      </p>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="signup-password">Password</Label>

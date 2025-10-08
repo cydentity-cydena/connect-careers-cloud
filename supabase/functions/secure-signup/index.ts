@@ -36,6 +36,15 @@ serve(async (req) => {
 
     console.log('Starting secure signup for:', email, 'with role:', role);
 
+    // Validate professional email for employers and recruiters
+    const publicEmailDomains = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'aol.com', 'icloud.com', 'mail.com', 'protonmail.com', 'live.com', 'msn.com'];
+    if (role === 'employer' || role === 'recruiter') {
+      const emailDomain = email.split('@')[1]?.toLowerCase();
+      if (publicEmailDomains.includes(emailDomain)) {
+        throw new Error('Employers and recruiters must use a professional/company email address, not a personal email');
+      }
+    }
+
     // Validate username only for candidates
     if (role === 'candidate') {
       const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
