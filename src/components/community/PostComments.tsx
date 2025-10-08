@@ -231,22 +231,28 @@ export const PostComments = ({ postId }: { postId: string }) => {
           ))}
 
           {/* New comment form */}
-          <form onSubmit={handleSubmit} className="flex gap-2">
-            <Textarea
-              value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
-              placeholder="Write a comment..."
-              className="min-h-[60px] resize-none"
-              maxLength={500}
-            />
-            <Button 
-              type="submit" 
-              size="sm" 
-              disabled={loading || !newComment.trim()}
-              className="self-end"
-            >
-              <Send className="h-4 w-4" />
-            </Button>
+          <form onSubmit={handleSubmit} className="space-y-2">
+            <div className="space-y-1">
+              <Textarea
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+                placeholder="Write a comment..."
+                className="min-h-[60px] resize-none"
+                maxLength={500}
+              />
+              <div className="flex items-center justify-between">
+                <span className={`text-xs ${newComment.length > 450 ? 'text-destructive' : 'text-muted-foreground'}`}>
+                  {newComment.length}/500
+                </span>
+                <Button 
+                  type="submit" 
+                  size="sm" 
+                  disabled={loading || !newComment.trim()}
+                >
+                  <Send className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
           </form>
         </div>
       )}
