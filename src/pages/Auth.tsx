@@ -153,16 +153,13 @@ const Auth = () => {
     try {
       setIsLoading(true);
 
-      // Get full name from form or generate default
+      // OAuth is for candidates only
       const oauthFullName = fullName || 'User';
       
       // Store role and user info in session storage for after OAuth redirect
-      sessionStorage.setItem('oauth_role', userRole);
+      sessionStorage.setItem('oauth_role', 'candidate');
       sessionStorage.setItem('oauth_fullname', oauthFullName);
-      
-      if (userRole === 'candidate' && username) {
-        sessionStorage.setItem('oauth_username', username);
-      }
+      sessionStorage.setItem('oauth_username', username);
 
       const redirectUrl = `${window.location.origin}/auth`;
 
@@ -385,21 +382,29 @@ const Auth = () => {
                     </div>
                   </div>
 
-                   <div className="grid grid-cols-2 gap-4">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => handleOAuthSignIn('google')}
-                    >
-                      Google
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => handleOAuthSignIn('linkedin_oidc')}
-                    >
-                      LinkedIn
-                    </Button>
+                  <div className="space-y-3">
+                    <p className="text-xs text-center text-muted-foreground">
+                      OAuth sign-in available for Candidates only
+                    </p>
+                    <div className="grid grid-cols-2 gap-4">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => handleOAuthSignIn('google')}
+                      >
+                        Google
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => handleOAuthSignIn('linkedin_oidc')}
+                      >
+                        LinkedIn
+                      </Button>
+                    </div>
+                    <p className="text-xs text-center text-muted-foreground">
+                      Employers & Recruiters: Use email signup with your company email
+                    </p>
                   </div>
                 </form>
               </TabsContent>
@@ -519,20 +524,6 @@ const Auth = () => {
           </DialogHeader>
           <div className="space-y-4">
             <div>
-              <Label htmlFor="oauth-role">I am a</Label>
-              <Select value={userRole} onValueChange={(value: any) => setUserRole(value)}>
-                <SelectTrigger id="oauth-role">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="candidate">Candidate</SelectItem>
-                  <SelectItem value="employer">Employer</SelectItem>
-                  <SelectItem value="recruiter">Recruiter</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div>
               <Label htmlFor="oauth-fullname">Full Name</Label>
               <Input
                 id="oauth-fullname"
@@ -542,28 +533,23 @@ const Auth = () => {
               />
             </div>
 
-            {userRole === 'candidate' && (
-              <div>
-                <Label htmlFor="oauth-username">Username</Label>
-                <Input
-                  id="oauth-username"
-                  placeholder="Choose a username"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                />
-              </div>
-            )}
-
-            {(userRole === 'employer' || userRole === 'recruiter') && (
-              <p className="text-sm text-muted-foreground">
-                Note: You must use a professional/company email address, not a personal email (Gmail, Yahoo, etc.)
+            <div>
+              <Label htmlFor="oauth-username">Username</Label>
+              <Input
+                id="oauth-username"
+                placeholder="Choose a username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
+              />
+              <p className="text-xs text-muted-foreground mt-1">
+                3-20 characters: letters, numbers, underscores only
               </p>
-            )}
+            </div>
 
             <Button
               onClick={confirmOAuthSignIn}
               className="w-full"
-              disabled={!fullName || (userRole === 'candidate' && !username) || isLoading}
+              disabled={!fullName || !username || isLoading}
             >
               Continue with {pendingOAuthProvider === 'google' ? 'Google' : 'LinkedIn'}
             </Button>
