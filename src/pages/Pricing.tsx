@@ -168,6 +168,40 @@ const Pricing = () => {
           </div>
         </div>
 
+        {/* Pay-Per-Unlock Pricing Info */}
+        <Card className="mb-12 md:mb-16 border-primary/30 bg-gradient-to-br from-primary/5 to-secondary/5 animate-slide-up">
+          <CardHeader>
+            <CardTitle className="text-xl md:text-2xl">Pay-Per-Unlock Pricing</CardTitle>
+            <CardDescription className="text-sm md:text-base">
+              After your annual allocation, unlock additional candidates as needed
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ul className="space-y-3 text-sm md:text-base">
+              <li className="flex items-center gap-2">
+                <Check className="h-5 w-5 text-primary flex-shrink-0" />
+                <span><strong>Starter tier:</strong> £15 per unlock</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <Check className="h-5 w-5 text-primary flex-shrink-0" />
+                <span><strong>Growth tier:</strong> £12 per unlock</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <Check className="h-5 w-5 text-primary flex-shrink-0" />
+                <span><strong>Scale & Recruiter tiers:</strong> £10 per unlock</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <Check className="h-5 w-5 text-primary flex-shrink-0" />
+                <span><strong>Pay-per-hire option:</strong> £999 success fee (optional, risk-free)</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <Check className="h-5 w-5 text-primary flex-shrink-0" />
+                <span><strong>Training credits:</strong> Real LMS cohort vouchers (bulk discounts)</span>
+              </li>
+            </ul>
+          </CardContent>
+        </Card>
+
         {/* Pricing Tiers */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-12 md:mb-16">
           {/* Employer: Starter */}

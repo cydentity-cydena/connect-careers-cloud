@@ -20,3 +20,6 @@ verify_jwt = false
 
 [functions.generate-daily-content]
 verify_jwt = false
+
+[functions.create-hire-payment]
+verify_jwt = true

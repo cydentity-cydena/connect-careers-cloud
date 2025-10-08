@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/dialog";
 import { MessageSquare, MoreVertical, Calendar, Briefcase } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+import { HireConfirmationDialog } from "./HireConfirmationDialog";
 
 type PipelineStage = "applied" | "screening" | "interview" | "offer" | "rejected" | "hired";
 
@@ -25,6 +26,7 @@ interface ApplicationCardProps {
   application: {
     id: string;
     candidate_id: string;
+    job_id: string;
     stage: PipelineStage;
     applied_at: string;
     cover_letter: string | null;
@@ -45,6 +47,7 @@ interface ApplicationCardProps {
 
 export const ApplicationCard = ({ application, onStageChange }: ApplicationCardProps) => {
   const [showDetails, setShowDetails] = useState(false);
+  const [showHireDialog, setShowHireDialog] = useState(false);
 
   const stages: { value: PipelineStage; label: string }[] = [
     { value: "screening", label: "Move to Screening" },
@@ -98,7 +101,11 @@ export const ApplicationCard = ({ application, onStageChange }: ApplicationCardP
                       key={stage.value}
                       onClick={(e) => {
                         e.stopPropagation();
-                        onStageChange(application.id, stage.value);
+                        if (stage.value === 'hired') {
+                          setShowHireDialog(true);
+                        } else {
+                          onStageChange(application.id, stage.value);
+                        }
                       }}
                     >
                       {stage.label}
@@ -196,6 +203,20 @@ export const ApplicationCard = ({ application, onStageChange }: ApplicationCardP
           </div>
         </DialogContent>
       </Dialog>
+
+      {showHireDialog && (
+        <HireConfirmationDialog
+          applicationId={application.id}
+          candidateId={application.candidate_id}
+          jobId={application.job_id}
+          positionTitle={application.job.title}
+          candidateName={application.profile.full_name}
+          onHireComplete={() => {
+            setShowHireDialog(false);
+            onStageChange(application.id, 'hired');
+          }}
+        />
+      )}
     </>
   );
 };
