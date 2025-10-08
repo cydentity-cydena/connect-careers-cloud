@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
@@ -8,10 +8,30 @@ import { CreatePostDialog } from '@/components/community/CreatePostDialog';
 import { GenerateContentButton } from '@/components/community/GenerateContentButton';
 import SEO from '@/components/SEO';
 import { TrendingUp, Map, Users, ArrowLeft } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
 const Community = () => {
   const [activeTab, setActiveTab] = useState('feed');
+  const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    checkAdminStatus();
+  }, []);
+
+  const checkAdminStatus = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const { data } = await supabase
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', user.id)
+      .eq('role', 'admin')
+      .single();
+
+    setIsAdmin(!!data);
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -40,7 +60,7 @@ const Community = () => {
             </p>
           </div>
           <div className="flex gap-2">
-            <GenerateContentButton />
+            {isAdmin && <GenerateContentButton />}
             <CreatePostDialog />
           </div>
         </header>

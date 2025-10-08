@@ -149,8 +149,8 @@ export const ActivityFeed = ({ limit = 20 }: { limit?: number }) => {
             <div className="flex items-start gap-4">
               <Avatar className="h-10 w-10">
                 <AvatarImage src={activity.profiles?.avatar_url || undefined} />
-                <AvatarFallback>
-                  {activity.user_id === null ? 'AI' : (activity.profiles?.username?.[0]?.toUpperCase() || 'U')}
+                <AvatarFallback className={activity.user_id === null ? 'bg-cyan-500/20' : ''}>
+                  {activity.user_id === null ? '🤖' : (activity.profiles?.username?.[0]?.toUpperCase() || 'U')}
                 </AvatarFallback>
               </Avatar>
               

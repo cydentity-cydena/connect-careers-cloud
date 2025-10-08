@@ -84,18 +84,11 @@ serve(async (req) => {
       throw new Error("Invalid AI response format");
     }
 
-    // Get user_id from request body (required for automated posts)
-    const { user_id } = await req.json().catch(() => ({}));
-
-    if (!user_id) {
-      throw new Error("user_id is required in request body");
-    }
-
-    // Insert into activity feed
+    // Insert into activity feed with null user_id (system-generated)
     const { data: post, error: insertError } = await supabase
       .from("activity_feed")
       .insert({
-        user_id: user_id,
+        user_id: null,
         activity_type: postData.activity_type || "daily_content",
         title: postData.title,
         description: postData.description,

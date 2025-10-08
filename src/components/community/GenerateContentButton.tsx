@@ -8,33 +8,20 @@ export const GenerateContentButton = () => {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
-  const generateContent = async () => {
+  const handleGenerate = async () => {
+    setLoading(true);
     try {
-      setLoading(true);
-      
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        toast({
-          title: "Authentication required",
-          description: "Please sign in to generate content",
-          variant: "destructive"
-        });
-        return;
-      }
-
-      const { data, error } = await supabase.functions.invoke('generate-daily-content', {
-        body: { user_id: user.id }
-      });
+      const { data, error } = await supabase.functions.invoke('generate-daily-content');
 
       if (error) throw error;
 
       if (data?.success) {
         toast({
           title: "Content generated!",
-          description: data.title || "New post created successfully"
+          description: `"${data.title}" has been posted to the community feed`
         });
       } else {
-        throw new Error(data?.error || "Failed to generate content");
+        throw new Error(data?.error || 'Failed to generate content');
       }
     } catch (error) {
       console.error('Error generating content:', error);
@@ -50,7 +37,7 @@ export const GenerateContentButton = () => {
 
   return (
     <Button
-      onClick={generateContent}
+      onClick={handleGenerate}
       disabled={loading}
       variant="outline"
       className="gap-2"
