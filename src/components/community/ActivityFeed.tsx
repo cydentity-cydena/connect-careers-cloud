@@ -9,7 +9,7 @@ import { formatDistanceToNow } from 'date-fns';
 
 type Activity = {
   id: string;
-  user_id: string;
+  user_id: string | null;
   activity_type: string;
   title: string;
   description: string | null;
@@ -150,7 +150,7 @@ export const ActivityFeed = ({ limit = 20 }: { limit?: number }) => {
               <Avatar className="h-10 w-10">
                 <AvatarImage src={activity.profiles?.avatar_url || undefined} />
                 <AvatarFallback>
-                  {activity.profiles?.username?.[0]?.toUpperCase() || 'U'}
+                  {activity.user_id === null ? 'AI' : (activity.profiles?.username?.[0]?.toUpperCase() || 'U')}
                 </AvatarFallback>
               </Avatar>
               
@@ -158,7 +158,7 @@ export const ActivityFeed = ({ limit = 20 }: { limit?: number }) => {
                 <div className="flex items-start justify-between gap-2 mb-2">
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="font-semibold">
-                      @{activity.profiles?.username || 'Anonymous'}
+                      {activity.user_id === null ? 'Cydena AI' : `@${activity.profiles?.username || 'Anonymous'}`}
                     </span>
                     <Badge 
                       variant="secondary" 

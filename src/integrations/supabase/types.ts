@@ -56,7 +56,7 @@ export type Database = {
           is_public: boolean | null
           metadata: Json | null
           title: string
-          user_id: string
+          user_id: string | null
         }
         Insert: {
           activity_type: string
@@ -66,7 +66,7 @@ export type Database = {
           is_public?: boolean | null
           metadata?: Json | null
           title: string
-          user_id: string
+          user_id?: string | null
         }
         Update: {
           activity_type?: string
@@ -76,7 +76,7 @@ export type Database = {
           is_public?: boolean | null
           metadata?: Json | null
           title?: string
-          user_id?: string
+          user_id?: string | null
         }
         Relationships: [
           {

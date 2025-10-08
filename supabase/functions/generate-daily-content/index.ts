@@ -84,18 +84,19 @@ serve(async (req) => {
       throw new Error("Invalid AI response format");
     }
 
-    // Create a system user ID (you'll need to create this once)
-    const SYSTEM_USER_ID = "00000000-0000-0000-0000-000000000000";
-
-    // Insert into activity feed
+    // Insert into activity feed with null user_id for system posts
     const { data: post, error: insertError } = await supabase
       .from("activity_feed")
       .insert({
-        user_id: SYSTEM_USER_ID,
+        user_id: null,
         activity_type: postData.activity_type || "daily_content",
         title: postData.title,
         description: postData.description,
-        metadata: { tags: postData.tags || [], generated: true, generated_at: new Date().toISOString() },
+        metadata: { 
+          tags: postData.tags || [], 
+          generated: true, 
+          generated_at: new Date().toISOString() 
+        },
         is_public: true,
       })
       .select()
