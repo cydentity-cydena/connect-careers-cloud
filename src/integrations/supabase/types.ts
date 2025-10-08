@@ -345,6 +345,44 @@ export type Database = {
         }
         Relationships: []
       }
+      client_access_logs: {
+        Row: {
+          action: string
+          client_id: string
+          created_at: string
+          id: string
+          ip_address: unknown | null
+          recruiter_id: string
+          user_agent: string | null
+        }
+        Insert: {
+          action: string
+          client_id: string
+          created_at?: string
+          id?: string
+          ip_address?: unknown | null
+          recruiter_id: string
+          user_agent?: string | null
+        }
+        Update: {
+          action?: string
+          client_id?: string
+          created_at?: string
+          id?: string
+          ip_address?: unknown | null
+          recruiter_id?: string
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_access_logs_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       clients: {
         Row: {
           company_name: string
