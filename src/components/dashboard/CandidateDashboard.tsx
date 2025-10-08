@@ -165,17 +165,21 @@ const CandidateDashboard = () => {
                 <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-primary opacity-0 group-hover:opacity-100 transition-all" />
               </Link>
               
-              <div className="flex items-start gap-4 p-3 rounded-lg">
+              <button 
+                onClick={() => document.getElementById('active-applications')?.scrollIntoView({ behavior: 'smooth' })}
+                className="flex items-start gap-4 p-3 rounded-lg hover:bg-muted/50 transition-colors group w-full text-left"
+              >
                 <div className="bg-primary/10 rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
                   <span className="text-primary font-semibold">3</span>
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-semibold mb-1">Apply & Track Progress</h3>
+                  <h3 className="font-semibold mb-1 group-hover:text-primary transition-colors">Apply & Track Progress</h3>
                   <p className="text-sm text-muted-foreground">
                     Submit applications and track them right here on your dashboard
                   </p>
                 </div>
-              </div>
+                <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-primary opacity-0 group-hover:opacity-100 transition-all" />
+              </button>
             </div>
           </CardContent>
         </Card>
@@ -266,7 +270,7 @@ const CandidateDashboard = () => {
           </CardContent>
         </Card>
 
-        <Card className="border-border shadow-card hover:scale-105 transition-transform">
+        <Card id="active-applications" className="border-border shadow-card hover:scale-105 transition-transform">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Briefcase className="h-5 w-5 text-secondary" />
