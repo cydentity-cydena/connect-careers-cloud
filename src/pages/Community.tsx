@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { ActivityFeed } from '@/components/community/ActivityFeed';
 import { SkillPathways } from '@/components/community/SkillPathways';
 import { CreatePostDialog } from '@/components/community/CreatePostDialog';
+import { GenerateContentButton } from '@/components/community/GenerateContentButton';
 import SEO from '@/components/SEO';
 import { TrendingUp, Map, Users, ArrowLeft } from 'lucide-react';
 
@@ -31,14 +32,17 @@ const Community = () => {
           </Button>
         </div>
 
-        <header className="mb-8 flex justify-between items-start">
+        <header className="mb-8 flex flex-wrap justify-between items-start gap-4">
           <div>
             <h1 className="text-4xl font-bold mb-2">Community</h1>
             <p className="text-muted-foreground text-lg">
               Connect, learn, and grow with the cybersecurity community
             </p>
           </div>
-          <CreatePostDialog />
+          <div className="flex gap-2">
+            <GenerateContentButton />
+            <CreatePostDialog />
+          </div>
         </header>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
