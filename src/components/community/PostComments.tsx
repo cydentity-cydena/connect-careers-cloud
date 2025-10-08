@@ -239,6 +239,11 @@ export const PostComments = ({ postId }: { postId: string }) => {
   };
 
   const handleDelete = async (commentId: string) => {
+    // Optimistic update - remove immediately from UI
+    const deletedComment = comments.find(c => c.id === commentId);
+    setComments(prev => prev.filter(c => c.id !== commentId));
+    setCommentCount(prev => prev - 1);
+
     try {
       const { error } = await supabase
         .from('post_comments')
@@ -252,6 +257,13 @@ export const PostComments = ({ postId }: { postId: string }) => {
         description: "Your comment has been removed"
       });
     } catch (error) {
+      // Restore comment on error
+      if (deletedComment) {
+        setComments(prev => [...prev, deletedComment].sort((a, b) => 
+          new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+        ));
+        setCommentCount(prev => prev + 1);
+      }
       console.error('Error deleting comment:', error);
       toast({
         title: "Error",
