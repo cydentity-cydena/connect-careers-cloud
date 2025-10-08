@@ -75,10 +75,17 @@ serve(async (req) => {
 
     console.log("Generated content:", content);
 
-    // Parse AI response
+    // Parse AI response - strip markdown code blocks if present
     let postData;
     try {
-      postData = JSON.parse(content);
+      let cleanContent = content.trim();
+      // Remove markdown code blocks if present
+      if (cleanContent.startsWith('```json')) {
+        cleanContent = cleanContent.replace(/^```json\s*\n?/, '').replace(/\n?```\s*$/, '');
+      } else if (cleanContent.startsWith('```')) {
+        cleanContent = cleanContent.replace(/^```\s*\n?/, '').replace(/\n?```\s*$/, '');
+      }
+      postData = JSON.parse(cleanContent);
     } catch (e) {
       console.error("Failed to parse AI response:", content);
       throw new Error("Invalid AI response format");
