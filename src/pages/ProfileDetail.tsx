@@ -44,7 +44,9 @@ export default function ProfileDetail() {
 
       // Determine unlock status and credits if logged in
       let unlocked = false;
-      if (user) {
+      const isOwnProfile = user?.id === id;
+      
+      if (user && !isOwnProfile) {
         const { data: unlockData } = await supabase
           .from("profile_unlocks")
           .select("id")
@@ -59,6 +61,9 @@ export default function ProfileDetail() {
           .eq("employer_id", user.id)
           .maybeSingle();
         setCredits(creditData?.credits || 0);
+      } else if (isOwnProfile) {
+        // Always show full profile to the owner
+        unlocked = true;
       }
       setIsUnlocked(unlocked);
 
