@@ -318,7 +318,13 @@ export const PostComments = ({ postId }: { postId: string }) => {
               <Textarea
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
-                placeholder="Write a comment..."
+                onKeyDown={(e) => {
+                  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                    e.preventDefault();
+                    handleSubmit(e as any);
+                  }
+                }}
+                placeholder="Write a comment... (Ctrl+Enter to submit)"
                 className="min-h-[60px] resize-none"
                 maxLength={500}
               />
