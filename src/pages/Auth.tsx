@@ -486,7 +486,9 @@ const Auth = () => {
                     </Select>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="signup-name">Full Name (private)</Label>
+                    <Label htmlFor="signup-name">
+                      Full Name {userRole === 'candidate' ? '(private)' : '(public)'}
+                    </Label>
                     <Input
                       id="signup-name"
                       type="text"
@@ -496,25 +498,26 @@ const Auth = () => {
                       required
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-username">
-                      Username (public) {userRole === "candidate" && <span className="text-destructive">*</span>}
-                    </Label>
-                    <Input
-                      id="signup-username"
-                      type="text"
-                      placeholder="cyber_pro"
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
-                      required={userRole === "candidate"}
-                      minLength={3}
-                      maxLength={20}
-                    />
-                    <p className="text-xs text-muted-foreground">
-                      3-20 characters: letters, numbers, underscores only
-                      {(userRole === "employer" || userRole === "recruiter") && " (optional for employers & recruiters)"}
-                    </p>
-                  </div>
+                  {userRole === 'candidate' && (
+                    <div className="space-y-2">
+                      <Label htmlFor="signup-username">
+                        Username (public) <span className="text-destructive">*</span>
+                      </Label>
+                      <Input
+                        id="signup-username"
+                        type="text"
+                        placeholder="cyber_pro"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
+                        required
+                        minLength={3}
+                        maxLength={20}
+                      />
+                      <p className="text-xs text-muted-foreground">
+                        3-20 characters: letters, numbers, underscores only
+                      </p>
+                    </div>
+                  )}
                   <div className="space-y-2">
                     <Label htmlFor="signup-email">Email</Label>
                     <Input
