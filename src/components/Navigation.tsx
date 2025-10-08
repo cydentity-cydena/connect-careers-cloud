@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Shield, LogOut, Menu, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -8,6 +8,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 const Navigation = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [user, setUser] = useState<any>(null);
   const [userRole, setUserRole] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -100,7 +101,7 @@ const Navigation = () => {
                 key={link.to}
                 to={link.to}
                 className={`text-sm font-medium transition-colors whitespace-nowrap ${
-                  link.to === "/" 
+                  location.pathname === link.to 
                     ? "text-accent hover:text-accent/80 font-semibold" 
                     : "hover:text-primary"
                 }`}
@@ -161,7 +162,7 @@ const Navigation = () => {
                         to={link.to}
                         onClick={handleNavClick}
                         className={`text-base font-medium transition-colors py-2 ${
-                          link.to === "/" 
+                          location.pathname === link.to 
                             ? "text-accent hover:text-accent/80 font-semibold" 
                             : "hover:text-primary"
                         }`}
