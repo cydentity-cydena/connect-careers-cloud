@@ -167,7 +167,29 @@ export default function ProfileDetail() {
           .eq('is_visible_to_employers', true) // Only show resumes candidate made visible
           .order('is_primary', { ascending: false });
         
-        setResumes(resumesData || []);
+        // Generate signed URLs for resumes if they're from storage
+        if (resumesData) {
+          const resumesWithSignedUrls = await Promise.all(
+            resumesData.map(async (resume) => {
+              // Check if URL is from storage
+              if (resume.resume_url.includes('/storage/v1/object/')) {
+                const urlParts = resume.resume_url.split('/resumes/');
+                if (urlParts.length > 1) {
+                  const filePath = urlParts[1].split('?')[0];
+                  const { data: signedData } = await supabase.storage
+                    .from('resumes')
+                    .createSignedUrl(filePath, 3600); // 1 hour expiry
+                  
+                  if (signedData) {
+                    return { ...resume, resume_url: signedData.signedUrl };
+                  }
+                }
+              }
+              return resume;
+            })
+          );
+          setResumes(resumesWithSignedUrls);
+        }
       }
 
     } catch (error: any) {
