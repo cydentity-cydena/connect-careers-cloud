@@ -34,19 +34,39 @@ export const PostComments = ({ postId }: { postId: string }) => {
   const [loading, setLoading] = useState(false);
   const [showComments, setShowComments] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [commentCount, setCommentCount] = useState(0);
   const { toast } = useToast();
 
   useEffect(() => {
     getCurrentUser();
+    loadCommentCount();
+    
     if (showComments) {
       loadComments();
-      subscribeToComments();
     }
+    
+    // Always subscribe to new comments for count updates
+    const unsubscribe = subscribeToComments();
+    return unsubscribe;
   }, [showComments, postId]);
 
   const getCurrentUser = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     setCurrentUserId(user?.id || null);
+  };
+
+  const loadCommentCount = async () => {
+    try {
+      const { count, error } = await supabase
+        .from('post_comments')
+        .select('*', { count: 'exact', head: true })
+        .eq('post_id', postId);
+
+      if (error) throw error;
+      setCommentCount(count || 0);
+    } catch (error) {
+      console.error('Error loading comment count:', error);
+    }
   };
 
   const loadComments = async () => {
@@ -70,6 +90,7 @@ export const PostComments = ({ postId }: { postId: string }) => {
 
       if (error) throw error;
       setComments(data as any || []);
+      setCommentCount(data?.length || 0);
     } catch (error) {
       console.error('Error loading comments:', error);
     }
@@ -86,7 +107,13 @@ export const PostComments = ({ postId }: { postId: string }) => {
           table: 'post_comments',
           filter: `post_id=eq.${postId}`
         },
-        () => loadComments()
+        () => {
+          if (showComments) {
+            loadComments();
+          } else {
+            loadCommentCount();
+          }
+        }
       )
       .on(
         'postgres_changes',
@@ -96,7 +123,13 @@ export const PostComments = ({ postId }: { postId: string }) => {
           table: 'post_comments',
           filter: `post_id=eq.${postId}`
         },
-        () => loadComments()
+        () => {
+          if (showComments) {
+            loadComments();
+          } else {
+            loadCommentCount();
+          }
+        }
       )
       .subscribe();
 
@@ -207,7 +240,7 @@ export const PostComments = ({ postId }: { postId: string }) => {
         className="gap-2 text-muted-foreground hover:text-foreground"
       >
         <MessageCircle className="h-4 w-4" />
-        {comments.length > 0 ? `${comments.length} Comments` : 'Comment'}
+        {commentCount > 0 ? `${commentCount} ${commentCount === 1 ? 'Comment' : 'Comments'}` : 'Comment'}
       </Button>
 
       {showComments && (
