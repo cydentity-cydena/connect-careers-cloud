@@ -259,6 +259,7 @@ const Index = () => {
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li><Link to="/terms" className="hover:text-primary transition-colors">Terms of Service</Link></li>
                 <li><Link to="/privacy" className="hover:text-primary transition-colors">Privacy Policy</Link></li>
+                <li><Link to="/bug-report" className="hover:text-primary transition-colors">Report a Bug</Link></li>
               </ul>
             </div>
           </div>
