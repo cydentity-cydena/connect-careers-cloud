@@ -70,36 +70,32 @@ export const MultipleResumesManager = () => {
       const fileName = `${user.id}/${Date.now()}.${fileExt}`;
       
       const { data: uploadData, error: uploadError } = await supabase.storage
-        .from('resumes')
+        .from("resumes")
         .upload(fileName, newResume.file, {
-          cacheControl: '3600',
-          upsert: false
+          cacheControl: "3600",
+          upsert: false,
         });
 
       if (uploadError) throw uploadError;
 
-      // Get public URL (even though bucket is private, this URL works with RLS)
-      const { data: { publicUrl } } = supabase.storage
-        .from('resumes')
-        .getPublicUrl(fileName);
-
-      const { error: dbError } = await supabase.from("candidate_resumes").insert({
+      // Store resume metadata in database
+      const { error } = await supabase.from("candidate_resumes").insert({
         candidate_id: user.id,
         resume_name: newResume.name,
         resume_type: newResume.type,
-        resume_url: publicUrl,
+        resume_url: fileName, // Store the storage path
         is_primary: resumes.length === 0, // First resume is primary
         is_visible_to_employers: true, // Default to visible
       });
 
-      if (dbError) throw dbError;
+      if (error) throw error;
 
       toast.success("Resume uploaded successfully");
       setNewResume({ name: "", type: "general", file: null });
       
       // Reset file input
-      const fileInput = document.getElementById('resume-file') as HTMLInputElement;
-      if (fileInput) fileInput.value = '';
+      const fileInput = document.getElementById("resume-file") as HTMLInputElement;
+      if (fileInput) fileInput.value = "";
       
       loadResumes();
     } catch (error: any) {
@@ -137,37 +133,19 @@ export const MultipleResumesManager = () => {
     }
   };
 
-  const handleDownload = async (resume: Resume) => {
+  const handleDownload = async (resumeUrl: string, resumeName: string) => {
     try {
-      // Check if it's a storage URL
-      if (resume.resume_url.includes('/storage/v1/object/')) {
-        const urlParts = resume.resume_url.split('/resumes/');
-        if (urlParts.length > 1) {
-          const filePath = urlParts[1].split('?')[0];
-          const { data, error } = await supabase.storage
-            .from('resumes')
-            .download(filePath);
-          
-          if (error) throw error;
-          if (data) {
-            const url = URL.createObjectURL(data);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `${resume.resume_name}.pdf`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
-            toast.success("Resume downloaded");
-            return;
-          }
-        }
-      }
-      
-      // Fallback for direct URLs or base64
+      // Get signed URL for download
+      const { data, error } = await supabase.storage
+        .from("resumes")
+        .createSignedUrl(resumeUrl, 60); // 60 seconds expiry
+
+      if (error) throw error;
+
+      // Create a temporary link and trigger download
       const link = document.createElement('a');
-      link.href = resume.resume_url;
-      link.download = `${resume.resume_name}.pdf`;
+      link.href = data.signedUrl;
+      link.download = `${resumeName}.pdf`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -178,27 +156,16 @@ export const MultipleResumesManager = () => {
     }
   };
 
-  const handleView = async (resume: Resume) => {
+  const handleView = async (resumeUrl: string) => {
     try {
-      // Check if it's a storage URL - create signed URL for viewing
-      if (resume.resume_url.includes('/storage/v1/object/')) {
-        const urlParts = resume.resume_url.split('/resumes/');
-        if (urlParts.length > 1) {
-          const filePath = urlParts[1].split('?')[0];
-          const { data, error } = await supabase.storage
-            .from('resumes')
-            .createSignedUrl(filePath, 3600); // 1 hour
-          
-          if (error) throw error;
-          if (data) {
-            window.open(data.signedUrl, '_blank');
-            return;
-          }
-        }
-      }
-      
-      // Fallback for direct URLs or base64
-      window.open(resume.resume_url, '_blank');
+      // Get signed URL for viewing
+      const { data, error } = await supabase.storage
+        .from("resumes")
+        .createSignedUrl(resumeUrl, 300); // 5 minutes expiry
+
+      if (error) throw error;
+
+      window.open(data.signedUrl, '_blank');
     } catch (error) {
       console.error("Error viewing resume:", error);
       toast.error("Failed to view resume");
@@ -209,18 +176,14 @@ export const MultipleResumesManager = () => {
     try {
       // Get the resume to find the storage path
       const resume = resumes.find(r => r.id === resumeId);
-      if (!resume) return;
+      if (!resume) throw new Error("Resume not found");
 
-      // Extract the file path from the URL
-      const urlParts = resume.resume_url.split('/resumes/');
-      if (urlParts.length > 1) {
-        const filePath = urlParts[1].split('?')[0]; // Remove query params if any
-        
-        // Delete from storage
-        await supabase.storage
-          .from('resumes')
-          .remove([filePath]);
-      }
+      // Delete from storage
+      const { error: storageError } = await supabase.storage
+        .from("resumes")
+        .remove([resume.resume_url]);
+
+      if (storageError) console.error("Storage deletion error:", storageError);
 
       // Delete from database
       const { error } = await supabase
@@ -363,7 +326,7 @@ export const MultipleResumesManager = () => {
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => handleView(resume)}
+                    onClick={() => handleView(resume.resume_url)}
                     title="View resume"
                   >
                     <Eye className="h-4 w-4" />
@@ -371,7 +334,7 @@ export const MultipleResumesManager = () => {
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => handleDownload(resume)}
+                    onClick={() => handleDownload(resume.resume_url, resume.resume_name)}
                     title="Download resume"
                   >
                     <Download className="h-4 w-4" />
