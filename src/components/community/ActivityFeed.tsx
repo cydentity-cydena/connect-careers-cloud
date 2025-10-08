@@ -70,8 +70,16 @@ export const ActivityFeed = ({ limit = 20 }: { limit?: number }) => {
   const { toast } = useToast();
 
   useEffect(() => {
-    loadActivities();
-    checkAdminStatus();
+    const initialize = async () => {
+      try {
+        await Promise.all([loadActivities(), checkAdminStatus()]);
+      } catch (error) {
+        console.error('Error initializing activity feed:', error);
+        setLoading(false);
+      }
+    };
+
+    initialize();
 
     // Subscribe to realtime updates
     const channel = supabase
@@ -96,19 +104,23 @@ export const ActivityFeed = ({ limit = 20 }: { limit?: number }) => {
   }, [limit]);
 
   const checkAdminStatus = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
 
-    setCurrentUserId(user.id);
+      setCurrentUserId(user.id);
 
-    const { data: roles } = await supabase
-      .from('user_roles')
-      .select('role')
-      .eq('user_id', user.id)
-      .eq('role', 'admin')
-      .maybeSingle();
+      const { data: roles } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', user.id)
+        .eq('role', 'admin')
+        .maybeSingle();
 
-    setIsAdmin(!!roles);
+      setIsAdmin(!!roles);
+    } catch (error) {
+      console.error('Error checking admin status:', error);
+    }
   };
 
   const loadActivities = async () => {
