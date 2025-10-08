@@ -197,46 +197,11 @@ const AdminDashboard = () => {
         </TabsList>
 
         <TabsContent value="overview">
-          <Card className="border-border shadow-card">
-            <CardHeader>
-              <CardTitle>Admin Actions</CardTitle>
-              <CardDescription>
-                Platform management tools
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div 
-                  onClick={() => document.querySelector('[value="users"]')?.dispatchEvent(new Event('click', { bubbles: true }))}
-                  className="text-center p-4 rounded-lg border border-border hover:bg-accent/50 cursor-pointer transition-colors"
-                >
-                  <Users className="h-6 w-6 mx-auto mb-2 text-primary" />
-                  <p className="text-sm font-medium">User Management</p>
-                </div>
-                <div 
-                  onClick={() => document.querySelector('[value="jobs"]')?.dispatchEvent(new Event('click', { bubbles: true }))}
-                  className="text-center p-4 rounded-lg border border-border hover:bg-accent/50 cursor-pointer transition-colors"
-                >
-                  <Briefcase className="h-6 w-6 mx-auto mb-2 text-secondary" />
-                  <p className="text-sm font-medium">Job Moderation</p>
-                </div>
-                <div 
-                  onClick={() => navigate('/skills')}
-                  className="text-center p-4 rounded-lg border border-border hover:bg-accent/50 cursor-pointer transition-colors"
-                >
-                  <Shield className="h-6 w-6 mx-auto mb-2 text-accent" />
-                  <p className="text-sm font-medium">Skills Library</p>
-                </div>
-                <div 
-                  onClick={() => document.querySelector('[value="roles"]')?.dispatchEvent(new Event('click', { bubbles: true }))}
-                  className="text-center p-4 rounded-lg border border-border hover:bg-accent/50 cursor-pointer transition-colors"
-                >
-                  <UserCog className="h-6 w-6 mx-auto mb-2 text-orange-500" />
-                  <p className="text-sm font-medium">Role Management</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <div className="text-center py-8">
+            <p className="text-muted-foreground">
+              Use the tabs above to access User Management, Job Moderation, and Role Management tools.
+            </p>
+          </div>
         </TabsContent>
 
         <TabsContent value="users">
