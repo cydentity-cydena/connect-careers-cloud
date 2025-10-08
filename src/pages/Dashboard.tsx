@@ -88,13 +88,8 @@ const Dashboard = () => {
     toast.success("Signed out successfully");
   };
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
-  }
+  // Removed early return on loading to always render navigation
+
 
   return (
     <div className="min-h-screen bg-background">
@@ -257,18 +252,26 @@ const Dashboard = () => {
         </div>
       </nav>
 
-      {/* Dashboard Content */}
       <main className="container mx-auto px-4 py-8">
-        {userRole === "candidate" && <CandidateDashboard />}
-        {userRole === "employer" && <EmployerDashboard />}
-        {userRole === "recruiter" && <RecruiterDashboard />}
-        {userRole === "admin" && <AdminDashboard />}
-        {!userRole && (
+        {isLoading ? (
           <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
             <Loader2 className="h-8 w-8 animate-spin text-primary mb-4" />
-            <h2 className="text-xl font-semibold mb-2">Setting up your account...</h2>
-            <p className="text-muted-foreground">This should only take a moment.</p>
+            <h2 className="text-xl font-semibold mb-2">Checking your account…</h2>
+            <p className="text-muted-foreground">One moment while we load your dashboard.</p>
           </div>
+        ) : (
+          <>
+            {userRole === "candidate" && <CandidateDashboard />}
+            {userRole === "employer" && <EmployerDashboard />}
+            {userRole === "recruiter" && <RecruiterDashboard />}
+            {userRole === "admin" && <AdminDashboard />}
+            {!userRole && (
+              <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
+                <h2 className="text-xl font-semibold mb-2">Almost there…</h2>
+                <p className="text-muted-foreground">We couldn't detect a role yet. Please refresh or contact support.</p>
+              </div>
+            )}
+          </>
         )}
       </main>
     </div>
