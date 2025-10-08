@@ -59,13 +59,14 @@ const CandidateDashboard = () => {
     }
   };
 
-  const { data: { user } } = useQuery({
+  const { data: authData } = useQuery({
     queryKey: ['current-user'],
     queryFn: async () => {
       const { data } = await supabase.auth.getUser();
-      return data;
+      return data; // { user }
     },
   });
+  const user = authData?.user;
 
   const { data: profile } = useQuery({
     queryKey: ['profile', user?.id],
@@ -74,7 +75,7 @@ const CandidateDashboard = () => {
         .from('profiles')
         .select('*, username_changes')
         .eq('id', user?.id)
-        .single();
+        .maybeSingle();
       if (error) throw error;
       return data;
     },
