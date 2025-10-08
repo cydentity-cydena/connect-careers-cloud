@@ -29,6 +29,8 @@ export default function ProfileDetail() {
   const [projects, setProjects] = useState<any[]>([]);
   const [education, setEducation] = useState<any[]>([]);
   const [resumes, setResumes] = useState<any[]>([]);
+  const [viewerRole, setViewerRole] = useState<string | null>(null);
+  const [candidateXp, setCandidateXp] = useState<any>(null);
 
   useEffect(() => {
     loadProfileData();
@@ -41,6 +43,16 @@ export default function ProfileDetail() {
       // Get current user (optional)
       const { data: { user } } = await supabase.auth.getUser();
       setCurrentUserId(user?.id ?? null);
+
+      // Get viewer's role
+      if (user) {
+        const { data: roleData } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', user.id)
+          .maybeSingle();
+        setViewerRole(roleData?.role || null);
+      }
 
       // Determine unlock status and credits if logged in
       let unlocked = false;
@@ -158,6 +170,14 @@ export default function ProfileDetail() {
       setProjects(projectsData || []);
       setEducation(educationData || []);
 
+      // Fetch candidate XP for community view (always visible)
+      const { data: xpData } = await supabase
+        .from('candidate_xp')
+        .select('*')
+        .eq('candidate_id', id)
+        .maybeSingle();
+      setCandidateXp(xpData);
+
       // Fetch resumes if unlocked (only visible ones for employers)
       if (unlocked) {
         const { data: resumesData } = await supabase
@@ -234,6 +254,7 @@ export default function ProfileDetail() {
   }
 
   const isOwnProfile = currentUserId === id;
+  const isCandidateViewingCandidate = viewerRole === 'candidate' && !isOwnProfile;
 
   return (
     <div className="min-h-screen bg-background">
@@ -295,7 +316,7 @@ export default function ProfileDetail() {
                 </div>
 
                 <div className="mb-6 space-y-2">
-                  {!isUnlocked && (
+                  {!isCandidateViewingCandidate && !isUnlocked && (
                     <UnlockProfileButton
                       candidateId={id!}
                       isUnlocked={isUnlocked}
@@ -303,7 +324,7 @@ export default function ProfileDetail() {
                       remainingCredits={credits}
                     />
                   )}
-                  {isUnlocked && currentUserId && (
+                  {isUnlocked && currentUserId && !isCandidateViewingCandidate && (
                     <DirectMessageButton
                       recipientId={id!}
                       recipientName={profile.full_name || profile.username || "Candidate"}
@@ -312,7 +333,27 @@ export default function ProfileDetail() {
                   )}
                 </div>
 
-                {isUnlocked && (
+                {/* Community Stats for Candidates */}
+                {isCandidateViewingCandidate && candidateXp && (
+                  <div className="space-y-3 border-t pt-4">
+                    <div className="text-center">
+                      <p className="text-sm text-muted-foreground">Level</p>
+                      <p className="text-3xl font-bold text-primary">{candidateXp.level}</p>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2 text-center">
+                      <div>
+                        <p className="text-sm text-muted-foreground">Total XP</p>
+                        <p className="text-xl font-semibold">{candidateXp.total_xp}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-muted-foreground">Points</p>
+                        <p className="text-xl font-semibold">{candidateXp.community_points}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {isUnlocked && !isCandidateViewingCandidate && (
                   <div className="space-y-3">
                     {profile.email && (
                       <div className="flex items-center gap-2 text-sm">
@@ -342,7 +383,7 @@ export default function ProfileDetail() {
               </CardContent>
             </Card>
 
-            {isUnlocked && candidateProfile && (
+            {isUnlocked && candidateProfile && !isCandidateViewingCandidate && (
               <Card>
                 <CardHeader>
                   <CardTitle className="text-lg">Links</CardTitle>
@@ -401,7 +442,25 @@ export default function ProfileDetail() {
           <div className="md:col-span-2 space-y-6">
             {/* Peer Endorsements - Always visible */}
             <PeerEndorsement candidateId={id!} currentUserId={currentUserId} />
-            {!isUnlocked && (
+            
+            {/* Info banner for candidates viewing candidates */}
+            {isCandidateViewingCandidate && (
+              <Card className="bg-primary/5 border-primary/20">
+                <CardContent className="pt-6">
+                  <div className="flex items-start gap-3">
+                    <Info className="h-5 w-5 text-primary mt-0.5" />
+                    <div>
+                      <h3 className="font-semibold mb-1">Community Profile View</h3>
+                      <p className="text-sm text-muted-foreground">
+                        You're viewing {profile.username}'s community profile. Professional details like work history and contact information are only visible to employers and recruiters. You can see their skills, certifications, and provide endorsements.
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {!isUnlocked && !isCandidateViewingCandidate && (
               <Card className="bg-muted/50 border-dashed">
                 <CardContent className="pt-6 text-center">
                   <Shield className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
@@ -422,39 +481,41 @@ export default function ProfileDetail() {
 
             {candidateProfile && (
               <>
-                {/* Experience & Details */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Briefcase className="h-5 w-5" />
-                      Professional Details
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    {candidateProfile.years_experience && (
-                      <div>
-                        <span className="text-sm font-semibold">Experience:</span>
-                        <p className="text-muted-foreground">
-                          {candidateProfile.years_experience} years
-                        </p>
-                      </div>
-                    )}
-                    {candidateProfile.security_clearance && (
-                      <div>
-                        <span className="text-sm font-semibold">Security Clearance:</span>
-                        <p className="text-muted-foreground">{candidateProfile.security_clearance}</p>
-                      </div>
-                    )}
-                    {candidateProfile.willing_to_relocate !== null && (
-                      <div>
-                        <span className="text-sm font-semibold">Willing to Relocate:</span>
-                        <p className="text-muted-foreground">
-                          {candidateProfile.willing_to_relocate ? "Yes" : "No"}
-                        </p>
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
+                {/* Experience & Details - Hidden for candidates viewing candidates */}
+                {!isCandidateViewingCandidate && (
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Briefcase className="h-5 w-5" />
+                        Professional Details
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      {candidateProfile.years_experience && (
+                        <div>
+                          <span className="text-sm font-semibold">Experience:</span>
+                          <p className="text-muted-foreground">
+                            {candidateProfile.years_experience} years
+                          </p>
+                        </div>
+                      )}
+                      {candidateProfile.security_clearance && (
+                        <div>
+                          <span className="text-sm font-semibold">Security Clearance:</span>
+                          <p className="text-muted-foreground">{candidateProfile.security_clearance}</p>
+                        </div>
+                      )}
+                      {candidateProfile.willing_to_relocate !== null && (
+                        <div>
+                          <span className="text-sm font-semibold">Willing to Relocate:</span>
+                          <p className="text-muted-foreground">
+                            {candidateProfile.willing_to_relocate ? "Yes" : "No"}
+                          </p>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                )}
 
                 {/* Skills */}
                 {candidateProfile?.candidate_skills?.length > 0 && (
@@ -475,7 +536,7 @@ export default function ProfileDetail() {
                   </Card>
                 )}
 
-                {/* Certifications */}
+                {/* Certifications - Always visible for community credibility */}
                 {candidateProfile.certifications?.length > 0 && (
                   <Card>
                     <CardHeader>
@@ -504,7 +565,7 @@ export default function ProfileDetail() {
                               </span>
                             )}
                           </div>
-                          {isUnlocked && cert.credential_url && (
+                          {isUnlocked && !isCandidateViewingCandidate && cert.credential_url && (
                             <a 
                               href={cert.credential_url} 
                               target="_blank" 
@@ -520,8 +581,8 @@ export default function ProfileDetail() {
                   </Card>
                 )}
 
-                {/* Resumes (Unlocked Only) */}
-                {isUnlocked && resumes.length > 0 && (
+                {/* Resumes (Unlocked Only) - Hidden for candidates */}
+                {isUnlocked && resumes.length > 0 && !isCandidateViewingCandidate && (
                   <Card>
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
@@ -557,8 +618,8 @@ export default function ProfileDetail() {
                   </Card>
                 )}
 
-                {/* Work History */}
-                {workHistory.length > 0 && (
+                {/* Work History - Hidden for candidates viewing candidates */}
+                {workHistory.length > 0 && !isCandidateViewingCandidate && (
                   <Card>
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
@@ -603,8 +664,8 @@ export default function ProfileDetail() {
                   </Card>
                 )}
 
-                {/* Projects */}
-                {projects.length > 0 && (
+                {/* Projects - Hidden for candidates viewing candidates */}
+                {projects.length > 0 && !isCandidateViewingCandidate && (
                   <Card>
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
@@ -667,8 +728,8 @@ export default function ProfileDetail() {
                   </Card>
                 )}
 
-                {/* Education */}
-                {education.length > 0 && (
+                {/* Education - Hidden for candidates viewing candidates */}
+                {education.length > 0 && !isCandidateViewingCandidate && (
                   <Card>
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
