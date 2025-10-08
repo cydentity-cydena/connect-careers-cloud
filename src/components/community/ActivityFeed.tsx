@@ -177,7 +177,7 @@ export const ActivityFeed = ({ limit = 20 }: { limit?: number }) => {
                 
                 <h4 className="font-medium mb-1">{activity.title}</h4>
                 {activity.description && (
-                  <p className="text-sm text-muted-foreground line-clamp-2">
+                  <p className="text-sm text-muted-foreground whitespace-pre-line">
                     {activity.description}
                   </p>
                 )}
