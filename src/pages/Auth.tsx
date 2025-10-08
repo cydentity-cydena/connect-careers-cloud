@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Shield, Loader2, CheckCircle } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -52,23 +53,133 @@ const Auth = () => {
   const [fullName, setFullName] = useState("");
   const [username, setUsername] = useState("");
   const [userRole, setUserRole] = useState<"candidate" | "employer" | "recruiter">("candidate");
+  const [showOAuthRoleDialog, setShowOAuthRoleDialog] = useState(false);
+  const [pendingOAuthProvider, setPendingOAuthProvider] = useState<'google' | 'linkedin_oidc' | null>(null);
 
   useEffect(() => {
     // Check if user is already logged in
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (session) {
-        navigate("/dashboard");
+        // Check if profile setup is complete
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('full_name')
+          .eq('id', session.user.id)
+          .single();
+        
+        if (profile && profile.full_name) {
+          navigate("/dashboard");
+        } else {
+          // Profile incomplete, handle OAuth completion
+          const storedRole = sessionStorage.getItem('oauth_role') as 'candidate' | 'employer' | 'recruiter' | null;
+          const storedUsername = sessionStorage.getItem('oauth_username');
+          const storedFullName = sessionStorage.getItem('oauth_fullname');
+          
+          if (storedRole && storedFullName) {
+            handleOAuthProfileCompletion(session.user, storedRole, storedFullName, storedUsername);
+          }
+        }
       }
     });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN' && session) {
-        navigate("/dashboard");
+        // Check if this is OAuth signin
+        const storedRole = sessionStorage.getItem('oauth_role') as 'candidate' | 'employer' | 'recruiter' | null;
+        
+        if (storedRole) {
+          // This is OAuth flow, complete profile setup
+          const storedUsername = sessionStorage.getItem('oauth_username');
+          const storedFullName = sessionStorage.getItem('oauth_fullname');
+          
+          if (storedFullName) {
+            await handleOAuthProfileCompletion(session.user, storedRole, storedFullName, storedUsername);
+          }
+        } else {
+          navigate("/dashboard");
+        }
       }
     });
 
     return () => subscription.unsubscribe();
   }, [navigate]);
+
+  const handleOAuthProfileCompletion = async (
+    user: any,
+    role: 'candidate' | 'employer' | 'recruiter',
+    fullName: string,
+    username: string | null
+  ) => {
+    try {
+      setIsLoading(true);
+
+      // Call secure-signup edge function to complete profile
+      const { data, error } = await supabase.functions.invoke('secure-signup', {
+        body: {
+          email: user.email,
+          fullName: fullName,
+          username: username || undefined,
+          role: role,
+          isOAuthCompletion: true
+        }
+      });
+
+      if (error) throw error;
+
+      // Clear OAuth session storage
+      sessionStorage.removeItem('oauth_role');
+      sessionStorage.removeItem('oauth_username');
+      sessionStorage.removeItem('oauth_fullname');
+
+      toast.success("Profile completed! Your account has been set up successfully.");
+
+      navigate('/dashboard');
+    } catch (error: any) {
+      console.error('OAuth profile completion error:', error);
+      toast.error(error.message || "Failed to complete profile setup");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleOAuthSignIn = async (provider: 'google' | 'linkedin_oidc') => {
+    setPendingOAuthProvider(provider);
+    setShowOAuthRoleDialog(true);
+  };
+
+  const confirmOAuthSignIn = async () => {
+    if (!pendingOAuthProvider) return;
+
+    try {
+      setIsLoading(true);
+
+      // Get full name from form or generate default
+      const oauthFullName = fullName || 'User';
+      
+      // Store role and user info in session storage for after OAuth redirect
+      sessionStorage.setItem('oauth_role', userRole);
+      sessionStorage.setItem('oauth_fullname', oauthFullName);
+      
+      if (userRole === 'candidate' && username) {
+        sessionStorage.setItem('oauth_username', username);
+      }
+
+      const redirectUrl = `${window.location.origin}/auth`;
+
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: pendingOAuthProvider,
+        options: {
+          redirectTo: redirectUrl,
+        }
+      });
+
+      if (error) throw error;
+    } catch (error: any) {
+      console.error('OAuth error:', error);
+      toast.error(error.message || "Failed to sign in with OAuth");
+      setIsLoading(false);
+    }
+  };
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -274,34 +385,18 @@ const Auth = () => {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
+                   <div className="grid grid-cols-2 gap-4">
                     <Button
                       type="button"
                       variant="outline"
-                      onClick={async () => {
-                        const { error } = await supabase.auth.signInWithOAuth({
-                          provider: 'google',
-                          options: {
-                            redirectTo: `${window.location.origin}/dashboard`
-                          }
-                        });
-                        if (error) toast.error(error.message);
-                      }}
+                      onClick={() => handleOAuthSignIn('google')}
                     >
                       Google
                     </Button>
                     <Button
                       type="button"
                       variant="outline"
-                      onClick={async () => {
-                        const { error } = await supabase.auth.signInWithOAuth({
-                          provider: 'linkedin_oidc',
-                          options: {
-                            redirectTo: `${window.location.origin}/dashboard`
-                          }
-                        });
-                        if (error) toast.error(error.message);
-                      }}
+                      onClick={() => handleOAuthSignIn('linkedin_oidc')}
                     >
                       LinkedIn
                     </Button>
@@ -416,6 +511,65 @@ const Auth = () => {
         </Card>
         </div>
       </div>
+
+      <Dialog open={showOAuthRoleDialog} onOpenChange={setShowOAuthRoleDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Complete Your Profile</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="oauth-role">I am a</Label>
+              <Select value={userRole} onValueChange={(value: any) => setUserRole(value)}>
+                <SelectTrigger id="oauth-role">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="candidate">Candidate</SelectItem>
+                  <SelectItem value="employer">Employer</SelectItem>
+                  <SelectItem value="recruiter">Recruiter</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Label htmlFor="oauth-fullname">Full Name</Label>
+              <Input
+                id="oauth-fullname"
+                placeholder="Enter your full name"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+              />
+            </div>
+
+            {userRole === 'candidate' && (
+              <div>
+                <Label htmlFor="oauth-username">Username</Label>
+                <Input
+                  id="oauth-username"
+                  placeholder="Choose a username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                />
+              </div>
+            )}
+
+            {(userRole === 'employer' || userRole === 'recruiter') && (
+              <p className="text-sm text-muted-foreground">
+                Note: You must use a professional/company email address, not a personal email (Gmail, Yahoo, etc.)
+              </p>
+            )}
+
+            <Button
+              onClick={confirmOAuthSignIn}
+              className="w-full"
+              disabled={!fullName || (userRole === 'candidate' && !username) || isLoading}
+            >
+              Continue with {pendingOAuthProvider === 'google' ? 'Google' : 'LinkedIn'}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

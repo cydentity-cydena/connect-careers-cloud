@@ -8,10 +8,11 @@ const corsHeaders = {
 
 interface SignupRequest {
   email: string;
-  password: string;
+  password?: string;
   fullName: string;
-  username: string;
-  role: 'candidate' | 'employer';
+  username?: string;
+  role: 'candidate' | 'employer' | 'recruiter';
+  isOAuthCompletion?: boolean;
 }
 
 serve(async (req) => {
@@ -32,7 +33,7 @@ serve(async (req) => {
       }
     });
 
-    const { email, password, fullName, username, role }: SignupRequest = await req.json();
+    const { email, password, fullName, username, role, isOAuthCompletion }: SignupRequest = await req.json();
 
     console.log('Starting secure signup for:', email, 'with role:', role);
 
@@ -64,23 +65,50 @@ serve(async (req) => {
       }
     }
 
-    // 1. Create auth user
-    const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
-      email,
-      password,
-      email_confirm: true, // Auto-confirm for testing
-      user_metadata: {
-        full_name: fullName,
-      },
-    });
+    let userId: string;
 
-    if (authError) {
-      console.error('Auth user creation failed:', authError);
-      throw authError;
+    // For OAuth completion, user already exists
+    if (isOAuthCompletion) {
+      // Get the user ID from the JWT token in the Authorization header
+      const authHeader = req.headers.get('Authorization');
+      if (!authHeader) {
+        throw new Error('No authorization header for OAuth completion');
+      }
+      
+      const token = authHeader.replace('Bearer ', '');
+      const { data: { user }, error: userError } = await supabaseAdmin.auth.getUser(token);
+      
+      if (userError || !user) {
+        console.error('Failed to get user from token:', userError);
+        throw new Error('Failed to get user from token');
+      }
+      
+      userId = user.id;
+      console.log('OAuth completion for existing user:', userId);
+    } else {
+      // Regular signup - create new user
+      if (!password) {
+        throw new Error('Password is required for regular signup');
+      }
+
+      // 1. Create auth user
+      const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
+        email,
+        password,
+        email_confirm: true, // Auto-confirm for testing
+        user_metadata: {
+          full_name: fullName,
+        },
+      });
+
+      if (authError) {
+        console.error('Auth user creation failed:', authError);
+        throw authError;
+      }
+
+      userId = authData.user.id;
+      console.log('Auth user created:', userId);
     }
-
-    const userId = authData.user.id;
-    console.log('Auth user created:', userId);
 
     // 2. Update profile with full_name and username (if provided)
     const profileUpdate: any = { full_name: fullName };
@@ -183,7 +211,7 @@ serve(async (req) => {
         success: true,
         user: {
           id: userId,
-          email: authData.user.email,
+          email: email,
           role: role,
         },
       }),
