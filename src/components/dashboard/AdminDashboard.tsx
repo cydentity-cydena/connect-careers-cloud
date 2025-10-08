@@ -188,21 +188,12 @@ const AdminDashboard = () => {
       <VerificationReviewPanel />
 
       {/* Admin Management Tabs */}
-      <Tabs defaultValue="overview" className="space-y-4">
+      <Tabs defaultValue="users" className="space-y-4">
         <TabsList>
-          <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="users">User Management</TabsTrigger>
           <TabsTrigger value="jobs">Job Moderation</TabsTrigger>
           <TabsTrigger value="roles">Role Management</TabsTrigger>
         </TabsList>
-
-        <TabsContent value="overview">
-          <div className="text-center py-8">
-            <p className="text-muted-foreground">
-              Use the tabs above to access User Management, Job Moderation, and Role Management tools.
-            </p>
-          </div>
-        </TabsContent>
 
         <TabsContent value="users">
           <UserManagement />
