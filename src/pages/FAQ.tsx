@@ -41,7 +41,7 @@ const FAQ = () => {
     },
     {
       question: "What's included in a profile unlock?",
-      answer: "When you unlock a candidate profile for £10-£50, you get: full resume/CV, direct email and phone contact, LinkedIn profile, portfolio links, detailed work history, and the ability to message them directly in-platform."
+      answer: "When you unlock a candidate profile (£10-£15 depending on your subscription tier), you get: full resume/CV, direct email and phone contact, LinkedIn profile, portfolio links, detailed work history, and the ability to message them directly in-platform."
     },
     {
       question: "Do I need to sign a contract?",
