@@ -437,7 +437,7 @@ const Placements = () => {
                         <TableCell>
                           <div className="flex items-center gap-2">
                             <Calendar className="h-4 w-4 text-muted-foreground" />
-                            {new Date(placement.placement_date).toLocaleDateString()}
+                            {new Date(placement.placement_date).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
                           </div>
                         </TableCell>
                         <TableCell className="text-right">

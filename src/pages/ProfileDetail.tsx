@@ -688,7 +688,7 @@ export default function ProfileDetail() {
                             {edu.start_date && (
                               <span className="flex items-center gap-1">
                                 <Calendar className="h-3 w-3" />
-                                {new Date(edu.start_date).toLocaleDateString()} - {edu.end_date ? new Date(edu.end_date).toLocaleDateString() : 'Present'}
+                                {new Date(edu.start_date).toLocaleDateString(undefined, { year: 'numeric', month: 'short' })} - {edu.end_date ? new Date(edu.end_date).toLocaleDateString(undefined, { year: 'numeric', month: 'short' }) : 'Present'}
                               </span>
                             )}
                             {edu.gpa && (

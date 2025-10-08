@@ -566,11 +566,11 @@ const Profile = () => {
                       />
                     </div>
                     <div>
-                      <Label>GPA</Label>
+                      <Label>GPA (optional, if applicable)</Label>
                       <Input 
                         value={edu.gpa || ''} 
                         onChange={(e) => updateEducation(index, 'gpa', e.target.value)}
-                        placeholder="3.8/4.0"
+                        placeholder="e.g., 3.8/4.0 or 85%"
                       />
                     </div>
                     <div>
