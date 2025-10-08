@@ -16,7 +16,7 @@ export default function ROICalculator() {
   const [hires, setHires] = useState(10);
   const [salary, setSalary] = useState(60000);
   const [agencyPct, setAgencyPct] = useState(20);
-  const [subPrice, setSubPrice] = useState(499);
+  const [subPrice, setSubPrice] = useState(299);
   const [unlockPackPrice, setUnlockPackPrice] = useState(499);
   const [unlocksPerHire, setUnlocksPerHire] = useState(4);
 
@@ -63,10 +63,10 @@ export default function ROICalculator() {
   const pricingTiers = [
     {
       name: 'Employer — Starter',
-      monthlyPrice: 199,
+      monthlyPrice: 99,
       features: [
         '1 hiring seat',
-        '50 verified unlocks (annual allocation, ~£3.98 ea)',
+        '10 verified unlocks/year',
         'Candidate bookmarks & notes',
         'Email support'
       ],
@@ -75,11 +75,11 @@ export default function ROICalculator() {
     },
     {
       name: 'Employer — Growth',
-      monthlyPrice: 499,
+      monthlyPrice: 299,
       popular: true,
       features: [
         '3 hiring seats',
-        '100 verified unlocks (annual allocation, ~£4.99 ea)',
+        '25 verified unlocks/year',
         'Application pipeline management',
         'Priority support'
       ],
@@ -88,10 +88,10 @@ export default function ROICalculator() {
     },
     {
       name: 'Employer — Scale',
-      monthlyPrice: 999,
+      monthlyPrice: 699,
       features: [
         '6 hiring seats',
-        '250 verified unlocks (annual allocation, ~£3.99 ea)',
+        '75 verified unlocks/year',
         'Talent pool sharing & role pipelines',
         'Advanced analytics'
       ],
@@ -100,11 +100,11 @@ export default function ROICalculator() {
     },
     {
       name: 'Recruiter — Pro',
-      monthlyPrice: 699,
+      monthlyPrice: 499,
       features: [
         '3 recruiter seats',
         'Advanced filters & saved searches',
-        '100 unlocks (annual allocation)',
+        '50 unlocks/year',
         'Bulk candidate actions'
       ],
       cta: 'Choose Recruiter Pro',
