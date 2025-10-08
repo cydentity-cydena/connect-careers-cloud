@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { User, Briefcase, FileText, TrendingUp, CheckCircle } from "lucide-react";
+import { User, Briefcase, FileText, TrendingUp, CheckCircle, ArrowRight } from "lucide-react";
 import { ProfileStrengthMeter } from "@/components/gamification/ProfileStrengthMeter";
 import { AchievementBadges } from "@/components/gamification/AchievementBadges";
 import { RecentPointsFeed } from "@/components/rewards/RecentPointsFeed";
@@ -18,6 +18,8 @@ const CandidateDashboard = () => {
   const [userId, setUserId] = useState<string>("");
   const [xpData, setXpData] = useState<any>(null);
   const [userName, setUserName] = useState<string>("");
+  const [userCreatedAt, setUserCreatedAt] = useState<Date | null>(null);
+  const [showGettingStarted, setShowGettingStarted] = useState(true);
 
   useEffect(() => {
     getCurrentUser();
@@ -37,13 +39,19 @@ const CandidateDashboard = () => {
   const loadUserProfile = async (uid: string) => {
     const { data } = await supabase
       .from('profiles')
-      .select('full_name, username')
+      .select('full_name, username, created_at')
       .eq('id', uid)
       .single();
     
     if (data) {
       // Use username if available, otherwise use full_name, or fall back to "Candidate"
       setUserName(data.username || data.full_name?.split(' ')[0] || 'Candidate');
+      
+      // Check if account is older than 7 days
+      const createdDate = new Date(data.created_at);
+      setUserCreatedAt(createdDate);
+      const daysSinceCreation = Math.floor((Date.now() - createdDate.getTime()) / (1000 * 60 * 60 * 24));
+      setShowGettingStarted(daysSinceCreation < 7);
     }
   };
 
@@ -121,51 +129,58 @@ const CandidateDashboard = () => {
         )}
       </div>
 
-      <Card className="border-border shadow-card">
-        <CardHeader>
-          <CardTitle>Getting Started</CardTitle>
-          <CardDescription>
-            Follow these steps to make the most of your profile
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <div className="flex items-start gap-4">
-              <div className="bg-primary/10 rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
-                <span className="text-primary font-semibold">1</span>
-              </div>
-              <div>
-                <h3 className="font-semibold mb-1">Complete Your Profile</h3>
-                <p className="text-sm text-muted-foreground">
-                  Add your experience, skills, and certifications
-                </p>
-              </div>
+      {showGettingStarted && (
+        <Card className="border-border shadow-card">
+          <CardHeader>
+            <CardTitle>Getting Started</CardTitle>
+            <CardDescription>
+              Follow these steps to make the most of your profile
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <Link to="/profile" className="flex items-start gap-4 p-3 rounded-lg hover:bg-muted/50 transition-colors group">
+                <div className="bg-primary/10 rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
+                  <span className="text-primary font-semibold">1</span>
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold mb-1 group-hover:text-primary transition-colors">Complete Your Profile</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Add your experience, skills, and certifications
+                  </p>
+                </div>
+                <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-primary opacity-0 group-hover:opacity-100 transition-all" />
+              </Link>
+              
+              <Link to="/jobs" className="flex items-start gap-4 p-3 rounded-lg hover:bg-muted/50 transition-colors group">
+                <div className="bg-primary/10 rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
+                  <span className="text-primary font-semibold">2</span>
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold mb-1 group-hover:text-primary transition-colors">Browse Job Opportunities</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Find cybersecurity roles that match your skills
+                  </p>
+                </div>
+                <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-primary opacity-0 group-hover:opacity-100 transition-all" />
+              </Link>
+              
+              <Link to="/jobs" className="flex items-start gap-4 p-3 rounded-lg hover:bg-muted/50 transition-colors group">
+                <div className="bg-primary/10 rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
+                  <span className="text-primary font-semibold">3</span>
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold mb-1 group-hover:text-primary transition-colors">Apply & Track Progress</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Submit applications and communicate with employers
+                  </p>
+                </div>
+                <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-primary opacity-0 group-hover:opacity-100 transition-all" />
+              </Link>
             </div>
-            <div className="flex items-start gap-4">
-              <div className="bg-primary/10 rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
-                <span className="text-primary font-semibold">2</span>
-              </div>
-              <div>
-                <h3 className="font-semibold mb-1">Browse Job Opportunities</h3>
-                <p className="text-sm text-muted-foreground">
-                  Find cybersecurity roles that match your skills
-                </p>
-              </div>
-            </div>
-            <div className="flex items-start gap-4">
-              <div className="bg-primary/10 rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
-                <span className="text-primary font-semibold">3</span>
-              </div>
-              <div>
-                <h3 className="font-semibold mb-1">Apply & Track Progress</h3>
-                <p className="text-sm text-muted-foreground">
-                  Submit applications and communicate with employers
-                </p>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Profile Views & Multiple Resumes */}
       {userId && (
