@@ -138,20 +138,22 @@ const CertificationCatalog = () => {
 
       <main className="container mx-auto px-4 py-8 animate-fade-in">
         {/* TRECCert Partnership Banner */}
-        <Card className="border-primary bg-gradient-to-r from-primary/10 via-primary/5 to-background mb-8">
+        <Card className="border-2 border-primary/30 bg-gradient-to-r from-primary/10 via-primary/5 to-background mb-8 shadow-lg">
           <CardContent className="p-6">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-              <div className="flex items-center gap-4">
-                <img src={treccertLogo} alt="TRECCert Logo" className="h-12 w-auto object-contain" />
+            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+              <div className="flex items-center gap-6">
+                <div className="bg-white p-3 rounded-lg shadow-sm">
+                  <img src={treccertLogo} alt="TRECCert Logo" className="h-16 w-auto object-contain" />
+                </div>
                 <div>
-                  <div className="flex items-center gap-2 mb-1">
-                    <h3 className="text-xl font-bold">Official Accreditation Partner</h3>
+                  <div className="flex items-center gap-2 mb-2">
+                    <h3 className="text-2xl font-bold">Official Accreditation Partner</h3>
                     <Badge variant="secondary" className="bg-primary/20">
-                      <CheckCircle className="h-3 w-3 mr-1" />
+                      <CheckCircle className="h-4 w-4 mr-1" />
                       Verified Partner
                     </Badge>
                   </div>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-base text-muted-foreground">
                     Real LMS delivers ISO certifications with TRECCert accreditation - a trusted global certification body
                   </p>
                 </div>
@@ -160,7 +162,7 @@ const CertificationCatalog = () => {
                 href="https://www.treccert.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-6 py-2 whitespace-nowrap"
+                className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-11 px-8 py-2 whitespace-nowrap"
               >
                 Learn More
               </a>
