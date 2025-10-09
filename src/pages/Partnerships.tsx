@@ -276,12 +276,12 @@ const Partnerships = () => {
                   <Alert className="border-red-500/50 bg-red-500/10">
                     <AlertCircle className="h-5 w-5 text-red-500" />
                     <AlertTitle className="text-red-700 dark:text-red-400">All Featured Slots Currently Booked</AlertTitle>
-                    <AlertDescription className="text-red-600 dark:text-red-300">
-                      All featured training slots are currently reserved. Join our waitlist to be notified when slots become available.
+                    <AlertDescription className="text-red-600 dark:text-red-300 space-y-3">
+                      <p>All featured training slots are currently reserved. Join our waitlist to be notified when slots become available.</p>
                       <Button 
                         variant="outline" 
                         size="sm" 
-                        className="mt-3 border-red-500/50 hover:bg-red-500/20"
+                        className="border-red-500/50 hover:bg-red-500/20"
                         onClick={handleContactSales}
                       >
                         Join Waitlist
@@ -602,12 +602,12 @@ const Partnerships = () => {
                   <Alert className="border-red-500/50 bg-red-500/10">
                     <AlertCircle className="h-5 w-5 text-red-500" />
                     <AlertTitle className="text-red-700 dark:text-red-400">All Featured Slots Currently Booked</AlertTitle>
-                    <AlertDescription className="text-red-600 dark:text-red-300">
-                      All featured certification slots are currently reserved. Join our waitlist to be notified when slots become available.
+                    <AlertDescription className="text-red-600 dark:text-red-300 space-y-3">
+                      <p>All featured certification slots are currently reserved. Join our waitlist to be notified when slots become available.</p>
                       <Button 
                         variant="outline" 
                         size="sm" 
-                        className="mt-3 border-red-500/50 hover:bg-red-500/20"
+                        className="border-red-500/50 hover:bg-red-500/20"
                         onClick={handleContactSales}
                       >
                         Join Waitlist
