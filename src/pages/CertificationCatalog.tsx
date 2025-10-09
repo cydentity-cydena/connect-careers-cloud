@@ -114,14 +114,14 @@ const CertificationCatalog = () => {
     },
     {
       name: "ISO/IEC 27001 Lead Implementer",
-      description: "Accredited certification for implementing and managing Information Security Management Systems (ISMS). Official certification body for REAL LMS ISO training.",
+      description: "Certification for implementing and managing Information Security Management Systems (ISMS). Offered through Real LMS with TRECCert accreditation.",
       provider: "TRECCert",
       roles: "Security Manager, IT Manager, ISMS Implementer",
       enrollUrl: "https://www.treccert.com/certification-programs/information-security/"
     },
     {
       name: "ISO/IEC 27001 Lead Auditor",
-      description: "ANAB accredited certification for auditing Information Security Management Systems. Partner certification body for ISO standards.",
+      description: "Certification for auditing Information Security Management Systems. Offered through Real LMS with TRECCert accreditation.",
       provider: "TRECCert",
       roles: "Security Auditor, Compliance Specialist, Risk Manager",
       enrollUrl: "https://www.treccert.com/certification-programs/information-security/"
@@ -288,7 +288,7 @@ const CertificationCatalog = () => {
               ) : (
                 <div className="text-4xl">{getProviderIcon(provider)}</div>
               )}
-              <h2 className="text-3xl font-bold">{provider} {provider === "TRECCert" ? "Certifications" : "Training Courses"}</h2>
+              <h2 className="text-3xl font-bold">{provider === "TRECCert" ? "Real LMS ISO Certifications" : `${provider} Training Courses`}</h2>
               {provider === "TRECCert" && (
                 <Badge variant="secondary" className="ml-2">
                   <CheckCircle className="h-3 w-3 mr-1" />
