@@ -316,7 +316,7 @@ const Training = () => {
                           </Badge>
                         </div>
 
-                        <CardHeader className="pb-3">
+                        <CardHeader className="pb-3 pr-28">
                           <div className="flex items-start gap-4">
                             <div className="flex-1">
                               <CardTitle className={`${partner.slot_position === 1 ? 'text-2xl' : 'text-xl'} mb-2 flex items-center gap-2`}>
