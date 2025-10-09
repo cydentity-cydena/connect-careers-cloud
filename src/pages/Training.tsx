@@ -187,6 +187,13 @@ const Training = () => {
       icon: <Upload className="h-6 w-6" />,
       providers: [
         {
+          name: "REAL LMS",
+          description: "Official ISO/IEC 27001 training provider. Partners with TRECCert (ANAB accredited) for ISMS certifications.",
+          color: "bg-blue-900",
+          features: ["ISO 27001 Training", "TRECCert Partner", "ISMS Implementation", "Lead Auditor Courses"],
+          isOfficial: true
+        },
+        {
           name: "Blue Team Labs Online",
           description: "Practical blue team challenges with completion badges. Focused on defensive security skills.",
           color: "bg-blue-700",
@@ -313,18 +320,27 @@ const Training = () => {
                       3: { border: "border-2 border-blue-500/60", bg: "from-blue-500/8 to-blue-500/3", badge: "bg-blue-500", size: "scale-95", label: "FEATURED", icon: "text-blue-500" },
                       4: { border: "border-2 border-purple-500/50", bg: "from-purple-500/5 to-transparent", badge: "bg-purple-500", size: "scale-90", label: "FEATURED", icon: "text-purple-500" },
                     }[partner.slot_position as 1 | 2 | 3 | 4] || defaultStyles;
+                    
+                    // Check if this is an official partner
+                    const isOfficialPartner = ['REAL LMS', 'TRECCert'].includes(partner.partner_name);
 
                     return (
                       <Card
                         key={partner.id}
                         className={`relative ${slotStyles.border} ${slotStyles.size} bg-gradient-to-br ${slotStyles.bg} hover:scale-[1.02] transition-all duration-200`}
                       >
-                        <div className="absolute top-4 right-4 z-10">
+                        <div className="absolute top-4 right-4 z-10 flex flex-col gap-2 items-end">
                           <Badge className={`${slotStyles.badge} text-white border-0 px-3 py-1`}>
                             {partner.slot_position === 1 && <Star className="h-3.5 w-3.5 mr-1.5 fill-white" />}
                             <Star className="h-3.5 w-3.5 mr-1.5" />
                             {slotStyles.label}
                           </Badge>
+                          {isOfficialPartner && (
+                            <Badge variant="secondary" className="gap-1">
+                              <CheckCircle className="h-3 w-3" />
+                              Official Partner
+                            </Badge>
+                          )}
                         </div>
 
                         {partner.logo_url && (
@@ -401,8 +417,16 @@ const Training = () => {
                 {category.providers.map((partner, pIdx) => (
                   <Card 
                     key={pIdx}
-                    className="border-border hover:border-primary/50 transition-all hover:scale-[1.02] cursor-pointer"
+                    className="border-border hover:border-primary/50 transition-all hover:scale-[1.02] cursor-pointer relative"
                   >
+                    {partner.isOfficial && (
+                      <div className="absolute top-4 right-4 z-10">
+                        <Badge variant="secondary" className="gap-1">
+                          <CheckCircle className="h-3 w-3" />
+                          Official Partner
+                        </Badge>
+                      </div>
+                    )}
                     <CardHeader className={`${partner.color} rounded-t-lg text-white`}>
                       <CardTitle className="text-xl">{partner.name}</CardTitle>
                     </CardHeader>
