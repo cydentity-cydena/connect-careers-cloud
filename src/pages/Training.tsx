@@ -414,26 +414,19 @@ const Training = () => {
             </div>
           </div>
 
-          {partners.map((category, idx) => {
-            // Filter out providers that are already in featured section
-            const featuredNames = new Set(uniqueFeaturedPartners.map(fp => fp.partner_name));
-            const filteredProviders = category.providers.filter(
-              (provider) => !featuredNames.has(provider.name)
-            );
-
-            return (
-              <div key={idx} className="mb-12">
-                <div className="mb-6">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="bg-primary/10 p-2 rounded-lg text-primary">
-                      {category.icon}
-                    </div>
-                    <h2 className="text-2xl font-bold">{category.category}</h2>
+          {partners.map((category, idx) => (
+            <div key={idx} className="mb-12">
+              <div className="mb-6">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="bg-primary/10 p-2 rounded-lg text-primary">
+                    {category.icon}
                   </div>
-                  <p className="text-muted-foreground">{category.description}</p>
+                  <h2 className="text-2xl font-bold">{category.category}</h2>
                 </div>
-                <div className="grid md:grid-cols-2 gap-6">
-                  {filteredProviders.map((partner, pIdx) => (
+                <p className="text-muted-foreground">{category.description}</p>
+              </div>
+              <div className="grid md:grid-cols-2 gap-6">
+                {category.providers.map((partner, pIdx) => (
                   <Card 
                     key={pIdx}
                     className="border-border hover:border-primary/50 transition-all hover:scale-[1.02] cursor-pointer"
@@ -473,11 +466,10 @@ const Training = () => {
                       )}
                     </CardContent>
                   </Card>
-                  ))}
-                </div>
+                ))}
               </div>
-            );
-          })}
+            </div>
+          ))}
         </div>
       </main>
     </div>
