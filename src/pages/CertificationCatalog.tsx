@@ -196,11 +196,9 @@ const CertificationCatalog = () => {
         {/* Featured Certifications Section - Tiered Display */}
         {featuredCertifications.length > 0 && (
           <div className="mb-12 animate-fade-in">
-            <div className="mb-6 flex items-center gap-3">
-              <h2 className="text-3xl font-bold flex items-center gap-3">
-                <Star className="h-8 w-8 text-purple-500 fill-purple-500" />
+            <div className="mb-6">
+              <h2 className="text-3xl font-bold">
                 Featured Certifications
-                <Star className="h-8 w-8 text-purple-500 fill-purple-500" />
               </h2>
             </div>
 
