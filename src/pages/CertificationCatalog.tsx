@@ -6,6 +6,7 @@ import Navigation from "@/components/Navigation";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
 import SEO from "@/components/SEO";
+import treccertLogo from "@/assets/treccert-logo.png";
 
 interface Course {
   name: string;
@@ -111,9 +112,23 @@ const CertificationCatalog = () => {
       roles: "Systems Administrator, Security Analyst",
       enrollUrl: "https://www.isc2.org/certifications/sscp"
     },
+    {
+      name: "ISO/IEC 27001 Lead Implementer",
+      description: "Accredited certification for implementing and managing Information Security Management Systems (ISMS). Official certification body for REAL LMS ISO training.",
+      provider: "TRECCert",
+      roles: "Security Manager, IT Manager, ISMS Implementer",
+      enrollUrl: "https://www.treccert.com/certification-programs/information-security/"
+    },
+    {
+      name: "ISO/IEC 27001 Lead Auditor",
+      description: "ANAB accredited certification for auditing Information Security Management Systems. Partner certification body for ISO standards.",
+      provider: "TRECCert",
+      roles: "Security Auditor, Compliance Specialist, Risk Manager",
+      enrollUrl: "https://www.treccert.com/certification-programs/information-security/"
+    },
   ];
 
-  const providers = ["CompTIA", "EC-Council", "SANS", "ISC2"];
+  const providers = ["CompTIA", "EC-Council", "SANS", "ISC2", "TRECCert"];
 
   const getProviderIcon = (provider: string) => {
     const icons: { [key: string]: string } = {
@@ -121,7 +136,7 @@ const CertificationCatalog = () => {
       "EC-Council": "🔵",
       "SANS": "🟢",
       "ISC2": "🟣",
-  
+      "TRECCert": "🔷",
     };
     return icons[provider] || "📚";
   };
@@ -267,8 +282,18 @@ const CertificationCatalog = () => {
         {providers.map((provider, providerIdx) => (
           <div key={provider} className="mb-12 animate-slide-up" style={{ animationDelay: `${providerIdx * 0.1}s` }}>
             <div className="flex items-center gap-3 mb-6">
-              <div className="text-4xl">{getProviderIcon(provider)}</div>
-              <h2 className="text-3xl font-bold">{provider} Training Courses</h2>
+              {provider === "TRECCert" ? (
+                <img src={treccertLogo} alt="TRECCert Logo" className="h-10 w-auto object-contain" />
+              ) : (
+                <div className="text-4xl">{getProviderIcon(provider)}</div>
+              )}
+              <h2 className="text-3xl font-bold">{provider} {provider === "TRECCert" ? "Certifications" : "Training Courses"}</h2>
+              {provider === "TRECCert" && (
+                <Badge variant="secondary" className="ml-2">
+                  <CheckCircle className="h-3 w-3 mr-1" />
+                  Official Partner
+                </Badge>
+              )}
             </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
