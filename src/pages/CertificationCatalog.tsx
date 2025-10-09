@@ -112,23 +112,9 @@ const CertificationCatalog = () => {
       roles: "Systems Administrator, Security Analyst",
       enrollUrl: "https://www.isc2.org/certifications/sscp"
     },
-    {
-      name: "ISO/IEC 27001 Lead Implementer",
-      description: "Certification for implementing and managing Information Security Management Systems (ISMS). Offered through Real LMS with TRECCert accreditation.",
-      provider: "TRECCert",
-      roles: "Security Manager, IT Manager, ISMS Implementer",
-      enrollUrl: "https://www.treccert.com/certification-programs/information-security/"
-    },
-    {
-      name: "ISO/IEC 27001 Lead Auditor",
-      description: "Certification for auditing Information Security Management Systems. Offered through Real LMS with TRECCert accreditation.",
-      provider: "TRECCert",
-      roles: "Security Auditor, Compliance Specialist, Risk Manager",
-      enrollUrl: "https://www.treccert.com/certification-programs/information-security/"
-    },
   ];
 
-  const providers = ["CompTIA", "EC-Council", "SANS", "ISC2", "TRECCert"];
+  const providers = ["CompTIA", "EC-Council", "SANS", "ISC2"];
 
   const getProviderIcon = (provider: string) => {
     const icons: { [key: string]: string } = {
@@ -151,6 +137,37 @@ const CertificationCatalog = () => {
       />
 
       <main className="container mx-auto px-4 py-8 animate-fade-in">
+        {/* TRECCert Partnership Banner */}
+        <Card className="border-primary bg-gradient-to-r from-primary/10 via-primary/5 to-background mb-8">
+          <CardContent className="p-6">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+              <div className="flex items-center gap-4">
+                <img src={treccertLogo} alt="TRECCert Logo" className="h-12 w-auto object-contain" />
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <h3 className="text-xl font-bold">Official Accreditation Partner</h3>
+                    <Badge variant="secondary" className="bg-primary/20">
+                      <CheckCircle className="h-3 w-3 mr-1" />
+                      Verified Partner
+                    </Badge>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Real LMS delivers ISO certifications with TRECCert accreditation - a trusted global certification body
+                  </p>
+                </div>
+              </div>
+              <a
+                href="https://www.treccert.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-6 py-2 whitespace-nowrap"
+              >
+                Learn More
+              </a>
+            </div>
+          </CardContent>
+        </Card>
+
         <div className="mb-12">
           <h1 className="text-4xl font-bold mb-2">Premium Cybersecurity Certifications</h1>
           <p className="text-muted-foreground">
@@ -283,18 +300,8 @@ const CertificationCatalog = () => {
         {providers.map((provider, providerIdx) => (
           <div key={provider} className="mb-12 animate-slide-up" style={{ animationDelay: `${providerIdx * 0.1}s` }}>
             <div className="flex items-center gap-3 mb-6">
-              {provider === "TRECCert" ? (
-                <img src={treccertLogo} alt="TRECCert Logo" className="h-10 w-auto object-contain" />
-              ) : (
-                <div className="text-4xl">{getProviderIcon(provider)}</div>
-              )}
-              <h2 className="text-3xl font-bold">{provider === "TRECCert" ? "Real LMS ISO Certifications" : `${provider} Training Courses`}</h2>
-              {provider === "TRECCert" && (
-                <Badge variant="secondary" className="ml-2">
-                  <CheckCircle className="h-3 w-3 mr-1" />
-                  Accreditation Partner
-                </Badge>
-              )}
+              <div className="text-4xl">{getProviderIcon(provider)}</div>
+              <h2 className="text-3xl font-bold">{provider} Training Courses</h2>
             </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
