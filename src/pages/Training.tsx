@@ -56,15 +56,6 @@ const Training = () => {
           description: "Skills benchmarking platform with strong employer-facing analytics and completion tracking.",
           color: "bg-purple-600",
           features: ["Skills Assessment", "Lab Exercises", "Progress Tracking", "Employer Dashboards"]
-        },
-        {
-          name: "LetsDefend",
-          description: "SOC analyst labs with certificates and performance scores. Practical blue team training.",
-          color: "bg-blue-600",
-          features: ["SOC Training", "Incident Response", "Certificates", "Performance Scores"],
-          freeCourses: [
-            { name: "Free SOC Investigation Labs", url: "https://letsdefend.io/cybersecurity-training" }
-          ]
         }
       ]
     },
@@ -78,15 +69,6 @@ const Training = () => {
           description: "Affordable courses with PNPT certification. Rapidly growing recognition in the industry.",
           color: "bg-red-600",
           features: ["PNPT Certification", "Practical Training", "Course Certificates", "Industry Recognition"]
-        },
-        {
-          name: "Cybrary",
-          description: "Extensive library of cybersecurity courses with completion certificates and career paths.",
-          color: "bg-cyan-600",
-          features: ["Course Library", "Career Paths", "Certificates", "Skills Assessments"],
-          freeCourses: [
-            { name: "Free Tier Courses", url: "https://www.cybrary.it/catalog/free" }
-          ]
         },
         {
           name: "INE (eLearnSecurity)",
