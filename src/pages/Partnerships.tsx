@@ -625,15 +625,153 @@ const Partnerships = () => {
                   </Alert>
                 ) : null}
 
-                {/* Pricing Explanation */}
+                {/* Partnership Details */}
                 <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-background">
-                  <CardContent className="pt-6">
-                    <h3 className="text-2xl font-bold mb-4 text-center">Certification Catalog Placement</h3>
-                    <p className="text-center text-muted-foreground mb-4">
-                      Same pricing structure as Training page placement - standard listing + optional featured upgrade.
+                  <CardHeader>
+                    <CardTitle className="text-2xl">Become a Featured Certification Provider</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    <p className="text-muted-foreground">
+                      Are you a certification provider? Get premium visibility and reach thousands of cybersecurity professionals actively pursuing certifications.
                     </p>
-                    <div className="text-center">
-                      <Button onClick={handleContactSales}>View Pricing Details</Button>
+                    <div className="grid md:grid-cols-3 gap-4">
+                      <div className="flex items-start gap-3">
+                        <div className="bg-primary/10 p-2 rounded-lg">
+                          <Check className="h-5 w-5 text-primary" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold mb-1">Prime Visibility</h3>
+                          <p className="text-sm text-muted-foreground">Featured placement at top of catalog</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <div className="bg-primary/10 p-2 rounded-lg">
+                          <Star className="h-5 w-5 text-primary" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold mb-1">Targeted Audience</h3>
+                          <p className="text-sm text-muted-foreground">Reach active job seekers and professionals</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <div className="bg-primary/10 p-2 rounded-lg">
+                          <Award className="h-5 w-5 text-primary" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold mb-1">Brand Authority</h3>
+                          <p className="text-sm text-muted-foreground">Position as trusted certification body</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Pricing Plans */}
+                    <div className="pt-6 border-t border-border">
+                      <h3 className="text-2xl font-bold text-center mb-6">Featured Placement Plans</h3>
+                      <div className="grid md:grid-cols-2 gap-6 mb-6">
+                        {/* Standard Placement */}
+                        <div className="space-y-3 p-6 rounded-lg border-2 border-border bg-card">
+                          <div className="flex items-center gap-2 mb-4">
+                            <Award className="h-6 w-6 text-primary" />
+                            <h4 className="text-xl font-bold">Standard Listing</h4>
+                          </div>
+                          <p className="text-muted-foreground mb-4">
+                            Free standard listing in our certification catalog with basic visibility.
+                          </p>
+                          <ul className="space-y-2">
+                            <li className="flex items-start gap-2">
+                              <Check className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
+                              <span className="text-sm">Listed in certification catalog</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <Check className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
+                              <span className="text-sm">Searchable by candidates</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <Check className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
+                              <span className="text-sm">Basic certification details</span>
+                            </li>
+                          </ul>
+                          <div className="pt-4">
+                            <div className="text-3xl font-bold">FREE</div>
+                            <p className="text-sm text-muted-foreground">No cost to list</p>
+                          </div>
+                        </div>
+
+                        {/* Featured Upgrade */}
+                        <div className="space-y-3 p-6 rounded-lg border-4 border-primary bg-primary/5 relative">
+                          <Badge className="absolute top-4 right-4 bg-primary">
+                            <Star className="h-3 w-3 mr-1" />
+                            Popular
+                          </Badge>
+                          <div className="flex items-center gap-2 mb-4">
+                            <Star className="h-6 w-6 text-primary" />
+                            <h4 className="text-xl font-bold">Featured Placement</h4>
+                          </div>
+                          <p className="text-muted-foreground mb-4">
+                            Premium featured placement at the top of the certification catalog.
+                          </p>
+                          <ul className="space-y-2">
+                            <li className="flex items-start gap-2">
+                              <Check className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                              <span className="text-sm font-semibold">Everything in Standard</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <Check className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                              <span className="text-sm">Top of page placement</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <Check className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                              <span className="text-sm">Enhanced visual design</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <Check className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                              <span className="text-sm">Logo display</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <Check className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                              <span className="text-sm">Premium badge</span>
+                            </li>
+                          </ul>
+                          <div className="pt-4">
+                            <div className="text-3xl font-bold">From $149<span className="text-base font-normal text-muted-foreground">/week</span></div>
+                            <p className="text-sm text-muted-foreground">+ position upgrade</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Slot Position Pricing */}
+                      <div className="pt-4 border-t border-border">
+                        <h4 className="text-lg font-semibold mb-4 text-center">Featured Slot Positions</h4>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                          <div className="text-center p-4 rounded-lg bg-yellow-500/10 border-2 border-yellow-500/50">
+                            <Star className="h-6 w-6 mx-auto mb-2 text-yellow-500 fill-yellow-500" />
+                            <div className="font-bold">Slot 1</div>
+                            <div className="text-2xl font-bold mt-2">+$250</div>
+                            <div className="text-xs text-muted-foreground">per week</div>
+                          </div>
+                          <div className="text-center p-4 rounded-lg bg-orange-500/10 border-2 border-orange-500/50">
+                            <Star className="h-6 w-6 mx-auto mb-2 text-orange-500" />
+                            <div className="font-bold">Slot 2</div>
+                            <div className="text-2xl font-bold mt-2">+$200</div>
+                            <div className="text-xs text-muted-foreground">per week</div>
+                          </div>
+                          <div className="text-center p-4 rounded-lg bg-blue-500/10 border-2 border-blue-500/50">
+                            <Star className="h-6 w-6 mx-auto mb-2 text-blue-500" />
+                            <div className="font-bold">Slot 3</div>
+                            <div className="text-2xl font-bold mt-2">+$150</div>
+                            <div className="text-xs text-muted-foreground">per week</div>
+                          </div>
+                          <div className="text-center p-4 rounded-lg bg-purple-500/10 border-2 border-purple-500/50">
+                            <Star className="h-6 w-6 mx-auto mb-2 text-purple-500" />
+                            <div className="font-bold">Slot 4</div>
+                            <div className="text-2xl font-bold mt-2">+$100</div>
+                            <div className="text-xs text-muted-foreground">per week</div>
+                          </div>
+                        </div>
+                        <p className="text-sm text-center text-muted-foreground mt-4">
+                          Total cost = Base ($149) + Slot position premium. Volume discounts apply automatically for longer terms.
+                        </p>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -644,7 +782,7 @@ const Partnerships = () => {
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                   <Button size="lg" variant="outline" asChild>
-                    <Link to="/certifications-catalog">View Certification Example</Link>
+                    <Link to="/certifications-catalog">View Cert Catalog</Link>
                   </Button>
                 </div>
               </TabsContent>
