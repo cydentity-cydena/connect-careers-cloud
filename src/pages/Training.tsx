@@ -26,6 +26,17 @@ const Training = () => {
     fetchFeaturedPartners();
   }, []);
 
+  // Deduplicate featured partners by name
+  const uniqueFeaturedPartners = (() => {
+    const seen = new Set<string>();
+    return featuredPartners.filter((fp) => {
+      const name = fp.partner_name as string;
+      if (!name || seen.has(name)) return false;
+      seen.add(name);
+      return true;
+    });
+  })();
+
   const partners = [
     {
       category: "Gamified Training Platforms",
@@ -294,7 +305,7 @@ const Training = () => {
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-5">
-                  {featuredPartners.map((partner) => {
+                  {uniqueFeaturedPartners.map((partner) => {
                     const defaultStyles = { border: "border-2 border-purple-500/50", bg: "from-purple-500/5 to-transparent", badge: "bg-purple-500", size: "scale-90", label: "FEATURED", icon: "text-purple-500" };
                     const slotStyles = {
                       1: { border: "border-4 border-yellow-500", bg: "from-yellow-500/15 to-yellow-500/5", badge: "bg-yellow-500", size: "scale-105", label: "PREMIUM", icon: "text-yellow-500" },
@@ -377,9 +388,9 @@ const Training = () => {
 
           {partners.map((category, idx) => {
             // Filter out providers that are already in featured section
-            const featuredNames = featuredPartners.map(fp => fp.partner_name);
+            const featuredNames = new Set(uniqueFeaturedPartners.map(fp => fp.partner_name));
             const filteredProviders = category.providers.filter(
-              provider => !featuredNames.includes(provider.name)
+              (provider) => !featuredNames.has(provider.name)
             );
 
             return (
