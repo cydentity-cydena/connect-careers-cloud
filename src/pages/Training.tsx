@@ -52,6 +52,24 @@ const Training = () => {
           ]
         },
         {
+          name: "LetsDefend",
+          description: "Blue team training with real-world SOC scenarios. Hands-on SIEM practice and incident response exercises.",
+          color: "bg-cyan-600",
+          features: ["SOC Analyst Training", "Real-World Scenarios", "SIEM Practice", "Completion Certificates"],
+          freeCourses: [
+            { name: "SOC Analyst Path", url: "https://letsdefend.io/training/lessons/soc-analyst-learning-path" }
+          ]
+        },
+        {
+          name: "Cybrary",
+          description: "Comprehensive cybersecurity training platform with career paths and hands-on virtual labs.",
+          color: "bg-orange-600",
+          features: ["Career Paths", "Virtual Labs", "Certificates", "Skill Assessments"],
+          freeCourses: [
+            { name: "Intro to IT & Cybersecurity", url: "https://www.cybrary.it/catalog" }
+          ]
+        },
+        {
           name: "Immersive Labs",
           description: "Skills benchmarking platform with strong employer-facing analytics and completion tracking.",
           color: "bg-purple-600",
@@ -357,19 +375,26 @@ const Training = () => {
             </div>
           </div>
 
-          {partners.map((category, idx) => (
-            <div key={idx} className="mb-12">
-              <div className="mb-6">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="bg-primary/10 p-2 rounded-lg text-primary">
-                    {category.icon}
+          {partners.map((category, idx) => {
+            // Filter out providers that are already in featured section
+            const featuredNames = featuredPartners.map(fp => fp.partner_name);
+            const filteredProviders = category.providers.filter(
+              provider => !featuredNames.includes(provider.name)
+            );
+
+            return (
+              <div key={idx} className="mb-12">
+                <div className="mb-6">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="bg-primary/10 p-2 rounded-lg text-primary">
+                      {category.icon}
+                    </div>
+                    <h2 className="text-2xl font-bold">{category.category}</h2>
                   </div>
-                  <h2 className="text-2xl font-bold">{category.category}</h2>
+                  <p className="text-muted-foreground">{category.description}</p>
                 </div>
-                <p className="text-muted-foreground">{category.description}</p>
-              </div>
-              <div className="grid md:grid-cols-2 gap-6">
-                {category.providers.map((partner, pIdx) => (
+                <div className="grid md:grid-cols-2 gap-6">
+                  {filteredProviders.map((partner, pIdx) => (
                   <Card 
                     key={pIdx}
                     className="border-border hover:border-primary/50 transition-all hover:scale-[1.02] cursor-pointer"
@@ -409,10 +434,11 @@ const Training = () => {
                       )}
                     </CardContent>
                   </Card>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </main>
     </div>
