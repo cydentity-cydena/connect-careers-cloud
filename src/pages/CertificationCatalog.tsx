@@ -6,7 +6,6 @@ import Navigation from "@/components/Navigation";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
 import SEO from "@/components/SEO";
-import realLmsLogo from "@/assets/real-lms-logo.png";
 
 interface Course {
   name: string;
@@ -27,18 +26,7 @@ const CertificationCatalog = () => {
         .order("slot_position");
       
       if (data) {
-        // Add Real LMS as a demo featured certification
-        const realLmsDemo = {
-          id: 'demo-real-lms',
-          slot_position: 1,
-          cert_name: 'ISO 42001 Lead Implementer',
-          provider_name: 'Real LMS',
-          description: 'This certification is perfect for professionals who are responsible for implementing AI Management Systems in their organizations or for external clients.',
-          website_url: 'https://www.real-lms.com',
-          logo_url: realLmsLogo,
-          payment_status: 'completed'
-        };
-        setFeaturedCertifications([realLmsDemo, ...data]);
+        setFeaturedCertifications(data);
       }
     };
 
