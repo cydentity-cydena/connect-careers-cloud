@@ -217,7 +217,7 @@ const CertificationCatalog = () => {
                     key={cert.id}
                     className={`relative ${slotStyles.border} ${slotStyles.size} bg-gradient-to-br ${slotStyles.bg} hover:scale-[1.02] transition-all duration-200`}
                   >
-                    <div className="absolute top-3 right-3 z-10">
+                    <div className="absolute top-4 right-4 z-10">
                       <Badge className={`${slotStyles.badge} text-white border-0 px-3 py-1`}>
                         {cert.slot_position === 1 && <Star className="h-3.5 w-3.5 mr-1.5 fill-white" />}
                         <Star className="h-3.5 w-3.5 mr-1.5" />
@@ -225,7 +225,7 @@ const CertificationCatalog = () => {
                       </Badge>
                     </div>
 
-                    <CardHeader className="pb-3 pr-28">
+                    <CardHeader className="pb-3 pr-32">
                       <div className="flex items-start gap-4">
                         <div className="flex-1">
                           <CardTitle className={`${cert.slot_position === 1 ? 'text-2xl' : 'text-xl'} mb-2 flex items-center gap-2`}>
@@ -240,7 +240,7 @@ const CertificationCatalog = () => {
                           <img 
                             src={cert.logo_url} 
                             alt={`${cert.provider_name} logo`}
-                            className={`h-14 w-14 object-contain rounded bg-background p-2 ${slotStyles.border} border`}
+                            className={`h-14 w-14 object-contain rounded bg-background p-2 ${slotStyles.border} border mr-4`}
                           />
                         )}
                       </div>
