@@ -292,7 +292,7 @@ const CertificationCatalog = () => {
               {provider === "TRECCert" && (
                 <Badge variant="secondary" className="ml-2">
                   <CheckCircle className="h-3 w-3 mr-1" />
-                  Official Partner
+                  Accreditation Partner
                 </Badge>
               )}
             </div>
