@@ -44,40 +44,12 @@ const Training = () => {
       icon: <Zap className="h-6 w-6" />,
       providers: [
         {
-          name: "TryHackMe",
-          description: "Gamified cybersecurity labs with global community. Issues digital completion certificates integrated with Credly.",
-          color: "bg-green-600",
-          features: ["Hands-on Labs", "Completion Badges", "Community Rankings", "Credly Integration"],
-          freeCourses: [
-            { name: "Linux Fundamentals", url: "https://tryhackme.com/r/room/linuxfundamentalspart1" },
-            { name: "Phishing Analysis", url: "https://tryhackme.com/room/phishingemails1tryoe" }
-          ]
-        },
-        {
           name: "Hack The Box",
           description: "Industry-recognized penetration testing labs. HTB Academy issues verified completion badges.",
           color: "bg-lime-600",
           features: ["HTB Academy", "Pro Labs", "Verified Badges", "Employer Recognition"],
           freeCourses: [
             { name: "Introduction to HTB", url: "https://academy.hackthebox.com/course/preview/intro-to-academy" }
-          ]
-        },
-        {
-          name: "LetsDefend",
-          description: "Blue team training with real-world SOC scenarios. Hands-on SIEM practice and incident response exercises.",
-          color: "bg-cyan-600",
-          features: ["SOC Analyst Training", "Real-World Scenarios", "SIEM Practice", "Completion Certificates"],
-          freeCourses: [
-            { name: "SOC Analyst Path", url: "https://letsdefend.io/training/lessons/soc-analyst-learning-path" }
-          ]
-        },
-        {
-          name: "Cybrary",
-          description: "Comprehensive cybersecurity training platform with career paths and hands-on virtual labs.",
-          color: "bg-orange-600",
-          features: ["Career Paths", "Virtual Labs", "Certificates", "Skill Assessments"],
-          freeCourses: [
-            { name: "Intro to IT & Cybersecurity", url: "https://www.cybrary.it/catalog" }
           ]
         },
         {
