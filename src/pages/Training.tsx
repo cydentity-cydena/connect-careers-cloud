@@ -316,22 +316,21 @@ const Training = () => {
                           </Badge>
                         </div>
 
-                        <CardHeader className="pb-3 pr-32">
-                          <div className="flex items-start gap-4">
-                            <div className="flex-1">
-                              <CardTitle className={`${partner.slot_position === 1 ? 'text-2xl' : 'text-xl'} mb-2 flex items-center gap-2`}>
-                                <Building2 className={`h-5 w-5 ${slotStyles.icon}`} />
-                                {partner.partner_name}
-                              </CardTitle>
-                            </div>
-                            {partner.logo_url && (
-                              <img 
-                                src={partner.logo_url} 
-                                alt={`${partner.partner_name} logo`}
-                                className={`h-14 w-14 object-contain rounded bg-background p-2 ${slotStyles.border} border mr-4`}
-                              />
-                            )}
+                        {partner.logo_url && (
+                          <div className="p-6 pb-0">
+                            <img 
+                              src={partner.logo_url} 
+                              alt={`${partner.partner_name} logo`}
+                              className="h-12 object-contain"
+                            />
                           </div>
+                        )}
+
+                        <CardHeader className="pb-3">
+                          <CardTitle className={`${partner.slot_position === 1 ? 'text-2xl' : 'text-xl'} flex items-center gap-2`}>
+                            <Building2 className={`h-5 w-5 ${slotStyles.icon}`} />
+                            {partner.partner_name}
+                          </CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-4">
                           <p className="text-sm text-muted-foreground leading-relaxed">

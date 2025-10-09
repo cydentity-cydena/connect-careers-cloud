@@ -225,25 +225,24 @@ const CertificationCatalog = () => {
                       </Badge>
                     </div>
 
-                    <CardHeader className="pb-3 pr-32">
-                      <div className="flex items-start gap-4">
-                        <div className="flex-1">
-                          <CardTitle className={`${cert.slot_position === 1 ? 'text-2xl' : 'text-xl'} mb-2 flex items-center gap-2`}>
-                            <Award className={`h-5 w-5 ${slotStyles.icon}`} />
-                            {cert.cert_name}
-                          </CardTitle>
-                          <CardDescription className="font-semibold text-base">
-                            {cert.provider_name}
-                          </CardDescription>
-                        </div>
-                        {cert.logo_url && (
-                          <img 
-                            src={cert.logo_url} 
-                            alt={`${cert.provider_name} logo`}
-                            className={`h-14 w-14 object-contain rounded bg-background p-2 ${slotStyles.border} border mr-4`}
-                          />
-                        )}
+                    {cert.logo_url && (
+                      <div className="p-6 pb-0">
+                        <img 
+                          src={cert.logo_url} 
+                          alt={`${cert.provider_name} logo`}
+                          className="h-12 object-contain"
+                        />
                       </div>
+                    )}
+
+                    <CardHeader className="pb-3">
+                      <CardTitle className={`${cert.slot_position === 1 ? 'text-2xl' : 'text-xl'} flex items-center gap-2`}>
+                        <Award className={`h-5 w-5 ${slotStyles.icon}`} />
+                        {cert.cert_name}
+                      </CardTitle>
+                      <CardDescription className="font-semibold text-base">
+                        {cert.provider_name}
+                      </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
                       <p className="text-sm text-muted-foreground leading-relaxed">
