@@ -6,7 +6,7 @@ import Navigation from "@/components/Navigation";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
 import SEO from "@/components/SEO";
-import treccertLogo from "@/assets/treccert-logo.png";
+import treccertLogo from "@/assets/treccert-logo.svg";
 
 interface Course {
   name: string;
