@@ -68,40 +68,42 @@ const Partnerships = () => {
     checkAvailableSlots();
   }, []);
 
-  const pricingTiers: PricingTier[] = [
+  // Base placement pricing (Standard listing on Training/Cert pages)
+  const basePricingTiers: PricingTier[] = [
     {
-      name: "Trial",
+      name: "Weekly",
       duration: "1-3 Weeks",
-      price: 249, // Starting at Slot 4 price
+      price: 149,
       weeks: 1,
     },
     {
       name: "Monthly",
-      duration: "4-7 Weeks",
-      price: 999,
-      originalPrice: 1196,
+      duration: "4 Weeks",
+      price: 537,
+      originalPrice: 596,
       discount: "10% OFF",
       weeks: 4,
       popular: true,
     },
     {
       name: "Quarterly",
-      duration: "8-11 Weeks",
-      price: 2379,
-      originalPrice: 2796,
+      duration: "12 Weeks",
+      price: 1522,
+      originalPrice: 1788,
       discount: "15% OFF",
-      weeks: 8,
+      weeks: 12,
     },
     {
       name: "Annual",
-      duration: "12+ Weeks",
-      price: 3832,
-      originalPrice: 4788,
+      duration: "52 Weeks",
+      price: 6197,
+      originalPrice: 7748,
       discount: "20% OFF",
-      weeks: 12,
+      weeks: 52,
     },
   ];
 
+  // Dashboard Boost placement pricing (Premium dashboard visibility)
   const boostPricingTiers: PricingTier[] = [
     {
       name: "Weekly",
@@ -112,26 +114,26 @@ const Partnerships = () => {
     {
       name: "Monthly",
       duration: "4 Weeks",
-      price: 1699,
+      price: 1796,
       originalPrice: 1996,
-      discount: "15% OFF",
+      discount: "10% OFF",
       weeks: 4,
       popular: true,
     },
     {
       name: "Quarterly",
       duration: "12 Weeks",
-      price: 4499,
+      price: 5093,
       originalPrice: 5988,
-      discount: "25% OFF",
+      discount: "15% OFF",
       weeks: 12,
     },
     {
       name: "Annual",
       duration: "52 Weeks",
-      price: 14999,
+      price: 20748,
       originalPrice: 25948,
-      discount: "42% OFF",
+      discount: "20% OFF",
       weeks: 52,
     },
   ];
@@ -260,11 +262,188 @@ const Partnerships = () => {
                   <div className="py-8 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
                     <div className="text-center">
                       <p className="text-lg font-semibold text-yellow-700 dark:text-yellow-400">
-                        ⚠️ Only {availableTrainingSlots} training {availableTrainingSlots === 1 ? 'slot' : 'slots'} remaining!
+                        ⚠️ Only {availableTrainingSlots} featured training {availableTrainingSlots === 1 ? 'slot' : 'slots'} remaining!
                       </p>
                     </div>
                   </div>
                 )}
+
+                {/* Pricing Explanation */}
+                <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-background">
+                  <CardContent className="pt-6">
+                    <h3 className="text-2xl font-bold mb-4 text-center">Training Page Placement Options</h3>
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div className="space-y-3">
+                        <div className="flex items-start gap-3">
+                          <div className="bg-muted p-2 rounded-lg">
+                            <Check className="h-5 w-5 text-primary" />
+                          </div>
+                          <div>
+                            <h4 className="font-bold">Standard Placement</h4>
+                            <p className="text-sm text-muted-foreground">Listed in category sections. Base pricing starting at $149/week.</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="space-y-3">
+                        <div className="flex items-start gap-3">
+                          <div className="bg-primary/10 p-2 rounded-lg">
+                            <Star className="h-5 w-5 text-primary" />
+                          </div>
+                          <div>
+                            <h4 className="font-bold">Featured Upgrade</h4>
+                            <p className="text-sm text-muted-foreground">Premium top-of-page section with logo. +$100-250/week based on slot position (1-4).</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Base Pricing */}
+                <div>
+                  <h3 className="text-2xl font-bold text-center mb-8">Standard Training Page Placement</h3>
+                  <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    {basePricingTiers.map((tier) => (
+                      <Card 
+                        key={tier.name} 
+                        className={`relative ${tier.popular ? 'border-2 border-primary shadow-lg scale-105' : ''}`}
+                      >
+                        {tier.popular && (
+                          <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                            <Badge className="bg-primary text-primary-foreground">Most Popular</Badge>
+                          </div>
+                        )}
+                        <CardHeader>
+                          <CardTitle className="text-center">{tier.name}</CardTitle>
+                          <CardDescription className="text-center">{tier.duration}</CardDescription>
+                          {tier.discount && (
+                            <Badge variant="secondary" className="w-fit mx-auto mt-2">
+                              {tier.discount}
+                            </Badge>
+                          )}
+                        </CardHeader>
+                        <CardContent>
+                          <div className="text-center mb-6">
+                            {tier.originalPrice && (
+                              <p className="text-sm text-muted-foreground line-through">
+                                ${tier.originalPrice.toLocaleString()}
+                              </p>
+                            )}
+                            <p className="text-4xl font-bold">${tier.price.toLocaleString()}</p>
+                            <p className="text-sm text-muted-foreground mt-1">
+                              ${Math.round(tier.price / tier.weeks)}/week
+                            </p>
+                          </div>
+                          <Button 
+                            className="w-full" 
+                            variant={tier.popular ? "default" : "outline"}
+                            onClick={handleContactSales}
+                          >
+                            Select Plan
+                          </Button>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Featured Slot Upgrades */}
+                <div className="mt-12">
+                  <h3 className="text-2xl font-bold text-center mb-4">Upgrade to Featured Top Section</h3>
+                  <p className="text-center text-muted-foreground mb-8">
+                    Add premium visibility with logo display and top-of-page placement. Pricing is per week, on top of base placement.
+                  </p>
+                  
+                  <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <Card className="border-4 border-yellow-500 bg-gradient-to-br from-yellow-500/15 to-yellow-500/5">
+                      <CardHeader>
+                        <div className="flex items-center justify-between mb-2">
+                          <CardTitle className="text-xl">Slot 1</CardTitle>
+                          <Badge className="bg-yellow-500">PREMIUM</Badge>
+                        </div>
+                        <CardDescription>Maximum visibility</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="text-center">
+                          <p className="text-4xl font-bold text-yellow-600 mb-1">+$250</p>
+                          <p className="text-sm text-muted-foreground">/week upgrade</p>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card className="border-3 border-orange-500/70 bg-gradient-to-br from-orange-500/10 to-orange-500/5">
+                      <CardHeader>
+                        <div className="flex items-center justify-between mb-2">
+                          <CardTitle className="text-xl">Slot 2</CardTitle>
+                          <Badge className="bg-orange-500">FEATURED</Badge>
+                        </div>
+                        <CardDescription>High visibility</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="text-center">
+                          <p className="text-4xl font-bold text-orange-600 mb-1">+$200</p>
+                          <p className="text-sm text-muted-foreground">/week upgrade</p>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card className="border-2 border-blue-500/60 bg-gradient-to-br from-blue-500/8 to-blue-500/3">
+                      <CardHeader>
+                        <div className="flex items-center justify-between mb-2">
+                          <CardTitle className="text-xl">Slot 3</CardTitle>
+                          <Badge className="bg-blue-500">FEATURED</Badge>
+                        </div>
+                        <CardDescription>Prominent position</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="text-center">
+                          <p className="text-4xl font-bold text-blue-600 mb-1">+$150</p>
+                          <p className="text-sm text-muted-foreground">/week upgrade</p>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card className="border-2 border-purple-500/50 bg-gradient-to-br from-purple-500/5 to-transparent">
+                      <CardHeader>
+                        <div className="flex items-center justify-between mb-2">
+                          <CardTitle className="text-xl">Slot 4</CardTitle>
+                          <Badge className="bg-purple-500">FEATURED</Badge>
+                        </div>
+                        <CardDescription>Featured placement</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="text-center">
+                          <p className="text-4xl font-bold text-purple-600 mb-1">+$100</p>
+                          <p className="text-sm text-muted-foreground">/week upgrade</p>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  <div className="mt-8 p-6 bg-primary/5 border border-primary/20 rounded-lg">
+                    <h4 className="font-semibold text-lg mb-3 flex items-center gap-2">
+                      <TrendingUp className="h-5 w-5 text-primary" />
+                      Volume Discounts Applied Automatically
+                    </h4>
+                    <ul className="space-y-2 text-muted-foreground">
+                      <li className="flex items-center gap-2">
+                        <Check className="h-4 w-4 text-green-500" />
+                        <span>4-11 weeks: <strong>10% off</strong> total price</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Check className="h-4 w-4 text-green-500" />
+                        <span>12-51 weeks: <strong>15% off</strong> total price</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Check className="h-4 w-4 text-green-500" />
+                        <span>52+ weeks: <strong>20% off</strong> total price</span>
+                      </li>
+                    </ul>
+                    <p className="text-sm text-muted-foreground mt-4 pt-4 border-t">
+                      <strong>Example:</strong> Standard placement (4 weeks at $537) + Slot 1 Featured upgrade (4 weeks × $250 = $1,000) = $1,537 total
+                    </p>
+                  </div>
+                </div>
 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <Button size="lg" className="text-lg" onClick={handleContactSales}>
@@ -392,11 +571,24 @@ const Partnerships = () => {
                   <div className="py-8 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
                     <div className="text-center">
                       <p className="text-lg font-semibold text-yellow-700 dark:text-yellow-400">
-                        ⚠️ Only {availableCertSlots} certification {availableCertSlots === 1 ? 'slot' : 'slots'} remaining!
+                        ⚠️ Only {availableCertSlots} featured certification {availableCertSlots === 1 ? 'slot' : 'slots'} remaining!
                       </p>
                     </div>
                   </div>
                 )}
+
+                {/* Pricing Explanation */}
+                <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-background">
+                  <CardContent className="pt-6">
+                    <h3 className="text-2xl font-bold mb-4 text-center">Certification Catalog Placement</h3>
+                    <p className="text-center text-muted-foreground mb-4">
+                      Same pricing structure as Training page placement - standard listing + optional featured upgrade.
+                    </p>
+                    <div className="text-center">
+                      <Button onClick={handleContactSales}>View Pricing Details</Button>
+                    </div>
+                  </CardContent>
+                </Card>
 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <Button size="lg" className="text-lg" onClick={handleContactSales}>
@@ -440,167 +632,7 @@ const Partnerships = () => {
           </div>
         </section>
 
-        {/* Pricing Section */}
-        <section className="py-20 bg-muted/30">
-          <div className="container mx-auto px-4">
-            <div className="max-w-6xl mx-auto">
-              <div className="text-center mb-16">
-                <h2 className="text-3xl md:text-4xl font-bold mb-4">Flexible Pricing Plans</h2>
-                <p className="text-xl text-muted-foreground">
-                  Choose the duration that works best for your marketing goals
-                </p>
-              </div>
-
-              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {pricingTiers.map((tier) => (
-                  <Card 
-                    key={tier.name} 
-                    className={`relative ${tier.popular ? 'border-2 border-primary shadow-lg scale-105' : ''}`}
-                  >
-                    {tier.popular && (
-                      <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                        <Badge className="bg-primary text-primary-foreground">Most Popular</Badge>
-                      </div>
-                    )}
-                    <CardHeader>
-                      <CardTitle className="text-center">{tier.name}</CardTitle>
-                      <CardDescription className="text-center">{tier.duration}</CardDescription>
-                      {tier.discount && (
-                        <Badge variant="secondary" className="w-fit mx-auto mt-2">
-                          {tier.discount}
-                        </Badge>
-                      )}
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-center mb-6">
-                        {tier.originalPrice && (
-                          <p className="text-sm text-muted-foreground line-through">
-                            ${tier.originalPrice.toLocaleString()}
-                          </p>
-                        )}
-                        <p className="text-4xl font-bold">${tier.price.toLocaleString()}</p>
-                        <p className="text-sm text-muted-foreground mt-1">
-                          ${Math.round(tier.price / tier.weeks)}/week
-                        </p>
-                      </div>
-                      <Button 
-                        className="w-full" 
-                        variant={tier.popular ? "default" : "outline"}
-                        onClick={handleContactSales}
-                      >
-                        Select Plan
-                      </Button>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-
-              <div className="mt-12 text-center">
-                <p className="text-muted-foreground mb-4">
-                  Need a custom plan or have questions? We're here to help.
-                </p>
-                <Button variant="outline" size="lg" onClick={handleContactSales}>
-                  Contact Sales Team
-                </Button>
-              </div>
-
-              {/* Slot Position Pricing */}
-              <div className="mt-20">
-                <h3 className="text-2xl font-bold text-center mb-4">Premium Slot Positions</h3>
-                <p className="text-center text-muted-foreground mb-8">
-                  Choose your slot position for maximum visibility. Higher slots = more traffic.
-                </p>
-                
-                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                  <Card className="border-4 border-yellow-500 bg-gradient-to-br from-yellow-500/15 to-yellow-500/5 scale-105">
-                    <CardHeader>
-                      <div className="flex items-center justify-between mb-2">
-                        <CardTitle className="text-2xl">Slot 1</CardTitle>
-                        <Badge className="bg-yellow-500">PREMIUM</Badge>
-                      </div>
-                      <CardDescription>Top position, maximum visibility</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-center">
-                        <p className="text-5xl font-bold text-yellow-600 mb-2">$399</p>
-                        <p className="text-sm text-muted-foreground">/week</p>
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  <Card className="border-3 border-orange-500/70 bg-gradient-to-br from-orange-500/10 to-orange-500/5">
-                    <CardHeader>
-                      <div className="flex items-center justify-between mb-2">
-                        <CardTitle className="text-2xl">Slot 2</CardTitle>
-                        <Badge className="bg-orange-500">FEATURED</Badge>
-                      </div>
-                      <CardDescription>High visibility placement</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-center">
-                        <p className="text-5xl font-bold text-orange-600 mb-2">$349</p>
-                        <p className="text-sm text-muted-foreground">/week</p>
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  <Card className="border-2 border-blue-500/60 bg-gradient-to-br from-blue-500/8 to-blue-500/3">
-                    <CardHeader>
-                      <div className="flex items-center justify-between mb-2">
-                        <CardTitle className="text-2xl">Slot 3</CardTitle>
-                        <Badge className="bg-blue-500">FEATURED</Badge>
-                      </div>
-                      <CardDescription>Prominent featured position</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-center">
-                        <p className="text-5xl font-bold text-blue-600 mb-2">$299</p>
-                        <p className="text-sm text-muted-foreground">/week</p>
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  <Card className="border-2 border-purple-500/50 bg-gradient-to-br from-purple-500/5 to-transparent">
-                    <CardHeader>
-                      <div className="flex items-center justify-between mb-2">
-                        <CardTitle className="text-2xl">Slot 4</CardTitle>
-                        <Badge className="bg-purple-500">FEATURED</Badge>
-                      </div>
-                      <CardDescription>Featured section placement</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-center">
-                        <p className="text-5xl font-bold text-purple-600 mb-2">$249</p>
-                        <p className="text-sm text-muted-foreground">/week</p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-
-                <div className="mt-8 p-6 bg-primary/5 border border-primary/20 rounded-lg">
-                  <h4 className="font-semibold text-lg mb-3 flex items-center gap-2">
-                    <TrendingUp className="h-5 w-5 text-primary" />
-                    Volume Discounts Applied Automatically
-                  </h4>
-                  <ul className="space-y-2 text-muted-foreground">
-                    <li className="flex items-center gap-2">
-                      <Check className="h-4 w-4 text-green-500" />
-                      <span>4-7 weeks: <strong>10% off</strong> total price</span>
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <Check className="h-4 w-4 text-green-500" />
-                      <span>8-11 weeks: <strong>15% off</strong> total price</span>
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <Check className="h-4 w-4 text-green-500" />
-                      <span>12+ weeks: <strong>20% off</strong> total price</span>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+        {/* Pricing Section - Now handled in tabs above */}
 
         {/* Features List */}
         <section className="py-20">
@@ -657,11 +689,11 @@ const Partnerships = () => {
               <div className="space-y-6">
                 <Card>
                   <CardHeader>
-                    <CardTitle className="text-lg">What's included in a featured slot?</CardTitle>
+                    <CardTitle className="text-lg">What's the difference between standard and featured placement?</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <p className="text-muted-foreground">
-                      Your featured placement includes a premium position at the top of the Training page with your logo, custom description, direct website link, and guaranteed visibility to all visitors. You'll also receive monthly performance reports.
+                      Standard placement lists you in the relevant category sections at $149/week base rate. Featured placement upgrades you to the premium top-of-page section with logo display, custom branding, and guaranteed visibility for an additional $100-250/week (depending on slot position 1-4). Volume discounts apply automatically.
                     </p>
                   </CardContent>
                 </Card>
@@ -672,7 +704,7 @@ const Partnerships = () => {
                   </CardHeader>
                   <CardContent>
                     <p className="text-muted-foreground">
-                      Only 4 featured slots are available at any time for each category (training and certifications) to maintain exclusivity. Training: {availableTrainingSlots} available. Certifications: {availableCertSlots} available.
+                      Only 4 featured slots are available at any time for each category (training and certifications) to maintain exclusivity. Training: {availableTrainingSlots} available. Certifications: {availableCertSlots} available. Dashboard boost placements have 6 slots available.
                     </p>
                   </CardContent>
                 </Card>
