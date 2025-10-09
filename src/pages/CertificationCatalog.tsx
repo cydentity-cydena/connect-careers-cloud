@@ -142,9 +142,7 @@ const CertificationCatalog = () => {
           <CardContent className="p-6">
             <div className="flex flex-col md:flex-row items-center justify-between gap-6">
               <div className="flex items-center gap-6">
-                <div className="bg-muted/50 p-4 rounded-lg border border-border">
-                  <img src={treccertLogo} alt="TRECCert Logo" className="h-16 w-auto object-contain" />
-                </div>
+                <img src={treccertLogo} alt="TRECCert Logo" className="h-16 w-auto object-contain" />
                 <div>
                   <div className="flex items-center gap-2 mb-2">
                     <h3 className="text-2xl font-bold">Official Accreditation Partner</h3>
