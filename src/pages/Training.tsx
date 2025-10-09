@@ -118,7 +118,7 @@ const Training = () => {
         {
           name: "CyberRanges",
           description: "Official cyber range of UN's ITU. Military-grade platform for realistic cybersecurity scenarios and team exercises.",
-          color: "bg-slate-800",
+          color: "bg-indigo-700",
           features: ["Team Exercises", "MITRE ATT&CK", "Realistic Scenarios", "Professional Platform"],
           freeCourses: [
             { name: "Request Demo", url: "https://cyberranges.com/" }
