@@ -1,9 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import Navigation from "@/components/Navigation";
 import SEO from "@/components/SEO";
-import { Check, Star, TrendingUp, Users, BarChart, Sparkles, ArrowRight, Award, GraduationCap } from "lucide-react";
+import { Check, Star, TrendingUp, Users, BarChart, Sparkles, ArrowRight, Award, GraduationCap, AlertCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useState, useEffect } from "react";
@@ -21,37 +22,50 @@ interface PricingTier {
 }
 
 const Partnerships = () => {
-  const [availableTrainingSlots, setAvailableTrainingSlots] = useState(4);
-  const [availableCertSlots, setAvailableCertSlots] = useState(4);
+  const [availableTrainingSlots, setAvailableTrainingSlots] = useState<number[]>([]);
+  const [availableCertSlots, setAvailableCertSlots] = useState<number[]>([]);
   const [availableBoostSlots, setAvailableBoostSlots] = useState(6);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const checkAvailableSlots = async () => {
-      // Check training slots
+      const now = new Date().toISOString();
+      const oneYearFromNow = new Date();
+      oneYearFromNow.setFullYear(oneYearFromNow.getFullYear() + 1);
+
+      // Check which training slot positions have availability
       const { data: trainingData } = await supabase
         .from("featured_training_partners")
-        .select("slot_position")
-        .gte("end_date", new Date().toISOString())
+        .select("slot_position, start_date, end_date")
+        .gte("end_date", now)
+        .lte("start_date", oneYearFromNow.toISOString())
         .eq("payment_status", "completed");
       
       if (trainingData) {
-        setAvailableTrainingSlots(4 - trainingData.length);
+        const occupiedSlots = new Set(trainingData.map(d => d.slot_position));
+        const available = [1, 2, 3, 4].filter(pos => !occupiedSlots.has(pos));
+        setAvailableTrainingSlots(available);
+      } else {
+        setAvailableTrainingSlots([1, 2, 3, 4]);
       }
 
-      // Check certification slots
+      // Check which certification slot positions have availability
       const { data: certData } = await supabase
         .from("featured_certifications")
-        .select("slot_position")
-        .gte("end_date", new Date().toISOString())
+        .select("slot_position, start_date, end_date")
+        .gte("end_date", now)
+        .lte("start_date", oneYearFromNow.toISOString())
         .eq("payment_status", "completed");
       
       if (certData) {
-        setAvailableCertSlots(4 - certData.length);
+        const occupiedSlots = new Set(certData.map(d => d.slot_position));
+        const available = [1, 2, 3, 4].filter(pos => !occupiedSlots.has(pos));
+        setAvailableCertSlots(available);
+      } else {
+        setAvailableCertSlots([1, 2, 3, 4]);
       }
 
       // Check boost placement slots
-      const now = new Date().toISOString();
       const { data: boostData } = await supabase
         .from("partner_courses")
         .select("id")
@@ -61,7 +75,7 @@ const Partnerships = () => {
         .gte("boost_end_date", now);
       
       if (boostData) {
-        setAvailableBoostSlots(6 - boostData.length);
+        setAvailableBoostSlots(Math.max(0, 6 - boostData.length));
       }
     };
 
@@ -258,15 +272,32 @@ const Partnerships = () => {
               {/* Training Partners Tab */}
               <TabsContent value="training" className="space-y-12">
                 {/* Slot Availability Alert */}
-                {availableTrainingSlots <= 2 && (
-                  <div className="py-8 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
-                    <div className="text-center">
-                      <p className="text-lg font-semibold text-yellow-700 dark:text-yellow-400">
-                        ⚠️ Only {availableTrainingSlots} featured training {availableTrainingSlots === 1 ? 'slot' : 'slots'} remaining!
-                      </p>
-                    </div>
-                  </div>
-                )}
+                {availableTrainingSlots.length === 0 ? (
+                  <Alert className="border-red-500/50 bg-red-500/10">
+                    <AlertCircle className="h-5 w-5 text-red-500" />
+                    <AlertTitle className="text-red-700 dark:text-red-400">All Featured Slots Currently Booked</AlertTitle>
+                    <AlertDescription className="text-red-600 dark:text-red-300">
+                      All featured training slots are currently reserved. Join our waitlist to be notified when slots become available.
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="mt-3 border-red-500/50 hover:bg-red-500/20"
+                        onClick={handleContactSales}
+                      >
+                        Join Waitlist
+                      </Button>
+                    </AlertDescription>
+                  </Alert>
+                ) : availableTrainingSlots.length <= 2 ? (
+                  <Alert className="border-yellow-500/50 bg-yellow-500/10">
+                    <AlertCircle className="h-5 w-5 text-yellow-600" />
+                    <AlertTitle className="text-yellow-700 dark:text-yellow-400">Limited Availability</AlertTitle>
+                    <AlertDescription className="text-yellow-600 dark:text-yellow-300">
+                      Only {availableTrainingSlots.length} featured slot position{availableTrainingSlots.length === 1 ? '' : 's'} currently available: 
+                      {availableTrainingSlots.map(slot => ` Slot ${slot}`).join(',')}. Book now to secure your premium placement!
+                    </AlertDescription>
+                  </Alert>
+                ) : null}
 
                 {/* Pricing Explanation */}
                 <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-background">
@@ -567,15 +598,32 @@ const Partnerships = () => {
               {/* Certification Providers Tab */}
               <TabsContent value="certifications" className="space-y-12">
                 {/* Slot Availability Alert */}
-                {availableCertSlots <= 2 && (
-                  <div className="py-8 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
-                    <div className="text-center">
-                      <p className="text-lg font-semibold text-yellow-700 dark:text-yellow-400">
-                        ⚠️ Only {availableCertSlots} featured certification {availableCertSlots === 1 ? 'slot' : 'slots'} remaining!
-                      </p>
-                    </div>
-                  </div>
-                )}
+                {availableCertSlots.length === 0 ? (
+                  <Alert className="border-red-500/50 bg-red-500/10">
+                    <AlertCircle className="h-5 w-5 text-red-500" />
+                    <AlertTitle className="text-red-700 dark:text-red-400">All Featured Slots Currently Booked</AlertTitle>
+                    <AlertDescription className="text-red-600 dark:text-red-300">
+                      All featured certification slots are currently reserved. Join our waitlist to be notified when slots become available.
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="mt-3 border-red-500/50 hover:bg-red-500/20"
+                        onClick={handleContactSales}
+                      >
+                        Join Waitlist
+                      </Button>
+                    </AlertDescription>
+                  </Alert>
+                ) : availableCertSlots.length <= 2 ? (
+                  <Alert className="border-yellow-500/50 bg-yellow-500/10">
+                    <AlertCircle className="h-5 w-5 text-yellow-600" />
+                    <AlertTitle className="text-yellow-700 dark:text-yellow-400">Limited Availability</AlertTitle>
+                    <AlertDescription className="text-yellow-600 dark:text-yellow-300">
+                      Only {availableCertSlots.length} featured slot position{availableCertSlots.length === 1 ? '' : 's'} currently available:
+                      {availableCertSlots.map(slot => ` Slot ${slot}`).join(',')}. Book now to secure your premium placement!
+                    </AlertDescription>
+                  </Alert>
+                ) : null}
 
                 {/* Pricing Explanation */}
                 <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-background">
