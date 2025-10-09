@@ -383,7 +383,7 @@ const Training = () => {
                       </p>
                       <div className="flex flex-wrap gap-2">
                         {partner.features.map((feature, fIdx) => (
-                          <Badge key={fIdx} variant="secondary" className="text-xs">
+                          <Badge key={fIdx} className="text-xs bg-purple-600 text-white hover:bg-purple-700 border-0">
                             {feature}
                           </Badge>
                         ))}
