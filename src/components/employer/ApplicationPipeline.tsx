@@ -333,28 +333,31 @@ export const ApplicationPipeline = () => {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between flex-wrap gap-4">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="space-y-3">
         <div>
-          <h2 className="text-3xl font-bold">Application Pipeline</h2>
-          <p className="text-muted-foreground">Track candidates through customizable pipeline stages</p>
+          <h2 className="text-2xl sm:text-3xl font-bold">Application Pipeline</h2>
+          <p className="text-sm sm:text-base text-muted-foreground">Track candidates through customizable pipeline stages</p>
         </div>
-        <div className="flex items-center gap-3">
-          <div className="relative">
+        
+        <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
+          <div className="relative flex-1 sm:max-w-xs">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search candidates..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9 w-64"
+              className="pl-9 w-full"
             />
           </div>
-          <Badge variant="secondary" className="text-lg px-4 py-2">
-            {applications.length} Applications
-          </Badge>
-          <Badge variant="outline" className="text-lg px-4 py-2 border-primary text-primary">
-            {unlockedCandidates.length} In Talent Pool
-          </Badge>
+          <div className="flex gap-2 flex-wrap">
+            <Badge variant="secondary" className="text-xs sm:text-sm px-2 sm:px-3 py-1 whitespace-nowrap">
+              {applications.length} Applications
+            </Badge>
+            <Badge variant="outline" className="text-xs sm:text-sm px-2 sm:px-3 py-1 border-primary text-primary whitespace-nowrap">
+              {unlockedCandidates.length} In Talent Pool
+            </Badge>
+          </div>
         </div>
       </div>
 
