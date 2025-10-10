@@ -24,8 +24,9 @@ export const UnlockUsageTracker = ({
   const [showPurchaseDialog, setShowPurchaseDialog] = useState(false);
   const [showUpgradeDialog, setShowUpgradeDialog] = useState(false);
 
-  const totalAllocated = annualAllocation || (creditsUsed + creditsAvailable);
-  const usagePercentage = (creditsUsed / totalAllocated) * 100;
+  // Total allocated should be all available credits plus what's been used
+  const totalAllocated = creditsUsed + creditsAvailable;
+  const usagePercentage = totalAllocated > 0 ? (creditsUsed / totalAllocated) * 100 : 0;
   const isLowBalance = creditsAvailable <= 10;
   const isOutOfCredits = creditsAvailable === 0;
 
