@@ -16,7 +16,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { MessageSquare, MoreVertical, Calendar, Briefcase } from "lucide-react";
+import { MessageSquare, MoreVertical, Calendar, Briefcase, GripVertical } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { HireConfirmationDialog } from "./HireConfirmationDialog";
 
@@ -68,12 +68,17 @@ export const ApplicationCard = ({ application, onStageChange }: ApplicationCardP
   return (
     <>
       <Card 
-        className="hover:shadow-md transition-shadow cursor-pointer border"
-        onClick={() => setShowDetails(true)}
+        className="hover:shadow-md transition-shadow border"
       >
         <CardContent className="p-3 space-y-3">
-          <div className="flex items-start gap-3">
-            <Avatar className="h-10 w-10">
+          <div className="flex items-start gap-2">
+            <div 
+              className="cursor-move mt-1 flex-shrink-0"
+              onMouseDown={(e) => e.stopPropagation()}
+            >
+              <GripVertical className="h-4 w-4 text-muted-foreground" />
+            </div>
+            <Avatar className="h-10 w-10 flex-shrink-0">
               <AvatarImage src={application.profile.avatar_url || undefined} />
               <AvatarFallback className="bg-primary text-primary-foreground">
                 {getInitials(application.profile.full_name)}
@@ -89,7 +94,7 @@ export const ApplicationCard = ({ application, onStageChange }: ApplicationCardP
             </div>
             <DropdownMenu>
               <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-                <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                <Button variant="ghost" size="sm" className="h-8 w-8 p-0 flex-shrink-0">
                   <MoreVertical className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
@@ -131,11 +136,11 @@ export const ApplicationCard = ({ application, onStageChange }: ApplicationCardP
             className="w-full"
             onClick={(e) => {
               e.stopPropagation();
-              // TODO: Open messaging interface
+              setShowDetails(true);
             }}
           >
             <MessageSquare className="h-3 w-3 mr-1" />
-            Message
+            View Details
           </Button>
         </CardContent>
       </Card>
