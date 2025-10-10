@@ -4,7 +4,10 @@ project_id = "wbeomprrrmteftumwljf"
 verify_jwt = false
 
 [functions.seed-demo-candidates]
-verify_jwt = false
+verify_jwt = true
+
+[functions.generate-daily-content]
+verify_jwt = true
 
 [functions.unlock-profile]
 verify_jwt = true

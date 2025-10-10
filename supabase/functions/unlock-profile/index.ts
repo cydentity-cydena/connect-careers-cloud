@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.38.4";
+import { z } from "https://esm.sh/zod@3.22.4";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -21,6 +22,14 @@ serve(async (req) => {
   }
 
   try {
+    // Input validation schema
+    const UnlockSchema = z.object({
+      candidateId: z.string().uuid({ message: "Invalid candidate ID format" })
+    });
+
+    const rawBody = await req.json();
+    const { candidateId } = UnlockSchema.parse(rawBody);
+
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const authHeader = req.headers.get('Authorization')!;
@@ -37,7 +46,7 @@ serve(async (req) => {
     }
 
     const employerId = user.id;
-    const { candidateId }: UnlockRequest = await req.json();
+    // candidateId already validated above
     logStep('Unlock request', { employerId, candidateId });
 
     // Check if already unlocked
@@ -143,9 +152,12 @@ serve(async (req) => {
     }
 
     // Deduct credit (either from allocation or purchased credits)
+    // Use atomic update to prevent race conditions
     let newCredits = creditData.credits;
     let newAnnualUsed = annualUnlocksUsed;
     let chargeAmount = 0;
+    let expectedOldCredits = creditData.credits;
+    let expectedOldUsed = creditData.credits_used;
 
     if (isOverage) {
       // Using purchased credits for overage
@@ -162,17 +174,26 @@ serve(async (req) => {
       logStep('Using purchased credit (no subscription)');
     }
 
-    // Update credits and unlock
-    const { error: updateError } = await supabaseAdmin
+    // Atomic update with race condition protection
+    // Only update if credits haven't changed since we checked
+    const { data: updateResult, error: updateError } = await supabaseAdmin
       .from('employer_credits')
       .update({ 
         credits: newCredits,
         credits_used: creditData.credits_used + 1,
         annual_unlocks_used: newAnnualUsed
       })
-      .eq('employer_id', employerId);
+      .eq('employer_id', employerId)
+      .eq('credits', expectedOldCredits)  // Ensure credits haven't changed
+      .eq('credits_used', expectedOldUsed)  // Ensure usage hasn't changed
+      .select();
 
     if (updateError) throw updateError;
+    
+    // If no rows updated, another transaction modified credits first
+    if (!updateResult || updateResult.length === 0) {
+      throw new Error('Credit balance changed during transaction. Please try again.');
+    }
 
     const { error: unlockError } = await supabaseAdmin
       .from('profile_unlocks')

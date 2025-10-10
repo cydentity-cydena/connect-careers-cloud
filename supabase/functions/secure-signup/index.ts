@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.38.4";
+import { z } from "https://esm.sh/zod@3.22.4";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -33,7 +34,23 @@ serve(async (req) => {
       }
     });
 
-    const { email, password, fullName, username, role, isOAuthCompletion }: SignupRequest = await req.json();
+    // Input validation schema
+    const SignupSchema = z.object({
+      email: z.string().email({ message: "Invalid email format" }).max(255),
+      password: z.string().min(8, { message: "Password must be at least 8 characters" }).max(100).optional(),
+      fullName: z.string().min(1).max(200),
+      role: z.enum(['candidate', 'employer', 'recruiter']),
+      username: z.string().min(3).max(30).regex(/^[a-zA-Z0-9_-]+$/, { 
+        message: "Username can only contain letters, numbers, hyphens and underscores" 
+      }).optional(),
+      companyName: z.string().max(200).optional(),
+      oauthToken: z.string().optional(),
+      isOAuthCompletion: z.boolean().optional()
+    });
+
+    const rawBody = await req.json();
+    const validatedData = SignupSchema.parse(rawBody);
+    const { email, password, fullName, username, role, isOAuthCompletion } = validatedData;
 
     console.log('Starting secure signup for:', email, 'with role:', role);
 

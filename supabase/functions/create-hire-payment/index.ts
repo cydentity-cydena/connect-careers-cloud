@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { z } from "https://esm.sh/zod@3.22.4";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -38,11 +39,17 @@ serve(async (req) => {
     if (!user?.email) throw new Error("User not authenticated or email not available");
     logStep("User authenticated", { userId: user.id, email: user.email });
 
-    const { application_id, candidate_id, job_id, position_title } = await req.json();
-    if (!application_id || !candidate_id || !job_id || !position_title) {
-      throw new Error("Missing required fields");
-    }
-    logStep("Request data", { application_id, candidate_id, job_id });
+    // Input validation
+    const HirePaymentSchema = z.object({
+      application_id: z.string().uuid({ message: "Invalid application ID" }),
+      candidate_id: z.string().uuid({ message: "Invalid candidate ID" }),
+      job_id: z.string().uuid({ message: "Invalid job ID" }),
+      position_title: z.string().min(1).max(200)
+    });
+
+    const rawBody = await req.json();
+    const { application_id, candidate_id, job_id, position_title } = HirePaymentSchema.parse(rawBody);
+    logStep("Request data validated", { application_id, candidate_id, job_id });
 
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
     const customers = await stripe.customers.list({ email: user.email, limit: 1 });
