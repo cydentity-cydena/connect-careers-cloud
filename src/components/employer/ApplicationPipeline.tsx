@@ -326,6 +326,12 @@ export const ApplicationPipeline = () => {
 
     if (draggedItem.type === 'application') {
       await handleStageChange(draggedItem.id, targetStage);
+    } else if (draggedItem.type === 'unlock') {
+      // Moving from Talent Pool - need to create an application
+      toast({
+        title: "Feature Coming Soon",
+        description: "Drag candidates to job applications will be available soon. For now, view their profile to proceed.",
+      });
     }
     
     setDraggedItem(null);
@@ -408,48 +414,48 @@ export const ApplicationPipeline = () => {
                       key={candidate.id} 
                       draggable
                       onDragStart={() => handleDragStart(candidate.id, 'unlock')}
-                      className="p-3 hover:border-primary/50 transition-all cursor-move"
+                      className="p-2 hover:border-primary/50 transition-all cursor-move"
                     >
-                      <div className="space-y-2">
-                        <div className="flex items-start gap-2">
-                          <GripVertical className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
-                          <div className="flex-1 min-w-0">
-                            <h4 className="font-semibold text-sm truncate">{candidate.profile.full_name}</h4>
-                            {candidate.candidate_profile?.title && (
-                              <p className="text-xs text-muted-foreground truncate">{candidate.candidate_profile.title}</p>
-                            )}
-                            {candidate.candidate_profile?.years_experience > 0 && (
-                              <p className="text-xs text-muted-foreground mt-1">
-                                {candidate.candidate_profile.years_experience} yrs exp
-                              </p>
-                            )}
-                          </div>
+                      <div className="flex items-center gap-2 mb-2">
+                        <GripVertical className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <h4 className="font-semibold text-sm truncate">{candidate.profile.full_name}</h4>
+                          {candidate.candidate_profile?.title && (
+                            <p className="text-xs text-muted-foreground truncate">{candidate.candidate_profile.title}</p>
+                          )}
+                          {candidate.candidate_profile?.years_experience > 0 && (
+                            <p className="text-xs text-muted-foreground">
+                              {candidate.candidate_profile.years_experience} yrs exp
+                            </p>
+                          )}
                         </div>
-                        <div className="flex gap-1">
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            className="flex-1 h-8 text-xs"
-                            onClick={() => navigate(`/profiles/${candidate.candidate_id}`)}
-                          >
-                            <Eye className="h-3 w-3 mr-1" />
-                            View
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="default"
-                            className="flex-1 h-8 text-xs"
-                            onClick={() => {
-                              toast({
-                                title: "Coming Soon",
-                                description: "Direct messaging feature will be available soon",
-                              });
-                            }}
-                          >
-                            <MessageCircle className="h-3 w-3 mr-1" />
-                            Message
-                          </Button>
-                        </div>
+                      </div>
+                      <div className="flex gap-1.5">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="flex-1 h-7 text-xs px-2"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/profiles/${candidate.candidate_id}`);
+                          }}
+                        >
+                          <Eye className="h-3 w-3" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="default"
+                          className="flex-1 h-7 text-xs px-2"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toast({
+                              title: "Coming Soon",
+                              description: "Direct messaging feature will be available soon",
+                            });
+                          }}
+                        >
+                          <MessageCircle className="h-3 w-3" />
+                        </Button>
                       </div>
                     </Card>
                   ))}
