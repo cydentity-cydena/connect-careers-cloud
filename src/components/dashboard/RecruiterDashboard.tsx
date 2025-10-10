@@ -4,9 +4,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Building2, Users, Briefcase, TrendingUp, DollarSign, UserPlus, Bug, Award, ListChecks } from "lucide-react";
+import { Building2, Users, Briefcase, TrendingUp, DollarSign, UserPlus, Bug, Award, ListChecks, Workflow } from "lucide-react";
 import RecruiterClientsList from "./RecruiterClientsList";
 import RecruiterPlacements from "./RecruiterPlacements";
+import { ApplicationPipeline } from "@/components/employer/ApplicationPipeline";
 
 const RecruiterDashboard = () => {
   const navigate = useNavigate();
@@ -157,8 +158,9 @@ const RecruiterDashboard = () => {
       </Card>
 
       <Tabs defaultValue="overview" className="w-full">
-        <TabsList className="grid w-full max-w-2xl grid-cols-3">
+        <TabsList className="grid w-full max-w-3xl grid-cols-4">
           <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="pipeline">Pipeline</TabsTrigger>
           <TabsTrigger value="clients">Clients</TabsTrigger>
           <TabsTrigger value="placements">Placements</TabsTrigger>
         </TabsList>
@@ -343,6 +345,10 @@ const RecruiterDashboard = () => {
               </CardContent>
             </Card>
           </div>
+        </TabsContent>
+
+        <TabsContent value="pipeline" className="mt-6">
+          <ApplicationPipeline />
         </TabsContent>
 
         <TabsContent value="clients" className="mt-6">

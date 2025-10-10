@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Briefcase, Clock, UserCheck, FileCheck, XCircle, CheckCircle2, Users, Search, Eye, MessageCircle, UserPlus } from "lucide-react";
+import { Briefcase, Clock, UserCheck, FileCheck, XCircle, CheckCircle2, Users, Search, Eye, MessageCircle, GripVertical } from "lucide-react";
 import { ApplicationCard } from "./ApplicationCard";
 import { toast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
@@ -94,10 +94,58 @@ export const ApplicationPipeline = () => {
   const [loading, setLoading] = useState(true);
   const [selectedJob, setSelectedJob] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [draggedItem, setDraggedItem] = useState<{ id: string; type: 'application' | 'unlock' } | null>(null);
+  const [userRole, setUserRole] = useState<'employer' | 'recruiter' | null>(null);
 
   useEffect(() => {
+    checkUserRole();
     fetchData();
+
+    // Subscribe to real-time updates for new applications
+    const applicationsChannel = supabase
+      .channel('applications_changes')
+      .on('postgres_changes', { 
+        event: 'INSERT', 
+        schema: 'public', 
+        table: 'applications' 
+      }, () => {
+        fetchApplications();
+      })
+      .subscribe();
+
+    // Subscribe to real-time updates for profile unlocks
+    const unlocksChannel = supabase
+      .channel('unlocks_changes')
+      .on('postgres_changes', { 
+        event: 'INSERT', 
+        schema: 'public', 
+        table: 'profile_unlocks' 
+      }, () => {
+        fetchUnlockedCandidates();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(applicationsChannel);
+      supabase.removeChannel(unlocksChannel);
+    };
   }, [selectedJob]);
+
+  const checkUserRole = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const { data: roles } = await supabase
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', user.id);
+
+    if (roles?.some(r => r.role === 'recruiter')) {
+      setUserRole('recruiter');
+    } else {
+      setUserRole('employer');
+    }
+  };
 
   const fetchData = async () => {
     await Promise.all([fetchApplications(), fetchUnlockedCandidates()]);
@@ -146,12 +194,23 @@ export const ApplicationPipeline = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      // First get the employer's jobs to filter applications
-      const { data: employerJobs, error: jobsError } = await supabase
-        .from('jobs')
-        .select('id')
-        .eq('created_by', user.id);
+      // Get jobs for both employers and recruiters
+      let jobsQuery = supabase.from('jobs').select('id, client_id');
+      
+      if (userRole === 'recruiter') {
+        // Get client IDs for this recruiter
+        const { data: clients } = await supabase
+          .from('clients')
+          .select('id')
+          .eq('recruiter_id', user.id);
+        
+        const clientIds = clients?.map(c => c.id) || [];
+        jobsQuery = jobsQuery.in('client_id', clientIds);
+      } else {
+        jobsQuery = jobsQuery.eq('created_by', user.id);
+      }
 
+      const { data: employerJobs, error: jobsError } = await jobsQuery;
       if (jobsError) throw jobsError;
 
       const jobIds = employerJobs?.map(j => j.id) || [];
@@ -231,6 +290,25 @@ export const ApplicationPipeline = () => {
     }
   };
 
+  const handleDragStart = (id: string, type: 'application' | 'unlock') => {
+    setDraggedItem({ id, type });
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+  };
+
+  const handleDrop = async (e: React.DragEvent, targetStage: PipelineStage) => {
+    e.preventDefault();
+    if (!draggedItem) return;
+
+    if (draggedItem.type === 'application') {
+      await handleStageChange(draggedItem.id, targetStage);
+    }
+    
+    setDraggedItem(null);
+  };
+
   const getApplicationsByStage = (stage: PipelineStage) => {
     return applications.filter(app => {
       const matchesStage = app.stage === stage;
@@ -280,121 +358,140 @@ export const ApplicationPipeline = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-7 gap-4">
-        {/* Talent Pool Column */}
-        <Card className="border-2 border-primary/50 bg-primary/5">
-          <CardHeader className="pb-3">
-            <CardTitle className="flex items-center justify-between text-base">
-              <div className="flex items-center gap-2">
-                <div className="bg-primary rounded-full p-1.5">
-                  <Users className="h-4 w-4 text-white" />
+      <div className="flex flex-col lg:flex-row gap-4 overflow-x-auto pb-4">
+        <div className="flex gap-4 lg:flex-1">
+          {/* Talent Pool Column */}
+          <Card className="border-2 border-primary/50 bg-primary/5 min-w-[280px] lg:min-w-0 lg:flex-1">
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center justify-between text-base">
+                <div className="flex items-center gap-2">
+                  <div className="bg-primary rounded-full p-1.5">
+                    <Users className="h-4 w-4 text-white" />
+                  </div>
+                  <span className="whitespace-nowrap">Talent Pool</span>
                 </div>
-                <span>Talent Pool</span>
-              </div>
-              <Badge variant="outline" className="text-primary">
-                {getFilteredUnlockedCandidates().length}
-              </Badge>
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-2">
-            <ScrollArea className="h-[500px] pr-2">
-              <div className="space-y-2">
-                {getFilteredUnlockedCandidates().map((candidate) => (
-                  <Card key={candidate.id} className="p-3 hover:border-primary/50 transition-all cursor-pointer">
-                    <div className="space-y-2">
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <h4 className="font-semibold text-sm">{candidate.profile.full_name}</h4>
-                          {candidate.candidate_profile?.title && (
-                            <p className="text-xs text-muted-foreground">{candidate.candidate_profile.title}</p>
-                          )}
-                          {candidate.candidate_profile?.years_experience > 0 && (
-                            <p className="text-xs text-muted-foreground mt-1">
-                              {candidate.candidate_profile.years_experience} yrs exp
-                            </p>
-                          )}
+                <Badge variant="outline" className="text-primary">
+                  {getFilteredUnlockedCandidates().length}
+                </Badge>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-2">
+              <ScrollArea className="h-[500px] pr-2">
+                <div className="space-y-2">
+                  {getFilteredUnlockedCandidates().map((candidate) => (
+                    <Card 
+                      key={candidate.id} 
+                      draggable
+                      onDragStart={() => handleDragStart(candidate.id, 'unlock')}
+                      className="p-3 hover:border-primary/50 transition-all cursor-move"
+                    >
+                      <div className="space-y-2">
+                        <div className="flex items-start gap-2">
+                          <GripVertical className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
+                          <div className="flex-1 min-w-0">
+                            <h4 className="font-semibold text-sm truncate">{candidate.profile.full_name}</h4>
+                            {candidate.candidate_profile?.title && (
+                              <p className="text-xs text-muted-foreground truncate">{candidate.candidate_profile.title}</p>
+                            )}
+                            {candidate.candidate_profile?.years_experience > 0 && (
+                              <p className="text-xs text-muted-foreground mt-1">
+                                {candidate.candidate_profile.years_experience} yrs exp
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex gap-1">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="flex-1 h-8 text-xs"
+                            onClick={() => navigate(`/profiles/${candidate.candidate_id}`)}
+                          >
+                            <Eye className="h-3 w-3 mr-1" />
+                            View
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="default"
+                            className="flex-1 h-8 text-xs"
+                            onClick={() => {
+                              toast({
+                                title: "Coming Soon",
+                                description: "Direct messaging feature will be available soon",
+                              });
+                            }}
+                          >
+                            <MessageCircle className="h-3 w-3 mr-1" />
+                            Message
+                          </Button>
                         </div>
                       </div>
-                      <div className="flex gap-1">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="flex-1 h-8 text-xs"
-                          onClick={() => navigate(`/profiles/${candidate.candidate_id}`)}
-                        >
-                          <Eye className="h-3 w-3 mr-1" />
-                          View
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="default"
-                          className="flex-1 h-8 text-xs"
-                          onClick={() => {
-                            toast({
-                              title: "Coming Soon",
-                              description: "Direct messaging feature will be available soon",
-                            });
-                          }}
-                        >
-                          <MessageCircle className="h-3 w-3 mr-1" />
-                          Message
-                        </Button>
-                      </div>
+                    </Card>
+                  ))}
+                  {getFilteredUnlockedCandidates().length === 0 && (
+                    <div className="text-center py-8 text-muted-foreground text-sm">
+                      {searchQuery ? "No matching candidates" : "No unlocked candidates yet"}
                     </div>
-                  </Card>
-                ))}
-                {getFilteredUnlockedCandidates().length === 0 && (
-                  <div className="text-center py-8 text-muted-foreground text-sm">
-                    {searchQuery ? "No matching candidates" : "No unlocked candidates yet"}
-                  </div>
-                )}
-              </div>
-            </ScrollArea>
-          </CardContent>
-        </Card>
+                  )}
+                </div>
+              </ScrollArea>
+            </CardContent>
+          </Card>
 
-        {/* Pipeline Stages */}
-        {(Object.keys(stageConfig) as PipelineStage[]).map((stage) => {
-          const config = stageConfig[stage];
-          const stageApplications = getApplicationsByStage(stage);
-          const Icon = config.icon;
+          {/* Pipeline Stages */}
+          {(Object.keys(stageConfig) as PipelineStage[]).map((stage) => {
+            const config = stageConfig[stage];
+            const stageApplications = getApplicationsByStage(stage);
+            const Icon = config.icon;
 
-          return (
-            <Card key={stage} className="border-2">
-              <CardHeader className="pb-3">
-                <CardTitle className="flex items-center justify-between text-base">
-                  <div className="flex items-center gap-2">
-                    <div className={`${config.color} rounded-full p-1.5`}>
-                      <Icon className="h-4 w-4 text-white" />
-                    </div>
-                    <span>{config.title}</span>
-                  </div>
-                  <Badge variant="outline" className={config.textColor}>
-                    {stageApplications.length}
-                  </Badge>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-2">
-                <ScrollArea className="h-[500px] pr-2">
-                  <div className="space-y-2">
-                    {stageApplications.map((application) => (
-                      <ApplicationCard
-                        key={application.id}
-                        application={application}
-                        onStageChange={handleStageChange}
-                      />
-                    ))}
-                    {stageApplications.length === 0 && (
-                      <div className="text-center py-8 text-muted-foreground text-sm">
-                        {searchQuery ? "No matching applications" : "No applications"}
+            return (
+              <Card 
+                key={stage} 
+                className="border-2 min-w-[280px] lg:min-w-0 lg:flex-1"
+                onDragOver={handleDragOver}
+                onDrop={(e) => handleDrop(e, stage)}
+              >
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center justify-between text-base">
+                    <div className="flex items-center gap-2">
+                      <div className={`${config.color} rounded-full p-1.5`}>
+                        <Icon className="h-4 w-4 text-white" />
                       </div>
-                    )}
-                  </div>
-                </ScrollArea>
-              </CardContent>
-            </Card>
-          );
-        })}
+                      <span className="whitespace-nowrap">{config.title}</span>
+                    </div>
+                    <Badge variant="outline" className={config.textColor}>
+                      {stageApplications.length}
+                    </Badge>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-2">
+                  <ScrollArea className="h-[500px] pr-2">
+                    <div className="space-y-2">
+                      {stageApplications.map((application) => (
+                        <div
+                          key={application.id}
+                          draggable
+                          onDragStart={() => handleDragStart(application.id, 'application')}
+                          className="cursor-move"
+                        >
+                          <ApplicationCard
+                            application={application}
+                            onStageChange={handleStageChange}
+                          />
+                        </div>
+                      ))}
+                      {stageApplications.length === 0 && (
+                        <div className="text-center py-8 text-muted-foreground text-sm">
+                          {searchQuery ? "No matching applications" : "No applications"}
+                        </div>
+                      )}
+                    </div>
+                  </ScrollArea>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
