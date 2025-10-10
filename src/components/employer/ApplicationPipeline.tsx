@@ -9,6 +9,7 @@ import { Briefcase, Clock, UserCheck, FileCheck, XCircle, CheckCircle2, Users, S
 import { ApplicationCard } from "./ApplicationCard";
 import { toast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
+import { SendMessageDialog } from "@/components/messaging/SendMessageDialog";
 
 type PipelineStage = "applied" | "screening" | "interview" | "offer" | "rejected" | "hired";
 
@@ -96,6 +97,11 @@ export const ApplicationPipeline = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [draggedItem, setDraggedItem] = useState<{ id: string; type: 'application' | 'unlock' } | null>(null);
   const [userRole, setUserRole] = useState<'employer' | 'recruiter' | null>(null);
+  const [messageDialog, setMessageDialog] = useState<{ open: boolean; recipientId: string; recipientName: string }>({
+    open: false,
+    recipientId: "",
+    recipientName: ""
+  });
 
   useEffect(() => {
     checkUserRole();
@@ -448,9 +454,10 @@ export const ApplicationPipeline = () => {
                           className="flex-1 h-7 text-xs px-2"
                           onClick={(e) => {
                             e.stopPropagation();
-                            toast({
-                              title: "Coming Soon",
-                              description: "Direct messaging feature will be available soon",
+                            setMessageDialog({
+                              open: true,
+                              recipientId: candidate.candidate_id,
+                              recipientName: candidate.profile.full_name
                             });
                           }}
                         >
@@ -524,6 +531,13 @@ export const ApplicationPipeline = () => {
           })}
         </div>
       </div>
+
+      <SendMessageDialog
+        open={messageDialog.open}
+        onOpenChange={(open) => setMessageDialog({ ...messageDialog, open })}
+        recipientId={messageDialog.recipientId}
+        recipientName={messageDialog.recipientName}
+      />
     </div>
   );
 };

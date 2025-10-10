@@ -19,6 +19,7 @@ import {
 import { MessageSquare, MoreVertical, Calendar, Briefcase, GripVertical } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { HireConfirmationDialog } from "./HireConfirmationDialog";
+import { SendMessageDialog } from "@/components/messaging/SendMessageDialog";
 
 type PipelineStage = "applied" | "screening" | "interview" | "offer" | "rejected" | "hired";
 
@@ -48,6 +49,7 @@ interface ApplicationCardProps {
 export const ApplicationCard = ({ application, onStageChange }: ApplicationCardProps) => {
   const [showDetails, setShowDetails] = useState(false);
   const [showHireDialog, setShowHireDialog] = useState(false);
+  const [showMessageDialog, setShowMessageDialog] = useState(false);
 
   const stages: { value: PipelineStage; label: string }[] = [
     { value: "screening", label: "Move to Screening" },
@@ -200,7 +202,11 @@ export const ApplicationCard = ({ application, onStageChange }: ApplicationCardP
               >
                 View Full Profile
               </Button>
-              <Button variant="default" className="flex-1">
+              <Button 
+                variant="default" 
+                className="flex-1"
+                onClick={() => setShowMessageDialog(true)}
+              >
                 <MessageSquare className="h-4 w-4 mr-2" />
                 Send Message
               </Button>
@@ -222,6 +228,13 @@ export const ApplicationCard = ({ application, onStageChange }: ApplicationCardP
           }}
         />
       )}
+
+      <SendMessageDialog
+        open={showMessageDialog}
+        onOpenChange={setShowMessageDialog}
+        recipientId={application.candidate_id}
+        recipientName={application.profile.full_name}
+      />
     </>
   );
 };
