@@ -12,6 +12,7 @@ import { supabase } from '@/integrations/supabase/client';
 const Community = () => {
   const [activeTab, setActiveTab] = useState('feed');
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null);
 
   useEffect(() => {
     checkAccessAndRedirect();
@@ -19,7 +20,10 @@ const Community = () => {
 
   const checkAccessAndRedirect = async () => {
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
+    if (!user) {
+      setIsAuthorized(true);
+      return;
+    }
 
     const { data } = await supabase
       .from('user_roles')
@@ -36,7 +40,20 @@ const Community = () => {
     }
 
     setIsAdmin(userRole === 'admin');
+    setIsAuthorized(true);
   };
+
+  if (isAuthorized === null) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  if (!isAuthorized) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-background">
