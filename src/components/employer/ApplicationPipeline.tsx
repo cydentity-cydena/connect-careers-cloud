@@ -156,19 +156,19 @@ export const ApplicationPipeline = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      // Get unlocked candidates that don't have applications yet
+      // Get unlocked candidates
       const { data: unlocks, error } = await supabase
         .from('profile_unlocks')
         .select(`
           id,
           candidate_id,
           unlocked_at,
-          profile:profiles!profile_unlocks_candidate_id_fkey(
+          profiles!profile_unlocks_candidate_id_fkey(
             full_name,
             username,
             avatar_url
           ),
-          candidate_profile:candidate_profiles!profile_unlocks_candidate_id_fkey(
+          candidate_profiles!candidate_profiles_user_id_fkey(
             title,
             years_experience
           )
@@ -176,14 +176,27 @@ export const ApplicationPipeline = () => {
         .eq('employer_id', user.id)
         .order('unlocked_at', { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching unlocked candidates:', error);
+        throw error;
+      }
+
+      // Transform the data to match the interface
+      const transformedUnlocks = (unlocks || []).map(unlock => ({
+        id: unlock.id,
+        candidate_id: unlock.candidate_id,
+        unlocked_at: unlock.unlocked_at,
+        profile: Array.isArray(unlock.profiles) ? unlock.profiles[0] : unlock.profiles,
+        candidate_profile: Array.isArray(unlock.candidate_profiles) ? unlock.candidate_profiles[0] : unlock.candidate_profiles
+      }));
 
       // Filter out candidates who already have applications
-      const candidatesWithoutApps = (unlocks || []).filter(unlock => 
+      const candidatesWithoutApps = transformedUnlocks.filter(unlock => 
         !applications.some(app => app.candidate_id === unlock.candidate_id)
       );
 
       setUnlockedCandidates(candidatesWithoutApps as any);
+      console.log('Unlocked candidates fetched:', candidatesWithoutApps.length);
     } catch (error) {
       console.error('Error fetching unlocked candidates:', error);
     }
