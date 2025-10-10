@@ -60,7 +60,7 @@ const Navigation = () => {
     { to: "/", label: "Home" },
     { to: "/leaderboard", label: "Leaderboard" },
     { to: "/profiles", label: "Profiles" },
-    { to: "/community", label: "Community" },
+    { to: "/community", label: "Community", hideForRoles: ["employer", "recruiter"] },
     { to: "/jobs", label: "Jobs" },
     { to: "/career-assistant", label: "AI Assistant", showForRoles: ["candidate"] },
     { to: "/training", label: "Training" },

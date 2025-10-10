@@ -14,10 +14,10 @@ const Community = () => {
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    checkAdminStatus();
+    checkAccessAndRedirect();
   }, []);
 
-  const checkAdminStatus = async () => {
+  const checkAccessAndRedirect = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
@@ -25,10 +25,17 @@ const Community = () => {
       .from('user_roles')
       .select('role')
       .eq('user_id', user.id)
-      .eq('role', 'admin')
-      .single();
+      .maybeSingle();
 
-    setIsAdmin(!!data);
+    const userRole = data?.role;
+    
+    // Redirect employers and recruiters away from community
+    if (userRole === 'employer' || userRole === 'recruiter') {
+      window.location.href = '/dashboard';
+      return;
+    }
+
+    setIsAdmin(userRole === 'admin');
   };
 
   return (
