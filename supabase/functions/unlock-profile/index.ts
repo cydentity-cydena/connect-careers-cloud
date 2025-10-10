@@ -32,26 +32,37 @@ serve(async (req) => {
 
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
     const authHeader = req.headers.get('Authorization');
     
+    logStep('Auth header check', { hasHeader: !!authHeader });
+    
     if (!authHeader) {
-      throw new Error('Unauthorized');
+      logStep('ERROR: No auth header');
+      throw new Error('Unauthorized: No auth header');
     }
     
-    // Use admin client for privileged operations
-    const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
-    
-    // Use anon client with auth header to verify user
-    const supabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
-      global: { headers: { Authorization: authHeader } }
+    // Create client with service role for all operations
+    const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false
+      }
     });
 
-    // Get employer from auth token
-    const { data: { user }, error: authError } = await supabaseClient.auth.getUser();
+    // Get user from JWT token
+    logStep('Getting user from JWT');
+    const token = authHeader.replace('Bearer ', '');
+    const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(token);
+    
+    logStep('Auth result', { 
+      hasUser: !!user, 
+      userId: user?.id,
+      errorMessage: authError?.message
+    });
+    
     if (authError || !user) {
-      logStep('Auth error', { error: authError?.message });
-      throw new Error('Unauthorized');
+      logStep('ERROR: Auth failed', { error: authError?.message || 'No user' });
+      throw new Error(`Unauthorized: ${authError?.message || 'No user found'}`);
     }
 
     const employerId = user.id;
