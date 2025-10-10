@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Building, Users, Briefcase, TrendingUp, Coins, Workflow, CheckCircle, Bug } from "lucide-react";
+import { Building, Users, Briefcase, TrendingUp, Coins, Workflow, CheckCircle, Bug, ArrowRight } from "lucide-react";
 import { CreditsPurchaseDialog } from "@/components/employer/CreditsPurchaseDialog";
 import { ApplicationPipeline } from "@/components/employer/ApplicationPipeline";
 import { UnlockUsageTracker } from "@/components/employer/UnlockUsageTracker";
@@ -21,6 +21,7 @@ const EmployerDashboard = () => {
   const [jobsCount, setJobsCount] = useState(0);
   const [applicationsCount, setApplicationsCount] = useState(0);
   const [userName, setUserName] = useState<string>("");
+  const [showGettingStarted, setShowGettingStarted] = useState(true);
 
   const { data: verificationRequest } = useQuery({
     queryKey: ['verification-request', userId],
@@ -53,12 +54,17 @@ const EmployerDashboard = () => {
   const loadUserProfile = async (uid: string) => {
     const { data } = await supabase
       .from('profiles')
-      .select('full_name, username')
+      .select('full_name, username, created_at')
       .eq('id', uid)
       .single();
     
     if (data) {
       setUserName(data.username || data.full_name?.split(' ')[0] || 'Employer');
+      
+      // Check if account is older than 7 days
+      const createdDate = new Date(data.created_at);
+      const daysSinceCreation = Math.floor((Date.now() - createdDate.getTime()) / (1000 * 60 * 60 * 24));
+      setShowGettingStarted(daysSinceCreation < 7);
     }
   };
 
@@ -127,51 +133,67 @@ const EmployerDashboard = () => {
       {/* Subscription Status */}
       <SubscriptionStatus />
 
-      <Card className="border-border shadow-card">
-        <CardHeader>
-          <CardTitle>Getting Started as an Employer</CardTitle>
-          <CardDescription>
-            Follow these steps to find the perfect candidates
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <div className="flex items-start gap-4">
-              <div className="bg-primary/10 rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
-                <span className="text-primary font-semibold">1</span>
-              </div>
-              <div>
-                <h3 className="font-semibold mb-1">Create Your Company Profile</h3>
-                <p className="text-sm text-muted-foreground">
-                  Add company details, culture, and what makes you unique
-                </p>
-              </div>
+      {showGettingStarted && (
+        <Card className="border-border shadow-card">
+          <CardHeader>
+            <CardTitle>Getting Started as an Employer</CardTitle>
+            <CardDescription>
+              Follow these steps to find the perfect candidates
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <Link to="/company/create" className="flex items-start gap-4 p-3 rounded-lg hover:bg-muted/50 transition-colors group">
+                <div className="bg-primary/10 rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
+                  <span className="text-primary font-semibold">1</span>
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold mb-1 group-hover:text-primary transition-colors">Create Your Company Profile</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Add company details, culture, and what makes you unique
+                  </p>
+                </div>
+                <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-primary opacity-0 group-hover:opacity-100 transition-all" />
+              </Link>
+              
+              <Link to="/jobs/create" className="flex items-start gap-4 p-3 rounded-lg hover:bg-muted/50 transition-colors group">
+                <div className="bg-primary/10 rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
+                  <span className="text-primary font-semibold">2</span>
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold mb-1 group-hover:text-primary transition-colors">Post Job Openings</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Define roles with required skills and clearances
+                  </p>
+                </div>
+                <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-primary opacity-0 group-hover:opacity-100 transition-all" />
+              </Link>
+              
+              <button 
+                onClick={() => {
+                  const pipelineTab = document.querySelector('[value="pipeline"]') as HTMLElement;
+                  pipelineTab?.click();
+                  setTimeout(() => {
+                    document.querySelector('.tabs-content')?.scrollIntoView({ behavior: 'smooth' });
+                  }, 100);
+                }}
+                className="flex items-start gap-4 p-3 rounded-lg hover:bg-muted/50 transition-colors group w-full text-left"
+              >
+                <div className="bg-primary/10 rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
+                  <span className="text-primary font-semibold">3</span>
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold mb-1 group-hover:text-primary transition-colors">Review & Hire</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Screen candidates and manage the hiring pipeline
+                  </p>
+                </div>
+                <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-primary opacity-0 group-hover:opacity-100 transition-all" />
+              </button>
             </div>
-            <div className="flex items-start gap-4">
-              <div className="bg-primary/10 rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
-                <span className="text-primary font-semibold">2</span>
-              </div>
-              <div>
-                <h3 className="font-semibold mb-1">Post Job Openings</h3>
-                <p className="text-sm text-muted-foreground">
-                  Define roles with required skills and clearances
-                </p>
-              </div>
-            </div>
-            <div className="flex items-start gap-4">
-              <div className="bg-primary/10 rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
-                <span className="text-primary font-semibold">3</span>
-              </div>
-              <div>
-                <h3 className="font-semibold mb-1">Review & Hire</h3>
-                <p className="text-sm text-muted-foreground">
-                  Screen candidates and manage the hiring pipeline
-                </p>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      )}
 
       <Card className="border-border shadow-card bg-primary/5">
         <CardHeader>
