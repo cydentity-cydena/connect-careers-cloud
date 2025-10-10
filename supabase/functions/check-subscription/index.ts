@@ -41,6 +41,35 @@ serve(async (req) => {
     if (!user?.email) throw new Error("User not authenticated or email not available");
     logStep("User authenticated", { userId: user.id, email: user.email });
 
+    // First check local database for active subscription
+    const { data: localSub, error: localSubError } = await supabaseClient
+      .from('user_subscriptions')
+      .select('*')
+      .eq('user_id', user.id)
+      .eq('status', 'active')
+      .maybeSingle();
+
+    if (localSubError) {
+      logStep("Error checking local subscription", { error: localSubError.message });
+    }
+
+    if (localSub) {
+      logStep("Found active subscription in database", { 
+        tier: localSub.tier, 
+        end: localSub.current_period_end 
+      });
+      return new Response(JSON.stringify({
+        subscribed: true,
+        tier: localSub.tier,
+        subscription_end: localSub.current_period_end
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 200,
+      });
+    }
+
+    // If no local subscription, check Stripe
+    logStep("No local subscription found, checking Stripe");
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
     const customers = await stripe.customers.list({ email: user.email, limit: 1 });
     
