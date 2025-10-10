@@ -32,16 +32,25 @@ serve(async (req) => {
 
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-    const authHeader = req.headers.get('Authorization')!;
+    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
+    const authHeader = req.headers.get('Authorization');
     
+    if (!authHeader) {
+      throw new Error('Unauthorized');
+    }
+    
+    // Use admin client for privileged operations
     const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
-    const supabaseClient = createClient(supabaseUrl, supabaseServiceKey, {
+    
+    // Use anon client with auth header to verify user
+    const supabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
       global: { headers: { Authorization: authHeader } }
     });
 
     // Get employer from auth token
     const { data: { user }, error: authError } = await supabaseClient.auth.getUser();
     if (authError || !user) {
+      logStep('Auth error', { error: authError?.message });
       throw new Error('Unauthorized');
     }
 
