@@ -10,6 +10,8 @@ import { ApplicationCard } from "./ApplicationCard";
 import { toast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { SendMessageDialog } from "@/components/messaging/SendMessageDialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 type PipelineStage = "applied" | "screening" | "interview" | "offer" | "rejected" | "hired";
 
@@ -97,10 +99,22 @@ export const ApplicationPipeline = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [draggedItem, setDraggedItem] = useState<{ id: string; type: 'application' | 'unlock' } | null>(null);
   const [userRole, setUserRole] = useState<'employer' | 'recruiter' | null>(null);
+  const [jobs, setJobs] = useState<{ id: string; title: string }[]>([]);
   const [messageDialog, setMessageDialog] = useState<{ open: boolean; recipientId: string; recipientName: string }>({
     open: false,
     recipientId: "",
     recipientName: ""
+  });
+  const [jobSelectDialog, setJobSelectDialog] = useState<{
+    open: boolean;
+    candidateId: string;
+    candidateName: string;
+    targetStage: PipelineStage;
+  }>({
+    open: false,
+    candidateId: "",
+    candidateName: "",
+    targetStage: "applied"
   });
 
   useEffect(() => {
@@ -154,7 +168,35 @@ export const ApplicationPipeline = () => {
   };
 
   const fetchData = async () => {
-    await Promise.all([fetchApplications(), fetchUnlockedCandidates()]);
+    await Promise.all([fetchJobs(), fetchApplications(), fetchUnlockedCandidates()]);
+  };
+
+  const fetchJobs = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      let jobsQuery = supabase.from('jobs').select('id, title').eq('is_active', true);
+      
+      if (userRole === 'recruiter') {
+        const { data: clients } = await supabase
+          .from('clients')
+          .select('id')
+          .eq('recruiter_id', user.id);
+        
+        const clientIds = clients?.map(c => c.id) || [];
+        jobsQuery = jobsQuery.in('client_id', clientIds);
+      } else {
+        jobsQuery = jobsQuery.eq('created_by', user.id);
+      }
+
+      const { data, error } = await jobsQuery;
+      if (error) throw error;
+      
+      setJobs(data || []);
+    } catch (error) {
+      console.error('Error fetching jobs:', error);
+    }
   };
 
   const fetchUnlockedCandidates = async () => {
@@ -333,14 +375,72 @@ export const ApplicationPipeline = () => {
     if (draggedItem.type === 'application') {
       await handleStageChange(draggedItem.id, targetStage);
     } else if (draggedItem.type === 'unlock') {
-      // Moving from Talent Pool - need to create an application
-      toast({
-        title: "Feature Coming Soon",
-        description: "Drag candidates to job applications will be available soon. For now, view their profile to proceed.",
-      });
+      // Moving from Talent Pool - create an application
+      const candidate = unlockedCandidates.find(c => c.id === draggedItem.id);
+      if (!candidate) return;
+
+      if (!selectedJob) {
+        // Show job selection dialog
+        setJobSelectDialog({
+          open: true,
+          candidateId: candidate.candidate_id,
+          candidateName: candidate.profile.full_name,
+          targetStage
+        });
+      } else {
+        // Create application directly
+        await createApplication(candidate.candidate_id, selectedJob, targetStage);
+      }
     }
     
     setDraggedItem(null);
+  };
+
+  const createApplication = async (candidateId: string, jobId: string, stage: PipelineStage) => {
+    try {
+      const { data, error } = await supabase
+        .from('applications')
+        .insert({
+          candidate_id: candidateId,
+          job_id: jobId,
+          stage: stage
+        })
+        .select(`
+          *,
+          candidate_profile:candidate_profiles!applications_candidate_id_fkey(
+            title,
+            years_experience
+          ),
+          profile:profiles!applications_candidate_id_fkey(
+            full_name,
+            avatar_url
+          ),
+          job:jobs!applications_job_id_fkey(
+            title
+          )
+        `)
+        .single();
+
+      if (error) throw error;
+
+      // Add to applications list
+      setApplications(prev => [data as any, ...prev]);
+
+      // Remove from talent pool
+      setUnlockedCandidates(prev => prev.filter(c => c.candidate_id !== candidateId));
+
+      toast({
+        title: "Success",
+        description: `Candidate added to ${stageConfig[stage].title}`,
+      });
+    } catch (error) {
+      console.error('Error creating application:', error);
+      toast({
+        title: "Error",
+        description: "Failed to add candidate to pipeline",
+        variant: "destructive"
+      });
+    }
   };
 
   const getApplicationsByStage = (stage: PipelineStage) => {
@@ -384,6 +484,19 @@ export const ApplicationPipeline = () => {
               className="pl-9 w-full"
             />
           </div>
+          <Select value={selectedJob || "all"} onValueChange={(value) => setSelectedJob(value === "all" ? null : value)}>
+            <SelectTrigger className="w-full sm:w-[250px]">
+              <SelectValue placeholder="Filter by job" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Jobs</SelectItem>
+              {jobs.map((job) => (
+                <SelectItem key={job.id} value={job.id}>
+                  {job.title}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           <div className="flex gap-2 flex-wrap">
             <Badge variant="secondary" className="text-xs sm:text-sm px-2 sm:px-3 py-1 whitespace-nowrap">
               {applications.length} Applications
@@ -538,6 +651,61 @@ export const ApplicationPipeline = () => {
         recipientId={messageDialog.recipientId}
         recipientName={messageDialog.recipientName}
       />
+
+      <Dialog open={jobSelectDialog.open} onOpenChange={(open) => setJobSelectDialog({ ...jobSelectDialog, open })}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Select Job for {jobSelectDialog.candidateName}</DialogTitle>
+            <DialogDescription>
+              Choose which job position to add this candidate to in the {stageConfig[jobSelectDialog.targetStage]?.title || 'Applied'} stage.
+            </DialogDescription>
+          </DialogHeader>
+          <Select
+            value={selectedJob || ""}
+            onValueChange={(value) => setSelectedJob(value)}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select a job position" />
+            </SelectTrigger>
+            <SelectContent>
+              {jobs.map((job) => (
+                <SelectItem key={job.id} value={job.id}>
+                  {job.title}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setJobSelectDialog({ ...jobSelectDialog, open: false })}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={async () => {
+                if (selectedJob) {
+                  await createApplication(
+                    jobSelectDialog.candidateId,
+                    selectedJob,
+                    jobSelectDialog.targetStage
+                  );
+                  setJobSelectDialog({ ...jobSelectDialog, open: false });
+                } else {
+                  toast({
+                    title: "No Job Selected",
+                    description: "Please select a job position",
+                    variant: "destructive"
+                  });
+                }
+              }}
+              disabled={!selectedJob}
+            >
+              Add to Pipeline
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
