@@ -6,6 +6,13 @@ import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
+interface NavLink {
+  to: string;
+  label: string;
+  showForRoles?: string[];
+  hideForRoles?: string[];
+}
+
 const Navigation = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -56,7 +63,7 @@ const Navigation = () => {
     setMobileMenuOpen(false);
   };
 
-  const allNavLinks = [
+  const allNavLinks: NavLink[] = [
     { to: "/", label: "Home" },
     { to: "/leaderboard", label: "Leaderboard" },
     { to: "/profiles", label: "Profiles" },
