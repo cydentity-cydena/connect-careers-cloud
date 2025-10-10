@@ -156,47 +156,56 @@ export const ApplicationPipeline = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      // Get unlocked candidates
-      const { data: unlocks, error } = await supabase
+      // 1) Fetch unlock rows (no joins to avoid relationship/FK name issues)
+      const { data: unlocks, error: unlocksError } = await supabase
         .from('profile_unlocks')
-        .select(`
-          id,
-          candidate_id,
-          unlocked_at,
-          profiles!profile_unlocks_candidate_id_fkey(
-            full_name,
-            username,
-            avatar_url
-          ),
-          candidate_profiles!candidate_profiles_user_id_fkey(
-            title,
-            years_experience
-          )
-        `)
+        .select('id, candidate_id, unlocked_at')
         .eq('employer_id', user.id)
         .order('unlocked_at', { ascending: false });
 
-      if (error) {
-        console.error('Error fetching unlocked candidates:', error);
-        throw error;
+      if (unlocksError) throw unlocksError;
+
+      const candidateIds = (unlocks || []).map((u: any) => u.candidate_id);
+      if (candidateIds.length === 0) {
+        setUnlockedCandidates([]);
+        return;
       }
 
-      // Transform the data to match the interface
-      const transformedUnlocks = (unlocks || []).map(unlock => ({
-        id: unlock.id,
-        candidate_id: unlock.candidate_id,
-        unlocked_at: unlock.unlocked_at,
-        profile: Array.isArray(unlock.profiles) ? unlock.profiles[0] : unlock.profiles,
-        candidate_profile: Array.isArray(unlock.candidate_profiles) ? unlock.candidate_profiles[0] : unlock.candidate_profiles
+      // 2) Fetch profile info and candidate profile info in parallel
+      const [profilesRes, candidateProfilesRes] = await Promise.all([
+        supabase
+          .from('profiles')
+          .select('id, full_name, username, avatar_url')
+          .in('id', candidateIds),
+        supabase
+          .from('candidate_profiles')
+          .select('user_id, title, years_experience')
+          .in('user_id', candidateIds),
+      ]);
+
+      if (profilesRes.error) throw profilesRes.error;
+      if (candidateProfilesRes.error) throw candidateProfilesRes.error;
+
+      const profiles = profilesRes.data || [];
+      const candidateProfiles = candidateProfilesRes.data || [];
+
+      const profileMap = new Map(profiles.map((p: any) => [p.id, p]));
+      const candidateProfileMap = new Map(candidateProfiles.map((cp: any) => [cp.user_id, cp]));
+
+      // 3) Merge and filter out candidates that already have applications
+      const merged = (unlocks || []).map((u: any) => ({
+        id: u.id,
+        candidate_id: u.candidate_id,
+        unlocked_at: u.unlocked_at,
+        profile: profileMap.get(u.candidate_id) || { full_name: 'Unknown', username: '', avatar_url: null },
+        candidate_profile: candidateProfileMap.get(u.candidate_id) || { title: '', years_experience: 0 },
       }));
 
-      // Filter out candidates who already have applications
-      const candidatesWithoutApps = transformedUnlocks.filter(unlock => 
+      const candidatesWithoutApps = merged.filter((unlock: any) =>
         !applications.some(app => app.candidate_id === unlock.candidate_id)
       );
 
       setUnlockedCandidates(candidatesWithoutApps as any);
-      console.log('Unlocked candidates fetched:', candidatesWithoutApps.length);
     } catch (error) {
       console.error('Error fetching unlocked candidates:', error);
     }
