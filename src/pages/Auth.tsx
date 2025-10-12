@@ -365,50 +365,55 @@ const Auth = () => {
                     </div>
                     <div className="relative flex justify-center text-xs uppercase">
                       <span className="bg-background px-2 text-muted-foreground">
-                        Or continue with
+                        Or for Candidates
                       </span>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={async () => {
-                        try {
-                          const { error } = await supabase.auth.signInWithOAuth({
-                            provider: 'google',
+                  <div className="space-y-3">
+                    <div className="grid grid-cols-2 gap-4">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={async () => {
+                          try {
+                            const { error } = await supabase.auth.signInWithOAuth({
+                              provider: 'google',
                               options: {
                                 redirectTo: `${window.location.origin}/auth`
                               }
-                          });
-                          if (error) toast.error(error.message);
-                        } catch (error: any) {
-                          toast.error(error.message);
-                        }
-                      }}
-                    >
-                      Google
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={async () => {
-                        try {
-                          const { error } = await supabase.auth.signInWithOAuth({
-                            provider: 'linkedin_oidc',
+                            });
+                            if (error) toast.error(error.message);
+                          } catch (error: any) {
+                            toast.error(error.message);
+                          }
+                        }}
+                      >
+                        Google
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={async () => {
+                          try {
+                            const { error } = await supabase.auth.signInWithOAuth({
+                              provider: 'linkedin_oidc',
                               options: {
                                 redirectTo: `${window.location.origin}/auth`
                               }
-                          });
-                          if (error) toast.error(error.message);
-                        } catch (error: any) {
-                          toast.error(error.message);
-                        }
-                      }}
-                    >
-                      LinkedIn
-                    </Button>
+                            });
+                            if (error) toast.error(error.message);
+                          } catch (error: any) {
+                            toast.error(error.message);
+                          }
+                        }}
+                      >
+                        LinkedIn
+                      </Button>
+                    </div>
+                    <p className="text-xs text-center text-muted-foreground">
+                      Candidates only. Employers & recruiters must use email/password with company domain.
+                    </p>
                   </div>
                 </form>
               </TabsContent>
@@ -523,7 +528,7 @@ const Auth = () => {
                     </div>
                     <div className="relative flex justify-center text-xs uppercase">
                       <span className="bg-background px-2 text-muted-foreground">
-                        Or for candidates
+                        Or for Candidates
                       </span>
                     </div>
                   </div>
@@ -548,7 +553,8 @@ const Auth = () => {
                       </Button>
                     </div>
                     <p className="text-xs text-center text-muted-foreground">
-                      Quick signup for candidates. Username auto-generated (changeable once in profile).
+                      Quick signup for candidates only. Username auto-generated (changeable once).<br />
+                      <span className="font-medium">Employers & recruiters: Use email/password above with company domain.</span>
                     </p>
                   </div>
                 </form>
