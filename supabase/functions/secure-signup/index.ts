@@ -63,8 +63,8 @@ serve(async (req) => {
       }
     }
 
-    // Validate username only for candidates
-    if (role === 'candidate') {
+    // Validate username only for candidates (skip for OAuth as it's auto-generated)
+    if (role === 'candidate' && !isOAuthCompletion) {
       const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
       if (!username || !usernameRegex.test(username)) {
         throw new Error('Invalid username format. Must be 3-20 characters with letters, numbers, and underscores only.');
