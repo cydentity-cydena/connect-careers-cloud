@@ -371,46 +371,26 @@ const Auth = () => {
                   </div>
 
                   <div className="space-y-3">
-                    <div className="grid grid-cols-2 gap-4">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={async () => {
-                          try {
-                            const { error } = await supabase.auth.signInWithOAuth({
-                              provider: 'google',
-                              options: {
-                                redirectTo: `${window.location.origin}/auth`
-                              }
-                            });
-                            if (error) toast.error(error.message);
-                          } catch (error: any) {
-                            toast.error(error.message);
-                          }
-                        }}
-                      >
-                        Google
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={async () => {
-                          try {
-                            const { error } = await supabase.auth.signInWithOAuth({
-                              provider: 'linkedin_oidc',
-                              options: {
-                                redirectTo: `${window.location.origin}/auth`
-                              }
-                            });
-                            if (error) toast.error(error.message);
-                          } catch (error: any) {
-                            toast.error(error.message);
-                          }
-                        }}
-                      >
-                        LinkedIn
-                      </Button>
-                    </div>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="w-full"
+                      onClick={async () => {
+                        try {
+                          const { error } = await supabase.auth.signInWithOAuth({
+                            provider: 'google',
+                            options: {
+                              redirectTo: `${window.location.origin}/auth`
+                            }
+                          });
+                          if (error) toast.error(error.message);
+                        } catch (error: any) {
+                          toast.error(error.message);
+                        }
+                      }}
+                    >
+                      Continue with Google
+                    </Button>
                     <p className="text-xs text-center text-muted-foreground">
                       Candidates only. Employers & recruiters must use email/password with company domain.
                     </p>
@@ -534,24 +514,15 @@ const Auth = () => {
                   </div>
 
                   <div className="space-y-3">
-                    <div className="grid grid-cols-2 gap-4">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => handleOAuthSignIn('google')}
-                        disabled={isLoading}
-                      >
-                        Google
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => handleOAuthSignIn('linkedin_oidc')}
-                        disabled={isLoading}
-                      >
-                        LinkedIn
-                      </Button>
-                    </div>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="w-full"
+                      onClick={() => handleOAuthSignIn('google')}
+                      disabled={isLoading}
+                    >
+                      Continue with Google
+                    </Button>
                     <p className="text-xs text-center text-muted-foreground">
                       Quick signup for candidates only. Username auto-generated (changeable once).<br />
                       <span className="font-medium">Employers & recruiters: Use email/password above with company domain.</span>
