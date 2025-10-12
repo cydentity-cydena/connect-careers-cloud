@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -52,6 +52,7 @@ const Auth = () => {
   const [fullName, setFullName] = useState("");
   const [username, setUsername] = useState("");
   const [userRole, setUserRole] = useState<"candidate" | "employer" | "recruiter">("candidate");
+  const oauthProfileStarted = useRef(false);
 
   useEffect(() => {
     // Check if user is already logged in and has a role
@@ -70,7 +71,10 @@ const Auth = () => {
         } else {
           // New OAuth user without role - complete profile setup
           console.log('New OAuth user detected, completing profile...');
-          await completeOAuthProfile(session.user);
+          if (!oauthProfileStarted.current) {
+            oauthProfileStarted.current = true;
+            await completeOAuthProfile(session.user);
+          }
         }
       }
     });
@@ -89,7 +93,10 @@ const Auth = () => {
         } else {
           // New OAuth user - complete profile
           console.log('OAuth sign-in detected, completing profile...');
-          await completeOAuthProfile(session.user);
+          if (!oauthProfileStarted.current) {
+            oauthProfileStarted.current = true;
+            await completeOAuthProfile(session.user);
+          }
         }
       }
     });
@@ -371,9 +378,9 @@ const Auth = () => {
                         try {
                           const { error } = await supabase.auth.signInWithOAuth({
                             provider: 'google',
-                            options: {
-                              redirectTo: `${window.location.origin}/dashboard`
-                            }
+                              options: {
+                                redirectTo: `${window.location.origin}/auth`
+                              }
                           });
                           if (error) toast.error(error.message);
                         } catch (error: any) {
@@ -390,9 +397,9 @@ const Auth = () => {
                         try {
                           const { error } = await supabase.auth.signInWithOAuth({
                             provider: 'linkedin_oidc',
-                            options: {
-                              redirectTo: `${window.location.origin}/dashboard`
-                            }
+                              options: {
+                                redirectTo: `${window.location.origin}/auth`
+                              }
                           });
                           if (error) toast.error(error.message);
                         } catch (error: any) {

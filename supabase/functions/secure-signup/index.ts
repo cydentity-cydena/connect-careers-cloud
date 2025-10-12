@@ -161,80 +161,116 @@ serve(async (req) => {
 
     console.log('Profile updated successfully');
 
-    // 3. Assign role using service role (bypasses RLS)
+    // 3. Assign role using service role (idempotent)
     const { error: roleError } = await supabaseAdmin
       .from('user_roles')
-      .insert({
-        user_id: userId,
-        role: role,
-      });
+      .upsert(
+        {
+          user_id: userId,
+          role: role,
+        },
+        { onConflict: 'user_id,role' }
+      );
 
     if (roleError) {
       console.error('Role assignment failed:', roleError);
-      // Cleanup: delete the auth user if role assignment fails
-      await supabaseAdmin.auth.admin.deleteUser(userId);
+      // Cleanup: delete the auth user if role assignment fails (only for new signups)
+      if (!isOAuthCompletion) {
+        await supabaseAdmin.auth.admin.deleteUser(userId);
+      }
       throw new Error('Failed to assign user role');
     }
 
     console.log('Role assigned successfully:', role);
 
-    // 4. If candidate, create candidate profile and XP data
+    // 4. If candidate, create candidate profile and XP data (idempotent)
     if (role === 'candidate') {
-      const { error: candidateError } = await supabaseAdmin
+      // Candidate profile
+      const { data: existingCand } = await supabaseAdmin
         .from('candidate_profiles')
-        .insert({
-          user_id: userId,
-          title: '',
-          years_experience: 0,
-        });
+        .select('id')
+        .eq('user_id', userId)
+        .maybeSingle();
 
-      if (candidateError) {
-        console.error('Candidate profile creation failed:', candidateError);
-        // Cleanup
-        await supabaseAdmin.auth.admin.deleteUser(userId);
-        throw new Error('Failed to create candidate profile');
+      if (!existingCand) {
+        const { error: candidateError } = await supabaseAdmin
+          .from('candidate_profiles')
+          .insert({
+            user_id: userId,
+            title: '',
+            years_experience: 0,
+          });
+
+        if (candidateError) {
+          console.error('Candidate profile creation failed:', candidateError);
+          if (!isOAuthCompletion) {
+            await supabaseAdmin.auth.admin.deleteUser(userId);
+          }
+          throw new Error('Failed to create candidate profile');
+        }
+        console.log('Candidate profile created successfully');
+      } else {
+        console.log('Candidate profile already exists, skipping');
       }
 
-      console.log('Candidate profile created successfully');
-
-      // Initialize XP data for candidate
-      const { error: xpError } = await supabaseAdmin
+      // Candidate XP
+      const { data: existingXp } = await supabaseAdmin
         .from('candidate_xp')
-        .insert({
-          candidate_id: userId,
-          total_xp: 0,
-          level: 1,
-          profile_completion_percent: 0,
-        });
+        .select('id')
+        .eq('candidate_id', userId)
+        .maybeSingle();
 
-      if (xpError) {
-        console.error('Candidate XP initialization failed:', xpError);
-        // Cleanup
-        await supabaseAdmin.auth.admin.deleteUser(userId);
-        throw new Error('Failed to initialize candidate XP');
+      if (!existingXp) {
+        const { error: xpError } = await supabaseAdmin
+          .from('candidate_xp')
+          .insert({
+            candidate_id: userId,
+            total_xp: 0,
+            level: 1,
+            profile_completion_percent: 0,
+          });
+
+        if (xpError) {
+          console.error('Candidate XP initialization failed:', xpError);
+          if (!isOAuthCompletion) {
+            await supabaseAdmin.auth.admin.deleteUser(userId);
+          }
+          throw new Error('Failed to initialize candidate XP');
+        }
+        console.log('Candidate XP initialized successfully');
+      } else {
+        console.log('Candidate XP already exists, skipping');
       }
-
-      console.log('Candidate XP initialized successfully');
     }
 
-    // 5. If employer, create employer credits
+    // 5. If employer, create employer credits (idempotent)
     if (role === 'employer') {
-      const { error: creditsError } = await supabaseAdmin
+      const { data: existingCredits } = await supabaseAdmin
         .from('employer_credits')
-        .insert({
-          employer_id: userId,
-          credits: 0,
-          total_purchased: 0,
-        });
+        .select('id')
+        .eq('employer_id', userId)
+        .maybeSingle();
 
-      if (creditsError) {
-        console.error('Employer credits initialization failed:', creditsError);
-        // Cleanup
-        await supabaseAdmin.auth.admin.deleteUser(userId);
-        throw new Error('Failed to initialize employer credits');
+      if (!existingCredits) {
+        const { error: creditsError } = await supabaseAdmin
+          .from('employer_credits')
+          .insert({
+            employer_id: userId,
+            credits: 0,
+            total_purchased: 0,
+          });
+
+        if (creditsError) {
+          console.error('Employer credits initialization failed:', creditsError);
+          if (!isOAuthCompletion) {
+            await supabaseAdmin.auth.admin.deleteUser(userId);
+          }
+          throw new Error('Failed to initialize employer credits');
+        }
+        console.log('Employer credits initialized successfully');
+      } else {
+        console.log('Employer credits already exist, skipping');
       }
-
-      console.log('Employer credits initialized successfully');
     }
 
     return new Response(
