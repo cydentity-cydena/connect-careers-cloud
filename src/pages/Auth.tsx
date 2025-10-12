@@ -5,7 +5,6 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Shield, Loader2, CheckCircle } from "lucide-react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -53,88 +52,101 @@ const Auth = () => {
   const [fullName, setFullName] = useState("");
   const [username, setUsername] = useState("");
   const [userRole, setUserRole] = useState<"candidate" | "employer" | "recruiter">("candidate");
-  const [showOAuthRoleDialog, setShowOAuthRoleDialog] = useState(false);
-  const [pendingOAuthProvider, setPendingOAuthProvider] = useState<'google' | 'linkedin_oidc' | null>(null);
-  const [completeProfileMode, setCompleteProfileMode] = useState(false);
 
   useEffect(() => {
-    // Check if user is already logged in
+    // Check if user is already logged in and has a role
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (session) {
-        navigate("/dashboard");
+        // Check if user has a role assigned
+        const { data: roleData } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', session.user.id)
+          .maybeSingle();
+
+        if (roleData?.role) {
+          // User has a role, redirect to dashboard
+          navigate("/dashboard");
+        } else {
+          // New OAuth user without role - complete profile setup
+          console.log('New OAuth user detected, completing profile...');
+          await completeOAuthProfile(session.user);
+        }
       }
     });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN' && session) {
-        navigate('/dashboard');
+        // Check if user has a role assigned
+        const { data: roleData } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', session.user.id)
+          .maybeSingle();
+
+        if (roleData?.role) {
+          navigate('/dashboard');
+        } else {
+          // New OAuth user - complete profile
+          console.log('OAuth sign-in detected, completing profile...');
+          await completeOAuthProfile(session.user);
+        }
       }
     });
 
     return () => subscription.unsubscribe();
   }, [navigate]);
 
-  const handleOAuthProfileCompletion = async (
-    user: any,
-    role: 'candidate' | 'employer' | 'recruiter',
-    fullName: string,
-    username: string | null
-  ) => {
+  const completeOAuthProfile = async (user: any) => {
     try {
       setIsLoading(true);
 
+      // Extract name from user metadata or use email
+      const fullName = user.user_metadata?.full_name || 
+                      user.user_metadata?.name || 
+                      user.email?.split('@')[0] || 
+                      'User';
+
+      console.log('Completing OAuth profile for:', user.email, 'with name:', fullName);
+
       // Call secure-signup edge function to complete profile
+      // Username will be auto-generated in the edge function
       const { data, error } = await supabase.functions.invoke('secure-signup', {
         body: {
           email: user.email,
           fullName: fullName,
-          username: username || undefined,
-          role: role,
+          role: 'candidate', // OAuth users are always candidates
           isOAuthCompletion: true
         }
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Secure signup error:', error);
+        throw error;
+      }
 
-      // Clear OAuth session storage
-      sessionStorage.removeItem('oauth_role');
-      sessionStorage.removeItem('oauth_username');
-      sessionStorage.removeItem('oauth_fullname');
+      if (!data.success) {
+        throw new Error(data.error || 'Failed to complete profile');
+      }
 
-      toast.success("Profile completed! Your account has been set up successfully.");
-
+      toast.success("Welcome! Your account has been set up successfully.");
       navigate('/dashboard');
     } catch (error: any) {
       console.error('OAuth profile completion error:', error);
-      toast.error(error.message || "Failed to complete profile setup");
+      toast.error(error.message || "Failed to complete profile setup. Please contact support.");
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleOAuthSignIn = async (provider: 'google' | 'linkedin_oidc') => {
-    setPendingOAuthProvider(provider);
-    setShowOAuthRoleDialog(true);
-  };
-
-  const confirmOAuthSignIn = async () => {
-    if (!pendingOAuthProvider) return;
-
     try {
       setIsLoading(true);
-
-      // OAuth is for candidates only
-      const oauthFullName = fullName || 'User';
-      
-      // Store role and user info in session storage for after OAuth redirect
-      sessionStorage.setItem('oauth_role', 'candidate');
-      sessionStorage.setItem('oauth_fullname', oauthFullName);
-      sessionStorage.setItem('oauth_username', username);
 
       const redirectUrl = `${window.location.origin}/auth`;
 
       const { error } = await supabase.auth.signInWithOAuth({
-        provider: pendingOAuthProvider,
+        provider: provider,
         options: {
           redirectTo: redirectUrl,
         }
@@ -144,17 +156,6 @@ const Auth = () => {
     } catch (error: any) {
       console.error('OAuth error:', error);
       toast.error(error.message || "Failed to sign in with OAuth");
-      setIsLoading(false);
-    }
-  };
-
-  const finishProfileAfterOAuth = async () => {
-    try {
-      setIsLoading(true);
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) return;
-      await handleOAuthProfileCompletion(session.user, 'candidate', fullName || 'User', username || null);
-    } finally {
       setIsLoading(false);
     }
   };
@@ -526,6 +527,7 @@ const Auth = () => {
                         type="button"
                         variant="outline"
                         onClick={() => handleOAuthSignIn('google')}
+                        disabled={isLoading}
                       >
                         Google
                       </Button>
@@ -533,12 +535,13 @@ const Auth = () => {
                         type="button"
                         variant="outline"
                         onClick={() => handleOAuthSignIn('linkedin_oidc')}
+                        disabled={isLoading}
                       >
                         LinkedIn
                       </Button>
                     </div>
                     <p className="text-xs text-center text-muted-foreground">
-                      OAuth creates candidate accounts only
+                      Quick signup for candidates. Username auto-generated (changeable once in profile).
                     </p>
                   </div>
                 </form>
@@ -549,45 +552,6 @@ const Auth = () => {
         </div>
       </div>
 
-      <Dialog open={showOAuthRoleDialog} onOpenChange={setShowOAuthRoleDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Complete Your Profile</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="oauth-fullname">Full Name</Label>
-              <Input
-                id="oauth-fullname"
-                placeholder="Enter your full name"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="oauth-username">Username</Label>
-              <Input
-                id="oauth-username"
-                placeholder="Choose a username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
-              />
-              <p className="text-xs text-muted-foreground mt-1">
-                3-20 characters: letters, numbers, underscores only
-              </p>
-            </div>
-
-            <Button
-              onClick={confirmOAuthSignIn}
-              className="w-full"
-              disabled={!fullName || !username || isLoading}
-            >
-              Continue with {pendingOAuthProvider === 'google' ? 'Google' : 'LinkedIn'}
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };
