@@ -344,11 +344,11 @@ const Training = () => {
                         </div>
 
                         {partner.logo_url && (
-                          <div className="p-6 pb-0">
+                          <div className="p-6 pb-4">
                             <img 
                               src={partner.logo_url} 
                               alt={`${partner.partner_name} logo`}
-                              className="h-12 object-contain"
+                              className="h-20 w-auto object-contain"
                             />
                           </div>
                         )}
