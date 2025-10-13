@@ -274,7 +274,6 @@ const Privacy = () => {
                 If you have questions about this Privacy Policy or how we handle your data, please contact us:
               </p>
               <ul className="list-none space-y-2 mt-4">
-                <li><strong>Email:</strong> privacy@cydena.com</li>
                 <li><strong>Data Protection Officer:</strong> dpo@cydena.com</li>
                 <li><strong>Contact Form:</strong> Available on our Contact page</li>
               </ul>
