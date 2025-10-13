@@ -4,6 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Footer from "./components/Footer";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
@@ -41,37 +42,42 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/auth" element={<Auth />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/leaderboard" element={<Leaderboard />} />
-          <Route path="/profiles" element={<Profiles />} />
-          <Route path="/profiles/:id" element={<ProfileDetail />} />
-          <Route path="/jobs" element={<Jobs />} />
-          <Route path="/jobs/:id" element={<JobDetail />} />
-          <Route path="/training" element={<Training />} />
-          <Route path="/certifications-catalog" element={<CertificationCatalog />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/pricing" element={<Pricing />} />
-          <Route path="/faq" element={<FAQ />} />
-          <Route path="/terms" element={<Terms />} />
-          <Route path="/privacy" element={<Privacy />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/skills" element={<Skills />} />
-          <Route path="/certifications" element={<Certifications />} />
-          <Route path="/company/create" element={<CompanyCreate />} />
-          <Route path="/clients/create" element={<ClientCreate />} />
-          <Route path="/placements" element={<Placements />} />
-          <Route path="/jobs/create" element={<JobCreate />} />
-          <Route path="/community" element={<Community />} />
-          <Route path="/roi-calculator" element={<ROICalculator />} />
-          <Route path="/partnerships" element={<Partnerships />} />
-          <Route path="/career-assistant" element={<CareerAssistant />} />
-          <Route path="/bug-report" element={<BugReport />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <div className="flex flex-col min-h-screen">
+          <div className="flex-1">
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/leaderboard" element={<Leaderboard />} />
+              <Route path="/profiles" element={<Profiles />} />
+              <Route path="/profiles/:id" element={<ProfileDetail />} />
+              <Route path="/jobs" element={<Jobs />} />
+              <Route path="/jobs/:id" element={<JobDetail />} />
+              <Route path="/training" element={<Training />} />
+              <Route path="/certifications-catalog" element={<CertificationCatalog />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/pricing" element={<Pricing />} />
+              <Route path="/faq" element={<FAQ />} />
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/privacy" element={<Privacy />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/skills" element={<Skills />} />
+              <Route path="/certifications" element={<Certifications />} />
+              <Route path="/company/create" element={<CompanyCreate />} />
+              <Route path="/clients/create" element={<ClientCreate />} />
+              <Route path="/placements" element={<Placements />} />
+              <Route path="/jobs/create" element={<JobCreate />} />
+              <Route path="/community" element={<Community />} />
+              <Route path="/roi-calculator" element={<ROICalculator />} />
+              <Route path="/partnerships" element={<Partnerships />} />
+              <Route path="/career-assistant" element={<CareerAssistant />} />
+              <Route path="/bug-report" element={<BugReport />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </div>
+          <Footer />
+        </div>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
