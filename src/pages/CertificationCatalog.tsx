@@ -115,9 +115,9 @@ const CertificationCatalog = () => {
     <div className="min-h-screen bg-background">
       <Navigation />
       <SEO 
-        title="Certification Catalog | Cydena"
-        description="Advance your cybersecurity career with industry-recognized professional certifications from top providers."
-        keywords="cybersecurity certifications, CompTIA Security+, CISSP, CEH, GIAC, professional development"
+        title="Cybersecurity Certifications Catalog - CISSP, CEH, Security+"
+        description="Explore cybersecurity certification paths from CompTIA, ISC2, EC-Council, SANS. Find Security+, CISSP, CEH, OSCP exam vouchers and training."
+        keywords="cybersecurity certifications, CISSP certification, CompTIA Security+, CEH certified, OSCP exam, GIAC certifications"
       />
 
       <main className="container mx-auto px-4 py-8 animate-fade-in">

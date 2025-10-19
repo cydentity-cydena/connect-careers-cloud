@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Navigation from "@/components/Navigation";
+import SEO from "@/components/SEO";
 import { z } from "zod";
 
 // Validation schemas
@@ -295,6 +296,11 @@ const Auth = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO 
+        title="Sign In - Cydena Cybersecurity Jobs Platform"
+        description="Sign in or create your free Cydena account. Access cybersecurity jobs, showcase certifications, and connect with top employers. 100% free for candidates."
+        keywords="cybersecurity jobs login, security analyst signup, infosec careers, penetration tester account"
+      />
       <Navigation />
       
       <div className="flex items-center justify-center p-4 pt-20">

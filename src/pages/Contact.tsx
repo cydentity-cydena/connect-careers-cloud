@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Mail, MessageSquare, Send, Bug } from "lucide-react";
 import Navigation from "@/components/Navigation";
+import SEO from "@/components/SEO";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -51,6 +52,11 @@ const Contact = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO 
+        title="Contact Cydena - Cybersecurity Recruitment Support"
+        description="Get in touch with Cydena's support team. Contact us for candidate support, employer inquiries, training partnerships, or technical assistance."
+        keywords="contact cydena, cybersecurity recruitment support, customer service, employer inquiries"
+      />
       <Navigation />
 
       <main className="container mx-auto px-4 py-8 animate-fade-in">

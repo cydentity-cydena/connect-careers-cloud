@@ -290,8 +290,9 @@ const CareerAssistant = () => {
     return (
       <div className="min-h-screen bg-background">
         <SEO 
-          title="AI Career Assistant - Cydena"
-          description="Get personalized career guidance, job recommendations, and resume optimization powered by AI"
+          title="AI Career Assistant - Cybersecurity Career Guidance"
+          description="Get personalized cybersecurity career advice powered by AI. Resume optimization, job recommendations, certification paths, and interview prep for infosec roles."
+          keywords="cybersecurity career advisor, AI career guidance, security analyst career path, infosec job recommendations"
         />
         <Navigation />
         <div className="flex items-center justify-center min-h-[60vh]">
@@ -307,8 +308,9 @@ const CareerAssistant = () => {
   return (
     <div className="min-h-screen bg-background">
       <SEO 
-        title="AI Career Assistant - Cydena"
-        description="Get personalized career guidance, job recommendations, and resume optimization powered by AI"
+        title="AI Career Assistant - Cybersecurity Career Guidance"
+        description="Get personalized cybersecurity career advice powered by AI. Resume optimization, job recommendations, certification paths, and interview prep for infosec roles."
+        keywords="cybersecurity career advisor, AI career guidance, security analyst career path, infosec job recommendations"
       />
       <Navigation />
 

@@ -235,8 +235,9 @@ const Training = () => {
     <div className="min-h-screen bg-background">
       <Navigation />
       <SEO 
-        title="Free Training | Cydena" 
-        description="Complete free cybersecurity courses from leading training providers and earn points on Cydena."
+        title="Free Cybersecurity Training Courses - Security+ to OSCP Prep"
+        description="Access free cybersecurity training from Hack The Box, TryHackMe, and top providers. Prepare for Security+, CEH, OSCP certifications with hands-on labs."
+        keywords="free cybersecurity training, Security+ courses, OSCP preparation, penetration testing labs, HTB Academy"
       />
       <main className="container mx-auto px-4 py-16">
         <div className="max-w-6xl mx-auto">

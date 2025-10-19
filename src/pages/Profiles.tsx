@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Search, Lock, Star, Eye, Shield } from "lucide-react";
 import Navigation from "@/components/Navigation";
+import SEO from "@/components/SEO";
 import { useToast } from "@/hooks/use-toast";
 
 interface CandidateProfile {
@@ -186,6 +187,11 @@ const Profiles = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO 
+        title="Cybersecurity Talent Profiles - Verified Security Professionals"
+        description="Browse verified cybersecurity professionals with CISSP, CEH, OSCP certifications. Search security analysts, penetration testers, and infosec experts."
+        keywords="cybersecurity talent pool, security analyst profiles, penetration tester candidates, CISSP professionals"
+      />
       <Navigation />
 
       <main className="container mx-auto px-4 py-8 animate-fade-in">

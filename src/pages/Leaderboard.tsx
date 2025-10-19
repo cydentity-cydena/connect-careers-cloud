@@ -7,6 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import Navigation from "@/components/Navigation";
+import SEO from "@/components/SEO";
 
 interface LeaderboardEntry {
   id: string;
@@ -113,6 +114,11 @@ const Leaderboard = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO 
+        title="Cybersecurity Talent Leaderboard - Top Professionals"
+        description="Browse the top 20 cybersecurity professionals on Cydena ranked by certifications (CISSP, CEH, OSCP), skills, and community leadership. Find verified talent."
+        keywords="cybersecurity talent rankings, top infosec professionals, CISSP certified experts, penetration tester leaderboard"
+      />
       <Navigation />
 
       <main className="container mx-auto px-4 py-4 md:py-8 animate-fade-in">

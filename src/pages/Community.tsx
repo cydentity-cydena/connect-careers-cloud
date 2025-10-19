@@ -58,8 +58,9 @@ const Community = () => {
   return (
     <div className="min-h-screen bg-background">
       <SEO 
-        title="Community | Cydena" 
-        description="Connect with cybersecurity professionals, track your skill progression, and celebrate achievements in the Cydena community."
+        title="Cybersecurity Community - Connect with Security Professionals"
+        description="Join the Cydena community of cybersecurity professionals. Share knowledge, track skill pathways, earn achievements, and connect with peers in infosec."
+        keywords="cybersecurity community, infosec networking, security professionals forum, cyber skills tracking"
       />
       
       <Navigation />

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Briefcase, MapPin, DollarSign, Clock, Search } from "lucide-react";
 import Navigation from "@/components/Navigation";
+import SEO from "@/components/SEO";
 import { ApplyJobDialog } from "@/components/jobs/ApplyJobDialog";
 import { VerifiedBadge } from "@/components/verification/VerifiedBadge";
 import { supabase } from "@/integrations/supabase/client";
@@ -125,6 +126,11 @@ const Jobs = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO 
+        title="Cybersecurity Jobs - Security Analyst & Infosec Careers"
+        description="Browse cybersecurity jobs from verified employers. Find security analyst, penetration tester, SOC analyst, and security engineer positions. Apply directly."
+        keywords="cybersecurity jobs, security analyst jobs, penetration tester careers, SOC analyst positions, infosec jobs"
+      />
       <Navigation />
 
       <main className="container mx-auto px-4 py-8 animate-fade-in">
