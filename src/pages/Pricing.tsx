@@ -4,6 +4,7 @@ import { Check, X, ArrowRight, Zap, Building2, Users, Loader2 } from "lucide-rea
 import Navigation from "@/components/Navigation";
 import { Link, useNavigate } from "react-router-dom";
 import SEO from "@/components/SEO";
+import Schema from "@/components/Schema";
 import { useState, useEffect } from "react";
 import { useSubscription } from "@/hooks/useSubscription";
 import { supabase } from "@/integrations/supabase/client";
@@ -42,6 +43,12 @@ const Pricing = () => {
         description="Simple, transparent pricing for cybersecurity recruitment. No long-term contracts, no retainer fees. Pay only for what you use with our credit-based system."
         keywords="cybersecurity recruitment pricing, tech recruitment costs, hire cybersecurity talent, recruitment fees, pay per hire"
       />
+      <Schema type="breadcrumb" data={{
+        items: [
+          { name: "Home", path: "/" },
+          { name: "Pricing", path: "/pricing" }
+        ]
+      }} />
       <Navigation />
 
       <main className="container mx-auto px-4 py-12 md:py-16">

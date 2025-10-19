@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Briefcase, MapPin, DollarSign, Clock, Search } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import SEO from "@/components/SEO";
+import Schema from "@/components/Schema";
 import { ApplyJobDialog } from "@/components/jobs/ApplyJobDialog";
 import { VerifiedBadge } from "@/components/verification/VerifiedBadge";
 import { supabase } from "@/integrations/supabase/client";
@@ -131,6 +132,12 @@ const Jobs = () => {
         description="Browse cybersecurity jobs from verified employers. Find security analyst, penetration tester, SOC analyst, and security engineer positions. Apply directly."
         keywords="cybersecurity jobs, security analyst jobs, penetration tester careers, SOC analyst positions, infosec jobs"
       />
+      <Schema type="breadcrumb" data={{
+        items: [
+          { name: "Home", path: "/" },
+          { name: "Jobs", path: "/jobs" }
+        ]
+      }} />
       <Navigation />
 
       <main className="container mx-auto px-4 py-8 animate-fade-in">
@@ -163,11 +170,12 @@ const Jobs = () => {
         ) : (
           <div className="space-y-4">
             {filteredJobs.map((job, index) => (
-              <Card
-                key={job.id}
-                className="border-border shadow-card hover:scale-[1.02] transition-transform animate-slide-up"
-                style={{ animationDelay: `${index * 0.05}s` }}
-              >
+              <div key={job.id}>
+                <Schema type="jobPosting" data={job} />
+                <Card
+                  className="border-border shadow-card hover:scale-[1.02] transition-transform animate-slide-up"
+                  style={{ animationDelay: `${index * 0.05}s` }}
+                >
                 <CardHeader>
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
@@ -246,6 +254,7 @@ const Jobs = () => {
                   </div>
                 </CardContent>
               </Card>
+              </div>
             ))}
           </div>
         )}

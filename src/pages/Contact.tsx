@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Mail, MessageSquare, Send, Bug } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import SEO from "@/components/SEO";
+import Schema from "@/components/Schema";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -57,6 +58,12 @@ const Contact = () => {
         description="Get in touch with Cydena's support team. Contact us for candidate support, employer inquiries, training partnerships, or technical assistance."
         keywords="contact cydena, cybersecurity recruitment support, customer service, employer inquiries"
       />
+      <Schema type="breadcrumb" data={{
+        items: [
+          { name: "Home", path: "/" },
+          { name: "Contact", path: "/contact" }
+        ]
+      }} />
       <Navigation />
 
       <main className="container mx-auto px-4 py-8 animate-fade-in">

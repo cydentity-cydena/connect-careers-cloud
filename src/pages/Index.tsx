@@ -3,12 +3,15 @@ import { Button } from "@/components/ui/button";
 import { Shield, Users, Briefcase, TrendingUp, ArrowRight, Clock, DollarSign, Target, CheckCircle } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import SEO from "@/components/SEO";
+import Schema from "@/components/Schema";
 import heroImage from "@/assets/hero-bg.jpg";
 
 const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <SEO />
+      <Schema type="organization" />
+      <Schema type="website" />
       <Navigation />
 
       {/* Hero Section */}

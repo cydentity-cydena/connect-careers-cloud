@@ -6,6 +6,7 @@ import Navigation from "@/components/Navigation";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
 import SEO from "@/components/SEO";
+import Schema from "@/components/Schema";
 import treccertLogo from "@/assets/treccert-logo.svg";
 
 interface Course {
@@ -119,6 +120,12 @@ const CertificationCatalog = () => {
         description="Explore cybersecurity certification paths from CompTIA, ISC2, EC-Council, SANS. Find Security+, CISSP, CEH, OSCP exam vouchers and training."
         keywords="cybersecurity certifications, CISSP certification, CompTIA Security+, CEH certified, OSCP exam, GIAC certifications"
       />
+      <Schema type="breadcrumb" data={{
+        items: [
+          { name: "Home", path: "/" },
+          { name: "Certifications", path: "/certifications-catalog" }
+        ]
+      }} />
 
       <main className="container mx-auto px-4 py-8 animate-fade-in">
         {/* TRECCert Partnership Banner */}

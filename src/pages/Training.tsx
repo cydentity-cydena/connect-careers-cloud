@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Shield, Upload, CheckCircle, Zap, Star, TrendingUp, Building2 } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import SEO from "@/components/SEO";
+import Schema from "@/components/Schema";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -239,6 +240,12 @@ const Training = () => {
         description="Access free cybersecurity training from Hack The Box, TryHackMe, and top providers. Prepare for Security+, CEH, OSCP certifications with hands-on labs."
         keywords="free cybersecurity training, Security+ courses, OSCP preparation, penetration testing labs, HTB Academy"
       />
+      <Schema type="breadcrumb" data={{
+        items: [
+          { name: "Home", path: "/" },
+          { name: "Training", path: "/training" }
+        ]
+      }} />
       <main className="container mx-auto px-4 py-16">
         <div className="max-w-6xl mx-auto">
           <div className="mb-12">
