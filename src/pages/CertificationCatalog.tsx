@@ -160,9 +160,9 @@ const CertificationCatalog = () => {
         </Card>
 
         <div className="mb-12">
-          <h1 className="text-4xl font-bold mb-2">Premium Cybersecurity Certifications</h1>
+          <h1 className="text-4xl font-bold mb-2">Cybersecurity Certifications - CISSP, CEH, Security+</h1>
           <p className="text-muted-foreground">
-            Advance your career with industry-recognized professional certifications
+            Advance your cybersecurity career with industry-recognized professional certifications
           </p>
         </div>
 

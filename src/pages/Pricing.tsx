@@ -55,7 +55,7 @@ const Pricing = () => {
         {/* Header */}
         <div className="text-center mb-12 md:mb-16 animate-fade-in">
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 md:mb-4 px-2">
-            Simple, Transparent <span className="bg-gradient-cyber bg-clip-text text-transparent">Pricing</span>
+            Transparent Cybersecurity Recruitment <span className="bg-gradient-cyber bg-clip-text text-transparent">Pricing</span>
           </h1>
           <p className="text-base md:text-xl text-muted-foreground max-w-2xl mx-auto px-2">
             No long-term contracts. No retainer fees. Pay only for what you use.

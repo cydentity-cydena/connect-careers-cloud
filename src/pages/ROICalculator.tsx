@@ -142,7 +142,7 @@ export default function ROICalculator() {
               Value Calculator
             </Badge>
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              Recruitment Cost & ROI Comparison
+              Cybersecurity Recruitment Cost Calculator & ROI Comparison
             </h1>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
               See the savings you achieve by hiring verified cybersecurity talent directly on Cydena — cut agency fees by up to 90%

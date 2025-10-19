@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import Navigation from "@/components/Navigation";
+import SEO from "@/components/SEO";
+import Schema from "@/components/Schema";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -244,6 +246,17 @@ export default function ProfileDetail() {
   if (!profile) {
     return (
       <div className="min-h-screen bg-background">
+        <SEO 
+          title={`${profile?.username || 'Profile'} - Cybersecurity Professional`}
+          description={`View ${profile?.username || 'this cybersecurity professional'}'s verified profile, certifications, and experience on Cydena.`}
+        />
+        <Schema type="breadcrumb" data={{
+          items: [
+            { name: "Home", path: "/" },
+            { name: "Profiles", path: "/profiles" },
+            { name: profile?.username || "Profile", path: `/profiles/${id}` }
+          ]
+        }} />
         <Navigation />
         <main className="container mx-auto px-4 py-8 text-center">
           <h1 className="text-2xl font-bold mb-4">Profile Not Found</h1>
@@ -258,6 +271,17 @@ export default function ProfileDetail() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO 
+        title={`${profile.username || 'Profile'} - Cybersecurity Professional on Cydena`}
+        description={`${candidateProfile?.title || 'Cybersecurity professional'} with verified certifications and experience. ${profile.bio || ''}`}
+      />
+      <Schema type="breadcrumb" data={{
+        items: [
+          { name: "Home", path: "/" },
+          { name: "Profiles", path: "/profiles" },
+          { name: profile.username || "Profile", path: `/profiles/${id}` }
+        ]
+      }} />
       <Navigation />
       
       <main className="container mx-auto px-4 py-8">
@@ -302,13 +326,11 @@ export default function ProfileDetail() {
                       "👤"
                     )}
                   </div>
-                  {isUnlocked && profile.full_name ? (
-                    <>
-                      <h1 className="text-2xl font-bold mb-1">{profile.full_name}</h1>
-                      <p className="text-sm text-muted-foreground mb-2">@{profile.username || "anonymous"}</p>
-                    </>
-                  ) : (
-                    <h1 className="text-2xl font-bold mb-2">@{profile.username || "anonymous"}</h1>
+                  <h1 className="text-2xl font-bold mb-1">
+                    {isUnlocked && profile.full_name ? profile.full_name : `@${profile.username || "anonymous"}`}
+                  </h1>
+                  {isUnlocked && profile.full_name && (
+                    <p className="text-sm text-muted-foreground mb-2">@{profile.username || "anonymous"}</p>
                   )}
                   {candidateProfile?.title && (
                     <p className="text-muted-foreground mb-4">{candidateProfile.title}</p>

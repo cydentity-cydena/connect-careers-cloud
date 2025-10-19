@@ -142,7 +142,7 @@ const Jobs = () => {
 
       <main className="container mx-auto px-4 py-8 animate-fade-in">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">Job Opportunities</h1>
+          <h1 className="text-4xl font-bold mb-2">Cybersecurity Jobs - Find Your Next Security Role</h1>
           <p className="text-muted-foreground">
             Find your next cybersecurity role with leading organizations
           </p>

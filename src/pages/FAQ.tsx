@@ -129,7 +129,7 @@ const FAQ = () => {
           {/* Header */}
           <div className="text-center mb-12 animate-fade-in">
             <h1 className="text-5xl font-bold mb-4">
-              Frequently Asked <span className="bg-gradient-cyber bg-clip-text text-transparent">Questions</span>
+              Cybersecurity Recruitment <span className="bg-gradient-cyber bg-clip-text text-transparent">FAQ</span>
             </h1>
             <p className="text-xl text-muted-foreground">
               Everything you need to know about Cydena

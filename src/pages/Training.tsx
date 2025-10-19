@@ -250,7 +250,7 @@ const Training = () => {
         <div className="max-w-6xl mx-auto">
           <div className="mb-12">
             <h1 className="text-5xl font-bold mb-4 bg-gradient-cyber bg-clip-text text-transparent">
-              Free Training Courses
+              Free Cybersecurity Training & Certification Prep
             </h1>
             <p className="text-xl text-muted-foreground mb-6">
               Complete courses, import certifications, and boost your score with verified training

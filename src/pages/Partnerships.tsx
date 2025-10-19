@@ -232,7 +232,7 @@ const Partnerships = () => {
                 Limited Slots Available
               </Badge>
               <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-                Become a Featured Partner
+                Featured Training & Certification Partnerships
               </h1>
               <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
                 Reach thousands of cybersecurity professionals with premium visibility for your training courses or certifications.

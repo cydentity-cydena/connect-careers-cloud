@@ -318,7 +318,7 @@ const CareerAssistant = () => {
         <div className="mb-8 text-center">
           <div className="flex items-center justify-center gap-2 mb-2">
             <Sparkles className="h-8 w-8 text-primary" />
-            <h1 className="text-4xl font-bold">AI Career Assistant</h1>
+            <h1 className="text-4xl font-bold">AI Career Assistant - Cybersecurity Career Guidance</h1>
           </div>
           <p className="text-muted-foreground">
             Your personal guide to cybersecurity career success
