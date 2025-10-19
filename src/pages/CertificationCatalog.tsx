@@ -17,22 +17,6 @@ interface Course {
 }
 
 const CertificationCatalog = () => {
-  const [featuredCertifications, setFeaturedCertifications] = useState<any[]>([]);
-
-  useEffect(() => {
-    const fetchFeaturedCertifications = async () => {
-      const { data } = await supabase
-        .from("featured_certifications")
-        .select("*")
-        .order("slot_position");
-      
-      if (data) {
-        setFeaturedCertifications(data);
-      }
-    };
-
-    fetchFeaturedCertifications();
-  }, []);
 
   const courses: Course[] = [
     {
@@ -226,76 +210,96 @@ const CertificationCatalog = () => {
           </CardContent>
         </Card>
 
-        {/* Featured Certifications Section - Tiered Display */}
-        {featuredCertifications.length > 0 && (
-          <div className="mb-12 animate-fade-in">
-            <div className="mb-6">
-              <h2 className="text-3xl font-bold">
-                Featured Certifications
-              </h2>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-5">
-              {featuredCertifications.map((cert) => {
-                const defaultStyles = { border: "border-2 border-purple-500/50", bg: "from-purple-500/5 to-transparent", badge: "bg-purple-500", size: "scale-90", label: "FEATURED", icon: "text-purple-500" };
-                const slotStyles = {
-                  1: { border: "border-4 border-yellow-500", bg: "from-yellow-500/15 to-yellow-500/5", badge: "bg-yellow-500", size: "scale-105", label: "PREMIUM", icon: "text-yellow-500" },
-                  2: { border: "border-3 border-orange-500/70", bg: "from-orange-500/10 to-orange-500/5", badge: "bg-orange-500", size: "scale-100", label: "FEATURED", icon: "text-orange-500" },
-                  3: { border: "border-2 border-blue-500/60", bg: "from-blue-500/8 to-blue-500/3", badge: "bg-blue-500", size: "scale-95", label: "FEATURED", icon: "text-blue-500" },
-                  4: { border: "border-2 border-purple-500/50", bg: "from-purple-500/5 to-transparent", badge: "bg-purple-500", size: "scale-90", label: "FEATURED", icon: "text-purple-500" },
-                }[cert.slot_position as 1 | 2 | 3 | 4] || defaultStyles;
-
-                return (
-                  <Card
-                    key={cert.id}
-                    className={`relative ${slotStyles.border} ${slotStyles.size} bg-gradient-to-br ${slotStyles.bg} hover:scale-[1.02] transition-all duration-200`}
-                  >
-                    <div className="absolute top-4 right-4 z-10">
-                      <Badge className={`${slotStyles.badge} text-white border-0 px-3 py-1`}>
-                        {cert.slot_position === 1 && <Star className="h-3.5 w-3.5 mr-1.5 fill-white" />}
-                        <Star className="h-3.5 w-3.5 mr-1.5" />
-                        {slotStyles.label}
-                      </Badge>
-                    </div>
-
-                    {cert.logo_url && (
-                      <div className="p-6 pb-0">
-                        <img 
-                          src={cert.logo_url} 
-                          alt={`${cert.provider_name} logo`}
-                          className="h-12 object-contain"
-                        />
-                      </div>
-                    )}
-
-                    <CardHeader className="pb-3">
-                      <CardTitle className={`${cert.slot_position === 1 ? 'text-2xl' : 'text-xl'} flex items-center gap-2`}>
-                        <Award className={`h-5 w-5 ${slotStyles.icon}`} />
-                        {cert.cert_name}
-                      </CardTitle>
-                      <CardDescription className="font-semibold text-base">
-                        {cert.provider_name}
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <p className="text-sm text-muted-foreground leading-relaxed">
-                        {cert.description}
-                      </p>
-                      <a
-                        href={cert.website_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={`inline-flex items-center gap-2 text-sm ${slotStyles.icon} hover:underline font-semibold transition-colors`}
-                      >
-                        Learn More & Enroll →
-                      </a>
-                    </CardContent>
-                  </Card>
-                );
-              })}
-            </div>
+        {/* Featured Certifications Section - Cydentity Academy ISO Certs */}
+        <div className="mb-12 animate-fade-in">
+          <div className="mb-6">
+            <h2 className="text-3xl font-bold">
+              Featured Certifications
+            </h2>
           </div>
-        )}
+
+          <div className="grid md:grid-cols-2 gap-5">
+            {[
+              {
+                name: "ISO 42001 Practitioner",
+                url: "https://cydentityacademy.com/checkout/iso-42001-practitioner",
+                description: "The fundamental concepts, ethical and regulatory requirements, risk assessments, and AI principles.",
+                slot: 1
+              },
+              {
+                name: "ISO 27001 Practitioner",
+                url: "https://cydentityacademy.com/checkout/iso-27001-practitioner",
+                description: "Understanding information security management fundamentals and ISO 27001 framework essentials.",
+                slot: 2
+              },
+              {
+                name: "ISO 27001 Lead Implementer",
+                url: "https://cydentityacademy.com/checkout/iso-27001-lead-implementer",
+                description: "This certification is perfect for professionals who are responsible for implementing Information Security Management Systems in their organizations.",
+                slot: 3
+              },
+              {
+                name: "ISO 27001 Lead Auditor",
+                url: "https://cydentityacademy.com/checkout/iso-27001-lead-auditor",
+                description: "This certification is perfect for professionals who are responsible for auditing Information Security Management Systems in their organizations.",
+                slot: 4
+              }
+            ].map((cert) => {
+              const slotStyles = {
+                1: { border: "border-4 border-yellow-500", bg: "from-yellow-500/15 to-yellow-500/5", badge: "bg-yellow-500", size: "scale-105", label: "PREMIUM", icon: "text-yellow-500" },
+                2: { border: "border-3 border-orange-500/70", bg: "from-orange-500/10 to-orange-500/5", badge: "bg-orange-500", size: "scale-100", label: "FEATURED", icon: "text-orange-500" },
+                3: { border: "border-2 border-blue-500/60", bg: "from-blue-500/8 to-blue-500/3", badge: "bg-blue-500", size: "scale-95", label: "FEATURED", icon: "text-blue-500" },
+                4: { border: "border-2 border-purple-500/50", bg: "from-purple-500/5 to-transparent", badge: "bg-purple-500", size: "scale-90", label: "FEATURED", icon: "text-purple-500" },
+              }[cert.slot as 1 | 2 | 3 | 4];
+
+              return (
+                <Card
+                  key={cert.slot}
+                  className={`relative ${slotStyles.border} ${slotStyles.size} bg-gradient-to-br ${slotStyles.bg} hover:scale-[1.02] transition-all duration-200`}
+                >
+                  <div className="absolute top-4 right-4 z-10">
+                    <Badge className={`${slotStyles.badge} text-white border-0 px-3 py-1`}>
+                      {cert.slot === 1 && <Star className="h-3.5 w-3.5 mr-1.5 fill-white" />}
+                      <Star className="h-3.5 w-3.5 mr-1.5" />
+                      {slotStyles.label}
+                    </Badge>
+                  </div>
+
+                  <div className="p-6 pb-0">
+                    <img 
+                      src="/logos/cydentity-academy-logo.png" 
+                      alt="Cydentity Academy logo"
+                      className="h-12 object-contain"
+                    />
+                  </div>
+
+                  <CardHeader className="pb-3">
+                    <CardTitle className={`${cert.slot === 1 ? 'text-2xl' : 'text-xl'} flex items-center gap-2`}>
+                      <Award className={`h-5 w-5 ${slotStyles.icon}`} />
+                      {cert.name}
+                    </CardTitle>
+                    <CardDescription className="font-semibold text-base">
+                      Cydentity Academy
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      {cert.description}
+                    </p>
+                    <a
+                      href={cert.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`inline-flex items-center gap-2 text-sm ${slotStyles.icon} hover:underline font-semibold transition-colors`}
+                    >
+                      Learn More & Enroll →
+                    </a>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        </div>
 
         {providers.map((provider, providerIdx) => (
           <div key={provider} className="mb-12 animate-slide-up" style={{ animationDelay: `${providerIdx * 0.1}s` }}>
