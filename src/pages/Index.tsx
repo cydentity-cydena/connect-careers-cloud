@@ -234,62 +234,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-border py-12 bg-card/30">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-4 gap-8 mb-8">
-            <div>
-              <Link to="/" className="flex items-center gap-2 mb-4">
-                <Shield className="h-6 w-6 text-primary" />
-                <span className="text-xl font-bold">Cydena</span>
-              </Link>
-              <p className="text-sm text-muted-foreground">
-                The future of cybersecurity recruitment. Connecting elite talent with cutting-edge opportunities.
-              </p>
-            </div>
-            
-            <div>
-              <h3 className="font-semibold mb-4">Platform</h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><Link to="/leaderboard" className="hover:text-primary transition-colors">Leaderboard</Link></li>
-                <li><Link to="/profiles" className="hover:text-primary transition-colors">Browse Talent</Link></li>
-                <li><Link to="/jobs" className="hover:text-primary transition-colors">Find Jobs</Link></li>
-                <li><Link to="/training" className="hover:text-primary transition-colors">Training</Link></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h3 className="font-semibold mb-4">Company</h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><Link to="/partners" className="hover:text-primary transition-colors">Partners</Link></li>
-                <li><Link to="/pricing" className="hover:text-primary transition-colors">Pricing</Link></li>
-                <li><Link to="/faq" className="hover:text-primary transition-colors">FAQ</Link></li>
-                <li><Link to="/contact" className="hover:text-primary transition-colors">Contact</Link></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h3 className="font-semibold mb-4">Legal</h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><Link to="/terms" className="hover:text-primary transition-colors">Terms of Service</Link></li>
-                <li><Link to="/privacy" className="hover:text-primary transition-colors">Privacy Policy</Link></li>
-                <li><Link to="/bug-report" className="hover:text-primary transition-colors">Report a Bug</Link></li>
-              </ul>
-            </div>
-          </div>
-          
-          <div className="border-t border-border pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-muted-foreground text-sm">
-              © 2025 Cydena. All rights reserved.
-            </p>
-            <div className="flex gap-4 text-sm text-muted-foreground">
-              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Twitter</a>
-              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">LinkedIn</a>
-              <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">GitHub</a>
-            </div>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 };
