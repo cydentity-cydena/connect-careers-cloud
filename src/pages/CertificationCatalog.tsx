@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
 import SEO from "@/components/SEO";
 import treccertLogo from "@/assets/treccert-logo.svg";
+import cydentityLogo from "/logos/cydentity-academy-logo.png";
 
 interface Course {
   name: string;
@@ -142,7 +143,7 @@ const CertificationCatalog = () => {
           <CardContent className="p-6">
             <div className="flex flex-col md:flex-row items-center justify-between gap-6">
               <div className="flex items-center gap-6">
-                <img src={treccertLogo} alt="TRECCert Logo" className="h-16 w-auto object-contain" />
+                <img src={cydentityLogo} alt="Cydentity Academy Logo" className="h-16 w-auto object-contain" />
                 <div>
                   <div className="flex items-center gap-2 mb-2">
                     <h3 className="text-2xl font-bold">Official Accreditation Partner</h3>
@@ -152,12 +153,12 @@ const CertificationCatalog = () => {
                     </Badge>
                   </div>
                   <p className="text-base text-muted-foreground">
-                    Real LMS delivers ISO certifications with TRECCert accreditation - a trusted global certification body
+                    Cydentity Academy delivers ISO certifications with TRECCert accreditation - a trusted global certification body
                   </p>
                 </div>
               </div>
               <a
-                href="https://www.treccert.com"
+                href="https://cydentityacademy.com/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-11 px-8 py-2 whitespace-nowrap"

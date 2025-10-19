@@ -187,7 +187,7 @@ const Training = () => {
       icon: <Upload className="h-6 w-6" />,
       providers: [
         {
-          name: "REAL LMS",
+          name: "Cydentity Academy",
           description: "Official ISO/IEC 27001 training provider. Partners with TRECCert (ANAB accredited) for ISMS certifications.",
           color: "bg-blue-900",
           features: ["ISO 27001 Training", "TRECCert Partner", "ISMS Implementation", "Lead Auditor Courses"],
@@ -322,7 +322,7 @@ const Training = () => {
                     }[partner.slot_position as 1 | 2 | 3 | 4] || defaultStyles;
                     
                     // Check if this is an official partner
-                    const isOfficialPartner = ['REAL LMS', 'TRECCert'].includes(partner.partner_name);
+                    const isOfficialPartner = ['Cydentity Academy', 'TRECCert'].includes(partner.partner_name);
 
                     return (
                       <Card

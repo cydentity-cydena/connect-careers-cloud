@@ -196,7 +196,7 @@ const Pricing = () => {
               </li>
               <li className="flex items-center gap-2">
                 <Check className="h-5 w-5 text-primary flex-shrink-0" />
-                <span><strong>Training credits:</strong> Real LMS cohort vouchers (bulk discounts)</span>
+                <span><strong>Training credits:</strong> Cydentity Academy cohort vouchers (bulk discounts)</span>
               </li>
             </ul>
           </CardContent>
@@ -448,7 +448,7 @@ const Pricing = () => {
               </li>
               <li className="flex items-start gap-2">
                 <ArrowRight className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                <span><strong>Training credits:</strong> Real LMS cohort vouchers (bulk discounts)</span>
+                <span><strong>Training credits:</strong> Cydentity Academy cohort vouchers (bulk discounts)</span>
               </li>
             </ul>
           </CardContent>
