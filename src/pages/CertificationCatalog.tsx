@@ -301,6 +301,89 @@ const CertificationCatalog = () => {
           </div>
         </div>
 
+        {/* Cydentity Academy Section */}
+        <div className="mb-12 animate-fade-in">
+          <div className="flex items-center gap-3 mb-6">
+            <img src="/logos/cydentity-academy-logo.png" alt="Cydentity Academy" className="h-10 object-contain" />
+            <h2 className="text-3xl font-bold">Cydentity Academy Compliance Certifications</h2>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[
+              {
+                name: "ISO 42001 Lead Implementer",
+                description: "Advanced certification for implementing AI Management Systems in organizations.",
+                url: "https://cydentityacademy.com/checkout/iso-42001-lead-implementer"
+              },
+              {
+                name: "ISO 42001 Lead Auditor",
+                description: "Professional certification for auditing AI Management Systems.",
+                url: "https://cydentityacademy.com/checkout/iso-42001-lead-auditor"
+              },
+              {
+                name: "ISO 27001 Essentials",
+                description: "Foundational knowledge of information security management principles.",
+                url: "https://cydentityacademy.com/checkout/iso-27001-essentials"
+              },
+              {
+                name: "ISO 27005 Risk Manager",
+                description: "Specialized certification in information security risk management.",
+                url: "https://cydentityacademy.com/checkout/iso-27005-risk-manager"
+              },
+              {
+                name: "ISO 27701 Privacy Manager",
+                description: "Privacy Information Management System implementation certification.",
+                url: "https://cydentityacademy.com/checkout/iso-27701-privacy-manager"
+              },
+              {
+                name: "ISO 22301 Business Continuity",
+                description: "Business continuity management systems certification.",
+                url: "https://cydentityacademy.com/checkout/iso-22301-business-continuity"
+              }
+            ].map((cert, idx) => (
+              <Card
+                key={idx}
+                className="border-border shadow-card hover:scale-105 transition-transform"
+              >
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Award className="h-5 w-5 text-primary" />
+                    {cert.name}
+                  </CardTitle>
+                  <CardDescription>{cert.description}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    <div>
+                      <p className="text-sm font-semibold mb-1">Provider:</p>
+                      <p className="text-sm text-muted-foreground">Cydentity Academy</p>
+                    </div>
+                    <Button 
+                      variant="hero" 
+                      className="w-full gap-2"
+                      onClick={() => window.open(cert.url, '_blank')}
+                    >
+                      <BookOpen className="h-4 w-4" />
+                      View Voucher
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          <div className="mt-6 text-center">
+            <a
+              href="https://cydentityacademy.com/vouchers"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-primary hover:underline font-semibold"
+            >
+              View All Cydentity Academy Vouchers →
+            </a>
+          </div>
+        </div>
+
         {providers.map((provider, providerIdx) => (
           <div key={provider} className="mb-12 animate-slide-up" style={{ animationDelay: `${providerIdx * 0.1}s` }}>
             <div className="flex items-center gap-3 mb-6">
