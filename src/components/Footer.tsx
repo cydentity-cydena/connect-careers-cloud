@@ -31,12 +31,12 @@ const Footer = () => {
               </li>
               <li>
                 <Link to="/profiles" className="text-muted-foreground hover:text-primary transition-colors">
-                  Profiles
+                  Browse Talent
                 </Link>
               </li>
               <li>
                 <Link to="/jobs" className="text-muted-foreground hover:text-primary transition-colors">
-                  Jobs
+                  Find Jobs
                 </Link>
               </li>
               <li>
@@ -52,13 +52,8 @@ const Footer = () => {
             <h3 className="font-semibold mb-3 text-foreground">Company</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link to="/contact" className="text-muted-foreground hover:text-primary transition-colors">
-                  Contact
-                </Link>
-              </li>
-              <li>
                 <Link to="/partnerships" className="text-muted-foreground hover:text-primary transition-colors">
-                  Partnerships
+                  Partners
                 </Link>
               </li>
               <li>
@@ -71,6 +66,11 @@ const Footer = () => {
                   FAQ
                 </Link>
               </li>
+              <li>
+                <Link to="/contact" className="text-muted-foreground hover:text-primary transition-colors">
+                  Contact
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -79,13 +79,18 @@ const Footer = () => {
             <h3 className="font-semibold mb-3 text-foreground">Legal</h3>
             <ul className="space-y-2 text-sm">
               <li>
+                <Link to="/terms" className="text-muted-foreground hover:text-primary transition-colors">
+                  Terms of Service
+                </Link>
+              </li>
+              <li>
                 <Link to="/privacy" className="text-muted-foreground hover:text-primary transition-colors">
                   Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link to="/terms" className="text-muted-foreground hover:text-primary transition-colors">
-                  Terms of Service
+                <Link to="/bug-report" className="text-muted-foreground hover:text-primary transition-colors">
+                  Report a Bug
                 </Link>
               </li>
             </ul>
