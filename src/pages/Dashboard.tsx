@@ -97,11 +97,12 @@ const Dashboard = () => {
       <nav className="border-b border-border backdrop-blur-sm sticky top-0 z-50 bg-background/80">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <Link to="/" className="flex items-center gap-2">
-              <Shield className="h-8 w-8 text-primary" />
-              <span className="text-2xl font-bold bg-gradient-cyber bg-clip-text text-transparent">
-                Cydena
-              </span>
+            <Link to="/" className="flex items-center">
+              <img 
+                src="/logos/cydena-logo.png" 
+                alt="Cydena" 
+                className="h-8 md:h-10 w-auto"
+              />
             </Link>
 
             {/* Desktop Navigation */}

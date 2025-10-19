@@ -8,11 +8,12 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="space-y-3">
-            <div className="flex items-center gap-2">
-              <Shield className="h-6 w-6 text-primary" />
-              <span className="text-xl font-bold bg-gradient-cyber bg-clip-text text-transparent">
-                Cydena
-              </span>
+            <div className="flex items-center">
+              <img 
+                src="/logos/cydena-logo.png" 
+                alt="Cydena" 
+                className="h-8 w-auto"
+              />
             </div>
             <p className="text-sm text-muted-foreground">
               Connecting cybersecurity talent with opportunity.

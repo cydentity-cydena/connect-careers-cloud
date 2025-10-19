@@ -299,11 +299,12 @@ const Auth = () => {
       
       <div className="flex items-center justify-center p-4 pt-20">
         <div className="w-full max-w-md">
-        <div className="flex items-center justify-center gap-2 mb-8 animate-fade-in">
-          <Shield className="h-10 w-10 text-primary animate-glow-pulse" />
-          <span className="text-3xl font-bold bg-gradient-cyber bg-clip-text text-transparent">
-            Cydena
-          </span>
+        <div className="flex items-center justify-center mb-8 animate-fade-in">
+          <img 
+            src="/logos/cydena-logo.png" 
+            alt="Cydena" 
+            className="h-12 w-auto"
+          />
         </div>
 
         <Card className="border-border shadow-card animate-slide-up">
