@@ -54,11 +54,19 @@ const Contact = () => {
       <Navigation />
 
       <main className="container mx-auto px-4 py-8 animate-fade-in">
-        <div className="mb-12">
-          <h1 className="text-4xl font-bold mb-2">Contact Us</h1>
-          <p className="text-muted-foreground">
-            Get in touch with our team - we're here to help
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold mb-4">Contact Cydena Support</h1>
+          <p className="text-lg text-muted-foreground mb-4">
+            Get in touch with our team - we're here to help with your cybersecurity recruitment needs
           </p>
+          <div className="prose prose-lg max-w-none text-muted-foreground">
+            <p>
+              Whether you're a cybersecurity professional looking for your next opportunity, an employer seeking to fill critical security positions, or a training partner interested in collaboration, we're committed to providing prompt and helpful support. Our team typically responds to all inquiries within 24 hours during business days.
+            </p>
+            <p>
+              For urgent matters related to active job applications, account access issues, or payment concerns, please use the appropriate contact email below for the fastest response. Technical issues and bug reports help us improve the platform for everyone in the cybersecurity community.
+            </p>
+          </div>
         </div>
 
         <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
@@ -218,33 +226,61 @@ const Contact = () => {
 
             <Card className="border-border shadow-card bg-gradient-card">
               <CardHeader>
-                <CardTitle>Quick Answers</CardTitle>
+                <CardTitle>Frequently Asked Questions</CardTitle>
+                <CardDescription>Common questions about using Cydena</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-3">
+              <CardContent className="space-y-4">
                 <div>
-                  <h3 className="font-semibold text-sm mb-1">
-                    How do I verify my certifications?
+                  <h3 className="font-semibold mb-1">
+                    How do I verify my cybersecurity certifications?
                   </h3>
                   <p className="text-sm text-muted-foreground">
-                    Upload your certification documents in your profile settings for verification.
+                    Upload your certification documents (CompTIA, CISSP, CEH, SANS, etc.) in your profile settings. Our verification team reviews submissions within 48 hours. Verified certifications increase your visibility to employers.
                   </p>
                 </div>
 
                 <div>
-                  <h3 className="font-semibold text-sm mb-1">
-                    How does the leaderboard work?
+                  <h3 className="font-semibold mb-1">
+                    What is your typical response time?
                   </h3>
                   <p className="text-sm text-muted-foreground">
-                    Your ranking is based on profile completion, certifications, and community engagement.
+                    We respond to all inquiries within 24 hours during business days (Monday-Friday). Urgent account issues are prioritized and typically addressed within 4-6 hours.
                   </p>
                 </div>
 
                 <div>
-                  <h3 className="font-semibold text-sm mb-1">
-                    Is the platform free?
+                  <h3 className="font-semibold mb-1">
+                    How does the leaderboard ranking work?
                   </h3>
                   <p className="text-sm text-muted-foreground">
-                    Free for candidates. Employers pay for job postings and premium features.
+                    Your ranking is based on verified certifications, completed training courses, profile completeness, and community engagement. Higher rankings increase your visibility to employers searching for top cybersecurity talent.
+                  </p>
+                </div>
+
+                <div>
+                  <h3 className="font-semibold mb-1">
+                    Is Cydena free for cybersecurity professionals?
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    Yes! Cydena is 100% free for all cybersecurity professionals - no hidden fees, no credit card required. Employers and recruiters pay subscription fees to access our talent pool and post jobs.
+                  </p>
+                </div>
+
+                <div>
+                  <h3 className="font-semibold mb-1">
+                    How do I report a technical issue or bug?
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    Click the "Report a Bug" button above or visit our bug report page. Include details about what you were doing when the issue occurred, and we'll investigate promptly.
+                  </p>
+                </div>
+
+                <div>
+                  <h3 className="font-semibold mb-1">
+                    Can I contact employers directly through the platform?
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    Yes! Once you apply for a position, you can message the employer directly through our in-platform messaging system. This direct communication helps speed up the hiring process.
                   </p>
                 </div>
               </CardContent>

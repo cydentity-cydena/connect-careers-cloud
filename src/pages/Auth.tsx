@@ -298,20 +298,46 @@ const Auth = () => {
       <Navigation />
       
       <div className="flex items-center justify-center p-4 pt-20">
-        <div className="w-full max-w-md">
-        <div className="flex items-center justify-center mb-8 animate-fade-in">
-          <img 
-            src="/logos/cydena-logo.png" 
-            alt="Cydena" 
-            className="h-12 w-auto animate-pulse drop-shadow-[0_0_15px_rgba(6,182,212,0.5)]"
-          />
-        </div>
+        <div className="w-full max-w-4xl">
+          <div className="flex items-center justify-center mb-8 animate-fade-in">
+            <img 
+              src="/logos/cydena-logo.png" 
+              alt="Cydena Cybersecurity Recruitment Platform" 
+              className="h-12 w-auto animate-pulse drop-shadow-[0_0_15px_rgba(6,182,212,0.5)]"
+            />
+          </div>
 
+          {/* Info Section */}
+          <div className="mb-8 text-center max-w-2xl mx-auto">
+            <h1 className="text-3xl font-bold mb-4">Join the Cybersecurity Recruitment Revolution</h1>
+            <p className="text-muted-foreground mb-6">
+              Create your free account to access exclusive cybersecurity job opportunities, showcase your verified certifications, and connect directly with top employers. No recruitment fees, no barriers - just opportunities.
+            </p>
+            <div className="grid sm:grid-cols-3 gap-4 text-sm">
+              <div className="bg-card/50 border border-border rounded-lg p-4">
+                <CheckCircle className="h-6 w-6 text-primary mx-auto mb-2" />
+                <h3 className="font-semibold mb-1">100% Free for Candidates</h3>
+                <p className="text-xs text-muted-foreground">Full access to all features. No credit card required.</p>
+              </div>
+              <div className="bg-card/50 border border-border rounded-lg p-4">
+                <Shield className="h-6 w-6 text-primary mx-auto mb-2" />
+                <h3 className="font-semibold mb-1">Verified Certifications</h3>
+                <p className="text-xs text-muted-foreground">Showcase CISSP, CEH, Security+, and more.</p>
+              </div>
+              <div className="bg-card/50 border border-border rounded-lg p-4">
+                <CheckCircle className="h-6 w-6 text-primary mx-auto mb-2" />
+                <h3 className="font-semibold mb-1">Direct Employer Access</h3>
+                <p className="text-xs text-muted-foreground">Skip recruiters, message hiring managers directly.</p>
+              </div>
+            </div>
+          </div>
+
+        <div className="max-w-md mx-auto">
         <Card className="border-border shadow-card animate-slide-up">
           <CardHeader>
-            <CardTitle>Welcome</CardTitle>
+            <CardTitle>Welcome to Cydena</CardTitle>
             <CardDescription>
-              Sign in to your account or create a new one
+              Sign in to your cybersecurity career dashboard or create your free account
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -534,6 +560,24 @@ const Auth = () => {
             </Tabs>
           </CardContent>
         </Card>
+        </div>
+
+        {/* Additional SEO Content */}
+        <div className="mt-12 max-w-3xl mx-auto prose prose-sm text-muted-foreground">
+          <h2 className="text-xl font-bold text-foreground mb-4">About Cydena Cybersecurity Recruitment</h2>
+          <p className="mb-4">
+            Cydena is a specialized recruitment platform designed exclusively for cybersecurity professionals and employers. Our platform connects security analysts, penetration testers, security engineers, SOC analysts, GRC specialists, and CISOs with companies seeking to strengthen their cybersecurity posture.
+          </p>
+          <p className="mb-4">
+            Unlike traditional job boards and recruitment agencies that charge 15-30% placement fees, Cydena operates on a transparent subscription model. This means employers can offer more competitive salaries, and candidates access opportunities without recruiter gatekeepers. Our skills-based matching system prioritizes verified certifications (CISSP, CEH, OSCP, Security+, CISM, etc.) and practical experience over traditional credentials.
+          </p>
+          <p className="mb-4">
+            For cybersecurity professionals, signing up is completely free with no hidden costs. Create your profile, upload your certifications for verification, and start applying to relevant positions immediately. Track your applications in real-time through our transparent pipeline system, and communicate directly with hiring managers through our in-platform messaging.
+          </p>
+          <p>
+            Employers and recruiters benefit from access to a curated talent pool of pre-screened cybersecurity professionals with verified credentials. Our subscription plans offer unlimited job postings, advanced candidate search, application management tools, and direct communication channels - all at a fraction of traditional recruitment costs.
+          </p>
+        </div>
         </div>
       </div>
 

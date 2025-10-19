@@ -216,18 +216,115 @@ const Index = () => {
         </div>
       </section>
 
+      {/* How It Works Section */}
+      <section className="py-16 md:py-24 bg-card/20">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                How Cydena Works
+              </h2>
+              <p className="text-lg text-muted-foreground">
+                A streamlined cybersecurity recruitment process built for the modern workforce
+              </p>
+            </div>
+
+            <div className="space-y-12">
+              <div className="grid md:grid-cols-2 gap-8">
+                <div className="bg-gradient-card border border-border rounded-lg p-6">
+                  <h3 className="text-xl font-bold mb-3 text-primary">For Cybersecurity Professionals</h3>
+                  <ol className="space-y-3 text-muted-foreground">
+                    <li className="flex gap-3">
+                      <span className="font-bold text-primary">1.</span>
+                      <span>Create your free profile in minutes - no payment required</span>
+                    </li>
+                    <li className="flex gap-3">
+                      <span className="font-bold text-primary">2.</span>
+                      <span>Upload and verify your certifications (CISSP, CEH, Security+, etc.)</span>
+                    </li>
+                    <li className="flex gap-3">
+                      <span className="font-bold text-primary">3.</span>
+                      <span>Browse cybersecurity jobs from vetted employers and apply instantly</span>
+                    </li>
+                    <li className="flex gap-3">
+                      <span className="font-bold text-primary">4.</span>
+                      <span>Track your applications in real-time through our transparent pipeline</span>
+                    </li>
+                    <li className="flex gap-3">
+                      <span className="font-bold text-primary">5.</span>
+                      <span>Connect directly with hiring managers - no recruiter middlemen</span>
+                    </li>
+                  </ol>
+                </div>
+
+                <div className="bg-gradient-card border border-border rounded-lg p-6">
+                  <h3 className="text-xl font-bold mb-3 text-secondary">For Employers & Recruiters</h3>
+                  <ol className="space-y-3 text-muted-foreground">
+                    <li className="flex gap-3">
+                      <span className="font-bold text-secondary">1.</span>
+                      <span>Choose a subscription plan that fits your hiring needs</span>
+                    </li>
+                    <li className="flex gap-3">
+                      <span className="font-bold text-secondary">2.</span>
+                      <span>Post unlimited cybersecurity jobs with detailed requirements</span>
+                    </li>
+                    <li className="flex gap-3">
+                      <span className="font-bold text-secondary">3.</span>
+                      <span>Access a curated talent pool with verified certifications</span>
+                    </li>
+                    <li className="flex gap-3">
+                      <span className="font-bold text-secondary">4.</span>
+                      <span>Use our kanban pipeline to manage candidates efficiently</span>
+                    </li>
+                    <li className="flex gap-3">
+                      <span className="font-bold text-secondary">5.</span>
+                      <span>Hire faster and cheaper than traditional recruitment agencies</span>
+                    </li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Why Cybersecurity Professionals Choose Cydena */}
+      <section className="py-16 md:py-24">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-center">
+              Why Cybersecurity Professionals Choose Cydena
+            </h2>
+            <div className="prose prose-lg max-w-none text-muted-foreground space-y-6">
+              <p>
+                Traditional cybersecurity job boards and recruitment agencies often create barriers between talented professionals and the opportunities they deserve. Cydena removes these obstacles by providing a direct connection between cybersecurity specialists and employers who value their skills.
+              </p>
+              <p>
+                Our platform recognizes that cybersecurity is a skills-based field where certifications, practical experience, and continuous learning matter more than traditional credentials. Whether you're a penetration tester with OSCP certification, a security analyst with CompTIA Security+, or a CISO with years of experience, Cydena helps you showcase your expertise to employers who understand its value.
+              </p>
+              <p>
+                Entry-level professionals and career transitioners benefit from our partnerships with leading training providers like Cydentity Academy and LetsDefend, gaining access to certification paths that open doors to cybersecurity careers. Meanwhile, experienced professionals appreciate our transparent application process, real-time status updates, and direct communication with decision-makers.
+              </p>
+              <p>
+                Unlike traditional recruitment platforms that charge hefty fees to employers (often 15-30% of first-year salary), Cydena's subscription model allows companies to invest their budget in competitive salaries and benefits for candidates, not middlemen. This creates a healthier job market where talent is rewarded appropriately.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="py-24 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-cyber opacity-10" />
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-4xl font-bold mb-6">Ready to Transform Your Hiring?</h2>
+            <h2 className="text-4xl font-bold mb-6">Ready to Transform Your Cybersecurity Career or Hiring?</h2>
             <p className="text-xl text-muted-foreground mb-8">
-              Join the next generation of cyber recruitment today
+              Join thousands of cybersecurity professionals and forward-thinking employers on Cydena. Whether you're looking for your next role in penetration testing, security operations, GRC, or cloud security, or hiring for critical positions, we make the process simple, transparent, and effective.
             </p>
             <Link to="/auth">
               <Button variant="hero" size="lg" className="gap-2">
-                Get Started Now <ArrowRight className="h-5 w-5" />
+                Get Started Now - Free for Candidates <ArrowRight className="h-5 w-5" />
               </Button>
             </Link>
           </div>

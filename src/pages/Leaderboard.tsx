@@ -117,10 +117,21 @@ const Leaderboard = () => {
 
       <main className="container mx-auto px-4 py-4 md:py-8 animate-fade-in">
         <div className="mb-8 md:mb-12">
-          <h1 className="text-2xl md:text-4xl font-bold mb-2">Top 20 Talent Spotlight</h1>
-          <p className="text-sm md:text-base text-muted-foreground">
+          <h1 className="text-2xl md:text-4xl font-bold mb-2">Cybersecurity Talent Leaderboard - Top 20</h1>
+          <p className="text-sm md:text-base text-muted-foreground mb-4">
             Rankings by Professional XP (certifications, skills, courses) and Community Impact (helping others, mentoring)
           </p>
+          <div className="prose prose-sm max-w-none text-muted-foreground mb-6">
+            <p>
+              Our leaderboard showcases the top cybersecurity professionals on Cydena based on two key metrics: Professional Experience Points (XP) and Community Leadership. Professional XP measures verified certifications (CISSP, CEH, Security+, OSCP, etc.), completed training courses, and demonstrated technical skills. Community Leadership tracks peer endorsements, mentoring activities, and contributions to helping other cybersecurity professionals succeed.
+            </p>
+            <p>
+              Why does ranking matter? Top-ranked professionals gain increased visibility to employers actively searching for cybersecurity talent. Companies filter candidates by leaderboard position when seeking proven experts for security analyst, penetration tester, SOC analyst, and security engineer roles. A high ranking demonstrates both technical competency and community engagement - qualities employers value highly.
+            </p>
+            <p>
+              Candidates can improve their ranking by uploading verified certifications, completing courses through our training partners (Cydentity Academy, LetsDefend, etc.), engaging in the community, and maintaining an active, comprehensive profile. The leaderboard updates daily, providing real-time recognition for professional development achievements.
+            </p>
+          </div>
         </div>
 
         <Tabs defaultValue="professional" className="w-full">
