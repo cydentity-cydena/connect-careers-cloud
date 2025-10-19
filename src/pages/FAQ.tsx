@@ -53,7 +53,7 @@ const FAQ = () => {
     },
     {
       question: "What certifications should I add?",
-      answer: "Add any cybersecurity-related certifications from our partner organizations: CompTIA (Security+), EC-Council (CEH), SANS, ISC2 (CISSP), ISACA (CISA/CISM), or Cydentity Academy training certificates. Even foundational certs help!"
+      answer: "Add any cybersecurity-related certifications from our partner organizations: CompTIA (Security+), EC-Council (CEH), SANS, ISC2 (CISSP), ISACA (CISA/CISM), or Real LMS training certificates. Even foundational certs help!"
     },
     {
       question: "How do employers see my profile?",
