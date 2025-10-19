@@ -94,11 +94,12 @@ const Navigation = () => {
       <div className="container mx-auto px-4 py-3 md:py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 flex-shrink-0" onClick={handleNavClick}>
-            <Shield className="h-6 w-6 md:h-8 md:w-8 text-primary" />
-            <span className="text-xl md:text-2xl font-bold bg-gradient-cyber bg-clip-text text-transparent">
-              Cydena
-            </span>
+          <Link to="/" className="flex items-center flex-shrink-0" onClick={handleNavClick}>
+            <img 
+              src="/logos/cydena-logo.png" 
+              alt="Cydena" 
+              className="h-8 md:h-10 w-auto"
+            />
           </Link>
 
           {/* Desktop Navigation */}
