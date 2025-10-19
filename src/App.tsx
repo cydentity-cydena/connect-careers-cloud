@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Footer from "./components/Footer";
+import ProtectedRoute from "./components/ProtectedRoute";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
@@ -47,31 +48,34 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/auth" element={<Auth />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/leaderboard" element={<Leaderboard />} />
-              <Route path="/profiles" element={<Profiles />} />
-              <Route path="/profiles/:id" element={<ProfileDetail />} />
-              <Route path="/jobs" element={<Jobs />} />
-              <Route path="/jobs/:id" element={<JobDetail />} />
-              <Route path="/training" element={<Training />} />
-              <Route path="/certifications-catalog" element={<CertificationCatalog />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/pricing" element={<Pricing />} />
-              <Route path="/faq" element={<FAQ />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/privacy" element={<Privacy />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/skills" element={<Skills />} />
-              <Route path="/certifications" element={<Certifications />} />
-              <Route path="/company/create" element={<CompanyCreate />} />
-              <Route path="/clients/create" element={<ClientCreate />} />
-              <Route path="/placements" element={<Placements />} />
-              <Route path="/jobs/create" element={<JobCreate />} />
-              <Route path="/community" element={<Community />} />
-              <Route path="/roi-calculator" element={<ROICalculator />} />
-              <Route path="/partnerships" element={<Partnerships />} />
-              <Route path="/career-assistant" element={<CareerAssistant />} />
-              <Route path="/bug-report" element={<BugReport />} />
+              
+              {/* Protected Routes - Require Authentication */}
+              <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+              <Route path="/leaderboard" element={<ProtectedRoute><Leaderboard /></ProtectedRoute>} />
+              <Route path="/profiles" element={<ProtectedRoute><Profiles /></ProtectedRoute>} />
+              <Route path="/profiles/:id" element={<ProtectedRoute><ProfileDetail /></ProtectedRoute>} />
+              <Route path="/jobs" element={<ProtectedRoute><Jobs /></ProtectedRoute>} />
+              <Route path="/jobs/:id" element={<ProtectedRoute><JobDetail /></ProtectedRoute>} />
+              <Route path="/training" element={<ProtectedRoute><Training /></ProtectedRoute>} />
+              <Route path="/certifications-catalog" element={<ProtectedRoute><CertificationCatalog /></ProtectedRoute>} />
+              <Route path="/contact" element={<ProtectedRoute><Contact /></ProtectedRoute>} />
+              <Route path="/pricing" element={<ProtectedRoute><Pricing /></ProtectedRoute>} />
+              <Route path="/faq" element={<ProtectedRoute><FAQ /></ProtectedRoute>} />
+              <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+              <Route path="/skills" element={<ProtectedRoute><Skills /></ProtectedRoute>} />
+              <Route path="/certifications" element={<ProtectedRoute><Certifications /></ProtectedRoute>} />
+              <Route path="/company/create" element={<ProtectedRoute><CompanyCreate /></ProtectedRoute>} />
+              <Route path="/clients/create" element={<ProtectedRoute><ClientCreate /></ProtectedRoute>} />
+              <Route path="/placements" element={<ProtectedRoute><Placements /></ProtectedRoute>} />
+              <Route path="/jobs/create" element={<ProtectedRoute><JobCreate /></ProtectedRoute>} />
+              <Route path="/community" element={<ProtectedRoute><Community /></ProtectedRoute>} />
+              <Route path="/roi-calculator" element={<ProtectedRoute><ROICalculator /></ProtectedRoute>} />
+              <Route path="/partnerships" element={<ProtectedRoute><Partnerships /></ProtectedRoute>} />
+              <Route path="/career-assistant" element={<ProtectedRoute><CareerAssistant /></ProtectedRoute>} />
+              <Route path="/bug-report" element={<ProtectedRoute><BugReport /></ProtectedRoute>} />
+              
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
