@@ -303,7 +303,7 @@ const Auth = () => {
           <img 
             src="/logos/cydena-logo.png" 
             alt="Cydena" 
-            className="h-12 w-auto"
+            className="h-12 w-auto animate-pulse drop-shadow-[0_0_15px_rgba(6,182,212,0.5)]"
           />
         </div>
 
