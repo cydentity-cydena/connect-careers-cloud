@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Loader2, Search, Download, Upload, FileText, Star } from "lucide-react";
 import { format } from "date-fns";
 import AddCandidateToPipeline from "@/components/admin/AddCandidateToPipeline";
+import Navigation from "@/components/Navigation";
 
 interface PipelineCandidate {
   id: string;
@@ -262,15 +263,20 @@ export default function StaffFunnel() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
+      <>
+        <Navigation />
+        <div className="min-h-screen bg-background flex items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      </>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background p-6">
-      <div className="max-w-[1600px] mx-auto space-y-6">
+    <>
+      <Navigation />
+      <div className="min-h-screen bg-background p-6">
+        <div className="max-w-[1600px] mx-auto space-y-6">
         {/* Header */}
         <div>
           <h1 className="text-3xl font-bold">Funnel Dashboard</h1>
@@ -461,5 +467,6 @@ export default function StaffFunnel() {
         </div>
       </div>
     </div>
+    </>
   );
 }
