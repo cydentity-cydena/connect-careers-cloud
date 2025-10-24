@@ -170,42 +170,42 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Value Proposition for Employers vs Traditional */}
+      {/* Value Proposition for Employers */}
       <section className="py-16 md:py-24 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-cyber opacity-5" />
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-12 md:mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-3 md:mb-4">
-              Say Goodbye to <span className="text-destructive">Traditional Recruitment</span>
+              Hire with <span className="bg-gradient-cyber bg-clip-text text-transparent">Confidence</span>
             </h2>
             <p className="text-base md:text-xl text-muted-foreground max-w-3xl mx-auto px-2">
-              No more £15,000 agency fees. No more 8-week hiring cycles. No more exclusive contracts.
+              Access curated, validated cybersecurity talent ready to make an impact
             </p>
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-5xl mx-auto">
             <div className="text-center p-5 md:p-6 rounded-lg border border-primary/20 bg-gradient-card hover:scale-105 transition-transform">
               <div className="bg-primary/10 w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center mx-auto mb-3 md:mb-4">
-                <DollarSign className="h-7 w-7 md:h-8 md:w-8 text-primary" />
+                <Shield className="h-7 w-7 md:h-8 md:w-8 text-primary" />
               </div>
-              <h3 className="text-xl md:text-2xl font-bold mb-2">52-90% Cost Savings</h3>
-              <p className="text-sm md:text-base text-muted-foreground">£199-£999/mo subscription vs £15,000 agency fees</p>
+              <h3 className="text-xl md:text-2xl font-bold mb-2">Validated Credentials</h3>
+              <p className="text-sm md:text-base text-muted-foreground">Verified certifications and security clearances you can trust</p>
             </div>
 
             <div className="text-center p-5 md:p-6 rounded-lg border border-primary/20 bg-gradient-card hover:scale-105 transition-transform" style={{animationDelay: '0.1s'}}>
               <div className="bg-primary/10 w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center mx-auto mb-3 md:mb-4">
-                <Clock className="h-7 w-7 md:h-8 md:w-8 text-primary" />
+                <Users className="h-7 w-7 md:h-8 md:w-8 text-primary" />
               </div>
-              <h3 className="text-xl md:text-2xl font-bold mb-2">Instant Access</h3>
-              <p className="text-sm md:text-base text-muted-foreground">Connect with talent instantly vs 6-8 weeks</p>
+              <h3 className="text-xl md:text-2xl font-bold mb-2">Curated Talent Pool</h3>
+              <p className="text-sm md:text-base text-muted-foreground">Pre-screened professionals with proven cybersecurity skills</p>
             </div>
 
             <div className="text-center p-5 md:p-6 rounded-lg border border-primary/20 bg-gradient-card hover:scale-105 transition-transform sm:col-span-2 lg:col-span-1" style={{animationDelay: '0.2s'}}>
               <div className="bg-primary/10 w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center mx-auto mb-3 md:mb-4">
                 <Target className="h-7 w-7 md:h-8 md:w-8 text-primary" />
               </div>
-              <h3 className="text-xl md:text-2xl font-bold mb-2">Zero Contracts</h3>
-              <p className="text-sm md:text-base text-muted-foreground">No retainers, no exclusivity, pay as you go</p>
+              <h3 className="text-xl md:text-2xl font-bold mb-2">Hire with Confidence</h3>
+              <p className="text-sm md:text-base text-muted-foreground">Transparent profiles and skills-based matching for quality hires</p>
             </div>
           </div>
         </div>
