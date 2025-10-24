@@ -139,6 +139,114 @@ export type Database = {
           },
         ]
       }
+      candidate_notes: {
+        Row: {
+          content: string
+          created_at: string | null
+          created_by: string
+          id: string
+          is_internal: boolean | null
+          note_type: string | null
+          pipeline_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          created_by: string
+          id?: string
+          is_internal?: boolean | null
+          note_type?: string | null
+          pipeline_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          created_by?: string
+          id?: string
+          is_internal?: boolean | null
+          note_type?: string | null
+          pipeline_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "candidate_notes_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "candidate_notes_pipeline_id_fkey"
+            columns: ["pipeline_id"]
+            isOneToOne: false
+            referencedRelation: "candidate_pipeline"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      candidate_pipeline: {
+        Row: {
+          candidate_id: string
+          created_at: string | null
+          desired_role: string | null
+          id: string
+          is_founding_20: boolean | null
+          is_priority: boolean | null
+          moved_by: string | null
+          moved_to_stage_at: string | null
+          sla_due_at: string | null
+          source: string | null
+          staff_notes: string | null
+          stage: string
+          updated_at: string | null
+        }
+        Insert: {
+          candidate_id: string
+          created_at?: string | null
+          desired_role?: string | null
+          id?: string
+          is_founding_20?: boolean | null
+          is_priority?: boolean | null
+          moved_by?: string | null
+          moved_to_stage_at?: string | null
+          sla_due_at?: string | null
+          source?: string | null
+          staff_notes?: string | null
+          stage?: string
+          updated_at?: string | null
+        }
+        Update: {
+          candidate_id?: string
+          created_at?: string | null
+          desired_role?: string | null
+          id?: string
+          is_founding_20?: boolean | null
+          is_priority?: boolean | null
+          moved_by?: string | null
+          moved_to_stage_at?: string | null
+          sla_due_at?: string | null
+          source?: string | null
+          staff_notes?: string | null
+          stage?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "candidate_pipeline_candidate_id_fkey"
+            columns: ["candidate_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "candidate_pipeline_moved_by_fkey"
+            columns: ["moved_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       candidate_profiles: {
         Row: {
           created_at: string
@@ -1104,6 +1212,75 @@ export type Database = {
         }
         Relationships: []
       }
+      pipeline_stage_history: {
+        Row: {
+          created_at: string | null
+          from_stage: string | null
+          id: string
+          moved_by: string
+          pipeline_id: string
+          reason: string | null
+          to_stage: string
+        }
+        Insert: {
+          created_at?: string | null
+          from_stage?: string | null
+          id?: string
+          moved_by: string
+          pipeline_id: string
+          reason?: string | null
+          to_stage: string
+        }
+        Update: {
+          created_at?: string | null
+          from_stage?: string | null
+          id?: string
+          moved_by?: string
+          pipeline_id?: string
+          reason?: string | null
+          to_stage?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pipeline_stage_history_moved_by_fkey"
+            columns: ["moved_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pipeline_stage_history_pipeline_id_fkey"
+            columns: ["pipeline_id"]
+            isOneToOne: false
+            referencedRelation: "candidate_pipeline"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pipeline_stages: {
+        Row: {
+          color: string
+          created_at: string | null
+          id: string
+          name: string
+          position: number
+        }
+        Insert: {
+          color: string
+          created_at?: string | null
+          id?: string
+          name: string
+          position: number
+        }
+        Update: {
+          color?: string
+          created_at?: string | null
+          id?: string
+          name?: string
+          position?: number
+        }
+        Relationships: []
+      }
       placements: {
         Row: {
           candidate_id: string
@@ -1640,6 +1817,60 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      verification_evidence: {
+        Row: {
+          created_at: string | null
+          evidence_type: string
+          external_url: string | null
+          file_url: string | null
+          id: string
+          notes: string | null
+          pipeline_id: string
+          status: string | null
+          verified_at: string | null
+          verified_by: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          evidence_type: string
+          external_url?: string | null
+          file_url?: string | null
+          id?: string
+          notes?: string | null
+          pipeline_id: string
+          status?: string | null
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          evidence_type?: string
+          external_url?: string | null
+          file_url?: string | null
+          id?: string
+          notes?: string | null
+          pipeline_id?: string
+          status?: string | null
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "verification_evidence_pipeline_id_fkey"
+            columns: ["pipeline_id"]
+            isOneToOne: false
+            referencedRelation: "candidate_pipeline"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "verification_evidence_verified_by_fkey"
+            columns: ["verified_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       verification_requests: {
         Row: {

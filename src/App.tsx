@@ -33,6 +33,7 @@ import ROICalculator from "./pages/ROICalculator";
 import Partnerships from "./pages/Partnerships";
 import CareerAssistant from "./pages/CareerAssistant";
 import BugReport from "./pages/BugReport";
+import StaffFunnel from "./pages/StaffFunnel";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -75,6 +76,7 @@ const App = () => (
               <Route path="/partnerships" element={<ProtectedRoute><Partnerships /></ProtectedRoute>} />
               <Route path="/career-assistant" element={<ProtectedRoute><CareerAssistant /></ProtectedRoute>} />
               <Route path="/bug-report" element={<ProtectedRoute><BugReport /></ProtectedRoute>} />
+              <Route path="/staff/funnel" element={<ProtectedRoute><StaffFunnel /></ProtectedRoute>} />
               
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
