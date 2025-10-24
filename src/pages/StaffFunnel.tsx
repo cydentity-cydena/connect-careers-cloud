@@ -521,6 +521,131 @@ export default function StaffFunnel() {
           </AlertDialogContent>
         </AlertDialog>
 
+        {/* HR-Ready Pool - Curated Candidates */}
+        {filteredCandidates.filter(c => c.stage === 'published' && c.verification?.hr_ready).length > 0 && (
+          <Card className="p-6 mb-6 bg-gradient-to-br from-green-500/10 via-emerald-500/10 to-teal-500/10 border-green-500/30">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-full bg-green-500/20 flex items-center justify-center">
+                  <ShieldCheck className="h-5 w-5 text-green-600 dark:text-green-400" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-semibold">HR-Ready Pool</h2>
+                  <p className="text-sm text-muted-foreground">Curated candidates verified and ready for interviews</p>
+                </div>
+              </div>
+              <Badge variant="default" className="bg-green-600 text-white text-lg px-4 py-1">
+                {filteredCandidates.filter(c => c.stage === 'published' && c.verification?.hr_ready).length}
+              </Badge>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {filteredCandidates
+                .filter(c => c.stage === 'published' && c.verification?.hr_ready)
+                .map((candidate) => {
+                  const badgeItems: BadgeItem[] = [
+                    {
+                      label: 'ID',
+                      status: (candidate.verification?.identity_status as any) || 'grey',
+                      tooltip: candidate.verification?.identity_status 
+                        ? `Identity: ${candidate.verification.identity_status}` 
+                        : 'Identity not verified'
+                    },
+                    {
+                      label: 'Cert',
+                      status: (() => {
+                        if (!candidate.verification?.certifications) return 'grey';
+                        const certs = candidate.verification.certifications;
+                        const certArray = typeof certs === 'string' ? JSON.parse(certs) : certs;
+                        if (!Array.isArray(certArray) || certArray.length === 0) return 'grey';
+                        const hasGreen = certArray.some((c: any) => c.status === 'green');
+                        const hasAmber = certArray.some((c: any) => c.status === 'amber');
+                        const hasRed = certArray.some((c: any) => c.status === 'red');
+                        if (hasGreen) return 'green';
+                        if (hasAmber) return 'amber';
+                        if (hasRed) return 'red';
+                        return 'grey';
+                      })() as any,
+                      tooltip: 'Certifications verified'
+                    },
+                    {
+                      label: 'RTW',
+                      status: (candidate.verification?.rtw_status as any) || 'grey',
+                      tooltip: candidate.verification?.rtw_status 
+                        ? `Right to Work: ${candidate.verification.rtw_status}` 
+                        : 'RTW not verified'
+                    },
+                    {
+                      label: 'Logistics',
+                      status: (candidate.verification?.logistics_status as any) || 'grey',
+                      tooltip: candidate.verification?.logistics_status 
+                        ? `Logistics: ${candidate.verification.logistics_status}` 
+                        : 'Logistics not confirmed'
+                    }
+                  ];
+
+                  return (
+                    <Card key={candidate.id} className="p-4 hover:shadow-lg transition-shadow border-green-500/20">
+                      <div className="flex items-start gap-3 mb-3">
+                        <div className="h-12 w-12 rounded-full bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center text-white font-semibold flex-shrink-0">
+                          {candidate.profiles.full_name.split(' ').map(n => n[0]).join('')}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2">
+                            <h4 className="font-semibold truncate">{candidate.profiles.full_name}</h4>
+                            {candidate.is_founding_20 && <Star className="h-4 w-4 text-yellow-500 fill-yellow-500 flex-shrink-0" />}
+                          </div>
+                          <p className="text-xs text-muted-foreground truncate">{candidate.profiles.email}</p>
+                          {candidate.desired_role && (
+                            <p className="text-xs font-medium text-primary mt-1">{candidate.desired_role}</p>
+                          )}
+                        </div>
+                      </div>
+                      <div className="mb-3">
+                        <BadgesRow items={badgeItems} showHrReady />
+                      </div>
+                      {candidate.compliance_score !== null && (
+                        <div className="mb-3">
+                          <div className="flex items-center justify-between text-xs mb-1">
+                            <span className="text-muted-foreground">Compliance Score</span>
+                            <span className="font-semibold text-green-600">{candidate.compliance_score}%</span>
+                          </div>
+                          <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+                            <div 
+                              className="h-full bg-gradient-to-r from-green-500 to-emerald-600 transition-all" 
+                              style={{ width: `${candidate.compliance_score}%` }}
+                            />
+                          </div>
+                        </div>
+                      )}
+                      <div className="flex gap-2 pt-2 border-t">
+                        {candidate.cv_url && (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="flex-1"
+                            onClick={() => handleViewCV(candidate.cv_url!, candidate.profiles.full_name)}
+                          >
+                            <FileText className="h-3 w-3 mr-1" />
+                            View CV
+                          </Button>
+                        )}
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="flex-1"
+                          onClick={() => setEditingVerification({ candidateId: candidate.candidate_id, verification: candidate.verification })}
+                        >
+                          <ShieldCheck className="h-3 w-3 mr-1" />
+                          View Details
+                        </Button>
+                      </div>
+                    </Card>
+                  );
+                })}
+            </div>
+          </Card>
+        )}
+
         {/* Kanban Board */}
         <div className="overflow-x-auto pb-4 -mx-3 sm:mx-0">
           <div className="inline-flex lg:grid lg:grid-cols-6 gap-3 sm:gap-4 min-w-full px-3 sm:px-0">
