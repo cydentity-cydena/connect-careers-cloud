@@ -200,88 +200,125 @@ serve(async (req) => {
           user_metadata: { full_name: candidate.full_name }
         });
 
+        let userId: string | null = null;
         if (authError) {
-          // Skip if user already exists
-          if (authError.message.includes('already been registered')) {
-            console.log(`Skipping existing candidate ${candidate.email}`);
-            results.candidates.push({ email: candidate.email, success: false, error: 'Already exists' });
+          const code = (authError as any).code || '';
+          const msg = (authError.message || '').toLowerCase();
+          if (code === 'email_exists' || msg.includes('already been registered')) {
+            // User exists; lookup by email in profiles and continue with updates
+            const { data: prof } = await supabaseAdmin
+              .from('profiles')
+              .select('id')
+              .eq('email', candidate.email)
+              .maybeSingle();
+            if (!prof?.id) {
+              console.log(`Could not find existing candidate profile for ${candidate.email}`);
+              results.candidates.push({ email: candidate.email, success: false, error: 'Exists but profile not found' });
+              continue;
+            }
+            userId = prof.id;
+            console.log(`Updating existing candidate ${candidate.email}`);
+          } else {
+            console.error(`Error creating candidate ${candidate.email}:`, authError);
+            results.candidates.push({ email: candidate.email, success: false, error: authError.message });
             continue;
           }
-          console.error(`Error creating candidate ${candidate.email}:`, authError);
-          results.candidates.push({ email: candidate.email, success: false, error: authError.message });
-          continue;
+        } else {
+          userId = authData!.user.id;
         }
 
-        const userId = authData.user.id;
-
-        // Update profile
+        // Update basic profile fields
         await supabaseAdmin.from('profiles').update({
           location: candidate.location,
           bio: candidate.bio
         }).eq('id', userId);
 
-        // Create candidate role
-        await supabaseAdmin.from('user_roles').insert({
+        // Ensure candidate role
+        await supabaseAdmin.from('user_roles').upsert({
           user_id: userId,
           role: 'candidate'
-        });
+        }, { onConflict: 'user_id,role' });
 
-        // Create candidate profile
-        await supabaseAdmin.from('candidate_profiles').insert({
+        // Upsert candidate profile
+        await supabaseAdmin.from('candidate_profiles').upsert({
           user_id: userId,
           ...candidate.profile
-        });
+        }, { onConflict: 'user_id' });
 
-        // Create certifications
+        // Insert certifications if missing
         if (candidate.certs.length > 0) {
-          await supabaseAdmin.from('certifications').insert(
-            candidate.certs.map(cert => ({
-              candidate_id: userId,
-              ...cert
-            }))
-          );
-        }
-
-        // Create skills
-        if (candidate.skills && candidate.skills.length > 0) {
-          // First get or create skill IDs
-          for (const skillName of candidate.skills) {
-            const { data: existingSkill } = await supabaseAdmin
-              .from('skills')
+          for (const cert of candidate.certs) {
+            const { data: existing } = await supabaseAdmin
+              .from('certifications')
               .select('id')
-              .eq('name', skillName)
-              .single();
-
-            let skillId;
-            if (existingSkill) {
-              skillId = existingSkill.id;
-            } else {
-              const { data: newSkill } = await supabaseAdmin
-                .from('skills')
-                .insert({ name: skillName, category: 'technical' })
-                .select('id')
-                .single();
-              skillId = newSkill?.id;
-            }
-
-            if (skillId) {
-              await supabaseAdmin.from('candidate_skills').insert({
+              .eq('candidate_id', userId)
+              .eq('name', cert.name)
+              .maybeSingle();
+            if (!existing) {
+              await supabaseAdmin.from('certifications').insert({
                 candidate_id: userId,
-                skill_id: skillId,
-                proficiency: 'advanced'
+                ...cert
               });
             }
           }
         }
 
-        // Create candidate XP
-        await supabaseAdmin.from('candidate_xp').insert({
-          candidate_id: userId,
-          ...candidate.xp
-        });
+        // Ensure skills
+        if (candidate.skills && candidate.skills.length > 0) {
+          for (const skillName of candidate.skills) {
+            const { data: existingSkill } = await supabaseAdmin
+              .from('skills')
+              .select('id')
+              .eq('name', skillName)
+              .maybeSingle();
+
+            let skillId = existingSkill?.id as string | undefined;
+            if (!skillId) {
+              const { data: newSkill } = await supabaseAdmin
+                .from('skills')
+                .insert({ name: skillName, category: 'technical' })
+                .select('id')
+                .maybeSingle();
+              skillId = newSkill?.id;
+            }
+
+            if (skillId) {
+              const { data: existingCS } = await supabaseAdmin
+                .from('candidate_skills')
+                .select('id')
+                .eq('candidate_id', userId)
+                .eq('skill_id', skillId)
+                .maybeSingle();
+              if (!existingCS) {
+                await supabaseAdmin.from('candidate_skills').insert({
+                  candidate_id: userId,
+                  skill_id: skillId,
+                  proficiency_level: 4
+                });
+              }
+            }
+          }
+        }
+
+        // Upsert candidate XP
+        const { data: xpExisting } = await supabaseAdmin
+          .from('candidate_xp')
+          .select('id')
+          .eq('candidate_id', userId)
+          .maybeSingle();
+        if (xpExisting?.id) {
+          await supabaseAdmin.from('candidate_xp')
+            .update({ ...candidate.xp, updated_at: new Date().toISOString() })
+            .eq('id', xpExisting.id);
+        } else {
+          await supabaseAdmin.from('candidate_xp').insert({
+            candidate_id: userId,
+            ...candidate.xp
+          });
+        }
 
         results.candidates.push({ email: candidate.email, success: true });
-        if (i % 10 === 0) console.log(`Seeded ${i + 1} candidates...`);
+        if (i % 10 === 0) console.log(`Processed ${i + 1} candidates...`);
 
       } catch (error: any) {
         console.error(`Error seeding candidate ${i}:`, error);
@@ -302,19 +339,31 @@ serve(async (req) => {
           user_metadata: { full_name: employer.full_name }
         });
 
+        let userId: string | null = null;
         if (authError) {
-          // Skip if user already exists
-          if (authError.message.includes('already been registered')) {
-            console.log(`Skipping existing employer ${employer.email}`);
-            results.employers.push({ email: employer.email, success: false, error: 'Already exists' });
+          const code = (authError as any).code || '';
+          const msg = (authError.message || '').toLowerCase();
+          if (code === 'email_exists' || msg.includes('already been registered')) {
+            const { data: prof } = await supabaseAdmin
+              .from('profiles')
+              .select('id')
+              .eq('email', employer.email)
+              .maybeSingle();
+            if (!prof?.id) {
+              console.log(`Could not find existing employer profile for ${employer.email}`);
+              results.employers.push({ email: employer.email, success: false, error: 'Exists but profile not found' });
+              continue;
+            }
+            userId = prof.id;
+            console.log(`Updating existing employer ${employer.email}`);
+          } else {
+            console.error(`Error creating employer ${employer.email}:`, authError);
+            results.employers.push({ email: employer.email, success: false, error: authError.message });
             continue;
           }
-          console.error(`Error creating employer ${employer.email}:`, authError);
-          results.employers.push({ email: employer.email, success: false, error: authError.message });
-          continue;
+        } else {
+          userId = authData!.user.id;
         }
-
-        const userId = authData.user.id;
 
         // Update profile
         await supabaseAdmin.from('profiles').update({
@@ -322,32 +371,51 @@ serve(async (req) => {
           bio: employer.bio
         }).eq('id', userId);
 
-        // Create employer role
-        await supabaseAdmin.from('user_roles').insert({
+        // Ensure employer role
+        await supabaseAdmin.from('user_roles').upsert({
           user_id: userId,
           role: 'employer'
-        });
+        }, { onConflict: 'user_id,role' });
 
-        // Create employer credits
-        await supabaseAdmin.from('employer_credits').insert({
-          employer_id: userId,
-          credits: 10,
-          annual_allocation: 100
-        });
+        // Ensure employer credits
+        const { data: creditsExisting } = await supabaseAdmin
+          .from('employer_credits')
+          .select('id')
+          .eq('employer_id', userId)
+          .maybeSingle();
+        if (creditsExisting?.id) {
+          await supabaseAdmin.from('employer_credits')
+            .update({ credits: 10, annual_allocation: 100 })
+            .eq('id', creditsExisting.id);
+        } else {
+          await supabaseAdmin.from('employer_credits').insert({
+            employer_id: userId,
+            credits: 10,
+            annual_allocation: 100
+          });
+        }
 
-        // Create company profile
-        await supabaseAdmin.from('companies').insert({
-          name: employer.company.name,
-          description: employer.company.description,
-          industry: employer.company.industry,
-          size: employer.company.size,
-          location: employer.company.location,
-          website: employer.company.website,
-          created_by: userId
-        });
+        // Create company if missing
+        const { data: companyExisting } = await supabaseAdmin
+          .from('companies')
+          .select('id')
+          .eq('name', employer.company.name)
+          .eq('created_by', userId)
+          .maybeSingle();
+        if (!companyExisting?.id) {
+          await supabaseAdmin.from('companies').insert({
+            name: employer.company.name,
+            description: employer.company.description,
+            industry: employer.company.industry,
+            size: employer.company.size,
+            location: employer.company.location,
+            website: employer.company.website,
+            created_by: userId
+          });
+        }
 
         results.employers.push({ email: employer.email, success: true });
-        if (i % 10 === 0) console.log(`Seeded ${i + 1} employers...`);
+        if (i % 10 === 0) console.log(`Processed ${i + 1} employers...`);
 
       } catch (error: any) {
         console.error(`Error seeding employer ${i}:`, error);
@@ -368,19 +436,31 @@ serve(async (req) => {
           user_metadata: { full_name: recruiter.full_name }
         });
 
+        let userId: string | null = null;
         if (authError) {
-          // Skip if user already exists
-          if (authError.message.includes('already been registered')) {
-            console.log(`Skipping existing recruiter ${recruiter.email}`);
-            results.recruiters.push({ email: recruiter.email, success: false, error: 'Already exists' });
+          const code = (authError as any).code || '';
+          const msg = (authError.message || '').toLowerCase();
+          if (code === 'email_exists' || msg.includes('already been registered')) {
+            const { data: prof } = await supabaseAdmin
+              .from('profiles')
+              .select('id')
+              .eq('email', recruiter.email)
+              .maybeSingle();
+            if (!prof?.id) {
+              console.log(`Could not find existing recruiter profile for ${recruiter.email}`);
+              results.recruiters.push({ email: recruiter.email, success: false, error: 'Exists but profile not found' });
+              continue;
+            }
+            userId = prof.id;
+            console.log(`Updating existing recruiter ${recruiter.email}`);
+          } else {
+            console.error(`Error creating recruiter ${recruiter.email}:`, authError);
+            results.recruiters.push({ email: recruiter.email, success: false, error: authError.message });
             continue;
           }
-          console.error(`Error creating recruiter ${recruiter.email}:`, authError);
-          results.recruiters.push({ email: recruiter.email, success: false, error: authError.message });
-          continue;
+        } else {
+          userId = authData!.user.id;
         }
-
-        const userId = authData.user.id;
 
         // Update profile
         await supabaseAdmin.from('profiles').update({
@@ -388,14 +468,14 @@ serve(async (req) => {
           bio: recruiter.bio
         }).eq('id', userId);
 
-        // Create recruiter role
-        await supabaseAdmin.from('user_roles').insert({
+        // Ensure recruiter role
+        await supabaseAdmin.from('user_roles').upsert({
           user_id: userId,
           role: 'recruiter'
-        });
+        }, { onConflict: 'user_id,role' });
 
         results.recruiters.push({ email: recruiter.email, success: true });
-        console.log(`Seeded recruiter ${i + 1}...`);
+        console.log(`Processed recruiter ${i + 1}...`);
 
       } catch (error: any) {
         console.error(`Error seeding recruiter ${i}:`, error);
