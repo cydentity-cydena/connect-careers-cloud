@@ -34,6 +34,9 @@ import Partnerships from "./pages/Partnerships";
 import CareerAssistant from "./pages/CareerAssistant";
 import BugReport from "./pages/BugReport";
 import StaffFunnel from "./pages/StaffFunnel";
+import UserManagement from "./pages/admin/UserManagement";
+import RoleManagement from "./pages/admin/RoleManagement";
+import JobModeration from "./pages/admin/JobModeration";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -77,6 +80,11 @@ const App = () => (
               <Route path="/career-assistant" element={<ProtectedRoute><CareerAssistant /></ProtectedRoute>} />
               <Route path="/bug-report" element={<ProtectedRoute><BugReport /></ProtectedRoute>} />
               <Route path="/staff/funnel" element={<ProtectedRoute><StaffFunnel /></ProtectedRoute>} />
+              
+              {/* Admin Routes */}
+              <Route path="/admin/users" element={<ProtectedRoute><UserManagement /></ProtectedRoute>} />
+              <Route path="/admin/roles" element={<ProtectedRoute><RoleManagement /></ProtectedRoute>} />
+              <Route path="/admin/jobs" element={<ProtectedRoute><JobModeration /></ProtectedRoute>} />
               
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />

@@ -3,14 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Shield, Users, Briefcase, AlertCircle, UserCog, CheckCircle, Bug } from "lucide-react";
+import { Shield, Users, Briefcase, AlertCircle, UserCog, CheckCircle, Bug, Settings } from "lucide-react";
 import { SeedDemoCandidates } from "@/components/admin/SeedDemoCandidates";
 import { VerificationReviewPanel } from "@/components/admin/VerificationReviewPanel";
 import { AdminNotifications } from "@/components/admin/AdminNotifications";
-import { UserManagement } from "@/components/admin/UserManagement";
-import { JobModeration } from "@/components/admin/JobModeration";
-import { RoleManagement } from "@/components/admin/RoleManagement";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 
 const AdminDashboard = () => {
@@ -213,26 +209,71 @@ const AdminDashboard = () => {
       {/* Verification Review Panel */}
       <VerificationReviewPanel />
 
-      {/* Admin Management Tabs */}
-      <Tabs defaultValue="users" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="users">User Management</TabsTrigger>
-          <TabsTrigger value="roles">Role Management</TabsTrigger>
-          <TabsTrigger value="jobs">Job Moderation</TabsTrigger>
-        </TabsList>
+      {/* Admin Management Tools */}
+      <div>
+        <h2 className="text-2xl font-bold mb-4">Admin Management Tools</h2>
+        <div className="grid md:grid-cols-3 gap-6">
+          <Card 
+            className="border-border shadow-card hover:shadow-lg transition-all cursor-pointer group"
+            onClick={() => navigate('/admin/users')}
+          >
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 group-hover:text-primary transition-colors">
+                <Users className="h-5 w-5" />
+                User Management
+              </CardTitle>
+              <CardDescription>
+                Manage platform users and their verification status
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button variant="outline" className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                Manage Users
+              </Button>
+            </CardContent>
+          </Card>
 
-        <TabsContent value="users">
-          <UserManagement />
-        </TabsContent>
+          <Card 
+            className="border-border shadow-card hover:shadow-lg transition-all cursor-pointer group"
+            onClick={() => navigate('/admin/roles')}
+          >
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 group-hover:text-primary transition-colors">
+                <UserCog className="h-5 w-5" />
+                Role Management
+              </CardTitle>
+              <CardDescription>
+                Assign and manage user roles across the platform
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button variant="outline" className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                Manage Roles
+              </Button>
+            </CardContent>
+          </Card>
 
-        <TabsContent value="jobs">
-          <JobModeration />
-        </TabsContent>
-
-        <TabsContent value="roles">
-          <RoleManagement />
-        </TabsContent>
-      </Tabs>
+          <Card 
+            className="border-border shadow-card hover:shadow-lg transition-all cursor-pointer group"
+            onClick={() => navigate('/admin/jobs')}
+          >
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 group-hover:text-primary transition-colors">
+                <Briefcase className="h-5 w-5" />
+                Job Moderation
+              </CardTitle>
+              <CardDescription>
+                Review and moderate job postings on the platform
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button variant="outline" className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                Moderate Jobs
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
     </div>
   );
 };
