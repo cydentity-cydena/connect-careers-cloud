@@ -1798,7 +1798,7 @@ export type Database = {
         | "certifications"
         | "community"
         | "training"
-      app_role: "candidate" | "employer" | "admin" | "recruiter"
+      app_role: "candidate" | "employer" | "admin" | "recruiter" | "staff"
       job_type: "full-time" | "part-time" | "contract" | "freelance"
       notification_type:
         | "application"
@@ -1954,7 +1954,7 @@ export const Constants = {
         "community",
         "training",
       ],
-      app_role: ["candidate", "employer", "admin", "recruiter"],
+      app_role: ["candidate", "employer", "admin", "recruiter", "staff"],
       job_type: ["full-time", "part-time", "contract", "freelance"],
       notification_type: [
         "application",
