@@ -53,6 +53,8 @@ export default function StaffFunnel() {
   const [searchQuery, setSearchQuery] = useState("");
   const [roleFilter, setRoleFilter] = useState<string>("all");
   const [sourceFilter, setSourceFilter] = useState<string>("all");
+  const [uploadingCandidateId, setUploadingCandidateId] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -86,10 +88,12 @@ export default function StaffFunnel() {
     }
   };
 
-  const handleCVUpload = async (candidateId: string, file: File) => {
+  const handleCVUpload = async (file: File) => {
+    if (!uploadingCandidateId) return;
+    
     try {
       const fileExt = file.name.split('.').pop();
-      const fileName = `${candidateId}-${Date.now()}.${fileExt}`;
+      const fileName = `${uploadingCandidateId}-${Date.now()}.${fileExt}`;
       const filePath = `pipeline-cvs/${fileName}`;
 
       const { error: uploadError } = await supabase.storage
@@ -105,7 +109,7 @@ export default function StaffFunnel() {
       const { error: updateError } = await supabase
         .from('candidate_pipeline')
         .update({ cv_url: publicUrl })
-        .eq('id', candidateId);
+        .eq('id', uploadingCandidateId);
 
       if (updateError) throw updateError;
 
@@ -115,13 +119,20 @@ export default function StaffFunnel() {
       });
 
       fetchCandidates();
+      setUploadingCandidateId(null);
     } catch (error: any) {
       toast({
         title: "Error uploading CV",
         description: error.message,
         variant: "destructive",
       });
+      setUploadingCandidateId(null);
     }
+  };
+
+  const triggerFileUpload = (candidateId: string) => {
+    setUploadingCandidateId(candidateId);
+    fileInputRef.current?.click();
   };
 
   const toggleChosen = async (candidateId: string, currentValue: boolean) => {
@@ -306,6 +317,19 @@ export default function StaffFunnel() {
           </div>
         </Card>
 
+        {/* Hidden file input */}
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept=".pdf,.doc,.docx"
+          className="hidden"
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file) handleCVUpload(file);
+            e.target.value = ''; // Reset input
+          }}
+        />
+
         {/* Kanban Board */}
         <div className="grid grid-cols-5 gap-4">
           {STAGES.map((stage) => {
@@ -317,105 +341,89 @@ export default function StaffFunnel() {
                   <Badge variant="secondary">{stageCandidates.length}</Badge>
                 </div>
                 <div className="space-y-3">
-                  {stageCandidates.map((candidate) => {
-                    const fileInputRef = useRef<HTMLInputElement>(null);
-                    
-                    return (
-                      <Card key={candidate.id} className="p-3 hover:shadow-md transition-shadow">
-                        <div className="space-y-2">
-                          <div className="flex items-start justify-between gap-2">
-                            <div className="flex items-center gap-2 flex-1 min-w-0">
-                              <Button
-                                variant={candidate.is_founding_20 ? "default" : "ghost"}
-                                size="sm"
-                                className="h-6 w-6 p-0"
-                                onClick={() => toggleChosen(candidate.id, candidate.is_founding_20)}
-                              >
-                                <Star className={`h-3 w-3 ${candidate.is_founding_20 ? 'fill-current' : ''}`} />
-                              </Button>
-                              <div className="font-medium text-sm truncate">
-                                {candidate.profiles?.full_name || "Unknown"}
-                              </div>
+                  {stageCandidates.map((candidate) => (
+                    <Card key={candidate.id} className="p-3 hover:shadow-md transition-shadow">
+                      <div className="space-y-2">
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="flex items-center gap-2 flex-1 min-w-0">
+                            <Button
+                              variant={candidate.is_founding_20 ? "default" : "ghost"}
+                              size="sm"
+                              className="h-6 w-6 p-0"
+                              onClick={() => toggleChosen(candidate.id, candidate.is_founding_20)}
+                            >
+                              <Star className={`h-3 w-3 ${candidate.is_founding_20 ? 'fill-current' : ''}`} />
+                            </Button>
+                            <div className="font-medium text-sm truncate">
+                              {candidate.profiles?.full_name || "Unknown"}
                             </div>
-                            {candidate.is_priority && (
-                              <Badge variant="destructive" className="text-xs shrink-0">Priority</Badge>
-                            )}
                           </div>
-                          {candidate.desired_role && (
-                            <Badge variant="outline" className="text-xs">
-                              {candidate.desired_role}
-                            </Badge>
+                          {candidate.is_priority && (
+                            <Badge variant="destructive" className="text-xs shrink-0">Priority</Badge>
                           )}
-                          {candidate.source && (
-                            <div className="text-xs text-muted-foreground">
-                              Source: {candidate.source}
-                            </div>
-                          )}
-                          {candidate.is_founding_20 && (
-                            <Badge variant="default" className="text-xs">Chosen</Badge>
-                          )}
-                          {candidate.sla_due_at && (
-                            <div className="text-xs text-muted-foreground">
-                              Due: {format(new Date(candidate.sla_due_at), "MMM dd")}
-                            </div>
-                          )}
-                          
-                          {/* CV Upload/View */}
-                          <div className="flex gap-2">
-                            {candidate.cv_url ? (
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                className="h-7 text-xs flex-1"
-                                onClick={() => window.open(candidate.cv_url!, '_blank')}
-                              >
-                                <FileText className="h-3 w-3 mr-1" />
-                                View CV
-                              </Button>
-                            ) : (
-                              <>
-                                <input
-                                  ref={fileInputRef}
-                                  type="file"
-                                  accept=".pdf,.doc,.docx"
-                                  className="hidden"
-                                  onChange={(e) => {
-                                    const file = e.target.files?.[0];
-                                    if (file) handleCVUpload(candidate.id, file);
-                                  }}
-                                />
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  className="h-7 text-xs flex-1"
-                                  onClick={() => fileInputRef.current?.click()}
-                                >
-                                  <Upload className="h-3 w-3 mr-1" />
-                                  Upload CV
-                                </Button>
-                              </>
-                            )}
-                          </div>
-
-                          <Select
-                            value={candidate.stage}
-                            onValueChange={(value) => handleStageChange(candidate.id, value)}
-                          >
-                            <SelectTrigger className="h-8 text-xs">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {STAGES.map((s) => (
-                                <SelectItem key={s.name} value={s.name}>
-                                  {formatStageName(s.name)}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
                         </div>
-                      </Card>
-                    );
-                  })}
+                        {candidate.desired_role && (
+                          <Badge variant="outline" className="text-xs">
+                            {candidate.desired_role}
+                          </Badge>
+                        )}
+                        {candidate.source && (
+                          <div className="text-xs text-muted-foreground">
+                            Source: {candidate.source}
+                          </div>
+                        )}
+                        {candidate.is_founding_20 && (
+                          <Badge variant="default" className="text-xs">Chosen</Badge>
+                        )}
+                        {candidate.sla_due_at && (
+                          <div className="text-xs text-muted-foreground">
+                            Due: {format(new Date(candidate.sla_due_at), "MMM dd")}
+                          </div>
+                        )}
+                        
+                        {/* CV Upload/View */}
+                        <div className="flex gap-2">
+                          {candidate.cv_url ? (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="h-7 text-xs flex-1"
+                              onClick={() => window.open(candidate.cv_url!, '_blank')}
+                            >
+                              <FileText className="h-3 w-3 mr-1" />
+                              View CV
+                            </Button>
+                          ) : (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="h-7 text-xs flex-1"
+                              onClick={() => triggerFileUpload(candidate.id)}
+                            >
+                              <Upload className="h-3 w-3 mr-1" />
+                              Upload CV
+                            </Button>
+                          )}
+                        </div>
+
+                        <Select
+                          value={candidate.stage}
+                          onValueChange={(value) => handleStageChange(candidate.id, value)}
+                        >
+                          <SelectTrigger className="h-8 text-xs">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {STAGES.map((s) => (
+                              <SelectItem key={s.name} value={s.name}>
+                                {formatStageName(s.name)}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </Card>
+                  ))}
                 </div>
               </div>
             );
