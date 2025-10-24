@@ -208,14 +208,6 @@ const Index = () => {
               <p className="text-sm md:text-base text-muted-foreground">No retainers, no exclusivity, pay as you go</p>
             </div>
           </div>
-
-          <div className="text-center mt-10 md:mt-12">
-            <Link to="/pricing">
-              <Button variant="outline" size="lg" className="gap-2 w-full sm:w-auto">
-                See Full Pricing Comparison <ArrowRight className="h-4 w-4" />
-              </Button>
-            </Link>
-          </div>
         </div>
       </section>
 
