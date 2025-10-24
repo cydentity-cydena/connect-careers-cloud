@@ -49,12 +49,12 @@ const Leaderboard = () => {
 
       const candidateIds = xpData.map(entry => entry.candidate_id);
 
-      // Fetch public profile usernames via RPC (RLS-safe)
+      // Fetch public profile usernames and desired job titles via RPC (RLS-safe)
       const profileResults = await Promise.all(
         candidateIds.map(async (cid) => {
           const { data } = await supabase.rpc('get_public_profile', { profile_id: cid });
           const row = Array.isArray(data) ? data?.[0] : data;
-          return { id: cid, username: row?.username ?? null };
+          return { id: cid, username: row?.username ?? null, desired_job_title: row?.desired_job_title ?? null };
         })
       );
 
@@ -108,11 +108,14 @@ const Leaderboard = () => {
         
         const specializations = detectSpecializations(skills, certs);
         
+        // Use desired_job_title if set, otherwise fallback to current title
+        const displayTitle = (profile as any)?.desired_job_title || candidateProfile?.title || 'Cybersecurity Professional';
+        
         return {
           id: entry.candidate_id,
           user_id: entry.candidate_id,
           username: profile?.username || 'anonymous',
-          title: candidateProfile?.title || 'Cybersecurity Professional',
+          title: displayTitle,
           certifications: certs.map(c => c.name),
           specializations,
           score: Math.min(100, Math.round((entry as any).total_xp / 3)),
