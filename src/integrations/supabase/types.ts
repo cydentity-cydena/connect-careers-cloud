@@ -253,6 +253,36 @@ export type Database = {
           },
         ]
       }
+      candidate_pods: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       candidate_profiles: {
         Row: {
           created_at: string
@@ -1459,6 +1489,79 @@ export type Database = {
             columns: ["job_id"]
             isOneToOne: false
             referencedRelation: "jobs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pod_assignments: {
+        Row: {
+          assigned_at: string
+          assigned_by: string | null
+          assigned_to: string
+          expires_at: string | null
+          id: string
+          notes: string | null
+          pod_id: string
+        }
+        Insert: {
+          assigned_at?: string
+          assigned_by?: string | null
+          assigned_to: string
+          expires_at?: string | null
+          id?: string
+          notes?: string | null
+          pod_id: string
+        }
+        Update: {
+          assigned_at?: string
+          assigned_by?: string | null
+          assigned_to?: string
+          expires_at?: string | null
+          id?: string
+          notes?: string | null
+          pod_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pod_assignments_pod_id_fkey"
+            columns: ["pod_id"]
+            isOneToOne: false
+            referencedRelation: "candidate_pods"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pod_members: {
+        Row: {
+          added_at: string
+          added_by: string | null
+          candidate_id: string
+          id: string
+          notes: string | null
+          pod_id: string
+        }
+        Insert: {
+          added_at?: string
+          added_by?: string | null
+          candidate_id: string
+          id?: string
+          notes?: string | null
+          pod_id: string
+        }
+        Update: {
+          added_at?: string
+          added_by?: string | null
+          candidate_id?: string
+          id?: string
+          notes?: string | null
+          pod_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pod_members_pod_id_fkey"
+            columns: ["pod_id"]
+            isOneToOne: false
+            referencedRelation: "candidate_pods"
             referencedColumns: ["id"]
           },
         ]
