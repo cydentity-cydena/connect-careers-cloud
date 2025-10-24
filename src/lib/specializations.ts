@@ -25,7 +25,7 @@ export const SPECIALIZATIONS: SpecializationBadge[] = [
     icon: '☁️',
     color: 'bg-blue-500/10 text-blue-600 border-blue-500/20',
     keywords: ['aws', 'azure', 'gcp', 'cloud', 'kubernetes', 'docker', 'terraform'],
-    certKeywords: ['ccsp', 'aws certified', 'azure security', 'gcp security']
+    certKeywords: ['ccsp', 'aws certified', 'azure security', 'gcp security', 'google cloud', 'cloud+', 'cks', 'ckad', 'cka', 'kubernetes']
   },
   {
     id: 'incident-response',
@@ -33,7 +33,7 @@ export const SPECIALIZATIONS: SpecializationBadge[] = [
     icon: '🚨',
     color: 'bg-red-500/10 text-red-600 border-red-500/20',
     keywords: ['incident response', 'dfir', 'forensics', 'siem', 'splunk', 'elk', 'threat hunting'],
-    certKeywords: ['gcih', 'gcfa', 'gcia', 'ecir', 'chfi']
+    certKeywords: ['gcih', 'gcfa', 'gcia', 'ecir', 'chfi', 'gcfe', 'gnfa', 'ctf', 'btl1']
   },
   {
     id: 'penetration-testing',
@@ -41,7 +41,7 @@ export const SPECIALIZATIONS: SpecializationBadge[] = [
     icon: '🎯',
     color: 'bg-purple-500/10 text-purple-600 border-purple-500/20',
     keywords: ['penetration testing', 'pentest', 'ethical hacking', 'metasploit', 'burp suite', 'kali', 'red team'],
-    certKeywords: ['oscp', 'ceh', 'cpent', 'gpen', 'gwapt', 'crto', 'pnpt']
+    certKeywords: ['oscp', 'ceh', 'cpent', 'gpen', 'gwapt', 'crto', 'pnpt', 'oswp', 'osep', 'osed', 'oswe', 'gxpn', 'gawn']
   },
   {
     id: 'grc-compliance',
@@ -49,7 +49,7 @@ export const SPECIALIZATIONS: SpecializationBadge[] = [
     icon: '📋',
     color: 'bg-green-500/10 text-green-600 border-green-500/20',
     keywords: ['governance', 'risk', 'compliance', 'audit', 'iso', 'nist', 'gdpr', 'sox', 'pci dss'],
-    certKeywords: ['cissp', 'cism', 'crisc', 'cgrc', 'cisa']
+    certKeywords: ['cissp', 'cism', 'crisc', 'cgrc', 'cisa', 'iso 27001', 'ccsp', 'security+', 'casp+']
   },
   {
     id: 'application-security',
@@ -57,7 +57,7 @@ export const SPECIALIZATIONS: SpecializationBadge[] = [
     icon: '🔐',
     color: 'bg-orange-500/10 text-orange-600 border-orange-500/20',
     keywords: ['appsec', 'application security', 'secure coding', 'owasp', 'sast', 'dast', 'devsecops'],
-    certKeywords: ['csslp', 'gwapt', 'oswe', 'case']
+    certKeywords: ['csslp', 'gwapt', 'oswe', 'case', 'gweb', 'bscp', 'case java', 'case .net']
   },
   {
     id: 'network-security',
@@ -65,7 +65,7 @@ export const SPECIALIZATIONS: SpecializationBadge[] = [
     icon: '🌐',
     color: 'bg-cyan-500/10 text-cyan-600 border-cyan-500/20',
     keywords: ['firewall', 'vpn', 'ids', 'ips', 'network security', 'routing', 'switching', 'cisco'],
-    certKeywords: ['ccna security', 'ccnp security', 'fortinet', 'palo alto']
+    certKeywords: ['ccna security', 'ccnp security', 'fortinet', 'palo alto', 'nse', 'pcnse', 'jncia-sec', 'network+']
   },
   {
     id: 'threat-intelligence',
@@ -73,7 +73,7 @@ export const SPECIALIZATIONS: SpecializationBadge[] = [
     icon: '🔍',
     color: 'bg-indigo-500/10 text-indigo-600 border-indigo-500/20',
     keywords: ['threat intelligence', 'cti', 'osint', 'mitre att&ck', 'indicators of compromise', 'ioc'],
-    certKeywords: ['gcti', 'ctia']
+    certKeywords: ['gcti', 'ctia', 'cyberthreat', 'cyberintel', 'osint']
   }
 ];
 
