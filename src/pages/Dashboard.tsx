@@ -133,11 +133,7 @@ const Dashboard = () => {
               <Link to="/certifications-catalog" className="text-sm font-medium hover:text-primary transition-colors">
                 Certifications
               </Link>
-              {userRole !== 'candidate' && (
-                <Link to="/pricing" className="text-sm font-medium hover:text-primary transition-colors">
-                  Pricing
-                </Link>
-              )}
+{/* Pricing temporarily hidden */}
               <Link to="/contact" className="text-sm font-medium hover:text-primary transition-colors">
                 Contact
               </Link>
@@ -225,15 +221,7 @@ const Dashboard = () => {
               >
                 Certifications
               </Link>
-              {userRole !== 'candidate' && (
-                <Link 
-                  to="/pricing" 
-                  className="block text-sm font-medium hover:text-primary transition-colors py-2"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Pricing
-                </Link>
-              )}
+{/* Pricing temporarily hidden in mobile menu */}
               <Link 
                 to="/contact" 
                 className="block text-sm font-medium hover:text-primary transition-colors py-2"
