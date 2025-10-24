@@ -159,7 +159,11 @@ export default function StaffFunnel() {
 
       if (error || !data?.signedUrl) throw error || new Error("Unable to generate signed URL");
       
-      setViewingResumeUrl(data.signedUrl);
+      // Force the PDF to fill the viewer width
+      const signed = data.signedUrl;
+      const separator = signed.includes('#') ? '&' : '#';
+      const zoomUrl = `${signed}${separator}zoom=page-width`;
+      setViewingResumeUrl(zoomUrl);
       setViewingCandidateName(candidateName);
     } catch (error: any) {
       toast({
@@ -396,15 +400,15 @@ export default function StaffFunnel() {
 
         {/* Resume Viewer Dialog */}
         <Dialog open={!!viewingResumeUrl} onOpenChange={(open) => !open && setViewingResumeUrl(null)}>
-          <DialogContent className="max-w-[95vw] w-full h-[95vh] p-0">
-            <DialogHeader className="px-6 py-4 border-b">
+          <DialogContent className="max-w-none w-screen h-screen p-0 sm:rounded-none flex flex-col">
+            <DialogHeader className="px-4 py-3 border-b">
               <DialogTitle>{viewingCandidateName} - Resume</DialogTitle>
             </DialogHeader>
-            <div className="flex-1 h-[calc(100%-4rem)] p-4">
+            <div className="flex-1 overflow-hidden">
               {viewingResumeUrl && (
                 <iframe
                   src={viewingResumeUrl}
-                  className="w-full h-full border-0 rounded-lg"
+                  className="w-full h-full border-0"
                   title="Resume Viewer"
                 />
               )}
