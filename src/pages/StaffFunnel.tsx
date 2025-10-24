@@ -138,12 +138,26 @@ export default function StaffFunnel() {
 
   const handleViewCV = async (cvPath: string, candidateName: string) => {
     try {
+      // Normalize to storage path if a full public URL was stored previously
+      const derivePath = (value: string) => {
+        try {
+          if (value.startsWith("http")) {
+            const url = new URL(value);
+            const match = url.pathname.match(/\/object\/(?:public|sign)\/resumes\/(.*)$/);
+            if (match?.[1]) return match[1];
+          }
+        } catch {}
+        return value;
+      };
+
+      const filePath = derivePath(cvPath);
+
       // Generate a signed URL for secure access
       const { data, error } = await supabase.storage
         .from('resumes')
-        .createSignedUrl(cvPath, 3600); // 1 hour expiry
+        .createSignedUrl(filePath, 3600); // 1 hour expiry
 
-      if (error) throw error;
+      if (error || !data?.signedUrl) throw error || new Error("Unable to generate signed URL");
       
       setViewingResumeUrl(data.signedUrl);
       setViewingCandidateName(candidateName);
