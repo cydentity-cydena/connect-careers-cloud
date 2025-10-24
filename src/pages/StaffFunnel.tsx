@@ -107,7 +107,7 @@ export default function StaffFunnel() {
             .from("candidate_verifications")
             .select("*")
             .eq("candidate_id", candidate.candidate_id)
-            .single();
+            .maybeSingle();
           
           return { ...candidate, verification };
         })
