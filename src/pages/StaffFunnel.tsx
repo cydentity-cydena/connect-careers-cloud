@@ -6,8 +6,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Search, Download, UserPlus } from "lucide-react";
+import { Loader2, Search, Download } from "lucide-react";
 import { format } from "date-fns";
+import AddCandidateToPipeline from "@/components/admin/AddCandidateToPipeline";
 
 interface PipelineCandidate {
   id: string;
@@ -228,10 +229,7 @@ export default function StaffFunnel() {
             <Button variant="outline" size="icon" onClick={exportToCSV}>
               <Download className="h-4 w-4" />
             </Button>
-            <Button>
-              <UserPlus className="h-4 w-4 mr-2" />
-              Add Candidate
-            </Button>
+            <AddCandidateToPipeline onSuccess={fetchCandidates} />
           </div>
         </Card>
 
