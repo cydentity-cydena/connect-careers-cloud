@@ -21,7 +21,24 @@ function generateCandidate(index: number) {
     { name: "OSCP", issuer: "Offensive Security" },
     { name: "GPEN", issuer: "GIAC" },
     { name: "GCIA", issuer: "GIAC" },
-    { name: "CCSP", issuer: "ISC2" }
+    { name: "CCSP", issuer: "ISC2" },
+    { name: "CSSLP", issuer: "ISC2" },
+    { name: "GWAPT", issuer: "GIAC" },
+    { name: "OSWE", issuer: "Offensive Security" },
+    { name: "CASE", issuer: "EC-Council" }
+  ];
+
+  const skills = [
+    ["Penetration Testing", "Network Security", "Vulnerability Assessment"],
+    ["SIEM", "Incident Response", "Threat Hunting"],
+    ["Cloud Security", "AWS", "Azure"],
+    ["Application Security", "OWASP", "Secure Coding"],
+    ["DevSecOps", "SAST", "DAST"],
+    ["Forensics", "Malware Analysis", "Reverse Engineering"],
+    ["GRC", "Compliance", "Risk Management"],
+    ["Network Security", "Firewall", "IDS/IPS"],
+    ["Threat Intelligence", "OSINT", "CTI"],
+    ["AppSec", "Web Application Security", "API Security"]
   ];
 
   const firstName = firstNames[index % firstNames.length];
@@ -41,6 +58,8 @@ function generateCandidate(index: number) {
     });
   }
 
+  const selectedSkills = skills[index % skills.length];
+
   return {
     email: `${firstName.toLowerCase()}.${lastName.toLowerCase()}.${index}@cydena.demo`,
     password: "Demo123!",
@@ -53,6 +72,7 @@ function generateCandidate(index: number) {
       ...(index % 3 === 0 ? { github_url: `https://github.com/${firstName.toLowerCase()}${lastName.toLowerCase()}${index}` } : {})
     },
     certs: selectedCerts,
+    skills: selectedSkills,
     xp: {
       total_xp: 250 - (index * 2),
       points_balance: 250 - (index * 2),
@@ -214,6 +234,38 @@ serve(async (req) => {
               ...cert
             }))
           );
+        }
+
+        // Create skills
+        if (candidate.skills && candidate.skills.length > 0) {
+          // First get or create skill IDs
+          for (const skillName of candidate.skills) {
+            const { data: existingSkill } = await supabaseAdmin
+              .from('skills')
+              .select('id')
+              .eq('name', skillName)
+              .single();
+
+            let skillId;
+            if (existingSkill) {
+              skillId = existingSkill.id;
+            } else {
+              const { data: newSkill } = await supabaseAdmin
+                .from('skills')
+                .insert({ name: skillName, category: 'technical' })
+                .select('id')
+                .single();
+              skillId = newSkill?.id;
+            }
+
+            if (skillId) {
+              await supabaseAdmin.from('candidate_skills').insert({
+                candidate_id: userId,
+                skill_id: skillId,
+                proficiency: 'advanced'
+              });
+            }
+          }
         }
 
         // Create candidate XP
