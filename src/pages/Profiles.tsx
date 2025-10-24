@@ -5,10 +5,13 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Search, Lock, Star, Eye, Shield } from "lucide-react";
+import { Search, Lock, Star, Eye, Shield, Filter } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import SEO from "@/components/SEO";
 import { useToast } from "@/hooks/use-toast";
+import { SpecializationBadges } from "@/components/profiles/SpecializationBadges";
+import { detectSpecializations, SPECIALIZATIONS, type Specialization } from "@/lib/specializations";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface CandidateProfile {
   id: string;
@@ -16,6 +19,8 @@ interface CandidateProfile {
   title: string;
   ranking: number;
   certifications: string[];
+  skills: string[];
+  specializations: Specialization[];
   experience: string;
   avatar: string;
   locked: boolean;
@@ -29,6 +34,7 @@ const Profiles = () => {
   const [loading, setLoading] = useState(true);
   const [userRole, setUserRole] = useState<string | null>(null);
   const [checkingAccess, setCheckingAccess] = useState(true);
+  const [selectedSpecialization, setSelectedSpecialization] = useState<Specialization | 'all'>('all');
 
   useEffect(() => {
     checkUserAccess();
@@ -130,31 +136,52 @@ const Profiles = () => {
       // Fetch certifications
       const { data: certData } = await supabase
         .from('certifications')
-        .select('candidate_id, name')
+        .select('candidate_id, name, issuer')
+        .in('candidate_id', candidateIds);
+
+      // Fetch skills
+      const { data: skillsData } = await supabase
+        .from('candidate_skills')
+        .select('candidate_id, skills(name, category)')
         .in('candidate_id', candidateIds);
 
       // Create lookup maps
       const profileMap = new Map(profileResults.map((p) => [p.id, p]));
       const candidateProfileMap = new Map(candidateProfileResults.map((cp) => [cp.user_id, cp]));
-      const certsByCandidate: Record<string, string[]> = {};
+      const certsByCandidate: Record<string, any[]> = {};
+      const skillsByCandidate: Record<string, any[]> = {};
+      
       certData?.forEach(cert => {
         if (!certsByCandidate[cert.candidate_id]) {
           certsByCandidate[cert.candidate_id] = [];
         }
-        certsByCandidate[cert.candidate_id].push(cert.name);
+        certsByCandidate[cert.candidate_id].push(cert);
+      });
+
+      skillsData?.forEach(skill => {
+        if (!skillsByCandidate[skill.candidate_id]) {
+          skillsByCandidate[skill.candidate_id] = [];
+        }
+        skillsByCandidate[skill.candidate_id].push(skill);
       });
 
       // Transform to candidate profile format
       const candidateData: CandidateProfile[] = xpData.map((entry, index) => {
         const profile = profileMap.get(entry.candidate_id);
         const candidateProfile = candidateProfileMap.get(entry.candidate_id);
+        const certs = certsByCandidate[entry.candidate_id] || [];
+        const skills = skillsByCandidate[entry.candidate_id] || [];
+        
+        const specializations = detectSpecializations(skills, certs);
         
         return {
           id: entry.candidate_id,
           username: profile?.username || 'user_anonymous',
           title: candidateProfile?.title || 'Cybersecurity Professional',
           ranking: index + 1,
-          certifications: certsByCandidate[entry.candidate_id]?.slice(0, 3) || [],
+          certifications: certs.map(c => c.name).slice(0, 3),
+          skills: skills.map(s => s.skills?.name).filter(Boolean).slice(0, 5),
+          specializations,
           experience: `${candidateProfile?.years_experience || 0} years`,
           avatar: "🔒",
           locked: index > 2
@@ -169,14 +196,23 @@ const Profiles = () => {
     }
   };
 
-  const filteredCandidates = candidates.filter(
-    (candidate) =>
+  const filteredCandidates = candidates.filter((candidate) => {
+    const matchesSearch =
       candidate.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
       candidate.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       candidate.certifications.some((cert) =>
         cert.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-  );
+      ) ||
+      candidate.skills.some((skill) =>
+        skill.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+
+    const matchesSpecialization =
+      selectedSpecialization === 'all' ||
+      candidate.specializations.includes(selectedSpecialization);
+
+    return matchesSearch && matchesSpecialization;
+  });
 
   const getRankBadgeColor = (rank: number) => {
     if (rank === 1) return "bg-yellow-500 text-white";
@@ -219,9 +255,35 @@ const Profiles = () => {
           <>
             <div className="mb-8">
               <h1 className="text-4xl font-bold mb-2">Verified Cybersecurity Talent Profiles</h1>
-              <p className="text-muted-foreground">
+              <p className="text-muted-foreground mb-4">
                 Browse and connect with verified cybersecurity professionals
               </p>
+              
+              {/* Specialization Filter */}
+              <div className="flex flex-wrap items-center gap-2">
+                <Filter className="h-4 w-4 text-muted-foreground" />
+                <span className="text-sm font-medium">Filter by specialization:</span>
+                <div className="flex flex-wrap gap-2">
+                  <Badge
+                    variant={selectedSpecialization === 'all' ? 'default' : 'outline'}
+                    className="cursor-pointer"
+                    onClick={() => setSelectedSpecialization('all')}
+                  >
+                    All
+                  </Badge>
+                  {SPECIALIZATIONS.map((spec) => (
+                    <Badge
+                      key={spec.id}
+                      variant={selectedSpecialization === spec.id ? 'default' : 'outline'}
+                      className={`cursor-pointer ${selectedSpecialization === spec.id ? '' : spec.color}`}
+                      onClick={() => setSelectedSpecialization(spec.id)}
+                    >
+                      <span className="mr-1">{spec.icon}</span>
+                      {spec.label}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
             </div>
 
             {loading ? (
@@ -278,11 +340,33 @@ const Profiles = () => {
                 </div>
 
                 <div className="space-y-3">
+                  {/* Specializations */}
+                  {candidate.specializations.length > 0 && (
+                    <div>
+                      <p className="text-sm font-semibold mb-2">Specializations:</p>
+                      <SpecializationBadges specializations={candidate.specializations} />
+                    </div>
+                  )}
+
+                  {/* Top Skills */}
+                  {candidate.skills.length > 0 && (
+                    <div>
+                      <p className="text-sm font-semibold mb-1">Skills:</p>
+                      <div className="flex flex-wrap gap-1">
+                        {candidate.skills.map((skill, idx) => (
+                          <Badge key={idx} variant="secondary" className="text-xs">
+                            {skill}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
                   <div>
                     <p className="text-sm font-semibold mb-1">Certifications:</p>
                     <div className="flex flex-wrap gap-1">
                       {candidate.certifications.map((cert, idx) => (
-                        <Badge key={idx} variant="secondary" className="text-xs">
+                        <Badge key={idx} variant="outline" className="text-xs">
                           {cert}
                         </Badge>
                       ))}

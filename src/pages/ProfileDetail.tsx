@@ -10,6 +10,8 @@ import { Button } from "@/components/ui/button";
 import { UnlockProfileButton } from "@/components/profiles/UnlockProfileButton";
 import { PeerEndorsement } from "@/components/profiles/PeerEndorsement";
 import { DirectMessageButton } from "@/components/messaging/DirectMessageButton";
+import { SpecializationBadges } from "@/components/profiles/SpecializationBadges";
+import { detectSpecializations } from "@/lib/specializations";
 import { Skeleton } from "@/components/ui/skeleton";
 import { 
   Mail, Phone, MapPin, Calendar, Briefcase, Award, 
@@ -539,20 +541,38 @@ export default function ProfileDetail() {
                   </Card>
                 )}
 
-                {/* Skills */}
+                {/* Skills & Specializations */}
                 {candidateProfile?.candidate_skills?.length > 0 && (
                   <Card>
                     <CardHeader>
-                      <CardTitle>Skills</CardTitle>
+                      <CardTitle>Skills & Specializations</CardTitle>
                     </CardHeader>
-                    <CardContent>
-                      <div className="flex flex-wrap gap-2">
-                        {candidateProfile.candidate_skills.map((skill: any, idx: number) => (
-                          <Badge key={idx} variant="secondary">
-                            {skill.skills?.name || skill}
-                            {skill.years_experience > 0 && ` (${skill.years_experience}y)`}
-                          </Badge>
-                        ))}
+                    <CardContent className="space-y-4">
+                      {/* Specialization Badges */}
+                      {candidateProfile.candidate_skills && candidateProfile.certifications && (
+                        <div>
+                          <p className="text-sm font-semibold mb-2">Specializations:</p>
+                          <SpecializationBadges 
+                            specializations={detectSpecializations(
+                              candidateProfile.candidate_skills,
+                              candidateProfile.certifications
+                            )} 
+                            showAll
+                          />
+                        </div>
+                      )}
+                      
+                      {/* Skills List */}
+                      <div>
+                        <p className="text-sm font-semibold mb-2">Technical Skills:</p>
+                        <div className="flex flex-wrap gap-2">
+                          {candidateProfile.candidate_skills.map((skill: any, idx: number) => (
+                            <Badge key={idx} variant="secondary">
+                              {skill.skills?.name || skill}
+                              {skill.years_experience > 0 && ` (${skill.years_experience}y)`}
+                            </Badge>
+                          ))}
+                        </div>
                       </div>
                     </CardContent>
                   </Card>

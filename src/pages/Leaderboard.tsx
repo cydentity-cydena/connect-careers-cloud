@@ -8,6 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import SEO from "@/components/SEO";
+import { SpecializationBadges } from "@/components/profiles/SpecializationBadges";
+import { detectSpecializations, type Specialization } from "@/lib/specializations";
 
 interface LeaderboardEntry {
   id: string;
@@ -15,6 +17,7 @@ interface LeaderboardEntry {
   username: string;
   title: string;
   certifications: string[];
+  specializations: Specialization[];
   score: number;
   community_points: number;
   xp: number;
@@ -67,31 +70,51 @@ const Leaderboard = () => {
       // Fetch certifications
       const { data: certData } = await supabase
         .from('certifications')
-        .select('candidate_id, name')
+        .select('candidate_id, name, issuer')
+        .in('candidate_id', candidateIds);
+
+      // Fetch skills
+      const { data: skillsData } = await supabase
+        .from('candidate_skills')
+        .select('candidate_id, skills(name, category)')
         .in('candidate_id', candidateIds);
 
       // Create lookup maps
       const profileMap = new Map(profileResults.map(p => [p.id, p]));
       const candidateProfileMap = new Map(candidateProfileResults.map(cp => [cp.user_id, cp]));
-      const certsByCandidate: Record<string, string[]> = {};
+      const certsByCandidate: Record<string, any[]> = {};
+      const skillsByCandidate: Record<string, any[]> = {};
+      
       certData?.forEach(cert => {
         if (!certsByCandidate[cert.candidate_id]) {
           certsByCandidate[cert.candidate_id] = [];
         }
-        certsByCandidate[cert.candidate_id].push(cert.name);
+        certsByCandidate[cert.candidate_id].push(cert);
+      });
+
+      skillsData?.forEach(skill => {
+        if (!skillsByCandidate[skill.candidate_id]) {
+          skillsByCandidate[skill.candidate_id] = [];
+        }
+        skillsByCandidate[skill.candidate_id].push(skill);
       });
 
       // Transform to leaderboard format
       const leaderboardData: LeaderboardEntry[] = xpData.map((entry, index) => {
         const profile = profileMap.get(entry.candidate_id);
         const candidateProfile = candidateProfileMap.get(entry.candidate_id);
+        const certs = certsByCandidate[entry.candidate_id] || [];
+        const skills = skillsByCandidate[entry.candidate_id] || [];
+        
+        const specializations = detectSpecializations(skills, certs);
         
         return {
           id: entry.candidate_id,
           user_id: entry.candidate_id,
           username: profile?.username || 'anonymous',
           title: candidateProfile?.title || 'Cybersecurity Professional',
-          certifications: certsByCandidate[entry.candidate_id] || [],
+          certifications: certs.map(c => c.name),
+          specializations,
           score: Math.min(100, Math.round((entry as any).total_xp / 3)),
           community_points: (entry as any).community_points ?? (entry as any).points_balance ?? 0,
           xp: (entry as any).total_xp ?? 0,
@@ -225,6 +248,7 @@ const Leaderboard = () => {
                   <TableHead className="w-12 md:w-16 text-xs md:text-sm">Rank</TableHead>
                   <TableHead className="text-xs md:text-sm">Name</TableHead>
                   <TableHead className="hidden md:table-cell text-xs md:text-sm">Desired Job Title</TableHead>
+                  <TableHead className="hidden xl:table-cell text-xs md:text-sm">Specializations</TableHead>
                   <TableHead className="hidden lg:table-cell text-xs md:text-sm">Certifications</TableHead>
                   <TableHead className="text-right text-xs md:text-sm">Score</TableHead>
                   <TableHead className="hidden sm:table-cell text-right text-xs md:text-sm">XP</TableHead>
@@ -240,6 +264,9 @@ const Leaderboard = () => {
                       </Link>
                     </TableCell>
                     <TableCell className="hidden md:table-cell text-xs md:text-sm">{entry.title}</TableCell>
+                    <TableCell className="hidden xl:table-cell">
+                      <SpecializationBadges specializations={entry.specializations} />
+                    </TableCell>
                     <TableCell className="hidden lg:table-cell">
                       <div className="flex flex-wrap gap-1">
                         {entry.certifications.slice(0, 3).map((cert, idx) => (
