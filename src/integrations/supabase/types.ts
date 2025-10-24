@@ -188,6 +188,7 @@ export type Database = {
         Row: {
           candidate_id: string
           created_at: string | null
+          cv_url: string | null
           desired_role: string | null
           id: string
           is_founding_20: boolean | null
@@ -203,6 +204,7 @@ export type Database = {
         Insert: {
           candidate_id: string
           created_at?: string | null
+          cv_url?: string | null
           desired_role?: string | null
           id?: string
           is_founding_20?: boolean | null
@@ -218,6 +220,7 @@ export type Database = {
         Update: {
           candidate_id?: string
           created_at?: string | null
+          cv_url?: string | null
           desired_role?: string | null
           id?: string
           is_founding_20?: boolean | null
