@@ -72,8 +72,8 @@ const Navigation = () => {
     { to: "/career-assistant", label: "AI Assistant", showForRoles: ["candidate"] },
     { to: "/training", label: "Training" },
     { to: "/certifications-catalog", label: "Certifications" },
-    { to: "/pricing", label: "Pricing", hideForRoles: ["candidate"] },
-    { to: "/roi-calculator", label: "ROI Calculator", hideForRoles: ["candidate"] },
+    // { to: "/pricing", label: "Pricing", hideForRoles: ["candidate"] },
+    // { to: "/roi-calculator", label: "ROI Calculator", hideForRoles: ["candidate"] },
     { to: "/contact", label: "Contact" },
   ];
 

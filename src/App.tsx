@@ -61,7 +61,7 @@ const App = () => (
               <Route path="/training" element={<ProtectedRoute><Training /></ProtectedRoute>} />
               <Route path="/certifications-catalog" element={<ProtectedRoute><CertificationCatalog /></ProtectedRoute>} />
               <Route path="/contact" element={<ProtectedRoute><Contact /></ProtectedRoute>} />
-              <Route path="/pricing" element={<ProtectedRoute><Pricing /></ProtectedRoute>} />
+              {/* <Route path="/pricing" element={<ProtectedRoute><Pricing /></ProtectedRoute>} /> */}
               <Route path="/faq" element={<ProtectedRoute><FAQ /></ProtectedRoute>} />
               <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
               <Route path="/skills" element={<ProtectedRoute><Skills /></ProtectedRoute>} />
@@ -71,7 +71,7 @@ const App = () => (
               <Route path="/placements" element={<ProtectedRoute><Placements /></ProtectedRoute>} />
               <Route path="/jobs/create" element={<ProtectedRoute><JobCreate /></ProtectedRoute>} />
               <Route path="/community" element={<ProtectedRoute><Community /></ProtectedRoute>} />
-              <Route path="/roi-calculator" element={<ProtectedRoute><ROICalculator /></ProtectedRoute>} />
+              {/* <Route path="/roi-calculator" element={<ProtectedRoute><ROICalculator /></ProtectedRoute>} /> */}
               <Route path="/partnerships" element={<ProtectedRoute><Partnerships /></ProtectedRoute>} />
               <Route path="/career-assistant" element={<ProtectedRoute><CareerAssistant /></ProtectedRoute>} />
               <Route path="/bug-report" element={<ProtectedRoute><BugReport /></ProtectedRoute>} />
