@@ -6,10 +6,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Search, Download, Upload, FileText, Star } from "lucide-react";
+import { Loader2, Search, Download, Upload, FileText, Star, X } from "lucide-react";
 import { format } from "date-fns";
 import AddCandidateToPipeline from "@/components/admin/AddCandidateToPipeline";
 import Navigation from "@/components/Navigation";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 interface PipelineCandidate {
   id: string;
@@ -55,6 +56,8 @@ export default function StaffFunnel() {
   const [roleFilter, setRoleFilter] = useState<string>("all");
   const [sourceFilter, setSourceFilter] = useState<string>("all");
   const [uploadingCandidateId, setUploadingCandidateId] = useState<string | null>(null);
+  const [viewingResumeUrl, setViewingResumeUrl] = useState<string | null>(null);
+  const [viewingCandidateName, setViewingCandidateName] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
@@ -360,6 +363,24 @@ export default function StaffFunnel() {
           }}
         />
 
+        {/* Resume Viewer Dialog */}
+        <Dialog open={!!viewingResumeUrl} onOpenChange={(open) => !open && setViewingResumeUrl(null)}>
+          <DialogContent className="max-w-5xl h-[90vh]">
+            <DialogHeader>
+              <DialogTitle>{viewingCandidateName} - Resume</DialogTitle>
+            </DialogHeader>
+            <div className="flex-1 h-full">
+              {viewingResumeUrl && (
+                <iframe
+                  src={viewingResumeUrl}
+                  className="w-full h-full border rounded-lg"
+                  title="Resume Viewer"
+                />
+              )}
+            </div>
+          </DialogContent>
+        </Dialog>
+
         {/* Kanban Board */}
         <div className="grid grid-cols-5 gap-4">
           {STAGES.map((stage) => {
@@ -424,7 +445,10 @@ export default function StaffFunnel() {
                               variant="outline"
                               size="sm"
                               className="h-7 text-xs flex-1"
-                              onClick={() => window.open(candidate.cv_url!, '_blank')}
+                              onClick={() => {
+                                setViewingResumeUrl(candidate.cv_url!);
+                                setViewingCandidateName(candidate.profiles?.full_name || "Unknown");
+                              }}
                             >
                               <FileText className="h-3 w-3 mr-1" />
                               View CV
