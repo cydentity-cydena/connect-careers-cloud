@@ -351,7 +351,7 @@ export type Database = {
           client_id: string
           created_at: string
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           recruiter_id: string
           user_agent: string | null
         }
@@ -360,7 +360,7 @@ export type Database = {
           client_id: string
           created_at?: string
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           recruiter_id: string
           user_agent?: string | null
         }
@@ -369,7 +369,7 @@ export type Database = {
           client_id?: string
           created_at?: string
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           recruiter_id?: string
           user_agent?: string | null
         }
@@ -1305,6 +1305,7 @@ export type Database = {
           avatar_url: string | null
           bio: string | null
           created_at: string
+          desired_job_title: string | null
           email: string
           full_name: string | null
           id: string
@@ -1319,6 +1320,7 @@ export type Database = {
           avatar_url?: string | null
           bio?: string | null
           created_at?: string
+          desired_job_title?: string | null
           email: string
           full_name?: string | null
           id: string
@@ -1333,6 +1335,7 @@ export type Database = {
           avatar_url?: string | null
           bio?: string | null
           created_at?: string
+          desired_job_title?: string | null
           email?: string
           full_name?: string | null
           id?: string

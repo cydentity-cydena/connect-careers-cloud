@@ -87,7 +87,7 @@ export default function ProfileDetail() {
       let profileData: any = null;
       const { data: directProfile } = await supabase
         .from("profiles")
-        .select("id, full_name, username, avatar_url, location, bio, email")
+        .select("id, full_name, username, avatar_url, location, bio, email, desired_job_title")
         .eq("id", id)
         .maybeSingle();
 
@@ -335,7 +335,14 @@ export default function ProfileDetail() {
                     <p className="text-sm text-muted-foreground mb-2">@{profile.username || "anonymous"}</p>
                   )}
                   {candidateProfile?.title && (
-                    <p className="text-muted-foreground mb-4">{candidateProfile.title}</p>
+                    <p className="text-muted-foreground mb-2">{candidateProfile.title}</p>
+                  )}
+                  {profile.desired_job_title && (
+                    <div className="flex items-center gap-2 justify-center">
+                      <Badge variant="secondary" className="text-xs">
+                        Seeking: {profile.desired_job_title}
+                      </Badge>
+                    </div>
                   )}
                 </div>
 

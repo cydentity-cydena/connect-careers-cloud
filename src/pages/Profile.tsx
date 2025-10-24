@@ -21,6 +21,7 @@ const Profile = () => {
   const [location, setLocation] = useState('');
   const [bio, setBio] = useState('');
   const [avatarUrl, setAvatarUrl] = useState('');
+  const [desiredJobTitle, setDesiredJobTitle] = useState('');
 
   const [title, setTitle] = useState('');
   const [yearsExperience, setYearsExperience] = useState<number>(0);
@@ -46,7 +47,7 @@ const Profile = () => {
       // Load profile
       const { data: profile } = await supabase
         .from('profiles')
-        .select('full_name, username, location, bio, avatar_url')
+        .select('full_name, username, location, bio, avatar_url, desired_job_title')
         .eq('id', session.user.id)
         .maybeSingle();
 
@@ -56,6 +57,7 @@ const Profile = () => {
         setLocation(profile.location ?? '');
         setBio(profile.bio ?? '');
         setAvatarUrl(profile.avatar_url ?? '');
+        setDesiredJobTitle(profile.desired_job_title ?? '');
       }
 
       // Load candidate profile
@@ -125,7 +127,7 @@ const Profile = () => {
     try {
       const { error: pErr } = await supabase
         .from('profiles')
-        .update({ full_name: fullName, username, location, bio, avatar_url: avatarUrl })
+        .update({ full_name: fullName, username, location, bio, avatar_url: avatarUrl, desired_job_title: desiredJobTitle })
         .eq('id', userId);
       if (pErr) {
         if (pErr.message?.includes('profiles_username_unique')) {
@@ -289,8 +291,16 @@ const Profile = () => {
                 <Input id="avatar" value={avatarUrl} onChange={(e) => setAvatarUrl(e.target.value)} />
               </div>
               <div className="space-y-3">
-                <Label htmlFor="title">Job title</Label>
+                <Label htmlFor="title">Current job title</Label>
                 <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} />
+                
+                <Label htmlFor="desiredJobTitle">Desired job title (optional)</Label>
+                <Input 
+                  id="desiredJobTitle" 
+                  value={desiredJobTitle} 
+                  onChange={(e) => setDesiredJobTitle(e.target.value)}
+                  placeholder="e.g., Senior Cloud Security Engineer"
+                />
                 
                 <Label htmlFor="years">Years of experience</Label>
                 <Input id="years" type="number" value={yearsExperience} onChange={(e) => setYearsExperience(parseInt(e.target.value || '0'))} />
