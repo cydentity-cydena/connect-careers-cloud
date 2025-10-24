@@ -313,15 +313,15 @@ export default function StaffFunnel() {
   return (
     <>
       <Navigation />
-      <div className="min-h-screen bg-background p-6">
-        <div className="max-w-[1600px] mx-auto space-y-6">
+      <div className="min-h-screen bg-background p-3 sm:p-6 overflow-x-hidden">
+        <div className="w-full space-y-4 sm:space-y-6">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold">Funnel Dashboard</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold">Funnel Dashboard</h1>
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-6 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-4">
           {STAGES.map((stage) => {
             const count = getCandidatesByStage(stage.name).length;
             return (
@@ -417,11 +417,12 @@ export default function StaffFunnel() {
         </Dialog>
 
         {/* Kanban Board */}
-        <div className="grid grid-cols-5 gap-4">
+        <div className="overflow-x-auto pb-4 -mx-3 sm:mx-0">
+          <div className="inline-flex lg:grid lg:grid-cols-5 gap-3 sm:gap-4 min-w-full px-3 sm:px-0">
           {STAGES.map((stage) => {
             const stageCandidates = getCandidatesByStage(stage.name);
             return (
-              <div key={stage.name} className={`rounded-lg border ${stage.color} p-4`}>
+              <div key={stage.name} className={`rounded-lg border ${stage.color} p-3 sm:p-4 min-w-[280px] lg:min-w-0 flex-shrink-0`}>
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="font-semibold">{formatStageName(stage.name)}</h3>
                   <Badge variant="secondary">{stageCandidates.length}</Badge>
@@ -520,6 +521,7 @@ export default function StaffFunnel() {
               </div>
             );
           })}
+          </div>
         </div>
       </div>
     </div>
