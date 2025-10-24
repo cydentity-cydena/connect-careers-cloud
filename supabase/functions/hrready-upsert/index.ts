@@ -45,8 +45,9 @@ serve(async (req) => {
       updateData.identity_expires_at = body.identity.expiresAt;
     }
 
-    if (body.certification) {
-      updateData.certifications = JSON.stringify(body.certification);
+    if (body.certification || body.certifications) {
+      const certs = body.certification || body.certifications;
+      updateData.certifications = typeof certs === 'string' ? certs : JSON.stringify(certs);
     }
 
     if (body.rightToWork) {
@@ -65,7 +66,8 @@ serve(async (req) => {
       updateData.logistics_notice_days = body.logistics.noticeDays;
       updateData.logistics_salary_band = body.logistics.salaryBand;
       updateData.logistics_work_mode = body.logistics.workMode;
-      updateData.logistics_interview_slots = JSON.stringify(body.logistics.interviewSlots || []);
+      const slots = body.logistics.interviewSlots || [];
+      updateData.logistics_interview_slots = typeof slots === 'string' ? slots : JSON.stringify(slots);
       updateData.logistics_confirmed_at = body.logistics.confirmedAt;
       updateData.logistics_expires_at = body.logistics.expiresAt;
     }
@@ -81,8 +83,20 @@ serve(async (req) => {
 
     // Compute HR Ready status
     const idOk = ['green', 'amber'].includes(verification.identity_status || 'grey');
-    const certOk = verification.certifications && 
-      JSON.parse(verification.certifications).some((c: any) => ['green', 'amber'].includes(c.status));
+    
+    let certOk = false;
+    if (verification.certifications) {
+      try {
+        const certs = typeof verification.certifications === 'string' 
+          ? JSON.parse(verification.certifications) 
+          : verification.certifications;
+        certOk = Array.isArray(certs) && certs.length > 0 && 
+          certs.some((c: any) => ['green', 'amber'].includes(c.status));
+      } catch (e) {
+        console.error('Error parsing certifications:', e);
+      }
+    }
+    
     const rtwOk = ['green', 'amber'].includes(verification.rtw_status || 'grey');
     const logOk = ['green', 'amber'].includes(verification.logistics_status || 'grey');
     const hrReady = idOk && certOk && rtwOk && logOk;
@@ -92,10 +106,16 @@ serve(async (req) => {
     if (verification.identity_status === 'green') complianceScore += 5;
     else if (verification.identity_status === 'amber') complianceScore += 3;
 
-    if (certOk) {
-      const certs = JSON.parse(verification.certifications);
-      const greenCerts = certs.filter((c: any) => c.status === 'green').length;
-      complianceScore += Math.min(greenCerts * 2, 7);
+    if (certOk && verification.certifications) {
+      try {
+        const certs = typeof verification.certifications === 'string' 
+          ? JSON.parse(verification.certifications) 
+          : verification.certifications;
+        const greenCerts = certs.filter((c: any) => c.status === 'green').length;
+        complianceScore += Math.min(greenCerts * 2, 7);
+      } catch (e) {
+        console.error('Error calculating cert score:', e);
+      }
     }
 
     if (verification.rtw_status === 'green') complianceScore += 5;
