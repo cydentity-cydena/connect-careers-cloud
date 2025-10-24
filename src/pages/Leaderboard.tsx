@@ -263,7 +263,7 @@ const Leaderboard = () => {
               </TableHeader>
               <TableBody>
                 {leaderboard.map((entry) => (
-                  <TableRow key={entry.id} className="hover:bg-accent/50 cursor-pointer" onClick={() => window.location.href = `/profiles/${entry.user_id}`}>
+                  <TableRow key={entry.id} className="hover:bg-muted/50 cursor-pointer" onClick={() => window.location.href = `/profiles/${entry.user_id}`}>
                     <TableCell className="font-medium text-xs md:text-sm">#{entry.rank}</TableCell>
                     <TableCell className="font-semibold text-xs md:text-sm">
                       <Link to={`/profiles/${entry.user_id}`} className="hover:underline">
@@ -375,7 +375,7 @@ const Leaderboard = () => {
                     {[...leaderboard]
                       .sort((a, b) => b.community_points - a.community_points)
                       .map((entry, index) => (
-                        <TableRow key={entry.id} className="hover:bg-accent/50 cursor-pointer" onClick={() => window.location.href = `/profiles/${entry.user_id}`}>
+                        <TableRow key={entry.id} className="hover:bg-muted/50 cursor-pointer" onClick={() => window.location.href = `/profiles/${entry.user_id}`}>
                           <TableCell className="font-medium text-xs md:text-sm">#{index + 1}</TableCell>
                           <TableCell className="font-semibold text-xs md:text-sm">
                             <Link to={`/profiles/${entry.user_id}`} className="hover:underline">
