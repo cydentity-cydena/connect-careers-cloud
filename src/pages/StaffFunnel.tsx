@@ -211,6 +211,13 @@ export default function StaffFunnel() {
                 <SelectItem value="GRC / ISO">GRC / ISO</SelectItem>
                 <SelectItem value="Cloud Sec">Cloud Sec</SelectItem>
                 <SelectItem value="AppSec">AppSec</SelectItem>
+                <SelectItem value="Pen Testing">Pen Testing</SelectItem>
+                <SelectItem value="Security Engineer">Security Engineer</SelectItem>
+                <SelectItem value="Threat Intel">Threat Intel</SelectItem>
+                <SelectItem value="Risk Management">Risk Management</SelectItem>
+                <SelectItem value="Security Architect">Security Architect</SelectItem>
+                <SelectItem value="Incident Response">Incident Response</SelectItem>
+                <SelectItem value="Vuln Management">Vuln Management</SelectItem>
               </SelectContent>
             </Select>
             <Select value={sourceFilter} onValueChange={setSourceFilter}>
