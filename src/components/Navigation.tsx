@@ -69,7 +69,6 @@ const Navigation = () => {
     { to: "/community", label: "Community", hideForRoles: ["employer", "recruiter"] },
     { to: "/jobs", label: "Jobs" },
     { to: "/career-assistant", label: "AI Assistant", showForRoles: ["candidate"] },
-    { to: "/staff/funnel", label: "Staff Funnel", showForRoles: ["staff", "admin"] },
     { to: "/training", label: "Training" },
     { to: "/certifications-catalog", label: "Certifications" },
     // { to: "/pricing", label: "Pricing", hideForRoles: ["candidate"] },
@@ -120,6 +119,13 @@ const Navigation = () => {
 
             {user ? (
               <>
+                {(userRoles.includes('staff') || userRoles.includes('admin')) && (
+                  <Link to="/staff/funnel">
+                    <Button variant="hero" size="sm" className="font-semibold">
+                      Staff Funnel
+                    </Button>
+                  </Link>
+                )}
                 <Link to="/dashboard">
                   <Button variant="hero" size="sm" className="font-semibold">
                     Dashboard
@@ -146,6 +152,13 @@ const Navigation = () => {
 
           {/* Mobile Menu */}
           <div className="lg:hidden flex items-center gap-2">
+            {user && (userRoles.includes('staff') || userRoles.includes('admin')) && (
+              <Link to="/staff/funnel" onClick={handleNavClick}>
+                <Button variant="hero" size="sm" className="font-semibold">
+                  Staff Funnel
+                </Button>
+              </Link>
+            )}
             {user && (
               <Link to="/dashboard" onClick={handleNavClick}>
                 <Button variant="hero" size="sm" className="font-semibold">
