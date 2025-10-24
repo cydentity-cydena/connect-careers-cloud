@@ -222,7 +222,7 @@ export default function AddCandidateToPipeline({ onSuccess }: AddCandidateToPipe
                 checked={formData.isFounding20}
                 onCheckedChange={(checked) => setFormData({ ...formData, isFounding20: checked as boolean })}
               />
-              <Label htmlFor="isFounding20" className="cursor-pointer">Founding 20</Label>
+              <Label htmlFor="isFounding20" className="cursor-pointer">Chosen</Label>
             </div>
           </div>
 

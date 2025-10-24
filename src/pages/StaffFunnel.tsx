@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Search, Download, Upload, FileText } from "lucide-react";
+import { Loader2, Search, Download, Upload, FileText, Star } from "lucide-react";
 import { format } from "date-fns";
 import AddCandidateToPipeline from "@/components/admin/AddCandidateToPipeline";
 
@@ -124,6 +124,30 @@ export default function StaffFunnel() {
     }
   };
 
+  const toggleChosen = async (candidateId: string, currentValue: boolean) => {
+    try {
+      const { error } = await supabase
+        .from('candidate_pipeline')
+        .update({ is_founding_20: !currentValue })
+        .eq('id', candidateId);
+
+      if (error) throw error;
+
+      toast({
+        title: currentValue ? "Removed from Chosen" : "Added to Chosen",
+        description: currentValue ? "Candidate unmarked" : "Candidate marked as chosen",
+      });
+
+      fetchCandidates();
+    } catch (error: any) {
+      toast({
+        title: "Error updating status",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
   const handleStageChange = async (candidateId: string, newStage: string) => {
     try {
       const { error } = await supabase
@@ -178,7 +202,7 @@ export default function StaffFunnel() {
 
   const exportToCSV = () => {
     const csvContent = [
-      ["Name", "Email", "Stage", "Role", "Source", "Priority", "Founding 20", "SLA Due"],
+      ["Name", "Email", "Stage", "Role", "Source", "Priority", "Chosen", "SLA Due"],
       ...filteredCandidates.map((c) => [
         c.profiles?.full_name || "",
         c.profiles?.email || "",
@@ -186,7 +210,7 @@ export default function StaffFunnel() {
         c.desired_role || "",
         c.source || "",
         c.is_priority ? "Yes" : "No",
-        c.is_founding_20 ? "Yes" : "No",
+        c.is_founding_20 ? "Chosen" : "No",
         c.sla_due_at ? format(new Date(c.sla_due_at), "yyyy-MM-dd") : "",
       ]),
     ]
@@ -300,11 +324,21 @@ export default function StaffFunnel() {
                       <Card key={candidate.id} className="p-3 hover:shadow-md transition-shadow">
                         <div className="space-y-2">
                           <div className="flex items-start justify-between gap-2">
-                            <div className="font-medium text-sm truncate">
-                              {candidate.profiles?.full_name || "Unknown"}
+                            <div className="flex items-center gap-2 flex-1 min-w-0">
+                              <Button
+                                variant={candidate.is_founding_20 ? "default" : "ghost"}
+                                size="sm"
+                                className="h-6 w-6 p-0"
+                                onClick={() => toggleChosen(candidate.id, candidate.is_founding_20)}
+                              >
+                                <Star className={`h-3 w-3 ${candidate.is_founding_20 ? 'fill-current' : ''}`} />
+                              </Button>
+                              <div className="font-medium text-sm truncate">
+                                {candidate.profiles?.full_name || "Unknown"}
+                              </div>
                             </div>
                             {candidate.is_priority && (
-                              <Badge variant="destructive" className="text-xs">Priority</Badge>
+                              <Badge variant="destructive" className="text-xs shrink-0">Priority</Badge>
                             )}
                           </div>
                           {candidate.desired_role && (
@@ -318,7 +352,7 @@ export default function StaffFunnel() {
                             </div>
                           )}
                           {candidate.is_founding_20 && (
-                            <Badge variant="default" className="text-xs">Founding 20</Badge>
+                            <Badge variant="default" className="text-xs">Chosen</Badge>
                           )}
                           {candidate.sla_due_at && (
                             <div className="text-xs text-muted-foreground">
