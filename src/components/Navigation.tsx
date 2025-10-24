@@ -17,35 +17,34 @@ const Navigation = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [user, setUser] = useState<any>(null);
-  const [userRole, setUserRole] = useState<string | null>(null);
+  const [userRoles, setUserRoles] = useState<string[]>([]);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
-    const fetchUserRole = async (userId: string) => {
+    const fetchUserRoles = async (userId: string) => {
       const { data } = await supabase
         .from('user_roles')
         .select('role')
-        .eq('user_id', userId)
-        .single();
+        .eq('user_id', userId);
       
-      setUserRole(data?.role || null);
+      setUserRoles(data?.map(r => r.role) || []);
     };
 
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user);
       if (session?.user) {
-        fetchUserRole(session.user.id);
+        fetchUserRoles(session.user.id);
       } else {
-        setUserRole(null);
+        setUserRoles([]);
       }
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user);
       if (session?.user) {
-        fetchUserRole(session.user.id);
+        fetchUserRoles(session.user.id);
       } else {
-        setUserRole(null);
+        setUserRoles([]);
       }
     });
 
@@ -79,12 +78,12 @@ const Navigation = () => {
   ];
 
   const navLinks = allNavLinks.filter(link => {
-    // Hide if hideForRoles includes current role
-    if (link.hideForRoles && userRole && link.hideForRoles.includes(userRole)) {
+    // Hide if hideForRoles includes any of the user's roles
+    if (link.hideForRoles && userRoles.some(role => link.hideForRoles?.includes(role))) {
       return false;
     }
-    // Show only if showForRoles includes current role (or if no showForRoles specified)
-    if (link.showForRoles && (!userRole || !link.showForRoles.includes(userRole))) {
+    // Show only if showForRoles includes any of the user's roles (or if no showForRoles specified)
+    if (link.showForRoles && !userRoles.some(role => link.showForRoles?.includes(role))) {
       return false;
     }
     return true;
