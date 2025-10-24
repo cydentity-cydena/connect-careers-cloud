@@ -54,7 +54,11 @@ const Leaderboard = () => {
         candidateIds.map(async (cid) => {
           const { data } = await supabase.rpc('get_public_profile', { profile_id: cid });
           const row = Array.isArray(data) ? data?.[0] : data;
-          return { id: cid, username: row?.username ?? null, desired_job_title: row?.desired_job_title ?? null };
+          return { 
+            id: cid, 
+            username: row?.username ?? null, 
+            desired_job_title: (row as any)?.desired_job_title ?? null 
+          };
         })
       );
 

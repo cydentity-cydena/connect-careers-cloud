@@ -1764,6 +1764,7 @@ export type Database = {
         Returns: {
           avatar_url: string
           bio: string
+          desired_job_title: string
           full_name: string
           id: string
           location: string

@@ -120,7 +120,7 @@ const Profiles = () => {
         candidateIds.map(async (cid) => {
           const { data } = await supabase.rpc('get_public_profile', { profile_id: cid });
           const row = Array.isArray(data) ? data?.[0] : data;
-          return { id: cid, username: row?.username ?? null };
+          return { id: cid, username: row?.username ?? null, desired_job_title: (row as any)?.desired_job_title ?? null };
         })
       );
 
@@ -174,10 +174,13 @@ const Profiles = () => {
         
         const specializations = detectSpecializations(skills, certs);
         
+        // Use desired_job_title if set, otherwise fallback to current title
+        const displayTitle = (profile as any)?.desired_job_title || candidateProfile?.title || 'Cybersecurity Professional';
+        
         return {
           id: entry.candidate_id,
           username: profile?.username || 'user_anonymous',
-          title: candidateProfile?.title || 'Cybersecurity Professional',
+          title: displayTitle,
           ranking: index + 1,
           certifications: certs.map(c => c.name).slice(0, 3),
           skills: skills.map(s => s.skills?.name).filter(Boolean).slice(0, 5),
