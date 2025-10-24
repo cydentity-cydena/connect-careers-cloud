@@ -201,6 +201,12 @@ serve(async (req) => {
         });
 
         if (authError) {
+          // Skip if user already exists
+          if (authError.message.includes('already been registered')) {
+            console.log(`Skipping existing candidate ${candidate.email}`);
+            results.candidates.push({ email: candidate.email, success: false, error: 'Already exists' });
+            continue;
+          }
           console.error(`Error creating candidate ${candidate.email}:`, authError);
           results.candidates.push({ email: candidate.email, success: false, error: authError.message });
           continue;
@@ -297,6 +303,12 @@ serve(async (req) => {
         });
 
         if (authError) {
+          // Skip if user already exists
+          if (authError.message.includes('already been registered')) {
+            console.log(`Skipping existing employer ${employer.email}`);
+            results.employers.push({ email: employer.email, success: false, error: 'Already exists' });
+            continue;
+          }
           console.error(`Error creating employer ${employer.email}:`, authError);
           results.employers.push({ email: employer.email, success: false, error: authError.message });
           continue;
@@ -357,6 +369,12 @@ serve(async (req) => {
         });
 
         if (authError) {
+          // Skip if user already exists
+          if (authError.message.includes('already been registered')) {
+            console.log(`Skipping existing recruiter ${recruiter.email}`);
+            results.recruiters.push({ email: recruiter.email, success: false, error: 'Already exists' });
+            continue;
+          }
           console.error(`Error creating recruiter ${recruiter.email}:`, authError);
           results.recruiters.push({ email: recruiter.email, success: false, error: authError.message });
           continue;
