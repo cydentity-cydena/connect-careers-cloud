@@ -396,15 +396,15 @@ export default function StaffFunnel() {
 
         {/* Resume Viewer Dialog */}
         <Dialog open={!!viewingResumeUrl} onOpenChange={(open) => !open && setViewingResumeUrl(null)}>
-          <DialogContent className="max-w-5xl h-[90vh]">
-            <DialogHeader>
+          <DialogContent className="max-w-[95vw] w-full h-[95vh] p-0">
+            <DialogHeader className="px-6 py-4 border-b">
               <DialogTitle>{viewingCandidateName} - Resume</DialogTitle>
             </DialogHeader>
-            <div className="flex-1 h-full">
+            <div className="flex-1 h-[calc(100%-4rem)] p-4">
               {viewingResumeUrl && (
                 <iframe
                   src={viewingResumeUrl}
-                  className="w-full h-full border rounded-lg"
+                  className="w-full h-full border-0 rounded-lg"
                   title="Resume Viewer"
                 />
               )}
