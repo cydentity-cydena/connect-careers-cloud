@@ -195,6 +195,22 @@ const Navigation = () => {
 
                   {/* Mobile Auth Actions */}
                   <div className="pt-4 border-t border-border flex flex-col gap-3">
+                    {user && (
+                      <>
+                        {(userRoles.includes('staff') || userRoles.includes('admin')) && (
+                          <Link to="/staff/funnel" onClick={handleNavClick}>
+                            <Button variant="hero" className="w-full font-semibold">
+                              Staff Funnel
+                            </Button>
+                          </Link>
+                        )}
+                        <Link to="/dashboard" onClick={handleNavClick}>
+                          <Button variant="hero" className="w-full font-semibold">
+                            Dashboard
+                          </Button>
+                        </Link>
+                      </>
+                    )}
                     {user ? (
                       <Button variant="outline" onClick={handleSignOut} className="w-full">
                         <LogOut className="h-4 w-4 mr-2" />
