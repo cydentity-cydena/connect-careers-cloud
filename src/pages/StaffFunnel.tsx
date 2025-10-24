@@ -159,6 +159,30 @@ export default function StaffFunnel() {
     }
   };
 
+  const togglePriority = async (candidateId: string, currentValue: boolean) => {
+    try {
+      const { error } = await supabase
+        .from('candidate_pipeline')
+        .update({ is_priority: !currentValue })
+        .eq('id', candidateId);
+
+      if (error) throw error;
+
+      toast({
+        title: currentValue ? "Priority removed" : "Priority added",
+        description: currentValue ? "Candidate unmarked as priority" : "Candidate marked as priority",
+      });
+
+      fetchCandidates();
+    } catch (error: any) {
+      toast({
+        title: "Error updating priority",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
   const handleStageChange = async (candidateId: string, newStage: string) => {
     try {
       const { error } = await supabase
@@ -359,7 +383,13 @@ export default function StaffFunnel() {
                             </div>
                           </div>
                           {candidate.is_priority && (
-                            <Badge variant="destructive" className="text-xs shrink-0">Priority</Badge>
+                            <Badge 
+                              variant="destructive" 
+                              className="text-xs shrink-0 cursor-pointer hover:opacity-80 transition-opacity"
+                              onClick={() => togglePriority(candidate.id, candidate.is_priority)}
+                            >
+                              Priority
+                            </Badge>
                           )}
                         </div>
                         {candidate.desired_role && (
