@@ -106,13 +106,10 @@ export default function StaffFunnel() {
 
       if (uploadError) throw uploadError;
 
-      const { data: { publicUrl } } = supabase.storage
-        .from('resumes')
-        .getPublicUrl(filePath);
-
+      // Store the file path (not public URL) in the database
       const { error: updateError } = await supabase
         .from('candidate_pipeline')
-        .update({ cv_url: publicUrl })
+        .update({ cv_url: filePath })
         .eq('id', uploadingCandidateId);
 
       if (updateError) throw updateError;
@@ -137,6 +134,26 @@ export default function StaffFunnel() {
   const triggerFileUpload = (candidateId: string) => {
     setUploadingCandidateId(candidateId);
     fileInputRef.current?.click();
+  };
+
+  const handleViewCV = async (cvPath: string, candidateName: string) => {
+    try {
+      // Generate a signed URL for secure access
+      const { data, error } = await supabase.storage
+        .from('resumes')
+        .createSignedUrl(cvPath, 3600); // 1 hour expiry
+
+      if (error) throw error;
+      
+      setViewingResumeUrl(data.signedUrl);
+      setViewingCandidateName(candidateName);
+    } catch (error: any) {
+      toast({
+        title: "Error loading CV",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
   };
 
   const toggleChosen = async (candidateId: string, currentValue: boolean) => {
@@ -445,10 +462,7 @@ export default function StaffFunnel() {
                               variant="outline"
                               size="sm"
                               className="h-7 text-xs flex-1"
-                              onClick={() => {
-                                setViewingResumeUrl(candidate.cv_url!);
-                                setViewingCandidateName(candidate.profiles?.full_name || "Unknown");
-                              }}
+                              onClick={() => handleViewCV(candidate.cv_url!, candidate.profiles?.full_name || "Unknown")}
                             >
                               <FileText className="h-3 w-3 mr-1" />
                               View CV
