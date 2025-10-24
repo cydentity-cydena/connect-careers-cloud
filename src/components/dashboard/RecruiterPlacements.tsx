@@ -121,7 +121,7 @@ const RecruiterPlacements = ({ recruiterId }: RecruiterPlacementsProps) => {
                   <div className="flex items-center gap-2 text-green-500">
                     <DollarSign className="h-4 w-4" />
                     <span className="font-semibold">
-                      ${Number(placement.commission_amount).toLocaleString()} commission
+                      £{Number(placement.commission_amount).toLocaleString()} commission
                     </span>
                   </div>
                 )}
@@ -129,7 +129,7 @@ const RecruiterPlacements = ({ recruiterId }: RecruiterPlacementsProps) => {
 
               {placement.salary_offered && (
                 <p className="text-sm text-muted-foreground">
-                  Salary: ${placement.salary_offered.toLocaleString()}/year
+                  Salary: £{placement.salary_offered.toLocaleString()}/year
                 </p>
               )}
 

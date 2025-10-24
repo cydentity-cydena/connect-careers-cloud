@@ -6,7 +6,7 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-const WEEKLY_BOOST_PRICE = 499; // $499 per week for dashboard placement
+const WEEKLY_BOOST_PRICE = 499; // £499 per week for dashboard placement
 
 interface PurchaseRequest {
   courseId: string;
@@ -75,12 +75,12 @@ Deno.serve(async (req) => {
       line_items: [
         {
           price_data: {
-            currency: 'usd',
+            currency: 'gbp',
             product_data: {
               name: `Boost Placement: ${purchaseData.courseName}`,
               description: `Featured dashboard placement for ${purchaseData.durationWeeks} week(s)`,
             },
-            unit_amount: totalAmount * 100, // Convert to cents
+            unit_amount: totalAmount * 100, // Convert to pence
           },
           quantity: 1,
         },

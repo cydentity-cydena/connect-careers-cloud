@@ -215,7 +215,7 @@ const RecruiterDashboard = () => {
               </CardHeader>
               <CardContent>
                 <p className="text-3xl font-bold text-green-500">
-                  ${totalCommissions.toLocaleString()}
+                  £{totalCommissions.toLocaleString()}
                 </p>
                 <p className="text-sm text-muted-foreground mt-1">Total earned</p>
               </CardContent>

@@ -113,9 +113,9 @@ const JobDetail = () => {
 
   const formatSalary = (min: number | null, max: number | null) => {
     if (!min && !max) return "Competitive";
-    if (min && max) return `$${(min / 1000).toFixed(0)}k - $${(max / 1000).toFixed(0)}k`;
-    if (min) return `$${(min / 1000).toFixed(0)}k+`;
-    return `Up to $${(max! / 1000).toFixed(0)}k`;
+    if (min && max) return `£${(min / 1000).toFixed(0)}k - £${(max / 1000).toFixed(0)}k`;
+    if (min) return `£${(min / 1000).toFixed(0)}k+`;
+    return `Up to £${(max! / 1000).toFixed(0)}k`;
   };
 
   const getTimeAgo = (dateString: string) => {

@@ -311,7 +311,7 @@ const Partnerships = () => {
                           </div>
                           <div>
                             <h4 className="font-bold">Standard Placement</h4>
-                            <p className="text-sm text-muted-foreground">Listed in category sections. Base pricing starting at $149/week.</p>
+                            <p className="text-sm text-muted-foreground">Listed in category sections. Base pricing starting at £149/week.</p>
                           </div>
                         </div>
                       </div>
@@ -322,7 +322,7 @@ const Partnerships = () => {
                           </div>
                           <div>
                             <h4 className="font-bold">Featured Upgrade</h4>
-                            <p className="text-sm text-muted-foreground">Premium top-of-page section with logo. +$100-250/week based on slot position (1-4).</p>
+                            <p className="text-sm text-muted-foreground">Premium top-of-page section with logo. +£100-250/week based on slot position (1-4).</p>
                           </div>
                         </div>
                       </div>
@@ -357,12 +357,12 @@ const Partnerships = () => {
                           <div className="text-center mb-6">
                             {tier.originalPrice && (
                               <p className="text-sm text-muted-foreground line-through">
-                                ${tier.originalPrice.toLocaleString()}
+                                £{tier.originalPrice.toLocaleString()}
                               </p>
                             )}
-                            <p className="text-4xl font-bold">${tier.price.toLocaleString()}</p>
+                            <p className="text-4xl font-bold">£{tier.price.toLocaleString()}</p>
                             <p className="text-sm text-muted-foreground mt-1">
-                              ${Math.round(tier.price / tier.weeks)}/week
+                              £{Math.round(tier.price / tier.weeks)}/week
                             </p>
                           </div>
                           <Button 
@@ -396,7 +396,7 @@ const Partnerships = () => {
                       </CardHeader>
                       <CardContent>
                         <div className="text-center">
-                          <p className="text-4xl font-bold text-yellow-600 mb-1">+$250</p>
+                          <p className="text-4xl font-bold text-yellow-600 mb-1">+£250</p>
                           <p className="text-sm text-muted-foreground">/week upgrade</p>
                         </div>
                       </CardContent>
@@ -412,7 +412,7 @@ const Partnerships = () => {
                       </CardHeader>
                       <CardContent>
                         <div className="text-center">
-                          <p className="text-4xl font-bold text-orange-600 mb-1">+$200</p>
+                          <p className="text-4xl font-bold text-orange-600 mb-1">+£200</p>
                           <p className="text-sm text-muted-foreground">/week upgrade</p>
                         </div>
                       </CardContent>
@@ -428,7 +428,7 @@ const Partnerships = () => {
                       </CardHeader>
                       <CardContent>
                         <div className="text-center">
-                          <p className="text-4xl font-bold text-blue-600 mb-1">+$150</p>
+                          <p className="text-4xl font-bold text-blue-600 mb-1">+£150</p>
                           <p className="text-sm text-muted-foreground">/week upgrade</p>
                         </div>
                       </CardContent>
@@ -444,7 +444,7 @@ const Partnerships = () => {
                       </CardHeader>
                       <CardContent>
                         <div className="text-center">
-                          <p className="text-4xl font-bold text-purple-600 mb-1">+$100</p>
+                          <p className="text-4xl font-bold text-purple-600 mb-1">+£100</p>
                           <p className="text-sm text-muted-foreground">/week upgrade</p>
                         </div>
                       </CardContent>
@@ -471,7 +471,7 @@ const Partnerships = () => {
                       </li>
                     </ul>
                     <p className="text-sm text-muted-foreground mt-4 pt-4 border-t">
-                      <strong>Example:</strong> Standard placement (4 weeks at $537) + Slot 1 Featured upgrade (4 weeks × $250 = $1,000) = $1,537 total
+                      <strong>Example:</strong> Standard placement (4 weeks at £537) + Slot 1 Featured upgrade (4 weeks × £250 = £1,000) = £1,537 total
                     </p>
                   </div>
                 </div>
@@ -733,7 +733,7 @@ const Partnerships = () => {
                             </li>
                           </ul>
                           <div className="pt-4">
-                            <div className="text-3xl font-bold">From $149<span className="text-base font-normal text-muted-foreground">/week</span></div>
+                            <div className="text-3xl font-bold">From £149<span className="text-base font-normal text-muted-foreground">/week</span></div>
                             <p className="text-sm text-muted-foreground">+ position upgrade</p>
                           </div>
                         </div>
@@ -746,30 +746,30 @@ const Partnerships = () => {
                           <div className="text-center p-4 rounded-lg bg-yellow-500/10 border-2 border-yellow-500/50">
                             <Star className="h-6 w-6 mx-auto mb-2 text-yellow-500 fill-yellow-500" />
                             <div className="font-bold">Slot 1</div>
-                            <div className="text-2xl font-bold mt-2">+$250</div>
+                            <div className="text-2xl font-bold mt-2">+£250</div>
                             <div className="text-xs text-muted-foreground">per week</div>
                           </div>
                           <div className="text-center p-4 rounded-lg bg-orange-500/10 border-2 border-orange-500/50">
                             <Star className="h-6 w-6 mx-auto mb-2 text-orange-500" />
                             <div className="font-bold">Slot 2</div>
-                            <div className="text-2xl font-bold mt-2">+$200</div>
+                            <div className="text-2xl font-bold mt-2">+£200</div>
                             <div className="text-xs text-muted-foreground">per week</div>
                           </div>
                           <div className="text-center p-4 rounded-lg bg-blue-500/10 border-2 border-blue-500/50">
                             <Star className="h-6 w-6 mx-auto mb-2 text-blue-500" />
                             <div className="font-bold">Slot 3</div>
-                            <div className="text-2xl font-bold mt-2">+$150</div>
+                            <div className="text-2xl font-bold mt-2">+£150</div>
                             <div className="text-xs text-muted-foreground">per week</div>
                           </div>
                           <div className="text-center p-4 rounded-lg bg-purple-500/10 border-2 border-purple-500/50">
                             <Star className="h-6 w-6 mx-auto mb-2 text-purple-500" />
                             <div className="font-bold">Slot 4</div>
-                            <div className="text-2xl font-bold mt-2">+$100</div>
+                            <div className="text-2xl font-bold mt-2">+£100</div>
                             <div className="text-xs text-muted-foreground">per week</div>
                           </div>
                         </div>
                         <p className="text-sm text-center text-muted-foreground mt-4">
-                          Total cost = Base ($149) + Slot position premium. Volume discounts apply automatically for longer terms.
+                          Total cost = Base (£149) + Slot position premium. Volume discounts apply automatically for longer terms.
                         </p>
                       </div>
                     </div>

@@ -102,7 +102,7 @@ serve(async (req) => {
     const discount = getVolumeDiscount(purchaseData.weeks);
     const totalAmount = baseTotal * (1 - discount);
     
-    console.log(`[PURCHASE-FEATURED-CERT] Pricing: $${slotPricing.weeklyPrice}/week × ${purchaseData.weeks} weeks = $${baseTotal}, Discount: ${discount * 100}%, Final: $${totalAmount}`);
+    console.log(`[PURCHASE-FEATURED-CERT] Pricing: £${slotPricing.weeklyPrice}/week × ${purchaseData.weeks} weeks = £${baseTotal}, Discount: ${discount * 100}%, Final: £${totalAmount}`);
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
       apiVersion: "2025-08-27.basil",
@@ -130,8 +130,8 @@ serve(async (req) => {
       line_items: [
         {
           price_data: {
-            currency: "usd",
-            unit_amount: Math.round(totalAmount * 100), // Convert to cents
+            currency: "gbp",
+            unit_amount: Math.round(totalAmount * 100), // Convert to pence
             product_data: {
               name: `Featured Certification - Slot #${purchaseData.slot_position}`,
               description: `${purchaseData.weeks} week(s) for ${purchaseData.cert_name}${discount > 0 ? ` (${discount * 100}% volume discount)` : ''}`,
