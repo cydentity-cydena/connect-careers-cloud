@@ -37,6 +37,7 @@ import StaffFunnel from "./pages/StaffFunnel";
 import UserManagement from "./pages/admin/UserManagement";
 import RoleManagement from "./pages/admin/RoleManagement";
 import JobModeration from "./pages/admin/JobModeration";
+import PodManagement from "./pages/admin/PodManagement";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -65,7 +66,7 @@ const App = () => (
               <Route path="/training" element={<ProtectedRoute><Training /></ProtectedRoute>} />
               <Route path="/certifications-catalog" element={<ProtectedRoute><CertificationCatalog /></ProtectedRoute>} />
               <Route path="/contact" element={<ProtectedRoute><Contact /></ProtectedRoute>} />
-              {/* <Route path="/pricing" element={<ProtectedRoute><Pricing /></ProtectedRoute>} /> */}
+              <Route path="/pricing" element={<Pricing />} />
               <Route path="/faq" element={<ProtectedRoute><FAQ /></ProtectedRoute>} />
               <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
               <Route path="/skills" element={<ProtectedRoute><Skills /></ProtectedRoute>} />
@@ -75,7 +76,7 @@ const App = () => (
               <Route path="/placements" element={<ProtectedRoute><Placements /></ProtectedRoute>} />
               <Route path="/jobs/create" element={<ProtectedRoute><JobCreate /></ProtectedRoute>} />
               <Route path="/community" element={<ProtectedRoute><Community /></ProtectedRoute>} />
-              {/* <Route path="/roi-calculator" element={<ProtectedRoute><ROICalculator /></ProtectedRoute>} /> */}
+              <Route path="/roi-calculator" element={<ROICalculator />} />
               <Route path="/partnerships" element={<ProtectedRoute><Partnerships /></ProtectedRoute>} />
               <Route path="/career-assistant" element={<ProtectedRoute><CareerAssistant /></ProtectedRoute>} />
               <Route path="/bug-report" element={<ProtectedRoute><BugReport /></ProtectedRoute>} />
@@ -85,6 +86,7 @@ const App = () => (
               <Route path="/admin/users" element={<ProtectedRoute><UserManagement /></ProtectedRoute>} />
               <Route path="/admin/roles" element={<ProtectedRoute><RoleManagement /></ProtectedRoute>} />
               <Route path="/admin/jobs" element={<ProtectedRoute><JobModeration /></ProtectedRoute>} />
+              <Route path="/admin/pods" element={<ProtectedRoute><PodManagement /></ProtectedRoute>} />
               
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />

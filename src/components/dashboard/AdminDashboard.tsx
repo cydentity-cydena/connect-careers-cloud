@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Shield, Users, Briefcase, AlertCircle, UserCog, CheckCircle, Bug, Settings } from "lucide-react";
+import { Shield, Users, Briefcase, AlertCircle, UserCog, CheckCircle, Bug, Settings, FolderKanban } from "lucide-react";
 import { SeedDemoCandidates } from "@/components/admin/SeedDemoCandidates";
 import { VerificationReviewPanel } from "@/components/admin/VerificationReviewPanel";
 import { AdminNotifications } from "@/components/admin/AdminNotifications";
@@ -212,7 +212,7 @@ const AdminDashboard = () => {
       {/* Admin Management Tools */}
       <div>
         <h2 className="text-2xl font-bold mb-4">Admin Management Tools</h2>
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           <Card 
             className="border-border shadow-card hover:shadow-lg transition-all cursor-pointer group"
             onClick={() => navigate('/admin/users')}
@@ -269,6 +269,26 @@ const AdminDashboard = () => {
             <CardContent>
               <Button variant="outline" className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
                 Moderate Jobs
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card 
+            className="border-border shadow-card hover:shadow-lg transition-all cursor-pointer group"
+            onClick={() => navigate('/admin/pods')}
+          >
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 group-hover:text-primary transition-colors">
+                <FolderKanban className="h-5 w-5" />
+                Pod Management
+              </CardTitle>
+              <CardDescription>
+                Create and assign curated candidate pods to employers
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button variant="outline" className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                Manage Pods
               </Button>
             </CardContent>
           </Card>
