@@ -187,6 +187,7 @@ export type Database = {
       candidate_pipeline: {
         Row: {
           candidate_id: string
+          compliance_score: number | null
           created_at: string | null
           cv_url: string | null
           desired_role: string | null
@@ -203,6 +204,7 @@ export type Database = {
         }
         Insert: {
           candidate_id: string
+          compliance_score?: number | null
           created_at?: string | null
           cv_url?: string | null
           desired_role?: string | null
@@ -219,6 +221,7 @@ export type Database = {
         }
         Update: {
           candidate_id?: string
+          compliance_score?: number | null
           created_at?: string | null
           cv_url?: string | null
           desired_role?: string | null
@@ -365,6 +368,110 @@ export type Database = {
             columns: ["skill_id"]
             isOneToOne: false
             referencedRelation: "skills"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      candidate_verifications: {
+        Row: {
+          candidate_id: string
+          certifications: Json | null
+          compliance_score: number | null
+          created_at: string | null
+          hr_ready: boolean | null
+          id: string
+          identity_check_id: string | null
+          identity_checked_at: string | null
+          identity_expires_at: string | null
+          identity_method: string | null
+          identity_name_on_id: string | null
+          identity_status: string | null
+          identity_verifier: string | null
+          logistics_commute_radius_km: number | null
+          logistics_confirmed_at: string | null
+          logistics_expires_at: string | null
+          logistics_interview_slots: Json | null
+          logistics_location: string | null
+          logistics_notice_days: number | null
+          logistics_salary_band: string | null
+          logistics_status: string | null
+          logistics_work_mode: string | null
+          rtw_checked_at: string | null
+          rtw_country: string | null
+          rtw_expires_at: string | null
+          rtw_restriction_notes: string | null
+          rtw_status: string | null
+          rtw_verifier: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          candidate_id: string
+          certifications?: Json | null
+          compliance_score?: number | null
+          created_at?: string | null
+          hr_ready?: boolean | null
+          id?: string
+          identity_check_id?: string | null
+          identity_checked_at?: string | null
+          identity_expires_at?: string | null
+          identity_method?: string | null
+          identity_name_on_id?: string | null
+          identity_status?: string | null
+          identity_verifier?: string | null
+          logistics_commute_radius_km?: number | null
+          logistics_confirmed_at?: string | null
+          logistics_expires_at?: string | null
+          logistics_interview_slots?: Json | null
+          logistics_location?: string | null
+          logistics_notice_days?: number | null
+          logistics_salary_band?: string | null
+          logistics_status?: string | null
+          logistics_work_mode?: string | null
+          rtw_checked_at?: string | null
+          rtw_country?: string | null
+          rtw_expires_at?: string | null
+          rtw_restriction_notes?: string | null
+          rtw_status?: string | null
+          rtw_verifier?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          candidate_id?: string
+          certifications?: Json | null
+          compliance_score?: number | null
+          created_at?: string | null
+          hr_ready?: boolean | null
+          id?: string
+          identity_check_id?: string | null
+          identity_checked_at?: string | null
+          identity_expires_at?: string | null
+          identity_method?: string | null
+          identity_name_on_id?: string | null
+          identity_status?: string | null
+          identity_verifier?: string | null
+          logistics_commute_radius_km?: number | null
+          logistics_confirmed_at?: string | null
+          logistics_expires_at?: string | null
+          logistics_interview_slots?: Json | null
+          logistics_location?: string | null
+          logistics_notice_days?: number | null
+          logistics_salary_band?: string | null
+          logistics_status?: string | null
+          logistics_work_mode?: string | null
+          rtw_checked_at?: string | null
+          rtw_country?: string | null
+          rtw_expires_at?: string | null
+          rtw_restriction_notes?: string | null
+          rtw_status?: string | null
+          rtw_verifier?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "candidate_verifications_candidate_id_fkey"
+            columns: ["candidate_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]

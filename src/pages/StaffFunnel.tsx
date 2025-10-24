@@ -6,12 +6,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Search, Download, Upload, FileText, Star, X, Trash2 } from "lucide-react";
+import { Loader2, Search, Download, Upload, FileText, Star, X, Trash2, ShieldCheck } from "lucide-react";
 import { format } from "date-fns";
 import AddCandidateToPipeline from "@/components/admin/AddCandidateToPipeline";
 import Navigation from "@/components/Navigation";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { BadgesRow, BadgeItem } from "@/components/hrready/BadgesRow";
+import { VerificationPanel } from "@/components/hrready/VerificationPanel";
+import { EditVerificationDrawer } from "@/components/hrready/EditVerificationDrawer";
 
 interface PipelineCandidate {
   id: string;
@@ -25,10 +28,19 @@ interface PipelineCandidate {
   staff_notes: string | null;
   moved_to_stage_at: string;
   cv_url: string | null;
+  compliance_score: number | null;
   profiles: {
     full_name: string;
     email: string;
     avatar_url: string | null;
+  };
+  verification?: {
+    hr_ready: boolean;
+    identity_status: string | null;
+    rtw_status: string | null;
+    logistics_status: string | null;
+    certifications: any;
+    compliance_score: number;
   };
 }
 
@@ -61,6 +73,10 @@ export default function StaffFunnel() {
   const [viewingResumeUrl, setViewingResumeUrl] = useState<string | null>(null);
   const [viewingCandidateName, setViewingCandidateName] = useState<string>("");
   const [deletingCandidateId, setDeletingCandidateId] = useState<string | null>(null);
+  const [hrReadyFilter, setHrReadyFilter] = useState<boolean | null>(null);
+  const [rtwFilter, setRtwFilter] = useState<string>("all");
+  const [editingVerification, setEditingVerification] = useState<{ candidateId: string; verification: any } | null>(null);
+  const [viewingVerification, setViewingVerification] = useState<{ candidateId: string; verification: any } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
@@ -83,7 +99,21 @@ export default function StaffFunnel() {
         .order("moved_to_stage_at", { ascending: false });
 
       if (error) throw error;
-      setCandidates(data || []);
+
+      // Fetch verification data for each candidate
+      const candidatesWithVerification = await Promise.all(
+        (data || []).map(async (candidate) => {
+          const { data: verification } = await supabase
+            .from("candidate_verifications")
+            .select("*")
+            .eq("candidate_id", candidate.candidate_id)
+            .single();
+          
+          return { ...candidate, verification };
+        })
+      );
+
+      setCandidates(candidatesWithVerification);
     } catch (error: any) {
       toast({
         title: "Error loading candidates",
@@ -290,12 +320,16 @@ export default function StaffFunnel() {
       !searchQuery ||
       candidate.profiles?.full_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       candidate.profiles?.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      candidate.desired_role?.toLowerCase().includes(searchQuery.toLowerCase());
+      candidate.desired_role?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      searchQuery.toLowerCase().includes('has:hr_ready') && candidate.verification?.hr_ready ||
+      searchQuery.toLowerCase().includes('rtw:green') && candidate.verification?.rtw_status === 'green';
 
     const matchesRole = roleFilter === "all" || candidate.desired_role === roleFilter;
     const matchesSource = sourceFilter === "all" || candidate.source === sourceFilter;
+    const matchesHrReady = hrReadyFilter === null || candidate.verification?.hr_ready === hrReadyFilter;
+    const matchesRtw = rtwFilter === "all" || candidate.verification?.rtw_status === rtwFilter;
 
-    return matchesSearch && matchesRole && matchesSource;
+    return matchesSearch && matchesRole && matchesSource && matchesHrReady && matchesRtw;
   });
 
   const getCandidatesByStage = (stage: string) => {
@@ -368,13 +402,35 @@ export default function StaffFunnel() {
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder="Search by name, email, or role..."
+                  placeholder="Search: name, has:hr_ready, rtw:green..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-9"
                 />
               </div>
             </div>
+            <Select value={hrReadyFilter === null ? "all" : hrReadyFilter.toString()} onValueChange={(v) => setHrReadyFilter(v === "all" ? null : v === "true")}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="HR-Ready Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Candidates</SelectItem>
+                <SelectItem value="true">✓ HR-Ready</SelectItem>
+                <SelectItem value="false">Not HR-Ready</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={rtwFilter} onValueChange={setRtwFilter}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="RTW Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All RTW</SelectItem>
+                <SelectItem value="green">Green</SelectItem>
+                <SelectItem value="amber">Amber</SelectItem>
+                <SelectItem value="red">Red</SelectItem>
+                <SelectItem value="grey">Not Checked</SelectItem>
+              </SelectContent>
+            </Select>
             <Select value={roleFilter} onValueChange={setRoleFilter}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="All roles" />
@@ -477,7 +533,44 @@ export default function StaffFunnel() {
                   <Badge variant="secondary">{stageCandidates.length}</Badge>
                 </div>
                 <div className="space-y-3">
-                  {stageCandidates.map((candidate) => (
+                  {stageCandidates.map((candidate) => {
+                    // Prepare badge items for HR verification display
+                    const badgeItems: BadgeItem[] = [
+                      {
+                        label: 'ID',
+                        status: (candidate.verification?.identity_status as any) || 'grey',
+                        tooltip: candidate.verification?.identity_status 
+                          ? `Identity: ${candidate.verification.identity_status}` 
+                          : 'Identity not verified'
+                      },
+                      {
+                        label: 'Cert',
+                        status: (() => {
+                          if (!candidate.verification?.certifications) return 'grey';
+                          const certs = JSON.parse(candidate.verification.certifications);
+                          if (certs.some((c: any) => c.status === 'green')) return 'green';
+                          if (certs.some((c: any) => c.status === 'amber')) return 'amber';
+                          return 'grey';
+                        })() as any,
+                        tooltip: 'Certifications status'
+                      },
+                      {
+                        label: 'RTW',
+                        status: (candidate.verification?.rtw_status as any) || 'grey',
+                        tooltip: candidate.verification?.rtw_status 
+                          ? `Right to Work: ${candidate.verification.rtw_status}` 
+                          : 'Right to work not verified'
+                      },
+                      {
+                        label: 'Logistics',
+                        status: (candidate.verification?.logistics_status as any) || 'grey',
+                        tooltip: candidate.verification?.logistics_status 
+                          ? `Logistics: ${candidate.verification.logistics_status}` 
+                          : 'Logistics not confirmed'
+                      }
+                    ];
+
+                    return (
                     <Card key={candidate.id} className="p-3 hover:shadow-md transition-shadow">
                       <div className="space-y-2">
                         <div className="flex items-start justify-between gap-2">
@@ -503,6 +596,18 @@ export default function StaffFunnel() {
                             </Button>
                           </div>
                         </div>
+                        
+                        {/* HR-Ready Badges Row */}
+                        <BadgesRow items={badgeItems} showHrReady={candidate.verification?.hr_ready} />
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-6 text-xs w-full"
+                          onClick={() => setEditingVerification({ candidateId: candidate.candidate_id, verification: candidate.verification })}
+                        >
+                          <ShieldCheck className="h-3 w-3 mr-1" />
+                          Edit Verification
+                        </Button>
                         {candidate.is_priority && (
                           <Badge 
                             variant="destructive" 
@@ -571,15 +676,30 @@ export default function StaffFunnel() {
                             ))}
                           </SelectContent>
                         </Select>
+                        {stage.name === 'verified' && candidate.verification?.hr_ready && (
+                          <div className="text-xs text-primary font-medium">✅ Ready to Present</div>
+                        )}
                       </div>
                     </Card>
-                  ))}
+                  );
+                  })}
                 </div>
               </div>
             );
           })}
           </div>
         </div>
+
+        {/* Edit Verification Drawer */}
+        {editingVerification && (
+          <EditVerificationDrawer
+            open={!!editingVerification}
+            onOpenChange={(open) => !open && setEditingVerification(null)}
+            candidateId={editingVerification.candidateId}
+            verification={editingVerification.verification}
+            onSuccess={fetchCandidates}
+          />
+        )}
       </div>
     </div>
     </>
