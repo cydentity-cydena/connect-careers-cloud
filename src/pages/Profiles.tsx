@@ -208,11 +208,11 @@ const Profiles = () => {
             </p>
             <div className="space-y-4">
               <p className="text-sm text-muted-foreground">
-                Are you an employer looking to find talent?
+                Are you an employer looking to find talent? Contact us to learn more.
               </p>
-              <Button onClick={() => navigate('/pricing')}>
+              {/* <Button onClick={() => navigate('/pricing')}>
                 View Employer Plans
-              </Button>
+              </Button> */}
             </div>
           </div>
         ) : (

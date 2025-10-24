@@ -39,9 +39,10 @@ export const SubscriptionStatus = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Link to="/pricing">
+          {/* <Link to="/pricing">
             <Button className="w-full">View Pricing Plans</Button>
-          </Link>
+          </Link> */}
+          <p className="text-sm text-muted-foreground">Contact support for subscription options.</p>
         </CardContent>
       </Card>
     );
@@ -75,17 +76,17 @@ export const SubscriptionStatus = () => {
         <div className="flex gap-2">
           <Button 
             variant="outline" 
-            className="flex-1"
+            className="w-full"
             onClick={openCustomerPortal}
           >
             <CreditCard className="mr-2 h-4 w-4" />
             Manage Subscription
           </Button>
-          <Link to="/pricing" className="flex-1">
+          {/* <Link to="/pricing" className="flex-1">
             <Button variant="outline" className="w-full">
               Change Plan
             </Button>
-          </Link>
+          </Link> */}
         </div>
       </CardContent>
     </Card>
