@@ -58,22 +58,24 @@ const Profiles = () => {
       const { data: roleData, error } = await supabase
         .from('user_roles')
         .select('role')
-        .eq('user_id', user.id)
-        .single();
+        .eq('user_id', user.id);
 
-      if (error || !roleData) {
+      if (error || !roleData || roleData.length === 0) {
         setUserRole('unauthorized');
         setCheckingAccess(false);
         return;
       }
 
+      const roles = roleData.map(r => r.role);
+      
       // Employers, recruiters, and admins can browse all profiles
       // Candidates can only see their own profile for preview
-      if (['employer', 'recruiter', 'admin'].includes(roleData.role)) {
-        setUserRole(roleData.role);
+      if (roles.some(role => ['employer', 'recruiter', 'admin'].includes(role))) {
+        const primaryRole = roles.find(role => ['admin', 'employer', 'recruiter'].includes(role));
+        setUserRole(primaryRole || 'employer');
         setCheckingAccess(false);
         fetchCandidates();
-      } else if (roleData.role === 'candidate') {
+      } else if (roles.includes('candidate')) {
         setUserRole('candidate');
         setCheckingAccess(false);
         // Redirect candidates directly to their own profile for preview
