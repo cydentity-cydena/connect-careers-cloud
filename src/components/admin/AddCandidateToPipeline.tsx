@@ -6,9 +6,10 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { UserPlus, Search } from "lucide-react";
+import { UserPlus, Search, Check } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -269,23 +270,36 @@ export default function AddCandidateToPipeline({ onSuccess }: AddCandidateToPipe
                     <div
                       key={candidate.id}
                       onClick={() => setSelectedCandidate(candidate.id)}
-                      className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-colors ${
+                      className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all ${
                         selectedCandidate === candidate.id
-                          ? "bg-primary/10 border-2 border-primary"
-                          : "bg-muted/50 hover:bg-muted border-2 border-transparent"
+                          ? "bg-primary text-primary-foreground shadow-lg border-2 border-primary ring-2 ring-primary/20"
+                          : "bg-card hover:bg-muted/80 border-2 border-border"
                       }`}
                     >
-                      <Avatar>
-                        <AvatarImage src={candidate.avatar_url || undefined} />
-                        <AvatarFallback>
-                          {candidate.full_name?.split(" ").map(n => n[0]).join("").toUpperCase() || "?"}
-                        </AvatarFallback>
-                      </Avatar>
+                      <div className="relative">
+                        <Avatar className={selectedCandidate === candidate.id ? "ring-2 ring-primary-foreground" : ""}>
+                          <AvatarImage src={candidate.avatar_url || undefined} />
+                          <AvatarFallback>
+                            {candidate.full_name?.split(" ").map(n => n[0]).join("").toUpperCase() || "?"}
+                          </AvatarFallback>
+                        </Avatar>
+                        {selectedCandidate === candidate.id && (
+                          <div className="absolute -top-1 -right-1 h-5 w-5 bg-green-500 rounded-full flex items-center justify-center">
+                            <Check className="h-3 w-3 text-white" />
+                          </div>
+                        )}
+                      </div>
                       <div className="flex-1 min-w-0">
-                        <div className="font-medium truncate">{candidate.full_name || "Unknown"}</div>
-                        <div className="text-sm text-muted-foreground truncate">{candidate.email}</div>
+                        <div className={`font-medium truncate ${selectedCandidate === candidate.id ? "text-primary-foreground" : ""}`}>
+                          {candidate.full_name || "Unknown"}
+                        </div>
+                        <div className={`text-sm truncate ${selectedCandidate === candidate.id ? "text-primary-foreground/80" : "text-muted-foreground"}`}>
+                          {candidate.email}
+                        </div>
                         {candidate.desired_job_title && (
-                          <div className="text-xs text-muted-foreground">{candidate.desired_job_title}</div>
+                          <div className={`text-xs truncate ${selectedCandidate === candidate.id ? "text-primary-foreground/70" : "text-muted-foreground"}`}>
+                            {candidate.desired_job_title}
+                          </div>
                         )}
                       </div>
                     </div>
@@ -294,8 +308,16 @@ export default function AddCandidateToPipeline({ onSuccess }: AddCandidateToPipe
               )}
             </ScrollArea>
 
+            {!selectedCandidate && (
+              <div className="text-center py-4 text-sm text-muted-foreground bg-muted/50 rounded-md border border-dashed">
+                Select a candidate above to continue
+              </div>
+            )}
+
             {selectedCandidate && (
               <>
+                <Separator className="my-4" />
+                <div className="space-y-4 bg-muted/30 p-4 rounded-lg border"  >
                 <div className="space-y-2">
                   <Label htmlFor="stage-existing">Initial Stage</Label>
                   <Select value={formData.stage} onValueChange={(value) => setFormData({ ...formData, stage: value })}>
@@ -385,6 +407,7 @@ export default function AddCandidateToPipeline({ onSuccess }: AddCandidateToPipe
                   >
                     {loading ? "Adding..." : "Add to Pipeline"}
                   </Button>
+                </div>
                 </div>
               </>
             )}
