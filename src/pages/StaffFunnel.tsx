@@ -171,8 +171,7 @@ export default function StaffFunnel() {
       <div className="max-w-[1600px] mx-auto space-y-6">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold">Staff Funnel Dashboard</h1>
-          <p className="text-muted-foreground">Curate the "Founding 20" cohort</p>
+          <h1 className="text-3xl font-bold">Funnel Dashboard</h1>
         </div>
 
         {/* Stats */}
