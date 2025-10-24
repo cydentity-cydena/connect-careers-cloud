@@ -6,11 +6,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Search, Download, Upload, FileText, Star, X } from "lucide-react";
+import { Loader2, Search, Download, Upload, FileText, Star, X, Trash2 } from "lucide-react";
 import { format } from "date-fns";
 import AddCandidateToPipeline from "@/components/admin/AddCandidateToPipeline";
 import Navigation from "@/components/Navigation";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 
 interface PipelineCandidate {
   id: string;
@@ -43,6 +44,7 @@ const STAGES: Stage[] = [
   { name: "needs_info", position: 3, color: "bg-yellow-500/20" },
   { name: "verified", position: 4, color: "bg-green-500/20" },
   { name: "published", position: 5, color: "bg-purple-500/20" },
+  { name: "rejected", position: 6, color: "bg-red-500/20" },
 ];
 
 const formatStageName = (stage: string) => {
@@ -58,6 +60,7 @@ export default function StaffFunnel() {
   const [uploadingCandidateId, setUploadingCandidateId] = useState<string | null>(null);
   const [viewingResumeUrl, setViewingResumeUrl] = useState<string | null>(null);
   const [viewingCandidateName, setViewingCandidateName] = useState<string>("");
+  const [deletingCandidateId, setDeletingCandidateId] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
@@ -257,6 +260,31 @@ export default function StaffFunnel() {
     }
   };
 
+  const handleDeleteCandidate = async (candidateId: string) => {
+    try {
+      const { error } = await supabase
+        .from("candidate_pipeline")
+        .delete()
+        .eq("id", candidateId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Candidate deleted",
+        description: "Candidate removed from pipeline",
+      });
+
+      fetchCandidates();
+      setDeletingCandidateId(null);
+    } catch (error: any) {
+      toast({
+        title: "Error deleting candidate",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
   const filteredCandidates = candidates.filter((candidate) => {
     const matchesSearch =
       !searchQuery ||
@@ -321,7 +349,7 @@ export default function StaffFunnel() {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-4">
           {STAGES.map((stage) => {
             const count = getCandidatesByStage(stage.name).length;
             return (
@@ -416,9 +444,30 @@ export default function StaffFunnel() {
           </DialogContent>
         </Dialog>
 
+        {/* Delete Confirmation Dialog */}
+        <AlertDialog open={!!deletingCandidateId} onOpenChange={(open) => !open && setDeletingCandidateId(null)}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Delete Candidate</AlertDialogTitle>
+              <AlertDialogDescription>
+                Are you sure you want to permanently delete this candidate from the pipeline? This action cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={() => deletingCandidateId && handleDeleteCandidate(deletingCandidateId)}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              >
+                Delete
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
         {/* Kanban Board */}
         <div className="overflow-x-auto pb-4 -mx-3 sm:mx-0">
-          <div className="inline-flex lg:grid lg:grid-cols-5 gap-3 sm:gap-4 min-w-full px-3 sm:px-0">
+          <div className="inline-flex lg:grid lg:grid-cols-6 gap-3 sm:gap-4 min-w-full px-3 sm:px-0">
           {STAGES.map((stage) => {
             const stageCandidates = getCandidatesByStage(stage.name);
             return (
@@ -432,11 +481,11 @@ export default function StaffFunnel() {
                     <Card key={candidate.id} className="p-3 hover:shadow-md transition-shadow">
                       <div className="space-y-2">
                         <div className="flex items-start justify-between gap-2">
-                          <div className="flex items-center gap-2 flex-1 min-w-0">
+                          <div className="flex items-center gap-1 flex-1 min-w-0">
                             <Button
                               variant={candidate.is_founding_20 ? "default" : "ghost"}
                               size="sm"
-                              className="h-6 w-6 p-0"
+                              className="h-6 w-6 p-0 shrink-0"
                               onClick={() => toggleChosen(candidate.id, candidate.is_founding_20)}
                             >
                               <Star className={`h-3 w-3 ${candidate.is_founding_20 ? 'fill-current' : ''}`} />
@@ -444,17 +493,25 @@ export default function StaffFunnel() {
                             <div className="font-medium text-sm truncate">
                               {candidate.profiles?.full_name || "Unknown"}
                             </div>
-                          </div>
-                          {candidate.is_priority && (
-                            <Badge 
-                              variant="destructive" 
-                              className="text-xs shrink-0 cursor-pointer hover:opacity-80 transition-opacity"
-                              onClick={() => togglePriority(candidate.id, candidate.is_priority)}
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-6 w-6 p-0 shrink-0 ml-auto text-destructive hover:text-destructive hover:bg-destructive/10"
+                              onClick={() => setDeletingCandidateId(candidate.id)}
                             >
-                              Priority
-                            </Badge>
-                          )}
+                              <Trash2 className="h-3 w-3" />
+                            </Button>
+                          </div>
                         </div>
+                        {candidate.is_priority && (
+                          <Badge 
+                            variant="destructive" 
+                            className="text-xs cursor-pointer hover:opacity-80 transition-opacity"
+                            onClick={() => togglePriority(candidate.id, candidate.is_priority)}
+                          >
+                            Priority
+                          </Badge>
+                        )}
                         {candidate.desired_role && (
                           <Badge variant="outline" className="text-xs">
                             {candidate.desired_role}
