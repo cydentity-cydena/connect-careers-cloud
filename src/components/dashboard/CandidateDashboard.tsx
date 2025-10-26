@@ -34,6 +34,11 @@ const CandidateDashboard = () => {
       setUserId(user.id);
       loadXpData(user.id);
       loadUserProfile(user.id);
+      
+      // Backfill achievements on dashboard load (runs silently)
+      supabase.functions.invoke('backfill-achievements').catch(err => 
+        console.log('Achievement backfill skipped:', err.message)
+      );
     }
   };
 

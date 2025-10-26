@@ -72,6 +72,15 @@ const Skills = () => {
           }
         });
       }
+      
+      // Trigger achievement check
+      const totalSkills = existing.size + newSkillIds.length;
+      await supabase.rpc('check_and_award_achievements', {
+        p_user_id: userId,
+        p_category: 'skills',
+        p_current_count: totalSkills
+      });
+      
       toast.success(`✅ ${newSkillIds.length} skill(s) added — +${totalPoints} points!`);
     } catch (e) {
       toast.success('Skills added');

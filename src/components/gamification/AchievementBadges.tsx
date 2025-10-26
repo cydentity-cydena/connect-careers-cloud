@@ -24,6 +24,27 @@ export const AchievementBadges = ({ userId }: AchievementBadgesProps) => {
 
   useEffect(() => {
     loadAchievements();
+    
+    // Set up real-time subscription for new achievements
+    const channel = supabase
+      .channel('user_achievements_changes')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'user_achievements',
+          filter: `user_id=eq.${userId}`
+        },
+        () => {
+          loadAchievements();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [userId]);
 
   const loadAchievements = async () => {

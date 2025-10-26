@@ -112,39 +112,14 @@ export const ProfileStrengthMeter = ({ userId }: ProfileStrengthMeterProps) => {
 
   const checkAndAwardProfileAchievements = async (score: number) => {
     try {
-      // Get profile achievements
-      const { data: achievements } = await supabase
-        .from('achievements')
-        .select('id, requirement_value')
-        .eq('category', 'profile');
-
-      if (!achievements) return;
-
-      // Check each achievement
-      for (const achievement of achievements) {
-        if (score >= achievement.requirement_value) {
-          // Check if user already has this achievement
-          const { data: existing } = await supabase
-            .from('user_achievements')
-            .select('id')
-            .eq('user_id', userId)
-            .eq('achievement_id', achievement.id)
-            .maybeSingle();
-
-          // Award if not already earned
-          if (!existing) {
-            await supabase
-              .from('user_achievements')
-              .insert({
-                user_id: userId,
-                achievement_id: achievement.id,
-                earned_at: new Date().toISOString()
-              });
-          }
-        }
-      }
+      // Use the database function to check and award achievements
+      await supabase.rpc('check_and_award_achievements', {
+        p_user_id: userId,
+        p_category: 'profile',
+        p_current_count: score
+      });
     } catch (error) {
-      console.error('Error awarding achievements:', error);
+      console.error('Error checking profile achievements:', error);
     }
   };
 
