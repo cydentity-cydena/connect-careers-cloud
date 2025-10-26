@@ -20,6 +20,7 @@ import { MessageSquare, MoreVertical, Calendar, Briefcase, GripVertical, Eye, Ma
 import { formatDistanceToNow } from "date-fns";
 import { HireConfirmationDialog } from "./HireConfirmationDialog";
 import { SendMessageDialog } from "@/components/messaging/SendMessageDialog";
+import { BadgesRow, BadgeItem, BadgeStatus } from "@/components/hrready/BadgesRow";
 
 type PipelineStage = "applied" | "screening" | "interview" | "offer" | "rejected" | "hired";
 
@@ -81,18 +82,55 @@ export const ApplicationCard = ({ application, onStageChange, onToggleStar, onAd
       .toUpperCase();
   };
 
-  const getVerificationColor = (status: string | null) => {
-    if (!status) return "text-red-500";
-    if (status === "verified") return "text-green-500";
-    if (status === "pending") return "text-amber-500";
-    return "text-red-500";
+  const getVerificationStatus = (status: string | null): BadgeStatus => {
+    if (!status) return "red";
+    if (status === "verified") return "green";
+    if (status === "pending") return "amber";
+    return "red";
   };
 
-  const getVerificationIcon = (status: string | null) => {
-    if (!status) return XCircle;
-    if (status === "verified") return CheckCircle;
-    if (status === "pending") return AlertCircle;
-    return XCircle;
+  const getVerificationBadges = (): BadgeItem[] => {
+    const badges: BadgeItem[] = [];
+    
+    // ID Badge
+    badges.push({
+      label: "ID",
+      status: getVerificationStatus(application.candidate_verifications?.identity_status || null),
+      tooltip: application.candidate_verifications?.identity_status 
+        ? `Identity: ${application.candidate_verifications.identity_status}` 
+        : "Identity: Not verified"
+    });
+    
+    // RTW Badge
+    badges.push({
+      label: "RTW",
+      status: getVerificationStatus(application.candidate_verifications?.rtw_status || null),
+      tooltip: application.candidate_verifications?.rtw_status 
+        ? `Right to Work: ${application.candidate_verifications.rtw_status}` 
+        : "Right to Work: Not verified"
+    });
+    
+    // Certifications Badge
+    if (application.candidate_verifications?.certifications) {
+      badges.push({
+        label: "Cert",
+        status: "green",
+        tooltip: "Has certifications"
+      });
+    }
+    
+    // Logistics Badge (if available)
+    if (application.candidate_verifications?.logistics_status) {
+      badges.push({
+        label: "Logistics",
+        status: getVerificationStatus(application.candidate_verifications.logistics_status),
+        tooltip: application.candidate_verifications.logistics_location 
+          ? `Location: ${application.candidate_verifications.logistics_location}`
+          : "Logistics verified"
+      });
+    }
+    
+    return badges;
   };
 
   return (
@@ -179,47 +217,11 @@ export const ApplicationCard = ({ application, onStageChange, onToggleStar, onAd
             </DropdownMenu>
           </div>
 
-          {/* Verification Status Badges - Always show with defaults */}
-          <div className="flex flex-wrap gap-1">
-            {/* HR Ready Badge */}
-            {application.candidate_verifications?.hr_ready && (
-              <Badge variant="default" className="text-xs px-1.5 py-0.5 bg-green-500">
-                <CheckCircle className="h-3 w-3 mr-1" />
-                HR Ready
-              </Badge>
-            )}
-            
-            {/* Identity Status */}
-            <Badge variant="outline" className="text-xs px-1.5 py-0.5">
-              <Shield className={`h-3 w-3 mr-1 ${getVerificationColor(application.candidate_verifications?.identity_status || null)}`} />
-              ID
-            </Badge>
-            
-            {/* RTW Status */}
-            <Badge variant="outline" className="text-xs px-1.5 py-0.5">
-              {(() => {
-                const Icon = getVerificationIcon(application.candidate_verifications?.rtw_status || null);
-                return <Icon className={`h-3 w-3 mr-1 ${getVerificationColor(application.candidate_verifications?.rtw_status || null)}`} />;
-              })()}
-              RTW
-            </Badge>
-            
-            {/* Certifications */}
-            {application.candidate_verifications?.certifications && (
-              <Badge variant="outline" className="text-xs px-1.5 py-0.5">
-                <Award className="h-3 w-3 mr-1 text-blue-500" />
-                Cert
-              </Badge>
-            )}
-            
-            {/* Logistics Status */}
-            {application.candidate_verifications?.logistics_status && (
-              <Badge variant="outline" className="text-xs px-1.5 py-0.5">
-                <MapPin className={`h-3 w-3 mr-1 ${getVerificationColor(application.candidate_verifications.logistics_status)}`} />
-                Logistics
-              </Badge>
-            )}
-          </div>
+          {/* Verification Status Badges */}
+          <BadgesRow 
+            items={getVerificationBadges()} 
+            showHrReady={application.candidate_verifications?.hr_ready || false}
+          />
 
           <div className="space-y-2">
             <div className="flex flex-wrap gap-2 items-center">
