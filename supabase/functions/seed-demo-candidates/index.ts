@@ -11,7 +11,7 @@ function generateCandidate(index: number) {
   const firstNames = ["John", "Jane", "Alice", "Bob", "Carol", "David", "Emma", "Frank", "Grace", "Henry", "Iris", "Jack", "Kate", "Leo", "Maya", "Nick", "Olivia", "Paul", "Quinn", "Rachel"];
   const lastNames = ["Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis", "Rodriguez", "Martinez", "Hernandez", "Lopez", "Gonzalez", "Wilson", "Anderson", "Thomas", "Taylor", "Moore", "Jackson", "Martin"];
   const titles = ["Security Analyst", "Penetration Tester", "SOC Analyst", "Security Engineer", "Threat Hunter", "Incident Responder", "Security Consultant", "Cloud Security Engineer", "Application Security Engineer", "Forensics Analyst"];
-  const locations = ["Washington DC", "San Francisco CA", "New York NY", "Austin TX", "Seattle WA", "Boston MA", "Chicago IL", "Los Angeles CA", "Denver CO", "Atlanta GA"];
+  const locations = ["London", "Manchester", "Birmingham", "Leeds", "Edinburgh", "Bristol", "Glasgow", "Cardiff", "Liverpool", "Newcastle"];
   const clearances = [null, "Secret", "Top Secret"];
   const certs = [
     { name: "CISSP", issuer: "ISC2" },
@@ -103,14 +103,14 @@ function generateEmployer(index: number) {
     email: `${firstName.toLowerCase()}.${lastName.toLowerCase()}.employer${index}@cydena.demo`,
     password: "Demo123!",
     full_name: `${firstName} ${lastName}`,
-    location: `City ${index}`,
+    location: `${locations[index % locations.length]}`,
     bio: `HR Manager at ${companyName}`,
     company: {
       name: companyName,
       description: `${companyName} is a leading provider of cybersecurity solutions and services in the ${industry.toLowerCase()} sector.`,
       industry: industry,
       size: size,
-      location: `City ${index}, State`,
+      location: `${companyBase} Office, UK`,
       website: `https://www.${companyBase.toLowerCase()}.com`
     }
   };
@@ -128,7 +128,7 @@ function generateRecruiter(index: number) {
     email: `${firstName.toLowerCase()}.${lastName.toLowerCase()}.recruiter${index}@cydena.demo`,
     password: "Demo123!",
     full_name: `${firstName} ${lastName}`,
-    location: `Metro ${index}`,
+    location: `${locations[index % locations.length]}`,
     bio: `Professional recruiter specializing in cybersecurity talent acquisition.`
   };
 }
