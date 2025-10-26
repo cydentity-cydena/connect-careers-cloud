@@ -285,7 +285,7 @@ const RecruiterClientsList = ({ recruiterId }: RecruiterClientsListProps) => {
                 id="edit-contact-phone"
                 value={formData.contact_phone}
                 onChange={(e) => setFormData({ ...formData, contact_phone: e.target.value })}
-                placeholder="+1 (555) 123-4567"
+                placeholder="+44 20 7123 4567"
               />
             </div>
 

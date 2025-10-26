@@ -391,7 +391,7 @@ const Profile = () => {
                   type="tel"
                   value={phone} 
                   onChange={(e) => setPhone(e.target.value)}
-                  placeholder="+44 7700 900000 or +1 (555) 123-4567"
+                  placeholder="+44 7700 900123"
                 />
                 
                 <Label htmlFor="username">

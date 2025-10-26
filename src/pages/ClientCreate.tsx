@@ -119,7 +119,7 @@ const ClientCreate = () => {
               <Label htmlFor="contact_phone">Contact Phone</Label>
               <Input
                 id="contact_phone"
-                placeholder="+1 (555) 123-4567"
+                placeholder="+44 20 7123 4567"
                 value={formData.contact_phone}
                 onChange={(e) => setFormData({ ...formData, contact_phone: e.target.value })}
               />
