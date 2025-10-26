@@ -264,9 +264,18 @@ export const ApplicationPipeline = () => {
           .in('candidate_id', candidateIds),
       ]);
 
-      if (profilesRes.error) throw profilesRes.error;
-      if (candidateProfilesRes.error) throw candidateProfilesRes.error;
-      if (verificationsRes.error) throw verificationsRes.error;
+      if (profilesRes.error) {
+        console.error('Profiles query error:', profilesRes.error);
+        throw profilesRes.error;
+      }
+      if (candidateProfilesRes.error) {
+        console.error('Candidate profiles query error:', candidateProfilesRes.error);
+        throw candidateProfilesRes.error;
+      }
+      if (verificationsRes.error) {
+        console.error('Verifications query error (talent pool):', verificationsRes.error);
+        // Continue without verifications instead of failing completely
+      }
 
       const profiles = profilesRes.data || [];
       const candidateProfiles = candidateProfilesRes.data || [];
@@ -349,7 +358,10 @@ export const ApplicationPipeline = () => {
         .order('applied_at', { ascending: false });
 
       const { data, error } = await query;
-      if (error) throw error;
+      if (error) {
+        console.error('Applications query error:', error);
+        throw error;
+      }
 
       // Add is_starred if doesn't exist and fetch verifications
       const applications = (data as any[])?.map(app => ({
@@ -357,42 +369,27 @@ export const ApplicationPipeline = () => {
         is_starred: app.is_starred ?? false
       })) || [];
 
-      if (selectedJob) {
-        // Fetch verifications for filtered candidates
-        const candidateIds = applications.map((app: any) => app.candidate_id);
-        if (candidateIds.length > 0) {
-          const { data: verifications } = await supabase
-            .from('candidate_verifications')
-            .select('*')
-            .in('candidate_id', candidateIds);
-          
-          const verificationMap = new Map(verifications?.map(v => [v.candidate_id, v]) || []);
-          const appsWithVerifications = applications.map((app: any) => ({
-            ...app,
-            candidate_verifications: verificationMap.get(app.candidate_id) || null
-          }));
-          setApplications(appsWithVerifications as any);
-        } else {
-          setApplications(applications as any);
+      // Fetch verifications for all candidates
+      const candidateIds = applications.map((app: any) => app.candidate_id);
+      if (candidateIds.length > 0) {
+        const { data: verifications, error: verError } = await supabase
+          .from('candidate_verifications')
+          .select('*')
+          .in('candidate_id', candidateIds);
+        
+        if (verError) {
+          console.error('Verifications query error:', verError);
+          // Continue without verifications instead of failing completely
         }
+        
+        const verificationMap = new Map(verifications?.map(v => [v.candidate_id, v]) || []);
+        const appsWithVerifications = applications.map((app: any) => ({
+          ...app,
+          candidate_verifications: verificationMap.get(app.candidate_id) || null
+        }));
+        setApplications(appsWithVerifications as any);
       } else {
-        // Fetch verifications for all candidates
-        const candidateIds = applications.map((app: any) => app.candidate_id);
-        if (candidateIds.length > 0) {
-          const { data: verifications } = await supabase
-            .from('candidate_verifications')
-            .select('*')
-            .in('candidate_id', candidateIds);
-          
-          const verificationMap = new Map(verifications?.map(v => [v.candidate_id, v]) || []);
-          const appsWithVerifications = applications.map((app: any) => ({
-            ...app,
-            candidate_verifications: verificationMap.get(app.candidate_id) || null
-          }));
-          setApplications(appsWithVerifications as any);
-        } else {
-          setApplications(applications as any);
-        }
+        setApplications(applications as any);
       }
     } catch (error) {
       console.error('Error fetching applications:', error);
@@ -903,7 +900,6 @@ export const ApplicationPipeline = () => {
                         
                         {/* Stage Selection for Talent Pool - excluding "Applied" */}
                         <Select
-                          value="screening"
                           onValueChange={(value) => {
                             const targetStage = value as PipelineStage;
                             if (!selectedJob) {
