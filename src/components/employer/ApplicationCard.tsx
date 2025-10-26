@@ -246,26 +246,26 @@ export const ApplicationCard = ({ application, onStageChange, onToggleStar, onAd
             <Button
               variant="outline"
               size="sm"
-              className="flex-1 h-9 text-xs px-2 min-w-0"
+              className="flex-1 h-9 text-xs px-2"
               onClick={(e) => {
                 e.stopPropagation();
                 window.location.href = `/profiles/${application.candidate_id}`;
               }}
             >
-              <Eye className="h-3.5 w-3.5 mr-1" />
-              <span className="hidden sm:inline truncate">View</span>
+              <Eye className="h-3.5 w-3.5 sm:mr-1" />
+              <span className="hidden sm:inline">View</span>
             </Button>
             <Button
               variant="default"
               size="sm"
-              className="flex-1 h-9 text-xs px-2 min-w-0"
+              className="flex-1 h-9 text-xs px-2"
               onClick={(e) => {
                 e.stopPropagation();
                 setShowMessageDialog(true);
               }}
             >
-              <MessageSquare className="h-3.5 w-3.5 mr-1" />
-              <span className="hidden sm:inline truncate">Message</span>
+              <MessageSquare className="h-3.5 w-3.5 sm:mr-1" />
+              <span className="hidden sm:inline">Message</span>
             </Button>
           </div>
         </CardContent>
