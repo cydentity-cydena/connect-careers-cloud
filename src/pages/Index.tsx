@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Shield, Users, Briefcase, TrendingUp, ArrowRight, Clock, DollarSign, Target, CheckCircle } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Shield, Users, Briefcase, TrendingUp, ArrowRight, Clock, DollarSign, Target, CheckCircle, GraduationCap, Eye } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import SEO from "@/components/SEO";
 import Schema from "@/components/Schema";
@@ -284,25 +285,94 @@ const Index = () => {
       </section>
 
       {/* Why Cybersecurity Professionals Choose Cydena */}
-      <section className="py-16 md:py-24">
+      <section className="py-16 md:py-24 bg-gradient-to-b from-background to-muted/20">
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-center">
-              Why Cybersecurity Professionals Choose Cydena
-            </h2>
-            <div className="prose prose-lg max-w-none text-muted-foreground space-y-6">
-              <p>
-                Traditional cybersecurity job boards and recruitment agencies often create barriers between talented professionals and the opportunities they deserve. Cydena removes these obstacles by providing a direct connection between cybersecurity specialists and employers who value their skills.
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-5xl font-bold mb-4">
+                Why Cybersecurity Professionals Choose Cydena
+              </h2>
+              <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
+                Traditional cybersecurity job boards create barriers. We remove them by connecting specialists directly with employers who value their skills.
               </p>
-              <p>
-                Our platform recognizes that cybersecurity is a skills-based field where certifications, practical experience, and continuous learning matter more than traditional credentials. Whether you're a penetration tester with OSCP certification, a security analyst with CompTIA Security+, or a CISO with years of experience, Cydena helps you showcase your expertise to employers who understand its value.
-              </p>
-              <p>
-                Entry-level professionals and career transitioners benefit from our partnerships with leading training providers like Cydentity Academy and LetsDefend, gaining access to certification paths that open doors to cybersecurity careers. Meanwhile, experienced professionals appreciate our transparent application process, real-time status updates, and direct communication with decision-makers.
-              </p>
-              <p>
-                Unlike traditional recruitment platforms that charge hefty fees to employers (often 15-30% of first-year salary), Cydena's subscription model allows companies to invest their budget in competitive salaries and benefits for candidates, not middlemen. This creates a healthier job market where talent is rewarded appropriately.
-              </p>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-6 mb-12">
+              {/* Skills-Based Recognition */}
+              <Card className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/50 bg-card/50 backdrop-blur">
+                <CardContent className="p-6">
+                  <div className="flex items-start gap-4">
+                    <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <Shield className="h-6 w-6 text-primary" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors">
+                        Skills-Based Recognition
+                      </h3>
+                      <p className="text-muted-foreground leading-relaxed">
+                        Our platform recognizes that cybersecurity is a skills-based field where certifications, practical experience, and continuous learning matter more than traditional credentials. Whether you're a penetration tester with OSCP certification, a security analyst with CompTIA Security+, or a CISO with years of experience, showcase your expertise to employers who understand its value.
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Career Growth Partnerships */}
+              <Card className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/50 bg-card/50 backdrop-blur">
+                <CardContent className="p-6">
+                  <div className="flex items-start gap-4">
+                    <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-green-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <GraduationCap className="h-6 w-6 text-green-600 dark:text-green-400" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors">
+                        Career Growth Partnerships
+                      </h3>
+                      <p className="text-muted-foreground leading-relaxed">
+                        Entry-level professionals and career transitioners benefit from our partnerships with leading training providers like Cydentity Academy and LetsDefend, gaining access to certification paths that open doors to cybersecurity careers.
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Transparent Process */}
+              <Card className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/50 bg-card/50 backdrop-blur">
+                <CardContent className="p-6">
+                  <div className="flex items-start gap-4">
+                    <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-blue-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <Eye className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors">
+                        Transparent Application Process
+                      </h3>
+                      <p className="text-muted-foreground leading-relaxed">
+                        Experienced professionals appreciate our transparent application process, real-time status updates, and direct communication with decision-makers. No more black holes or endless waiting.
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Fair Pricing Model */}
+              <Card className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/50 bg-card/50 backdrop-blur">
+                <CardContent className="p-6">
+                  <div className="flex items-start gap-4">
+                    <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-amber-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <DollarSign className="h-6 w-6 text-amber-600 dark:text-amber-400" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors">
+                        Fair Pricing Model
+                      </h3>
+                      <p className="text-muted-foreground leading-relaxed">
+                        Unlike traditional recruitment platforms that charge hefty fees (often 15-30% of first-year salary), our subscription model allows companies to invest their budget in competitive salaries and benefits for candidates, not middlemen. This creates a healthier job market where talent is rewarded appropriately.
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </div>
