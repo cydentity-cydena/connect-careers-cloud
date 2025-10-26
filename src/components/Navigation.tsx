@@ -19,6 +19,7 @@ const Navigation = () => {
   const [user, setUser] = useState<any>(null);
   const [userRoles, setUserRoles] = useState<string[]>([]);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchUserRoles = async (userId: string) => {
@@ -28,6 +29,7 @@ const Navigation = () => {
         .eq('user_id', userId);
       
       setUserRoles(data?.map(r => r.role) || []);
+      setIsLoading(false);
     };
 
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -36,15 +38,18 @@ const Navigation = () => {
         fetchUserRoles(session.user.id);
       } else {
         setUserRoles([]);
+        setIsLoading(false);
       }
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user);
       if (session?.user) {
+        setIsLoading(true);
         fetchUserRoles(session.user.id);
       } else {
         setUserRoles([]);
+        setIsLoading(false);
       }
     });
 
@@ -103,7 +108,7 @@ const Navigation = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-4 xl:gap-6">
-            {navLinks.map((link) => (
+            {!isLoading && navLinks.map((link) => (
               <Link
                 key={link.to}
                 to={link.to}
@@ -177,7 +182,7 @@ const Navigation = () => {
                 <div className="flex flex-col gap-6 mt-8">
                   {/* Mobile Navigation Links */}
                   <div className="flex flex-col gap-4">
-                    {navLinks.map((link) => (
+                    {!isLoading && navLinks.map((link) => (
                       <Link
                         key={link.to}
                         to={link.to}

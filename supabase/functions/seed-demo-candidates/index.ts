@@ -6,12 +6,14 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// Shared location data for UK cities
+const locations = ["London", "Manchester", "Birmingham", "Leeds", "Edinburgh", "Bristol", "Glasgow", "Cardiff", "Liverpool", "Newcastle"];
+
 // Helper function to generate random candidate data
 function generateCandidate(index: number) {
   const firstNames = ["John", "Jane", "Alice", "Bob", "Carol", "David", "Emma", "Frank", "Grace", "Henry", "Iris", "Jack", "Kate", "Leo", "Maya", "Nick", "Olivia", "Paul", "Quinn", "Rachel"];
   const lastNames = ["Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis", "Rodriguez", "Martinez", "Hernandez", "Lopez", "Gonzalez", "Wilson", "Anderson", "Thomas", "Taylor", "Moore", "Jackson", "Martin"];
   const titles = ["Security Analyst", "Penetration Tester", "SOC Analyst", "Security Engineer", "Threat Hunter", "Incident Responder", "Security Consultant", "Cloud Security Engineer", "Application Security Engineer", "Forensics Analyst"];
-  const locations = ["London", "Manchester", "Birmingham", "Leeds", "Edinburgh", "Bristol", "Glasgow", "Cardiff", "Liverpool", "Newcastle"];
   const clearances = [null, "Secret", "Top Secret"];
   const certs = [
     { name: "CISSP", issuer: "ISC2" },
