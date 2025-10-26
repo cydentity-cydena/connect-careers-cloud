@@ -271,7 +271,7 @@ export const ApplicationCard = ({ application, onStageChange, onToggleStar, onAd
             <SelectTrigger className="h-9 text-xs w-full">
               <SelectValue placeholder="Change stage..." />
             </SelectTrigger>
-            <SelectContent className="bg-popover z-50">
+            <SelectContent className="bg-popover z-[100]">
               {stages.map((stage) => (
                 <SelectItem key={stage.value} value={stage.value}>
                   {stage.label}

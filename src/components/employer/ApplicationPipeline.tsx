@@ -900,6 +900,35 @@ export const ApplicationPipeline = () => {
                           <Shield className="h-3 w-3 mr-1" />
                           Edit Verification
                         </Button>
+                        
+                        {/* Stage Selection for Talent Pool - excluding "Applied" */}
+                        <Select
+                          value="screening"
+                          onValueChange={(value) => {
+                            const targetStage = value as PipelineStage;
+                            if (!selectedJob) {
+                              setJobSelectDialog({
+                                open: true,
+                                candidateId: candidate.candidate_id,
+                                candidateName: candidate.profile.full_name,
+                                targetStage
+                              });
+                            } else {
+                              createApplication(candidate.candidate_id, selectedJob, targetStage);
+                            }
+                          }}
+                        >
+                          <SelectTrigger className="h-9 text-xs w-full">
+                            <SelectValue placeholder="Add to stage..." />
+                          </SelectTrigger>
+                          <SelectContent className="bg-popover z-[100]">
+                            <SelectItem value="screening">Screening</SelectItem>
+                            <SelectItem value="interview">Interview</SelectItem>
+                            <SelectItem value="offer">Offer</SelectItem>
+                            <SelectItem value="hired">Hired</SelectItem>
+                            <SelectItem value="rejected">Rejected</SelectItem>
+                          </SelectContent>
+                        </Select>
                       </div>
                     </Card>
                   ))}
