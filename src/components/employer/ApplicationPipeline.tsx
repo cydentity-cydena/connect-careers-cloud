@@ -5,13 +5,15 @@ import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Briefcase, Clock, UserCheck, FileCheck, XCircle, CheckCircle2, Users, Search, Eye, MessageCircle, GripVertical } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { Briefcase, Clock, UserCheck, FileCheck, XCircle, CheckCircle2, Users, Search, Eye, MessageCircle, GripVertical, Download, Star, StickyNote, Filter } from "lucide-react";
 import { ApplicationCard } from "./ApplicationCard";
 import { toast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { SendMessageDialog } from "@/components/messaging/SendMessageDialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 type PipelineStage = "applied" | "screening" | "interview" | "offer" | "rejected" | "hired";
 
@@ -23,6 +25,7 @@ interface Application {
   applied_at: string;
   cover_letter: string | null;
   status_notes: string | null;
+  is_starred: boolean;
   candidate_profile: {
     title: string;
     years_experience: number;
@@ -34,6 +37,13 @@ interface Application {
   job: {
     title: string;
   };
+  candidate_verifications?: {
+    hr_ready: boolean;
+    identity_status: string | null;
+    rtw_status: string | null;
+    logistics_status: string | null;
+    certifications: any;
+  } | null;
 }
 
 interface UnlockedCandidate {
@@ -97,9 +107,16 @@ export const ApplicationPipeline = () => {
   const [loading, setLoading] = useState(true);
   const [selectedJob, setSelectedJob] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [filterRole, setFilterRole] = useState<string>("all");
+  const [filterStarred, setFilterStarred] = useState(false);
   const [draggedItem, setDraggedItem] = useState<{ id: string; type: 'application' | 'unlock' } | null>(null);
   const [userRole, setUserRole] = useState<'employer' | 'recruiter' | null>(null);
   const [jobs, setJobs] = useState<{ id: string; title: string }[]>([]);
+  const [notesDialog, setNotesDialog] = useState<{ open: boolean; applicationId: string; currentNotes: string }>({
+    open: false,
+    applicationId: "",
+    currentNotes: ""
+  });
   const [messageDialog, setMessageDialog] = useState<{ open: boolean; recipientId: string; recipientName: string }>({
     open: false,
     recipientId: "",
@@ -291,7 +308,7 @@ export const ApplicationPipeline = () => {
         return;
       }
 
-      // Now fetch applications for those jobs
+      // Now fetch applications for those jobs with verifications
       let query = supabase
         .from('applications')
         .select(`
@@ -311,14 +328,54 @@ export const ApplicationPipeline = () => {
         .in('job_id', jobIds)
         .order('applied_at', { ascending: false });
 
+      // Add is_starred column if doesn't exist (default to false)
+      const applications = (await query).data?.map(app => ({
+        ...app,
+        is_starred: app.is_starred ?? false
+      })) || [];
+
       if (selectedJob) {
-        query = query.eq('job_id', selectedJob);
+        const { data, error } = await supabase
+          .from('applications')
+          .select(`
+            *,
+            candidate_profile:candidate_profiles!candidate_id(
+              title,
+              years_experience
+            ),
+            profile:profiles!candidate_id(
+              full_name,
+              avatar_url
+            ),
+            job:jobs!job_id(
+              title
+            )
+          `)
+          .eq('job_id', selectedJob)
+          .in('job_id', jobIds)
+          .order('applied_at', { ascending: false });
+        
+        if (error) throw error;
+        setApplications((data as any)?.map((app: any) => ({ ...app, is_starred: app.is_starred ?? false })) || []);
+      } else {
+        // Fetch verifications separately for all candidates
+        const candidateIds = applications.map((app: any) => app.candidate_id);
+        if (candidateIds.length > 0) {
+          const { data: verifications } = await supabase
+            .from('candidate_verifications')
+            .select('*')
+            .in('candidate_id', candidateIds);
+          
+          const verificationMap = new Map(verifications?.map(v => [v.candidate_id, v]) || []);
+          const appsWithVerifications = applications.map((app: any) => ({
+            ...app,
+            candidate_verifications: verificationMap.get(app.candidate_id) || null
+          }));
+          setApplications(appsWithVerifications);
+        } else {
+          setApplications(applications);
+        }
       }
-
-      const { data, error } = await query;
-
-      if (error) throw error;
-      setApplications(data as any || []);
     } catch (error) {
       console.error('Error fetching applications:', error);
       toast({
@@ -467,13 +524,125 @@ export const ApplicationPipeline = () => {
     }
   };
 
+  const toggleStar = async (applicationId: string) => {
+    const app = applications.find(a => a.id === applicationId);
+    if (!app) return;
+
+    const newStarred = !app.is_starred;
+    
+    // Update locally first for instant feedback
+    setApplications(prev =>
+      prev.map(a => a.id === applicationId ? { ...a, is_starred: newStarred } : a)
+    );
+
+    try {
+      const { error } = await supabase
+        .from('applications')
+        .update({ is_starred: newStarred })
+        .eq('id', applicationId);
+
+      if (error) throw error;
+    } catch (error) {
+      console.error('Error toggling star:', error);
+      // Revert on error
+      setApplications(prev =>
+        prev.map(a => a.id === applicationId ? { ...a, is_starred: app.is_starred } : a)
+      );
+      toast({
+        title: "Error",
+        description: "Failed to update favorite status",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const updateNotes = async (applicationId: string, notes: string) => {
+    try {
+      const { error } = await supabase
+        .from('applications')
+        .update({ status_notes: notes })
+        .eq('id', applicationId);
+
+      if (error) throw error;
+
+      setApplications(prev =>
+        prev.map(app => app.id === applicationId ? { ...app, status_notes: notes } : app)
+      );
+
+      toast({
+        title: "Success",
+        description: "Notes updated successfully"
+      });
+      setNotesDialog({ open: false, applicationId: "", currentNotes: "" });
+    } catch (error) {
+      console.error('Error updating notes:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update notes",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const exportToCSV = () => {
+    const headers = ["Name", "Title", "Years Experience", "Job", "Stage", "Applied Date", "Notes"];
+    const rows = applications.map(app => [
+      app.profile.full_name,
+      app.candidate_profile?.title || "",
+      app.candidate_profile?.years_experience?.toString() || "",
+      app.job.title,
+      app.stage,
+      new Date(app.applied_at).toLocaleDateString(),
+      app.status_notes || ""
+    ]);
+
+    const csvContent = [
+      headers.join(","),
+      ...rows.map(row => row.map(cell => `"${cell}"`).join(","))
+    ].join("\n");
+
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `applications-${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  };
+
   const getApplicationsByStage = (stage: PipelineStage) => {
     return applications.filter(app => {
       const matchesStage = app.stage === stage;
-      const matchesSearch = searchQuery === "" || 
-        app.profile.full_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        app.job.title.toLowerCase().includes(searchQuery.toLowerCase());
-      return matchesStage && matchesSearch;
+      
+      // Advanced search with filters
+      let matchesSearch = true;
+      if (searchQuery) {
+        const query = searchQuery.toLowerCase();
+        const nameMatch = app.profile.full_name.toLowerCase().includes(query);
+        const jobMatch = app.job.title.toLowerCase().includes(query);
+        const roleMatch = app.candidate_profile?.title?.toLowerCase().includes(query);
+        
+        // Support has:hr_ready filter
+        if (query.includes('has:hr_ready')) {
+          matchesSearch = app.candidate_verifications?.hr_ready === true;
+        } else if (query.includes('rtw:green')) {
+          matchesSearch = app.candidate_verifications?.rtw_status === 'verified';
+        } else if (query.includes('rtw:amber')) {
+          matchesSearch = app.candidate_verifications?.rtw_status === 'pending';
+        } else if (query.includes('rtw:red')) {
+          matchesSearch = !app.candidate_verifications?.rtw_status || app.candidate_verifications?.rtw_status === 'rejected';
+        } else {
+          matchesSearch = nameMatch || jobMatch || roleMatch;
+        }
+      }
+      
+      // Role filter
+      const matchesRole = filterRole === "all" || app.candidate_profile?.title?.toLowerCase().includes(filterRole.toLowerCase());
+      
+      // Starred filter
+      const matchesStarred = !filterStarred || app.is_starred;
+      
+      return matchesStage && matchesSearch && matchesRole && matchesStarred;
     });
   };
 
@@ -498,29 +667,55 @@ export const ApplicationPipeline = () => {
           <p className="text-sm sm:text-base text-muted-foreground">Track candidates through customizable pipeline stages</p>
         </div>
         
-        <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
-          <div className="relative flex-1 sm:max-w-xs">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search candidates..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9 w-full"
-            />
+        <div className="flex flex-col gap-3">
+          <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
+            <div className="relative flex-1 sm:max-w-md">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search: name, has:hr_ready, rtw:green..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-9 w-full"
+              />
+            </div>
+            <div className="flex gap-2 flex-wrap">
+              <Select value={filterRole} onValueChange={setFilterRole}>
+                <SelectTrigger className="w-[150px]">
+                  <SelectValue placeholder="All roles" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All roles</SelectItem>
+                  <SelectItem value="analyst">Analyst</SelectItem>
+                  <SelectItem value="engineer">Engineer</SelectItem>
+                  <SelectItem value="architect">Architect</SelectItem>
+                  <SelectItem value="consultant">Consultant</SelectItem>
+                </SelectContent>
+              </Select>
+              <Select value={selectedJob || "all"} onValueChange={(value) => setSelectedJob(value === "all" ? null : value)}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="All jobs" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Jobs</SelectItem>
+                  {jobs.map((job) => (
+                    <SelectItem key={job.id} value={job.id}>
+                      {job.title}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Button
+                variant={filterStarred ? "default" : "outline"}
+                size="sm"
+                onClick={() => setFilterStarred(!filterStarred)}
+              >
+                <Star className={`h-4 w-4 ${filterStarred ? "fill-current" : ""}`} />
+              </Button>
+              <Button variant="outline" size="sm" onClick={exportToCSV}>
+                <Download className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
-          <Select value={selectedJob || "all"} onValueChange={(value) => setSelectedJob(value === "all" ? null : value)}>
-            <SelectTrigger className="w-full sm:w-[250px]">
-              <SelectValue placeholder="Filter by job" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Jobs</SelectItem>
-              {jobs.map((job) => (
-                <SelectItem key={job.id} value={job.id}>
-                  {job.title}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
           <div className="flex gap-2 flex-wrap">
             <Badge variant="secondary" className="text-xs sm:text-sm px-2 sm:px-3 py-1 whitespace-nowrap">
               {applications.length} Applications
@@ -528,6 +723,12 @@ export const ApplicationPipeline = () => {
             <Badge variant="outline" className="text-xs sm:text-sm px-2 sm:px-3 py-1 border-primary text-primary whitespace-nowrap">
               {unlockedCandidates.length} In Talent Pool
             </Badge>
+            {filterStarred && (
+              <Badge variant="default" className="text-xs sm:text-sm px-2 sm:px-3 py-1 whitespace-nowrap">
+                <Star className="h-3 w-3 mr-1 fill-current" />
+                Starred Only
+              </Badge>
+            )}
           </div>
         </div>
       </div>
@@ -652,6 +853,12 @@ export const ApplicationPipeline = () => {
                           <ApplicationCard
                             application={application}
                             onStageChange={handleStageChange}
+                            onToggleStar={() => toggleStar(application.id)}
+                            onAddNotes={() => setNotesDialog({
+                              open: true,
+                              applicationId: application.id,
+                              currentNotes: application.status_notes || ""
+                            })}
                           />
                         </div>
                       ))}
@@ -675,6 +882,31 @@ export const ApplicationPipeline = () => {
         recipientId={messageDialog.recipientId}
         recipientName={messageDialog.recipientName}
       />
+
+      <Dialog open={notesDialog.open} onOpenChange={(open) => setNotesDialog({ ...notesDialog, open })}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Add Notes</DialogTitle>
+            <DialogDescription>
+              Add internal notes about this candidate that only your team can see.
+            </DialogDescription>
+          </DialogHeader>
+          <Textarea
+            value={notesDialog.currentNotes}
+            onChange={(e) => setNotesDialog({ ...notesDialog, currentNotes: e.target.value })}
+            placeholder="Enter notes about this candidate..."
+            className="min-h-[150px]"
+          />
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setNotesDialog({ ...notesDialog, open: false })}>
+              Cancel
+            </Button>
+            <Button onClick={() => updateNotes(notesDialog.applicationId, notesDialog.currentNotes)}>
+              Save Notes
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={jobSelectDialog.open} onOpenChange={(open) => setJobSelectDialog({ ...jobSelectDialog, open })}>
         <DialogContent>
