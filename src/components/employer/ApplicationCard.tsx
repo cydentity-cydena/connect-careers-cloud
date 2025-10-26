@@ -85,10 +85,13 @@ export const ApplicationCard = ({ application, onStageChange, onToggleStar, onAd
   };
 
   const getVerificationStatus = (status: string | null): BadgeStatus => {
-    if (!status) return "red";
-    if (status === "verified") return "green";
-    if (status === "pending") return "amber";
-    return "red";
+    if (!status) return "grey";
+    // Status values are stored as colors directly in the database
+    if (status === "green" || status === "amber" || status === "red" || status === "grey") {
+      return status as BadgeStatus;
+    }
+    // Fallback for any other values
+    return "grey";
   };
 
   const getVerificationBadges = (): BadgeItem[] => {
