@@ -305,10 +305,13 @@ export default function ProfileDetail() {
               <div className="flex-1">
                 <h3 className="font-semibold text-lg mb-1 flex items-center gap-2">
                   <Info className="h-4 w-4" />
-                  Profile Preview Mode
+                  Unlocked Profile Preview
                 </h3>
+                <p className="text-sm text-muted-foreground mb-2">
+                  You're viewing your <strong>unlocked profile</strong> - exactly what employers and recruiters see after spending credits to unlock your full details (name, email, resumes, work history, etc.).
+                </p>
                 <p className="text-sm text-muted-foreground">
-                  You're viewing your profile exactly as employers and recruiters see it. Make sure all information is accurate and up-to-date. To edit your profile, go to your <Button variant="link" className="h-auto p-0 text-sm" onClick={() => navigate('/profile')}>Profile Settings</Button>.
+                  To edit your profile, go to <Button variant="link" className="h-auto p-0 text-sm" onClick={() => navigate('/profile')}>Profile Settings</Button>.
                 </p>
               </div>
             </div>
