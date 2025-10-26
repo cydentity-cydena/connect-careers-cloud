@@ -18,6 +18,7 @@ const Profile = () => {
 
   const [fullName, setFullName] = useState('');
   const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [location, setLocation] = useState('');
   const [bio, setBio] = useState('');
   const [avatarUrl, setAvatarUrl] = useState('');
@@ -25,6 +26,7 @@ const Profile = () => {
 
   const [title, setTitle] = useState('');
   const [yearsExperience, setYearsExperience] = useState<string>('');
+  const [phone, setPhone] = useState('');
   const [linkedinUrl, setLinkedinUrl] = useState('');
   const [githubUrl, setGithubUrl] = useState('');
   const [portfolioUrl, setPortfolioUrl] = useState('');
@@ -47,13 +49,14 @@ const Profile = () => {
       // Load profile
       const { data: profile } = await supabase
         .from('profiles')
-        .select('full_name, username, location, bio, avatar_url, desired_job_title')
+        .select('full_name, username, location, bio, avatar_url, desired_job_title, email')
         .eq('id', session.user.id)
         .maybeSingle();
 
       if (profile) {
         setFullName(profile.full_name ?? '');
         setUsername(profile.username ?? '');
+        setEmail(profile.email ?? '');
         setLocation(profile.location ?? '');
         setBio(profile.bio ?? '');
         setAvatarUrl(profile.avatar_url ?? '');
@@ -63,13 +66,14 @@ const Profile = () => {
       // Load candidate profile
       const { data: candidate } = await supabase
         .from('candidate_profiles')
-        .select('title, years_experience, linkedin_url, github_url, portfolio_url, resume_url, professional_statement')
+        .select('title, years_experience, phone, linkedin_url, github_url, portfolio_url, resume_url, professional_statement')
         .eq('user_id', session.user.id)
         .maybeSingle();
 
       if (candidate) {
         setTitle(candidate.title ?? '');
         setYearsExperience(candidate.years_experience ? candidate.years_experience.toString() : '');
+        setPhone(candidate.phone ?? '');
         setLinkedinUrl(candidate.linkedin_url ?? '');
         setGithubUrl(candidate.github_url ?? '');
         setPortfolioUrl(candidate.portfolio_url ?? '');
@@ -142,7 +146,8 @@ const Profile = () => {
         .from('candidate_profiles')
         .update({ 
           title, 
-          years_experience: parseInt(yearsExperience) || 0, 
+          years_experience: parseInt(yearsExperience) || 0,
+          phone,
           linkedin_url: linkedinUrl, 
           github_url: githubUrl, 
           portfolio_url: portfolioUrl, 
@@ -267,6 +272,15 @@ const Profile = () => {
                 <Label htmlFor="fullName">Full name (private until unlocked)</Label>
                 <Input id="fullName" value={fullName} onChange={(e) => setFullName(e.target.value)} />
                 
+                <Label htmlFor="email">Email (private until unlocked)</Label>
+                <Input 
+                  id="email" 
+                  type="email"
+                  value={email} 
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="your.email@example.com"
+                />
+                
                 <Label htmlFor="username">
                   Username (public, 3-20 chars) <span className="text-destructive">*</span>
                 </Label>
@@ -293,6 +307,15 @@ const Profile = () => {
               <div className="space-y-3">
                 <Label htmlFor="title">Current job title</Label>
                 <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} />
+                
+                <Label htmlFor="phone">Phone number (private until unlocked)</Label>
+                <Input 
+                  id="phone" 
+                  type="tel"
+                  value={phone} 
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="+44 7700 900000"
+                />
                 
                 <Label htmlFor="desiredJobTitle">Desired job title (optional)</Label>
                 <Input 
