@@ -798,7 +798,7 @@ export const ApplicationPipeline = () => {
                       key={candidate.id} 
                       draggable
                       onDragStart={() => handleDragStart(candidate.id, 'unlock')}
-                      className="p-3 hover:border-primary/50 transition-all cursor-move"
+                      className="p-3 hover:border-primary/50 transition-all cursor-move overflow-hidden"
                     >
                       <div className="flex items-start gap-2 mb-3">
                         <GripVertical className="h-4 w-4 text-muted-foreground flex-shrink-0 mt-1" />
@@ -873,23 +873,23 @@ export const ApplicationPipeline = () => {
                         )}
                       </div>
 
-                      <div className="flex gap-1.5">
+                      <div className="flex gap-1.5 min-w-0">
                         <Button
                           size="sm"
                           variant="outline"
-                          className="flex-1 h-8 text-xs px-2"
+                          className="flex-1 h-8 text-xs px-2 min-w-0"
                           onClick={(e) => {
                             e.stopPropagation();
                             navigate(`/profiles/${candidate.candidate_id}`);
                           }}
                         >
                           <Eye className="h-3 w-3 mr-1" />
-                          View
+                          <span className="hidden sm:inline truncate">View</span>
                         </Button>
                         <Button
                           size="sm"
                           variant="default"
-                          className="flex-1 h-8 text-xs px-2"
+                          className="flex-1 h-8 text-xs px-2 min-w-0"
                           onClick={(e) => {
                             e.stopPropagation();
                             setMessageDialog({
@@ -900,7 +900,7 @@ export const ApplicationPipeline = () => {
                           }}
                         >
                           <MessageCircle className="h-3 w-3 mr-1" />
-                          Message
+                          <span className="hidden sm:inline truncate">Message</span>
                         </Button>
                       </div>
                     </Card>
