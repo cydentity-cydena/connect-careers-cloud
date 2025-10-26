@@ -143,12 +143,12 @@ const Pricing = () => {
                   See precisely how much you'll save vs traditional recruitment agencies with our interactive ROI calculator
                 </p>
               </div>
-              <Link to="/roi-calculator">
+              {/* <Link to="/roi-calculator">
                 <Button size="lg" className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white">
                   Try ROI Calculator
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
-              </Link>
+              </Link> */}
             </div>
           </CardContent>
         </Card>

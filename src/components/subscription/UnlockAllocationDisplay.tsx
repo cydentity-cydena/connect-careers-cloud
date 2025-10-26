@@ -39,12 +39,15 @@ export const UnlockAllocationDisplay = ({
             <p className="text-sm text-muted-foreground">
               You're using pay-as-you-go credits. <strong>{remainingCredits} credits remaining</strong>.
             </p>
-            <Link to="/pricing">
+            {/* <Link to="/pricing">
               <Button className="w-full">
                 <TrendingUp className="mr-2 h-4 w-4" />
                 View Subscription Plans
               </Button>
-            </Link>
+            </Link> */}
+            <p className="text-sm text-muted-foreground text-center">
+              Contact support for subscription options.
+            </p>
           </div>
         </CardContent>
       </Card>
@@ -95,11 +98,11 @@ export const UnlockAllocationDisplay = ({
           </Alert>
         )}
 
-        <div className="flex gap-2">
+        {/* <div className="flex gap-2">
           <Link to="/pricing" className="flex-1">
             <Button variant="outline" className="w-full">Upgrade Plan</Button>
           </Link>
-        </div>
+        </div> */}
       </CardContent>
     </Card>
   );

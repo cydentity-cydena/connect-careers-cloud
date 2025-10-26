@@ -45,11 +45,11 @@ export const UpgradeTierDialog = ({
               You're on the highest tier! Consider purchasing unlock packs for additional capacity.
             </DialogDescription>
           </DialogHeader>
-          <div className="text-center py-8">
+          {/* <div className="text-center py-8">
             <Button asChild>
               <Link to="/pricing">View All Plans</Link>
             </Button>
-          </div>
+          </div> */}
         </DialogContent>
       </Dialog>
     );
@@ -172,12 +172,12 @@ export const UpgradeTierDialog = ({
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Maybe Later
           </Button>
-          <Button asChild>
+          {/* <Button asChild>
             <Link to="/pricing">
               View Pricing & Upgrade
               <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
-          </Button>
+          </Button> */}
         </div>
       </DialogContent>
     </Dialog>
