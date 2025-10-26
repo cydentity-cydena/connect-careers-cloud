@@ -268,12 +268,12 @@ export const ApplicationCard = ({ application, onStageChange, onToggleStar, onAd
               }
             }}
           >
-            <SelectTrigger className="h-9 text-xs w-full">
+            <SelectTrigger className="h-9 text-xs w-full bg-card border-border">
               <SelectValue placeholder="Change stage..." />
             </SelectTrigger>
-            <SelectContent className="bg-popover z-[100]">
+            <SelectContent className="bg-card border-border z-[100]">
               {stages.map((stage) => (
-                <SelectItem key={stage.value} value={stage.value}>
+                <SelectItem key={stage.value} value={stage.value} className="cursor-pointer hover:bg-accent">
                   {stage.label}
                 </SelectItem>
               ))}

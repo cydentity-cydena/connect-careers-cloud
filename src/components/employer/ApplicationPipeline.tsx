@@ -918,15 +918,15 @@ export const ApplicationPipeline = () => {
                             }
                           }}
                         >
-                          <SelectTrigger className="h-9 text-xs w-full">
+                          <SelectTrigger className="h-9 text-xs w-full bg-card border-border">
                             <SelectValue placeholder="Add to stage..." />
                           </SelectTrigger>
-                          <SelectContent className="bg-popover z-[100]">
-                            <SelectItem value="screening">Screening</SelectItem>
-                            <SelectItem value="interview">Interview</SelectItem>
-                            <SelectItem value="offer">Offer</SelectItem>
-                            <SelectItem value="hired">Hired</SelectItem>
-                            <SelectItem value="rejected">Rejected</SelectItem>
+                          <SelectContent className="bg-card border-border z-[100]">
+                            <SelectItem value="screening" className="cursor-pointer hover:bg-accent">Screening</SelectItem>
+                            <SelectItem value="interview" className="cursor-pointer hover:bg-accent">Interview</SelectItem>
+                            <SelectItem value="offer" className="cursor-pointer hover:bg-accent">Offer</SelectItem>
+                            <SelectItem value="hired" className="cursor-pointer hover:bg-accent">Hired</SelectItem>
+                            <SelectItem value="rejected" className="cursor-pointer hover:bg-accent">Rejected</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
