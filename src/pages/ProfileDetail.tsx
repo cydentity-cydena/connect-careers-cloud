@@ -120,6 +120,8 @@ export default function ProfileDetail() {
         .eq("user_id", id)
         .maybeSingle();
 
+      console.log('Candidate profile data:', candidateDirect);
+
       if (candidateDirect) {
         setCandidateProfile(candidateDirect);
       } else {
@@ -418,6 +420,11 @@ export default function ProfileDetail() {
             </Card>
 
             {isUnlocked && candidateProfile && !isCandidateViewingCandidate && (
+              candidateProfile.linkedin_url || 
+              candidateProfile.github_url || 
+              candidateProfile.portfolio_url || 
+              candidateProfile.resume_url
+            ) && (
               <Card>
                 <CardHeader>
                   <CardTitle className="text-lg">Links</CardTitle>
@@ -425,7 +432,7 @@ export default function ProfileDetail() {
                 <CardContent className="space-y-2">
                   {candidateProfile.linkedin_url && (
                     <a 
-                      href={candidateProfile.linkedin_url} 
+                      href={candidateProfile.linkedin_url.startsWith('http') ? candidateProfile.linkedin_url : `https://linkedin.com${candidateProfile.linkedin_url}`}
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="flex items-center gap-2 text-sm hover:text-primary transition-colors"
@@ -436,7 +443,7 @@ export default function ProfileDetail() {
                   )}
                   {candidateProfile.github_url && (
                     <a 
-                      href={candidateProfile.github_url} 
+                      href={candidateProfile.github_url.startsWith('http') ? candidateProfile.github_url : `https://github.com/${candidateProfile.github_url.replace(/^\//, '')}`}
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="flex items-center gap-2 text-sm hover:text-primary transition-colors"
@@ -447,7 +454,7 @@ export default function ProfileDetail() {
                   )}
                   {candidateProfile.portfolio_url && (
                     <a 
-                      href={candidateProfile.portfolio_url} 
+                      href={candidateProfile.portfolio_url.startsWith('http') ? candidateProfile.portfolio_url : `https://${candidateProfile.portfolio_url}`}
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="flex items-center gap-2 text-sm hover:text-primary transition-colors"
