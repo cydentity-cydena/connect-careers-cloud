@@ -127,225 +127,229 @@ const Contact = () => {
           </Collapsible>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-          {/* Contact Form */}
-          <Card className="border-border shadow-card">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <MessageSquare className="h-5 w-5 text-primary" />
-                Send us a message
-              </CardTitle>
-              <CardDescription>
-                Fill out the form and we'll respond within 24 hours
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="name">Name</Label>
-                  <Input
-                    id="name"
-                    name="name"
-                    type="text"
-                    placeholder="Your name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    placeholder="you@example.com"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="message">Message</Label>
-                  <Textarea
-                    id="message"
-                    name="message"
-                    placeholder="Tell us how we can help..."
-                    rows={6}
-                    value={formData.message}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-
-                <Button
-                  type="submit"
-                  variant="hero"
-                  className="w-full gap-2"
-                  disabled={isSubmitting}
-                >
-                  <Send className="h-4 w-4" />
-                  {isSubmitting ? "Sending..." : "Send Message"}
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
-
-          {/* Contact Info & FAQ */}
-          <div className="space-y-6">
+        <div className="max-w-5xl mx-auto space-y-8">
+          {/* Top section: Contact form and info cards */}
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* Contact Form */}
             <Card className="border-border shadow-card">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Mail className="h-5 w-5 text-primary" />
-                  Get in Touch
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <h3 className="font-semibold mb-1">General Inquiries</h3>
-                  <p className="text-sm text-muted-foreground">
-                    General questions or feedback about our platform
-                  </p>
-                  <a
-                    href="mailto:contact@cydena.com"
-                    className="text-sm text-primary hover:underline"
-                  >
-                    contact@cydena.com
-                  </a>
-                </div>
-
-                <div>
-                  <h3 className="font-semibold mb-1">For Candidates</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Questions about your profile, certifications, or job opportunities
-                  </p>
-                  <a
-                    href="mailto:candidates@cydena.com"
-                    className="text-sm text-primary hover:underline"
-                  >
-                    candidates@cydena.com
-                  </a>
-                </div>
-
-                <div>
-                  <h3 className="font-semibold mb-1">For Employers</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Interested in posting jobs or accessing our talent pool
-                  </p>
-                  <a
-                    href="mailto:employers@cydena.com"
-                    className="text-sm text-primary hover:underline"
-                  >
-                    employers@cydena.com
-                  </a>
-                </div>
-
-                <div>
-                  <h3 className="font-semibold mb-1">Training Partners</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Partnership inquiries for training organizations
-                  </p>
-                  <a
-                    href="mailto:partners@cydena.com"
-                    className="text-sm text-primary hover:underline"
-                  >
-                    partners@cydena.com
-                  </a>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="border-border shadow-card bg-primary/5">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Bug className="h-5 w-5 text-primary" />
-                  Found a Bug?
+                  <MessageSquare className="h-5 w-5 text-primary" />
+                  Send us a message
                 </CardTitle>
                 <CardDescription>
-                  Help us improve Cydena by reporting issues
+                  Fill out the form and we'll respond within 24 hours
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Encountered a broken link, course issue, or something not working right? Let us know!
-                </p>
-                <Button 
-                  variant="outline" 
-                  className="w-full gap-2"
-                  onClick={() => window.location.href = '/bug-report'}
-                >
-                  <Bug className="h-4 w-4" />
-                  Report a Bug
-                </Button>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="name">Name</Label>
+                    <Input
+                      id="name"
+                      name="name"
+                      type="text"
+                      placeholder="Your name"
+                      value={formData.name}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email</Label>
+                    <Input
+                      id="email"
+                      name="email"
+                      type="email"
+                      placeholder="you@example.com"
+                      value={formData.email}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="message">Message</Label>
+                    <Textarea
+                      id="message"
+                      name="message"
+                      placeholder="Tell us how we can help..."
+                      rows={6}
+                      value={formData.message}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+
+                  <Button
+                    type="submit"
+                    variant="hero"
+                    className="w-full gap-2"
+                    disabled={isSubmitting}
+                  >
+                    <Send className="h-4 w-4" />
+                    {isSubmitting ? "Sending..." : "Send Message"}
+                  </Button>
+                </form>
               </CardContent>
             </Card>
 
-            <Card className="border-border shadow-card bg-gradient-card">
-              <CardHeader>
-                <CardTitle>Frequently Asked Questions</CardTitle>
-                <CardDescription>Common questions about using Cydena</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Accordion type="single" collapsible className="w-full">
-                  <AccordionItem value="item-1">
-                    <AccordionTrigger className="text-left">
-                      How do I verify my cybersecurity certifications?
-                    </AccordionTrigger>
-                    <AccordionContent className="text-muted-foreground">
-                      Upload your certification documents (CompTIA, CISSP, CEH, SANS, etc.) in your profile settings. Our verification team reviews submissions within 48 hours. Verified certifications increase your visibility to employers.
-                    </AccordionContent>
-                  </AccordionItem>
+            {/* Contact Info & Bug Report */}
+            <div className="space-y-6">
+              <Card className="border-border shadow-card">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Mail className="h-5 w-5 text-primary" />
+                    Get in Touch
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <h3 className="font-semibold mb-1">General Inquiries</h3>
+                    <p className="text-sm text-muted-foreground">
+                      General questions or feedback about our platform
+                    </p>
+                    <a
+                      href="mailto:contact@cydena.com"
+                      className="text-sm text-primary hover:underline"
+                    >
+                      contact@cydena.com
+                    </a>
+                  </div>
 
-                  <AccordionItem value="item-2">
-                    <AccordionTrigger className="text-left">
-                      What is your typical response time?
-                    </AccordionTrigger>
-                    <AccordionContent className="text-muted-foreground">
-                      We respond to all inquiries within 24 hours during business days (Monday-Friday). Urgent account issues are prioritized and typically addressed within 4-6 hours.
-                    </AccordionContent>
-                  </AccordionItem>
+                  <div>
+                    <h3 className="font-semibold mb-1">For Candidates</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Questions about your profile, certifications, or job opportunities
+                    </p>
+                    <a
+                      href="mailto:candidates@cydena.com"
+                      className="text-sm text-primary hover:underline"
+                    >
+                      candidates@cydena.com
+                    </a>
+                  </div>
 
-                  <AccordionItem value="item-3">
-                    <AccordionTrigger className="text-left">
-                      How does the leaderboard ranking work?
-                    </AccordionTrigger>
-                    <AccordionContent className="text-muted-foreground">
-                      Your ranking is based on verified certifications, completed training courses, profile completeness, and community engagement. Higher rankings increase your visibility to employers searching for top cybersecurity talent.
-                    </AccordionContent>
-                  </AccordionItem>
+                  <div>
+                    <h3 className="font-semibold mb-1">For Employers</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Interested in posting jobs or accessing our talent pool
+                    </p>
+                    <a
+                      href="mailto:employers@cydena.com"
+                      className="text-sm text-primary hover:underline"
+                    >
+                      employers@cydena.com
+                    </a>
+                  </div>
 
-                  <AccordionItem value="item-4">
-                    <AccordionTrigger className="text-left">
-                      Is Cydena free for cybersecurity professionals?
-                    </AccordionTrigger>
-                    <AccordionContent className="text-muted-foreground">
-                      Yes! Cydena is 100% free for all cybersecurity professionals - no hidden fees, no credit card required. Employers and recruiters pay subscription fees to access our talent pool and post jobs.
-                    </AccordionContent>
-                  </AccordionItem>
+                  <div>
+                    <h3 className="font-semibold mb-1">Training Partners</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Partnership inquiries for training organizations
+                    </p>
+                    <a
+                      href="mailto:partners@cydena.com"
+                      className="text-sm text-primary hover:underline"
+                    >
+                      partners@cydena.com
+                    </a>
+                  </div>
+                </CardContent>
+              </Card>
 
-                  <AccordionItem value="item-5">
-                    <AccordionTrigger className="text-left">
-                      How do I report a technical issue or bug?
-                    </AccordionTrigger>
-                    <AccordionContent className="text-muted-foreground">
-                      Click the "Report a Bug" button above or visit our bug report page. Include details about what you were doing when the issue occurred, and we'll investigate promptly.
-                    </AccordionContent>
-                  </AccordionItem>
-
-                  <AccordionItem value="item-6">
-                    <AccordionTrigger className="text-left">
-                      Can I contact employers directly through the platform?
-                    </AccordionTrigger>
-                    <AccordionContent className="text-muted-foreground">
-                      Yes! Once you apply for a position, you can message the employer directly through our in-platform messaging system. This direct communication helps speed up the hiring process.
-                    </AccordionContent>
-                  </AccordionItem>
-                </Accordion>
-              </CardContent>
-            </Card>
+              <Card className="border-border shadow-card bg-primary/5">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Bug className="h-5 w-5 text-primary" />
+                    Found a Bug?
+                  </CardTitle>
+                  <CardDescription>
+                    Help us improve Cydena by reporting issues
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Encountered a broken link, course issue, or something not working right? Let us know!
+                  </p>
+                  <Button 
+                    variant="outline" 
+                    className="w-full gap-2"
+                    onClick={() => window.location.href = '/bug-report'}
+                  >
+                    <Bug className="h-4 w-4" />
+                    Report a Bug
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
           </div>
+
+          {/* FAQ Section - Full Width */}
+          <Card className="border-border shadow-card bg-gradient-card">
+            <CardHeader>
+              <CardTitle>Frequently Asked Questions</CardTitle>
+              <CardDescription>Common questions about using Cydena</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Accordion type="single" collapsible className="w-full">
+                <AccordionItem value="item-1">
+                  <AccordionTrigger className="text-left">
+                    How do I verify my cybersecurity certifications?
+                  </AccordionTrigger>
+                  <AccordionContent className="text-muted-foreground">
+                    Upload your certification documents (CompTIA, CISSP, CEH, SANS, etc.) in your profile settings. Our verification team reviews submissions within 48 hours. Verified certifications increase your visibility to employers.
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="item-2">
+                  <AccordionTrigger className="text-left">
+                    What is your typical response time?
+                  </AccordionTrigger>
+                  <AccordionContent className="text-muted-foreground">
+                    We respond to all inquiries within 24 hours during business days (Monday-Friday). Urgent account issues are prioritized and typically addressed within 4-6 hours.
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="item-3">
+                  <AccordionTrigger className="text-left">
+                    How does the leaderboard ranking work?
+                  </AccordionTrigger>
+                  <AccordionContent className="text-muted-foreground">
+                    Your ranking is based on verified certifications, completed training courses, profile completeness, and community engagement. Higher rankings increase your visibility to employers searching for top cybersecurity talent.
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="item-4">
+                  <AccordionTrigger className="text-left">
+                    Is Cydena free for cybersecurity professionals?
+                  </AccordionTrigger>
+                  <AccordionContent className="text-muted-foreground">
+                    Yes! Cydena is 100% free for all cybersecurity professionals - no hidden fees, no credit card required. Employers and recruiters pay subscription fees to access our talent pool and post jobs.
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="item-5">
+                  <AccordionTrigger className="text-left">
+                    How do I report a technical issue or bug?
+                  </AccordionTrigger>
+                  <AccordionContent className="text-muted-foreground">
+                    Click the "Report a Bug" button above or visit our bug report page. Include details about what you were doing when the issue occurred, and we'll investigate promptly.
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="item-6">
+                  <AccordionTrigger className="text-left">
+                    Can I contact employers directly through the platform?
+                  </AccordionTrigger>
+                  <AccordionContent className="text-muted-foreground">
+                    Yes! Once you apply for a position, you can message the employer directly through our in-platform messaging system. This direct communication helps speed up the hiring process.
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </CardContent>
+          </Card>
         </div>
       </main>
     </div>
