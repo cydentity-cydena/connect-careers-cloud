@@ -15,9 +15,13 @@ const JobCreate = () => {
   const navigate = useNavigate();
   const [userId, setUserId] = useState<string | null>(null);
   const [companies, setCompanies] = useState<any[]>([]);
+  const [clients, setClients] = useState<any[]>([]);
+  const [isRecruiter, setIsRecruiter] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [selectedClientId, setSelectedClientId] = useState('');
 
   const [companyId, setCompanyId] = useState('');
+  const [companyName, setCompanyName] = useState('');
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [location, setLocation] = useState('');
@@ -34,46 +38,109 @@ const JobCreate = () => {
       if (!session) { navigate('/auth'); return; }
       setUserId(session.user.id);
 
-      const { data } = await supabase
-        .from('companies')
-        .select('id, name')
-        .eq('created_by', session.user.id);
-      setCompanies(data || []);
+      // Check if user is a recruiter
+      const { data: roles } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', session.user.id);
+
+      const userIsRecruiter = roles?.some(r => r.role === 'recruiter');
+      setIsRecruiter(userIsRecruiter);
+
+      if (userIsRecruiter) {
+        // Load clients for recruiters
+        const { data: clientsData } = await supabase
+          .from('clients')
+          .select('id, company_name, contact_name')
+          .eq('recruiter_id', session.user.id)
+          .eq('status', 'active')
+          .order('company_name');
+        setClients(clientsData || []);
+      } else {
+        // Load companies for employers
+        const { data: companiesData } = await supabase
+          .from('companies')
+          .select('id, name')
+          .eq('created_by', session.user.id);
+        setCompanies(companiesData || []);
+      }
     };
     init();
   }, [navigate]);
 
   const handleCreate = async () => {
     if (!userId) return;
-    if (!companyId) { toast.error('Please select a company'); return; }
+    
+    // Validation for recruiters (using clients)
+    if (isRecruiter) {
+      if (!selectedClientId) { toast.error('Please select a client'); return; }
+      if (!companyName.trim()) { toast.error('Company name is required'); return; }
+    } else {
+      // Validation for employers (using companies)
+      if (!companyId) { toast.error('Please select a company'); return; }
+    }
+    
     if (!title) { toast.error('Job title is required'); return; }
     if (!description) { toast.error('Job description is required'); return; }
 
     setLoading(true);
-    const skills = requiredSkills.split(',').map(s => s.trim()).filter(Boolean);
-    const { error } = await supabase.from('jobs').insert({
-      company_id: companyId,
-      created_by: userId,
-      title,
-      description,
-      location: location || null,
-      job_type: jobType,
-      remote_allowed: remoteAllowed,
-      salary_min: salaryMin ? parseInt(salaryMin) : null,
-      salary_max: salaryMax ? parseInt(salaryMax) : null,
-      required_clearance: requiredClearance || null,
-      required_skills: skills.length > 0 ? skills : null,
-      is_active: true,
-    } as any);
-    setLoading(false);
+    
+    try {
+      // For recruiters, we need to ensure company exists or create it
+      let finalCompanyId = companyId;
+      
+      if (isRecruiter) {
+        // Check if company already exists for this client
+        const { data: existingCompany } = await supabase
+          .from('companies')
+          .select('id')
+          .eq('name', companyName)
+          .maybeSingle();
 
-    if (error) {
-      toast.error(error.message);
-      return;
+        if (existingCompany) {
+          finalCompanyId = existingCompany.id;
+        } else {
+          // Create company for the client
+          const { data: newCompany, error: companyError } = await supabase
+            .from('companies')
+            .insert({
+              name: companyName,
+              created_by: userId
+            })
+            .select('id')
+            .single();
+
+          if (companyError) throw companyError;
+          finalCompanyId = newCompany.id;
+        }
+      }
+
+      const skills = requiredSkills.split(',').map(s => s.trim()).filter(Boolean);
+      const { error } = await supabase.from('jobs').insert({
+        company_id: finalCompanyId,
+        created_by: userId,
+        client_id: isRecruiter ? selectedClientId : null,
+        title,
+        description,
+        location: location || null,
+        job_type: jobType,
+        remote_allowed: remoteAllowed,
+        salary_min: salaryMin ? parseInt(salaryMin) : null,
+        salary_max: salaryMax ? parseInt(salaryMax) : null,
+        required_clearance: requiredClearance || null,
+        required_skills: skills.length > 0 ? skills : null,
+        is_active: true,
+      } as any);
+
+      if (error) throw error;
+
+      toast.success('Job posted successfully');
+      navigate('/dashboard');
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to post job');
+    } finally {
+      setLoading(false);
     }
-
-    toast.success('Job posted successfully');
-    navigate('/dashboard');
   };
 
   return (
@@ -84,26 +151,68 @@ const JobCreate = () => {
           <CardTitle>Post a Job</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {companies.length === 0 ? (
+          {isRecruiter && clients.length === 0 ? (
+            <div className="text-center py-8 space-y-4">
+              <p className="text-muted-foreground">You need to add clients to your portfolio first before posting jobs.</p>
+              <Button onClick={() => navigate('/clients/create')}>Add First Client</Button>
+            </div>
+          ) : !isRecruiter && companies.length === 0 ? (
             <div className="text-center py-8 space-y-4">
               <p className="text-muted-foreground">You need to create a company profile first before posting jobs.</p>
               <Button onClick={() => navigate('/company/create')}>Create Company Profile</Button>
             </div>
           ) : (
             <>
-              <div className="space-y-2">
-                <Label htmlFor="company">Company *</Label>
-                <Select value={companyId} onValueChange={setCompanyId}>
-                  <SelectTrigger id="company">
-                    <SelectValue placeholder="Select company" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {companies.map((c) => (
-                      <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+              {isRecruiter ? (
+                <>
+                  <div className="space-y-2">
+                    <Label htmlFor="client">Client *</Label>
+                    <Select value={selectedClientId} onValueChange={(value) => {
+                      setSelectedClientId(value);
+                      const client = clients.find(c => c.id === value);
+                      if (client) {
+                        setCompanyName(client.company_name);
+                      }
+                    }}>
+                      <SelectTrigger id="client">
+                        <SelectValue placeholder="Select client" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {clients.map((c) => (
+                          <SelectItem key={c.id} value={c.id}>
+                            {c.company_name}
+                            {c.contact_name && ` (${c.contact_name})`}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="company-name">Company Name *</Label>
+                    <Input 
+                      id="company-name" 
+                      value={companyName} 
+                      onChange={(e) => setCompanyName(e.target.value)} 
+                      placeholder="Acme Corp"
+                      disabled={!selectedClientId}
+                    />
+                  </div>
+                </>
+              ) : (
+                <div className="space-y-2">
+                  <Label htmlFor="company">Company *</Label>
+                  <Select value={companyId} onValueChange={setCompanyId}>
+                    <SelectTrigger id="company">
+                      <SelectValue placeholder="Select company" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {companies.map((c) => (
+                        <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
               <div className="space-y-2">
                 <Label htmlFor="title">Job Title *</Label>
                 <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Senior Cybersecurity Analyst" />
