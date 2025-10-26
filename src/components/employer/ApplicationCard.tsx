@@ -16,7 +16,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { MessageSquare, MoreVertical, Calendar, Briefcase, GripVertical, Eye } from "lucide-react";
+import { MessageSquare, MoreVertical, Calendar, Briefcase, GripVertical, Eye, MapPin, Award } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { HireConfirmationDialog } from "./HireConfirmationDialog";
 import { SendMessageDialog } from "@/components/messaging/SendMessageDialog";
@@ -38,6 +38,7 @@ interface ApplicationCardProps {
     profile: {
       full_name: string;
       avatar_url: string | null;
+      location?: string | null;
     };
     job: {
       title: string;
@@ -122,19 +123,31 @@ export const ApplicationCard = ({ application, onStageChange }: ApplicationCardP
             </DropdownMenu>
           </div>
 
-          <div className="space-y-1">
-            <div className="flex items-center gap-2 text-xs text-muted-foreground">
-              <Briefcase className="h-3 w-3 flex-shrink-0" />
-              <span className="truncate">{application.candidate_profile?.years_experience || 0} yrs exp</span>
-            </div>
+          <div className="space-y-2">
+            {/* Years of Experience Badge */}
+            {application.candidate_profile?.years_experience !== undefined && (
+              <Badge variant="secondary" className="text-xs">
+                <Briefcase className="h-3 w-3 mr-1" />
+                {application.candidate_profile.years_experience} yrs
+              </Badge>
+            )}
 
-            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            {/* Location if available */}
+            {application.profile.location && (
+              <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                <MapPin className="h-3 w-3 flex-shrink-0" />
+                <span className="truncate">{application.profile.location}</span>
+              </div>
+            )}
+
+            {/* Applied date */}
+            <div className="flex items-center gap-1 text-xs text-muted-foreground">
               <Calendar className="h-3 w-3 flex-shrink-0" />
               <span className="truncate">{formatDistanceToNow(new Date(application.applied_at), { addSuffix: true })}</span>
             </div>
           </div>
 
-          <div className="flex gap-2 pt-1">
+          <div className="flex gap-2 pt-2">
             <Button
               variant="ghost"
               size="sm"

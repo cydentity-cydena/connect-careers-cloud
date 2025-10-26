@@ -398,6 +398,8 @@ export const ApplicationPipeline = () => {
 
   const createApplication = async (candidateId: string, jobId: string, stage: PipelineStage) => {
     try {
+      console.log('Creating application:', { candidateId, jobId, stage });
+      
       const { data, error } = await supabase
         .from('applications')
         .insert({
@@ -421,7 +423,12 @@ export const ApplicationPipeline = () => {
         `)
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase error:', error);
+        throw error;
+      }
+
+      console.log('Application created:', data);
 
       // Add to applications list
       setApplications(prev => [data as any, ...prev]);
@@ -433,11 +440,11 @@ export const ApplicationPipeline = () => {
         title: "Success",
         description: `Candidate added to ${stageConfig[stage].title}`,
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error creating application:', error);
       toast({
         title: "Error",
-        description: "Failed to add candidate to pipeline",
+        description: error?.message || "Failed to add candidate to pipeline",
         variant: "destructive"
       });
     }
