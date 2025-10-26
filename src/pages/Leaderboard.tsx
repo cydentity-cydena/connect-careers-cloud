@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Trophy, Medal, Award, Target, Users } from "lucide-react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Trophy, Medal, Award, Target, Users, ChevronDown, TrendingUp, Heart } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
@@ -157,17 +158,58 @@ const Leaderboard = () => {
           <p className="text-sm md:text-base text-muted-foreground mb-4">
             Rankings by Professional XP (certifications, skills, courses) and Community Impact (helping others, mentoring)
           </p>
-          <div className="prose prose-sm max-w-none text-muted-foreground mb-6">
-            <p>
-              Our leaderboard showcases the top cybersecurity professionals on Cydena based on two key metrics: Professional Experience Points (XP) and Community Leadership. Professional XP measures verified certifications (CISSP, CEH, Security+, OSCP, etc.), completed training courses, and demonstrated technical skills. Community Leadership tracks peer endorsements, mentoring activities, and contributions to helping other cybersecurity professionals succeed.
-            </p>
-            <p>
-              Why does ranking matter? Top-ranked professionals gain increased visibility to employers actively searching for cybersecurity talent. Companies filter candidates by leaderboard position when seeking proven experts for security analyst, penetration tester, SOC analyst, and security engineer roles. A high ranking demonstrates both technical competency and community engagement - qualities employers value highly.
-            </p>
-            <p>
-              Candidates can improve their ranking by uploading verified certifications, completing courses through our training partners (Cydentity Academy, LetsDefend, etc.), engaging in the community, and maintaining an active, comprehensive profile. The leaderboard updates daily, providing real-time recognition for professional development achievements.
-            </p>
-          </div>
+          
+          {/* Collapsible explanation */}
+          <Collapsible className="mb-6">
+            <Card className="border-2">
+              <CollapsibleTrigger className="w-full">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4 cursor-pointer hover:bg-accent/50 transition-colors">
+                  <div className="space-y-1 text-left">
+                    <CardTitle className="text-lg">How Rankings Work</CardTitle>
+                    <CardDescription>
+                      Learn about Professional XP, Community Leadership, and why ranking matters
+                    </CardDescription>
+                  </div>
+                  <ChevronDown className="h-5 w-5 text-muted-foreground transition-transform duration-200 [&[data-state=open]]:rotate-180" />
+                </CardHeader>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <CardContent className="space-y-4 pt-0 text-muted-foreground">
+                  <div className="space-y-4">
+                    <div>
+                      <h3 className="font-semibold text-foreground mb-2 flex items-center gap-2">
+                        <Trophy className="h-4 w-4 text-primary" />
+                        Ranking Metrics
+                      </h3>
+                      <p className="text-sm leading-relaxed">
+                        Our leaderboard showcases the top cybersecurity professionals on Cydena based on two key metrics: Professional Experience Points (XP) and Community Leadership. Professional XP measures verified certifications (CISSP, CEH, Security+, OSCP, etc.), completed training courses, and demonstrated technical skills. Community Leadership tracks peer endorsements, mentoring activities, and contributions to helping other cybersecurity professionals succeed.
+                      </p>
+                    </div>
+
+                    <div>
+                      <h3 className="font-semibold text-foreground mb-2 flex items-center gap-2">
+                        <TrendingUp className="h-4 w-4 text-primary" />
+                        Why Rankings Matter
+                      </h3>
+                      <p className="text-sm leading-relaxed">
+                        Top-ranked professionals gain increased visibility to employers actively searching for cybersecurity talent. Companies filter candidates by leaderboard position when seeking proven experts for security analyst, penetration tester, SOC analyst, and security engineer roles. A high ranking demonstrates both technical competency and community engagement - qualities employers value highly.
+                      </p>
+                    </div>
+
+                    <div>
+                      <h3 className="font-semibold text-foreground mb-2 flex items-center gap-2">
+                        <Heart className="h-4 w-4 text-primary" />
+                        Improve Your Ranking
+                      </h3>
+                      <p className="text-sm leading-relaxed">
+                        Candidates can improve their ranking by uploading verified certifications, completing courses through our training partners (Cydentity Academy, LetsDefend, etc.), engaging in the community, and maintaining an active, comprehensive profile. The leaderboard updates daily, providing real-time recognition for professional development achievements.
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </CollapsibleContent>
+            </Card>
+          </Collapsible>
         </div>
 
         <Tabs defaultValue="professional" className="w-full">
