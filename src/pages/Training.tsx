@@ -189,12 +189,6 @@ const Training = () => {
           ]
         },
         {
-          name: "Practical DevSecOps",
-          description: "Specialized DevSecOps certifications. Community-driven training for secure development.",
-          color: "bg-teal-600",
-          features: ["DevSecOps Certs", "Pipeline Security", "Cloud Security", "Community Support"]
-        },
-        {
           name: "PentesterLab",
           description: "Hands-on web security labs with certificates of completion. Focused on practical exploitation.",
           color: "bg-red-700",
