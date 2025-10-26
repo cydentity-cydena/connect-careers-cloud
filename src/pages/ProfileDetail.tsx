@@ -246,29 +246,38 @@ export default function ProfileDetail() {
 
   const handleViewResume = async (resumeUrl: string, resumeName: string) => {
     try {
-      // If it's already a signed URL or external URL, just use it directly
-      if (resumeUrl.startsWith('http')) {
-        const separator = resumeUrl.includes('#') ? '&' : '#';
-        const zoomUrl = `${resumeUrl}${separator}zoom=page-width`;
-        setViewingResumeUrl(zoomUrl);
-        setViewingResumeName(resumeName);
-        return;
-      }
+      // Extract the file path if it's a full URL
+      const derivePath = (value: string) => {
+        try {
+          if (value.startsWith("http")) {
+            const url = new URL(value);
+            const match = url.pathname.match(/\/object\/(?:public|sign)\/resumes\/(.*)$/);
+            if (match?.[1]) return match[1];
+          }
+        } catch {}
+        return value;
+      };
 
-      // Otherwise, generate a signed URL
+      const filePath = derivePath(resumeUrl);
+
+      // Generate a signed URL for secure access
       const { data, error } = await supabase.storage
         .from('resumes')
-        .createSignedUrl(resumeUrl, 3600); // 1 hour expiry
+        .createSignedUrl(filePath, 3600); // 1 hour expiry
 
       if (error || !data?.signedUrl) throw error || new Error("Unable to generate signed URL");
       
-      const separator = data.signedUrl.includes('#') ? '&' : '#';
-      const zoomUrl = `${data.signedUrl}${separator}zoom=page-width`;
+      // Force the PDF to fill the viewer width
+      const signed = data.signedUrl;
+      const separator = signed.includes('#') ? '&' : '#';
+      const zoomUrl = `${signed}${separator}zoom=page-width`;
       setViewingResumeUrl(zoomUrl);
       setViewingResumeName(resumeName);
     } catch (error: any) {
       console.error("Error loading resume:", error);
-      toast.error("Failed to load resume");
+      toast.error("Failed to load resume", {
+        description: error.message || "Unable to load the resume file"
+      });
     }
   };
 
