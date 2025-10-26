@@ -94,6 +94,40 @@ export const ApplicationCard = ({ application, onStageChange, onToggleStar, onAd
     return "grey";
   };
 
+  const getCertificationStatus = (): BadgeStatus => {
+    const certs = application.candidate_verifications?.certifications;
+    
+    if (!certs || (Array.isArray(certs) && certs.length === 0)) {
+      return "grey";
+    }
+    
+    // Parse certifications array
+    const certArray = Array.isArray(certs) ? certs : [];
+    if (certArray.length === 0) return "grey";
+    
+    // Check statuses - prioritize worst status
+    let hasRed = false;
+    let hasAmber = false;
+    let hasGrey = false;
+    let hasGreen = false;
+    
+    certArray.forEach((cert: any) => {
+      const status = cert.status || "grey";
+      if (status === "red") hasRed = true;
+      else if (status === "amber") hasAmber = true;
+      else if (status === "grey") hasGrey = true;
+      else if (status === "green") hasGreen = true;
+    });
+    
+    // Return worst status
+    if (hasRed) return "red";
+    if (hasAmber) return "amber";
+    if (hasGrey) return "grey";
+    if (hasGreen) return "green";
+    
+    return "grey";
+  };
+
   const getVerificationBadges = (): BadgeItem[] => {
     const badges: BadgeItem[] = [];
     
@@ -115,14 +149,18 @@ export const ApplicationCard = ({ application, onStageChange, onToggleStar, onAd
         : "Right to Work: Not verified"
     });
     
-    // Certifications Badge
-    if (application.candidate_verifications?.certifications) {
-      badges.push({
-        label: "Cert",
-        status: "green",
-        tooltip: "Has certifications"
-      });
-    }
+    // Certifications Badge - now properly checking status
+    const certStatus = getCertificationStatus();
+    const certs = application.candidate_verifications?.certifications;
+    const certCount = Array.isArray(certs) ? certs.length : 0;
+    
+    badges.push({
+      label: "Cert",
+      status: certStatus,
+      tooltip: certCount > 0 
+        ? `Certifications: ${certCount} cert${certCount !== 1 ? 's' : ''} (${certStatus})` 
+        : "No certifications"
+    });
     
     // Logistics Badge (if available)
     if (application.candidate_verifications?.logistics_status) {
