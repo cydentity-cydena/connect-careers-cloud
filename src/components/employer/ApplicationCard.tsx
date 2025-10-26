@@ -138,26 +138,26 @@ export const ApplicationCard = ({ application, onStageChange, onToggleStar, onAd
   return (
     <>
       <Card 
-        className={`hover:shadow-md transition-all border relative ${application.is_starred ? 'border-amber-400 shadow-sm' : ''}`}
+        className={`hover:shadow-lg transition-all duration-200 border-2 relative ${application.is_starred ? 'border-amber-400 shadow-amber-100 dark:shadow-amber-900/20' : 'border-border/50 hover:border-border'}`}
       >
         {application.is_starred && (
-          <div className="absolute top-2 right-2 z-10">
-            <Star className="h-5 w-5 fill-amber-400 text-amber-400" />
+          <div className="absolute -top-1 -right-1 z-10 bg-background rounded-full p-0.5">
+            <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
           </div>
         )}
-        <CardContent className="p-4 space-y-3">
+        <CardContent className="p-5 space-y-4">
           <div className="flex items-start gap-3">
-            <Avatar className="h-12 w-12 flex-shrink-0">
+            <Avatar className="h-14 w-14 flex-shrink-0 ring-2 ring-background shadow-md">
               <AvatarImage src={application.profile.avatar_url || undefined} />
-              <AvatarFallback className="bg-primary text-primary-foreground text-sm">
+              <AvatarFallback className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground text-base font-semibold">
                 {getInitials(application.profile.full_name)}
               </AvatarFallback>
             </Avatar>
-            <div className="flex-1 min-w-0 pr-8">
-              <h4 className="font-semibold text-sm leading-tight mb-1">
+            <div className="flex-1 min-w-0 pr-6">
+              <h4 className="font-bold text-base leading-tight mb-1.5 text-foreground">
                 {application.profile.full_name}
               </h4>
-              <p className="text-xs text-muted-foreground line-clamp-2 leading-tight">
+              <p className="text-sm text-muted-foreground line-clamp-2 leading-snug">
                 {application.candidate_profile?.title || "No title"}
               </p>
             </div>
@@ -191,25 +191,27 @@ export const ApplicationCard = ({ application, onStageChange, onToggleStar, onAd
           </div>
 
           {/* Verification Status Badges */}
-          <BadgesRow 
-            items={getVerificationBadges()} 
-            showHrReady={application.candidate_verifications?.hr_ready || false}
-          />
+          <div className="py-1">
+            <BadgesRow 
+              items={getVerificationBadges()} 
+              showHrReady={application.candidate_verifications?.hr_ready || false}
+            />
+          </div>
 
-          <div className="space-y-2">
+          <div className="space-y-2.5 pt-1">
             <div className="flex flex-wrap gap-2 items-center">
               {/* Years of Experience Badge */}
               {application.candidate_profile?.years_experience !== undefined && (
-                <Badge variant="secondary" className="text-xs px-2 py-0.5">
-                  <Briefcase className="h-3 w-3 mr-1" />
+                <Badge variant="secondary" className="text-xs px-2.5 py-1 font-medium">
+                  <Briefcase className="h-3.5 w-3.5 mr-1.5" />
                   {application.candidate_profile.years_experience} yrs
                 </Badge>
               )}
               
               {/* Notes indicator - More prominent */}
               {application.status_notes && (
-                <Badge variant="secondary" className="text-xs px-2 py-0.5">
-                  <StickyNote className="h-3 w-3 mr-1" />
+                <Badge variant="secondary" className="text-xs px-2.5 py-1 font-medium bg-amber-100 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400">
+                  <StickyNote className="h-3.5 w-3.5 mr-1.5" />
                   Notes
                 </Badge>
               )}
@@ -217,15 +219,15 @@ export const ApplicationCard = ({ application, onStageChange, onToggleStar, onAd
 
             {/* Location if available */}
             {(application.candidate_verifications?.logistics_location || application.profile.location) && (
-              <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                <MapPin className="h-3 w-3 flex-shrink-0" />
-                <span className="truncate">{application.candidate_verifications?.logistics_location || application.profile.location}</span>
+              <div className="flex items-center gap-2 text-xs text-muted-foreground/90">
+                <MapPin className="h-3.5 w-3.5 flex-shrink-0" />
+                <span className="truncate font-medium">{application.candidate_verifications?.logistics_location || application.profile.location}</span>
               </div>
             )}
 
             {/* Applied date */}
-            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-              <Calendar className="h-3 w-3 flex-shrink-0" />
+            <div className="flex items-center gap-2 text-xs text-muted-foreground/80">
+              <Calendar className="h-3.5 w-3.5 flex-shrink-0" />
               <span className="truncate">{formatDistanceToNow(new Date(application.applied_at), { addSuffix: true })}</span>
             </div>
           </div>
@@ -234,26 +236,26 @@ export const ApplicationCard = ({ application, onStageChange, onToggleStar, onAd
             <Button
               variant="outline"
               size="sm"
-              className="flex-1 h-9 text-xs px-2"
+              className="flex-1 h-10 text-xs font-medium px-3 hover:bg-accent/50"
               onClick={(e) => {
                 e.stopPropagation();
                 window.location.href = `/profiles/${application.candidate_id}`;
               }}
             >
-              <Eye className="h-3.5 w-3.5 sm:mr-1" />
-              <span className="hidden sm:inline">View</span>
+              <Eye className="h-4 w-4 mr-2" />
+              <span>View</span>
             </Button>
             <Button
               variant="default"
               size="sm"
-              className="flex-1 h-9 text-xs px-2"
+              className="flex-1 h-10 text-xs font-medium px-3"
               onClick={(e) => {
                 e.stopPropagation();
                 setShowMessageDialog(true);
               }}
             >
-              <MessageSquare className="h-3.5 w-3.5 sm:mr-1" />
-              <span className="hidden sm:inline">Message</span>
+              <MessageSquare className="h-4 w-4 mr-2" />
+              <span>Message</span>
             </Button>
           </div>
 
@@ -268,12 +270,12 @@ export const ApplicationCard = ({ application, onStageChange, onToggleStar, onAd
               }
             }}
           >
-            <SelectTrigger className="h-9 text-xs w-full bg-card border-border">
+            <SelectTrigger className="h-10 text-sm w-full bg-muted/30 border-border hover:bg-muted/50 transition-colors font-medium">
               <SelectValue placeholder="Change stage..." />
             </SelectTrigger>
             <SelectContent className="bg-card border-border z-[100]">
               {stages.map((stage) => (
-                <SelectItem key={stage.value} value={stage.value} className="cursor-pointer hover:bg-accent">
+                <SelectItem key={stage.value} value={stage.value} className="cursor-pointer hover:bg-accent text-sm font-medium">
                   {stage.label}
                 </SelectItem>
               ))}
