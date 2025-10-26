@@ -886,34 +886,51 @@ export const ApplicationPipeline = () => {
                         )}
                       </div>
 
-                      <div className="flex gap-1.5 min-w-0">
+                      <div className="space-y-1.5">
+                        <div className="grid grid-cols-2 gap-1.5">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="h-8 text-xs"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              navigate(`/profiles/${candidate.candidate_id}`);
+                            }}
+                          >
+                            <Eye className="h-3 w-3 sm:mr-1" />
+                            <span className="hidden sm:inline">View</span>
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="default"
+                            className="h-8 text-xs"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setMessageDialog({
+                                open: true,
+                                recipientId: candidate.candidate_id,
+                                recipientName: candidate.profile.full_name
+                              });
+                            }}
+                          >
+                            <MessageCircle className="h-3 w-3 sm:mr-1" />
+                            <span className="hidden sm:inline">Message</span>
+                          </Button>
+                        </div>
                         <Button
                           size="sm"
                           variant="outline"
-                          className="flex-1 h-8 text-xs px-2 min-w-0"
+                          className="h-8 text-xs w-full"
                           onClick={(e) => {
                             e.stopPropagation();
-                            navigate(`/profiles/${candidate.candidate_id}`);
-                          }}
-                        >
-                          <Eye className="h-3 w-3 mr-1" />
-                          <span className="hidden sm:inline truncate">View</span>
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="default"
-                          className="flex-1 h-8 text-xs px-2 min-w-0"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setMessageDialog({
-                              open: true,
-                              recipientId: candidate.candidate_id,
-                              recipientName: candidate.profile.full_name
+                            setEditingVerification({ 
+                              candidateId: candidate.candidate_id, 
+                              verification: candidate.candidate_verifications 
                             });
                           }}
                         >
-                          <MessageCircle className="h-3 w-3 mr-1" />
-                          <span className="hidden sm:inline truncate">Message</span>
+                          <Shield className="h-3 w-3 mr-1" />
+                          Edit Verification
                         </Button>
                       </div>
                     </Card>

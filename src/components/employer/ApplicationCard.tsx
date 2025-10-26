@@ -152,6 +152,12 @@ export const ApplicationCard = ({ application, onStageChange, onToggleStar, onAd
                     {application.status_notes ? "Edit Notes" : "Add Notes"}
                   </DropdownMenuItem>
                 )}
+                {onEditVerification && (
+                  <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onEditVerification(); }}>
+                    <Shield className="h-4 w-4 mr-2" />
+                    Edit Verification
+                  </DropdownMenuItem>
+                )}
                 {stages
                   .filter(s => s.value !== application.stage)
                   .map((stage) => (
