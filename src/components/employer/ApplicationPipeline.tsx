@@ -296,15 +296,15 @@ export const ApplicationPipeline = () => {
         .from('applications')
         .select(`
           *,
-          candidate_profile:candidate_profiles!applications_candidate_id_fkey(
+          candidate_profile:candidate_profiles!candidate_id(
             title,
             years_experience
           ),
-          profile:profiles!applications_candidate_id_fkey(
+          profile:profiles!candidate_id(
             full_name,
             avatar_url
           ),
-          job:jobs!applications_job_id_fkey(
+          job:jobs!job_id(
             title
           )
         `)
