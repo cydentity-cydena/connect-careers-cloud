@@ -400,38 +400,55 @@ export const ApplicationPipeline = () => {
     try {
       console.log('Creating application:', { candidateId, jobId, stage });
       
-      const { data, error } = await supabase
+      // First, insert the application
+      const { data: newApp, error: insertError } = await supabase
         .from('applications')
         .insert({
           candidate_id: candidateId,
           job_id: jobId,
           stage: stage
         })
-        .select(`
-          *,
-          candidate_profile:candidate_profiles!applications_candidate_id_fkey(
-            title,
-            years_experience
-          ),
-          profile:profiles!applications_candidate_id_fkey(
-            full_name,
-            avatar_url
-          ),
-          job:jobs!applications_job_id_fkey(
-            title
-          )
-        `)
+        .select('*')
         .single();
 
-      if (error) {
-        console.error('Supabase error:', error);
-        throw error;
+      if (insertError) {
+        console.error('Insert error:', insertError);
+        throw insertError;
       }
 
-      console.log('Application created:', data);
+      console.log('Application inserted:', newApp);
+
+      // Then fetch the related data separately
+      const [profileRes, candidateProfileRes, jobRes] = await Promise.all([
+        supabase
+          .from('profiles')
+          .select('full_name, avatar_url, location')
+          .eq('id', candidateId)
+          .single(),
+        supabase
+          .from('candidate_profiles')
+          .select('title, years_experience')
+          .eq('user_id', candidateId)
+          .single(),
+        supabase
+          .from('jobs')
+          .select('title')
+          .eq('id', jobId)
+          .single()
+      ]);
+
+      // Construct the full application object
+      const fullApplication = {
+        ...newApp,
+        profile: profileRes.data || { full_name: 'Unknown', avatar_url: null, location: null },
+        candidate_profile: candidateProfileRes.data || { title: '', years_experience: 0 },
+        job: jobRes.data || { title: 'Unknown' }
+      };
+
+      console.log('Full application constructed:', fullApplication);
 
       // Add to applications list
-      setApplications(prev => [data as any, ...prev]);
+      setApplications(prev => [fullApplication as any, ...prev]);
 
       // Remove from talent pool
       setUnlockedCandidates(prev => prev.filter(c => c.candidate_id !== candidateId));
