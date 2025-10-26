@@ -16,7 +16,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { MessageSquare, MoreVertical, Calendar, Briefcase, GripVertical } from "lucide-react";
+import { MessageSquare, MoreVertical, Calendar, Briefcase, GripVertical, Eye } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { HireConfirmationDialog } from "./HireConfirmationDialog";
 import { SendMessageDialog } from "@/components/messaging/SendMessageDialog";
@@ -122,28 +122,42 @@ export const ApplicationCard = ({ application, onStageChange }: ApplicationCardP
             </DropdownMenu>
           </div>
 
-          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            <Briefcase className="h-3 w-3" />
-            <span className="truncate">{application.candidate_profile?.years_experience || 0}y exp</span>
+          <div className="space-y-1">
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+              <Briefcase className="h-3 w-3 flex-shrink-0" />
+              <span className="truncate">{application.candidate_profile?.years_experience || 0} yrs exp</span>
+            </div>
+
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+              <Calendar className="h-3 w-3 flex-shrink-0" />
+              <span className="truncate">{formatDistanceToNow(new Date(application.applied_at), { addSuffix: true })}</span>
+            </div>
           </div>
 
-          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            <Calendar className="h-3 w-3" />
-            <span>{formatDistanceToNow(new Date(application.applied_at), { addSuffix: true })}</span>
+          <div className="flex gap-2 pt-1">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="flex-1 h-8"
+              onClick={(e) => {
+                e.stopPropagation();
+                window.location.href = `/profiles/${application.candidate_id}`;
+              }}
+            >
+              <Eye className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="default"
+              size="sm"
+              className="flex-1 h-8"
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowMessageDialog(true);
+              }}
+            >
+              <MessageSquare className="h-4 w-4" />
+            </Button>
           </div>
-
-          <Button
-            variant="outline"
-            size="sm"
-            className="w-full"
-            onClick={(e) => {
-              e.stopPropagation();
-              setShowDetails(true);
-            }}
-          >
-            <MessageSquare className="h-3 w-3 mr-1" />
-            View Details
-          </Button>
         </CardContent>
       </Card>
 
