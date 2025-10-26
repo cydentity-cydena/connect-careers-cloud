@@ -639,7 +639,7 @@ export default function StaffFunnel() {
                           </div>
                         </div>
                       )}
-                      <div className="flex gap-2 pt-2 border-t">
+                      <div className="grid grid-cols-2 gap-2 pt-2 border-t">
                         {candidate.cv_url && (
                           <Button
                             size="sm"
@@ -794,7 +794,7 @@ export default function StaffFunnel() {
                         
                         {/* Actions */}
                         <div className="space-y-2 pt-2 border-t">
-                          <div className="flex gap-2">
+                          <div className="grid grid-cols-2 gap-2">
                             {candidate.cv_url ? (
                               <Button
                                 variant="outline"
