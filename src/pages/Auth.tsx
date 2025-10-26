@@ -4,7 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Shield, Loader2, CheckCircle } from "lucide-react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Shield, Loader2, CheckCircle, ChevronDown } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -568,22 +569,61 @@ const Auth = () => {
         </Card>
         </div>
 
-        {/* Additional SEO Content */}
-        <div className="mt-12 max-w-3xl mx-auto prose prose-sm text-muted-foreground">
-          <h2 className="text-xl font-bold text-foreground mb-4">About Cydena Cybersecurity Recruitment</h2>
-          <p className="mb-4">
-            Cydena is a specialized recruitment platform designed exclusively for cybersecurity professionals and employers. Our platform connects security analysts, penetration testers, security engineers, SOC analysts, GRC specialists, and CISOs with companies seeking to strengthen their cybersecurity posture.
-          </p>
-          <p className="mb-4">
-            Unlike traditional job boards and recruitment agencies that charge 15-30% placement fees, Cydena operates on a transparent subscription model. This means employers can offer more competitive salaries, and candidates access opportunities without recruiter gatekeepers. Our skills-based matching system prioritizes verified certifications (CISSP, CEH, OSCP, Security+, CISM, etc.) and practical experience over traditional credentials.
-          </p>
-          <p className="mb-4">
-            For cybersecurity professionals, signing up is completely free with no hidden costs. Create your profile, upload your certifications for verification, and start applying to relevant positions immediately. Track your applications in real-time through our transparent pipeline system, and communicate directly with hiring managers through our in-platform messaging.
-          </p>
-          <p>
-            Employers and recruiters benefit from access to a curated talent pool of pre-screened cybersecurity professionals with verified credentials. Our subscription plans offer unlimited job postings, advanced candidate search, application management tools, and direct communication channels - all at a fraction of traditional recruitment costs.
-          </p>
-        </div>
+        {/* Additional SEO Content - Collapsible */}
+        <Collapsible className="mt-12 max-w-3xl mx-auto">
+          <Card className="border-2">
+            <CollapsibleTrigger className="w-full">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4 cursor-pointer hover:bg-accent/50 transition-colors">
+                <div className="space-y-1 text-left">
+                  <CardTitle className="text-xl">About Cydena Cybersecurity Recruitment</CardTitle>
+                  <CardDescription>
+                    Learn more about our specialized cybersecurity recruitment platform
+                  </CardDescription>
+                </div>
+                <ChevronDown className="h-5 w-5 text-muted-foreground transition-transform duration-200 [&[data-state=open]]:rotate-180" />
+              </CardHeader>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <CardContent className="space-y-4 pt-0 text-muted-foreground">
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="font-semibold text-foreground mb-2 flex items-center gap-2">
+                      <Shield className="h-4 w-4 text-primary" />
+                      For Cybersecurity Professionals
+                    </h3>
+                    <p className="text-sm leading-relaxed">
+                      Cydena is a specialized recruitment platform designed exclusively for cybersecurity professionals and employers. Our platform connects security analysts, penetration testers, security engineers, SOC analysts, GRC specialists, and CISOs with companies seeking to strengthen their cybersecurity posture.
+                    </p>
+                  </div>
+
+                  <div>
+                    <h3 className="font-semibold text-foreground mb-2 flex items-center gap-2">
+                      <CheckCircle className="h-4 w-4 text-primary" />
+                      Transparent Pricing Model
+                    </h3>
+                    <p className="text-sm leading-relaxed">
+                      Unlike traditional job boards and recruitment agencies that charge 15-30% placement fees, Cydena operates on a transparent subscription model. This means employers can offer more competitive salaries, and candidates access opportunities without recruiter gatekeepers. Our skills-based matching system prioritizes verified certifications (CISSP, CEH, OSCP, Security+, CISM, etc.) and practical experience over traditional credentials.
+                    </p>
+                  </div>
+
+                  <div>
+                    <h3 className="font-semibold text-foreground mb-2">Free for Candidates</h3>
+                    <p className="text-sm leading-relaxed">
+                      For cybersecurity professionals, signing up is completely free with no hidden costs. Create your profile, upload your certifications for verification, and start applying to relevant positions immediately. Track your applications in real-time through our transparent pipeline system, and communicate directly with hiring managers through our in-platform messaging.
+                    </p>
+                  </div>
+
+                  <div>
+                    <h3 className="font-semibold text-foreground mb-2">For Employers & Recruiters</h3>
+                    <p className="text-sm leading-relaxed">
+                      Employers and recruiters benefit from access to a curated talent pool of pre-screened cybersecurity professionals with verified credentials. Our subscription plans offer unlimited job postings, advanced candidate search, application management tools, and direct communication channels - all at a fraction of traditional recruitment costs.
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </CollapsibleContent>
+          </Card>
+        </Collapsible>
         </div>
       </div>
 
