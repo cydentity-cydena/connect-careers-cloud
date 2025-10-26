@@ -156,17 +156,17 @@ const Navigation = () => {
           </div>
 
           {/* Mobile Menu */}
-          <div className="lg:hidden flex items-center gap-2">
+          <div className="lg:hidden flex items-center gap-2 flex-shrink-0">
             {user && (userRoles.includes('staff') || userRoles.includes('admin')) && (
               <Link to="/staff/funnel" onClick={handleNavClick}>
-                <Button variant="hero" size="sm" className="font-semibold">
+                <Button variant="hero" size="sm" className="font-semibold whitespace-nowrap">
                   Staff Funnel
                 </Button>
               </Link>
             )}
             {user && (
               <Link to="/dashboard" onClick={handleNavClick}>
-                <Button variant="hero" size="sm" className="font-semibold">
+                <Button variant="hero" size="sm" className="font-semibold whitespace-nowrap">
                   Dashboard
                 </Button>
               </Link>
