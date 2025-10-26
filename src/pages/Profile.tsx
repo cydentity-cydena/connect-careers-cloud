@@ -8,8 +8,9 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 import SEO from '@/components/SEO';
-import { ArrowLeft, Plus, Trash2, Upload, Image as ImageIcon } from 'lucide-react';
+import { ArrowLeft, Plus, Trash2, Upload, Image as ImageIcon, User } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -408,55 +409,69 @@ const Profile = () => {
                 <Label htmlFor="location">Location</Label>
                 <Input id="location" value={location} onChange={(e) => setLocation(e.target.value)} />
                 
-                <div className="space-y-2">
-                  <Label htmlFor="avatar" className="flex items-center gap-2">
+                <div className="space-y-4">
+                  <Label className="flex items-center gap-2 text-base">
                     <ImageIcon className="h-4 w-4" />
                     Profile Picture
                   </Label>
+                  
                   {avatarUrl && (
-                    <div className="flex items-center gap-4 mb-2 p-3 border rounded-lg bg-muted/30">
-                      <img 
-                        src={avatarUrl} 
-                        alt="Profile" 
-                        className="h-20 w-20 rounded-full object-cover border-2 border-primary/20"
-                      />
-                      <div className="flex-1">
-                        <p className="text-sm font-medium">Current profile picture</p>
-                        <p className="text-xs text-muted-foreground">Upload a new one to replace it</p>
+                    <div className="flex flex-col items-center gap-4 p-6 border rounded-xl bg-gradient-to-b from-muted/50 to-muted/20">
+                      <div className="relative group">
+                        <Avatar className="h-32 w-32 border-4 border-background shadow-lg ring-2 ring-primary/20">
+                          <AvatarImage src={avatarUrl} alt="Profile" className="object-cover" />
+                          <AvatarFallback className="bg-primary/10">
+                            <User className="h-16 w-16 text-primary/60" />
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="absolute inset-0 rounded-full bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                          <ImageIcon className="h-8 w-8 text-white" />
+                        </div>
+                      </div>
+                      <div className="text-center space-y-1">
+                        <p className="text-sm font-medium">{fullName || 'Your Name'}</p>
+                        <p className="text-xs text-muted-foreground">@{username || 'username'}</p>
                       </div>
                       <Button
                         type="button"
                         variant="outline"
                         size="sm"
                         onClick={handleAvatarRemove}
+                        className="w-full max-w-[200px]"
                       >
                         <Trash2 className="h-4 w-4 mr-2" />
-                        Remove
+                        Remove Picture
                       </Button>
                     </div>
                   )}
-                  <div className="relative">
-                    <Input 
-                      id="avatar" 
-                      type="file"
-                      accept="image/*"
-                      onChange={handleAvatarUpload}
-                      disabled={uploadingAvatar}
-                      className="cursor-pointer"
-                    />
-                    {uploadingAvatar && (
-                      <div className="absolute inset-0 bg-background/80 flex items-center justify-center rounded-md">
-                        <div className="flex items-center gap-2 text-sm">
-                          <Upload className="h-4 w-4 animate-pulse" />
-                          <span>Uploading...</span>
+                  
+                  <div className="space-y-2">
+                    <div className="relative">
+                      <Input 
+                        id="avatar" 
+                        type="file"
+                        accept="image/*"
+                        onChange={handleAvatarUpload}
+                        disabled={uploadingAvatar}
+                        className="cursor-pointer file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-primary file:text-primary-foreground hover:file:bg-primary/90"
+                      />
+                      {uploadingAvatar && (
+                        <div className="absolute inset-0 bg-background/90 flex items-center justify-center rounded-md backdrop-blur-sm">
+                          <div className="flex items-center gap-2 text-sm font-medium">
+                            <Upload className="h-4 w-4 animate-pulse text-primary" />
+                            <span>Uploading...</span>
+                          </div>
                         </div>
-                      </div>
-                    )}
+                      )}
+                    </div>
+                    <div className="flex items-start gap-2 p-3 rounded-lg bg-primary/5 border border-primary/10">
+                      <Upload className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                      <p className="text-xs text-muted-foreground leading-relaxed">
+                        Upload JPG, PNG, or WEBP (max 5MB). Square images work best for profile pictures. 
+                        <span className="block mt-1 text-primary font-medium">🎉 Earn +50 points for your first upload!</span>
+                      </p>
+                    </div>
                   </div>
-                  <p className="text-xs text-muted-foreground flex items-center gap-1">
-                    <Upload className="h-3 w-3" />
-                    Upload JPG, PNG, or WEBP (max 5MB). <span className="text-primary font-medium">Earn +50 points!</span>
-                  </p>
                 </div>
               </div>
               <div className="space-y-3">
