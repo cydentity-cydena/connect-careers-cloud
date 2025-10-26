@@ -725,15 +725,29 @@ export const ApplicationPipeline = () => {
             </div>
             <div className="flex gap-2 flex-wrap">
               <Select value={filterRole} onValueChange={setFilterRole}>
-                <SelectTrigger className="w-[150px]">
+                <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="All roles" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-popover z-[100] max-h-[300px]">
                   <SelectItem value="all">All roles</SelectItem>
-                  <SelectItem value="analyst">Analyst</SelectItem>
-                  <SelectItem value="engineer">Engineer</SelectItem>
-                  <SelectItem value="architect">Architect</SelectItem>
-                  <SelectItem value="consultant">Consultant</SelectItem>
+                  <SelectItem value="analyst">Security Analyst</SelectItem>
+                  <SelectItem value="engineer">Security Engineer</SelectItem>
+                  <SelectItem value="architect">Security Architect</SelectItem>
+                  <SelectItem value="penetration">Penetration Tester</SelectItem>
+                  <SelectItem value="soc">SOC Analyst</SelectItem>
+                  <SelectItem value="incident">Incident Response</SelectItem>
+                  <SelectItem value="threat">Threat Intelligence</SelectItem>
+                  <SelectItem value="grc">GRC Analyst</SelectItem>
+                  <SelectItem value="compliance">Compliance</SelectItem>
+                  <SelectItem value="ciso">CISO/Manager</SelectItem>
+                  <SelectItem value="consultant">Security Consultant</SelectItem>
+                  <SelectItem value="researcher">Security Researcher</SelectItem>
+                  <SelectItem value="forensics">Digital Forensics</SelectItem>
+                  <SelectItem value="devsecops">DevSecOps</SelectItem>
+                  <SelectItem value="appsec">Application Security</SelectItem>
+                  <SelectItem value="cloud">Cloud Security</SelectItem>
+                  <SelectItem value="network">Network Security</SelectItem>
+                  <SelectItem value="iam">IAM/Identity</SelectItem>
                 </SelectContent>
               </Select>
               <Select value={selectedJob || "all"} onValueChange={(value) => setSelectedJob(value === "all" ? null : value)}>
