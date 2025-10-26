@@ -93,15 +93,6 @@ const Training = () => {
           description: "Affordable courses with PNPT certification. Rapidly growing recognition in the industry.",
           color: "bg-red-600",
           features: ["PNPT Certification", "Practical Training", "Course Certificates", "Industry Recognition"]
-        },
-        {
-          name: "INE (eLearnSecurity)",
-          description: "Provider of eJPT and eCPPT certifications. Respected practical security certifications.",
-          color: "bg-indigo-600",
-          features: ["eJPT Certification", "eCPPT Training", "Lab Environment", "Industry Respected"],
-          freeCourses: [
-            { name: "Intro to Pen Testing", url: "https://ine.com/pages/cybersecurity" }
-          ]
         }
       ]
     },
