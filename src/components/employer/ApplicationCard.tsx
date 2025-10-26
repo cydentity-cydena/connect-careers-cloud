@@ -103,35 +103,35 @@ export const ApplicationCard = ({ application, onStageChange, onToggleStar, onAd
             <Star className="h-5 w-5 fill-amber-400 text-amber-400" />
           </div>
         )}
-        <CardContent className="p-3 space-y-3">
-          <div className="flex items-start gap-2">
+        <CardContent className="p-4 space-y-3">
+          <div className="flex items-start gap-3">
             <div 
               className="cursor-move mt-1 flex-shrink-0"
               onMouseDown={(e) => e.stopPropagation()}
             >
               <GripVertical className="h-4 w-4 text-muted-foreground" />
             </div>
-            <Avatar className="h-10 w-10 flex-shrink-0">
+            <Avatar className="h-12 w-12 flex-shrink-0">
               <AvatarImage src={application.profile.avatar_url || undefined} />
-              <AvatarFallback className="bg-primary text-primary-foreground">
+              <AvatarFallback className="bg-primary text-primary-foreground text-sm">
                 {getInitials(application.profile.full_name)}
               </AvatarFallback>
             </Avatar>
-            <div className="flex-1 min-w-0">
-              <h4 className="font-semibold text-sm truncate">
+            <div className="flex-1 min-w-0 pr-8">
+              <h4 className="font-semibold text-sm leading-tight mb-1">
                 {application.profile.full_name}
               </h4>
-              <p className="text-xs text-muted-foreground truncate">
+              <p className="text-xs text-muted-foreground line-clamp-2 leading-tight">
                 {application.candidate_profile?.title || "No title"}
               </p>
             </div>
             <DropdownMenu>
               <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-                <Button variant="ghost" size="sm" className="h-8 w-8 p-0 flex-shrink-0">
+                <Button variant="ghost" size="sm" className="h-8 w-8 p-0 flex-shrink-0 absolute top-2 right-2">
                   <MoreVertical className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
+              <DropdownMenuContent align="end" className="w-48 bg-popover z-50">
                 {onToggleStar && (
                   <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onToggleStar(); }}>
                     <Star className={`h-4 w-4 mr-2 ${application.is_starred ? "fill-current" : ""}`} />
@@ -208,59 +208,63 @@ export const ApplicationCard = ({ application, onStageChange, onToggleStar, onAd
           </div>
 
           <div className="space-y-2">
-            {/* Years of Experience Badge */}
-            {application.candidate_profile?.years_experience !== undefined && (
-              <Badge variant="secondary" className="text-xs">
-                <Briefcase className="h-3 w-3 mr-1" />
-                {application.candidate_profile.years_experience} yrs
-              </Badge>
-            )}
+            <div className="flex flex-wrap gap-2 items-center">
+              {/* Years of Experience Badge */}
+              {application.candidate_profile?.years_experience !== undefined && (
+                <Badge variant="secondary" className="text-xs px-2 py-0.5">
+                  <Briefcase className="h-3 w-3 mr-1" />
+                  {application.candidate_profile.years_experience} yrs
+                </Badge>
+              )}
+              
+              {/* Notes indicator - More prominent */}
+              {application.status_notes && (
+                <Badge variant="secondary" className="text-xs px-2 py-0.5">
+                  <StickyNote className="h-3 w-3 mr-1" />
+                  Notes
+                </Badge>
+              )}
+            </div>
 
             {/* Location if available */}
             {application.profile.location && (
-              <div className="flex items-center gap-1 text-xs text-muted-foreground">
+              <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                 <MapPin className="h-3 w-3 flex-shrink-0" />
                 <span className="truncate">{application.profile.location}</span>
               </div>
             )}
 
             {/* Applied date */}
-            <div className="flex items-center gap-1 text-xs text-muted-foreground">
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
               <Calendar className="h-3 w-3 flex-shrink-0" />
               <span className="truncate">{formatDistanceToNow(new Date(application.applied_at), { addSuffix: true })}</span>
             </div>
-
-            {/* Notes indicator - More prominent */}
-            {application.status_notes && (
-              <Badge variant="secondary" className="text-xs">
-                <StickyNote className="h-3 w-3 mr-1" />
-                Notes
-              </Badge>
-            )}
           </div>
 
           <div className="flex gap-2 pt-2">
             <Button
-              variant="ghost"
+              variant="outline"
               size="sm"
-              className="flex-1 h-8"
+              className="flex-1 h-9 text-xs"
               onClick={(e) => {
                 e.stopPropagation();
                 window.location.href = `/profiles/${application.candidate_id}`;
               }}
             >
-              <Eye className="h-4 w-4" />
+              <Eye className="h-3.5 w-3.5 mr-1" />
+              View
             </Button>
             <Button
               variant="default"
               size="sm"
-              className="flex-1 h-8"
+              className="flex-1 h-9 text-xs"
               onClick={(e) => {
                 e.stopPropagation();
                 setShowMessageDialog(true);
               }}
             >
-              <MessageSquare className="h-4 w-4" />
+              <MessageSquare className="h-3.5 w-3.5 mr-1" />
+              Message
             </Button>
           </div>
         </CardContent>
