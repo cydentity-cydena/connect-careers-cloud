@@ -561,13 +561,13 @@ const Profile = () => {
           <Collapsible open={workHistoryOpen} onOpenChange={setWorkHistoryOpen}>
             <div className="flex items-center justify-between mb-4">
               <CollapsibleTrigger asChild>
-                <Button variant="ghost" className="p-0 hover:bg-transparent">
+                <button className="p-0 text-left cursor-pointer bg-transparent border-0">
                   <h3 className="text-lg font-semibold flex items-center gap-2">
                     {workHistoryOpen ? <ChevronDown className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />}
                     Work History
                     <span className="text-sm text-muted-foreground font-normal">({workHistory.length})</span>
                   </h3>
-                </Button>
+                </button>
               </CollapsibleTrigger>
               <Button onClick={addWorkHistory} size="sm" variant="outline">
                 <Plus className="mr-2 h-4 w-4" />
@@ -663,13 +663,13 @@ const Profile = () => {
           <Collapsible open={projectsOpen} onOpenChange={setProjectsOpen}>
             <div className="flex items-center justify-between mb-4">
               <CollapsibleTrigger asChild>
-                <Button variant="ghost" className="p-0 hover:bg-transparent">
+                <button className="p-0 text-left cursor-pointer bg-transparent border-0">
                   <h3 className="text-lg font-semibold flex items-center gap-2">
                     {projectsOpen ? <ChevronDown className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />}
                     Projects
                     <span className="text-sm text-muted-foreground font-normal">({projects.length})</span>
                   </h3>
-                </Button>
+                </button>
               </CollapsibleTrigger>
               <Button onClick={addProject} size="sm" variant="outline">
                 <Plus className="mr-2 h-4 w-4" />
@@ -762,13 +762,13 @@ const Profile = () => {
           <Collapsible open={educationOpen} onOpenChange={setEducationOpen}>
             <div className="flex items-center justify-between mb-4">
               <CollapsibleTrigger asChild>
-                <Button variant="ghost" className="p-0 hover:bg-transparent">
+                <button className="p-0 text-left cursor-pointer bg-transparent border-0">
                   <h3 className="text-lg font-semibold flex items-center gap-2">
                     {educationOpen ? <ChevronDown className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />}
                     Education
                     <span className="text-sm text-muted-foreground font-normal">({education.length})</span>
                   </h3>
-                </Button>
+                </button>
               </CollapsibleTrigger>
               <Button onClick={addEducation} size="sm" variant="outline">
                 <Plus className="mr-2 h-4 w-4" />

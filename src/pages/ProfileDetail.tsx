@@ -636,14 +636,14 @@ export default function ProfileDetail() {
                   <Collapsible open={certificationsOpen} onOpenChange={setCertificationsOpen}>
                     <div className="space-y-3">
                       <CollapsibleTrigger asChild>
-                        <Button variant="ghost" className="p-0 hover:bg-transparent w-full justify-start">
+                        <button className="p-0 w-full text-left cursor-pointer bg-transparent border-0">
                           <h3 className="text-lg font-semibold flex items-center gap-2">
                             {certificationsOpen ? <ChevronDown className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />}
                             <Award className="h-5 w-5" />
                             Certifications
                             <span className="text-sm text-muted-foreground font-normal">({candidateProfile.certifications.length})</span>
                           </h3>
-                        </Button>
+                        </button>
                       </CollapsibleTrigger>
                       <CollapsibleContent className="space-y-3">
                         {candidateProfile.certifications.map((cert: any, idx: number) => (
