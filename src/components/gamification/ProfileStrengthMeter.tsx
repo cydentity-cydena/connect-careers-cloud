@@ -67,12 +67,18 @@ export const ProfileStrengthMeter = ({ userId }: ProfileStrengthMeterProps) => {
         if (candidateProfile.years_experience > 0) score += 10;
         else missing.push({ label: 'Add years of experience', route: '/profile', section: 'experience' });
         
-        if (candidateProfile.resume_url) score += 10;
-        else missing.push({ label: 'Upload your resume', route: '/profile', section: 'resume' });
-        
         if (candidateProfile.linkedin_url) score += 10;
         else missing.push({ label: 'Connect LinkedIn profile', route: '/profile', section: 'linkedin' });
       }
+
+      // Check for resumes in the candidate_resumes table
+      const { data: resumes } = await supabase
+        .from('candidate_resumes')
+        .select('id')
+        .eq('candidate_id', userId);
+
+      if (resumes && resumes.length > 0) score += 10;
+      else missing.push({ label: 'Upload your resume', route: '/dashboard', section: 'resume' });
 
       // Check skills
       const { data: skills } = await supabase
