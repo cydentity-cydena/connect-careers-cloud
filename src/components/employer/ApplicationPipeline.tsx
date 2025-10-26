@@ -455,7 +455,30 @@ export const ApplicationPipeline = () => {
     try {
       console.log('Creating application:', { candidateId, jobId, stage });
       
-      // First, insert the application
+      // First, check if an application already exists for this candidate+job
+      const { data: existingApp, error: checkError } = await supabase
+        .from('applications')
+        .select('id, stage')
+        .eq('candidate_id', candidateId)
+        .eq('job_id', jobId)
+        .maybeSingle();
+
+      if (checkError) {
+        console.error('Check error:', checkError);
+        throw checkError;
+      }
+
+      // If application exists, just update its stage
+      if (existingApp) {
+        await handleStageChange(existingApp.id, stage);
+        toast({
+          title: "Application Updated",
+          description: "Moved existing application to " + stageConfig[stage].title,
+        });
+        return;
+      }
+      
+      // Create new application if it doesn't exist
       const { data: newApp, error: insertError } = await supabase
         .from('applications')
         .insert({
