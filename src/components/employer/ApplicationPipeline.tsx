@@ -15,6 +15,7 @@ import { SendMessageDialog } from "@/components/messaging/SendMessageDialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { EditVerificationDrawer } from "@/components/hrready/EditVerificationDrawer";
 
 type PipelineStage = "applied" | "screening" | "interview" | "offer" | "rejected" | "hired";
 
@@ -144,6 +145,7 @@ export const ApplicationPipeline = () => {
     candidateName: "",
     targetStage: "applied"
   });
+  const [editingVerification, setEditingVerification] = useState<{ candidateId: string; verification: any } | null>(null);
 
   useEffect(() => {
     checkUserRole();
@@ -971,6 +973,10 @@ export const ApplicationPipeline = () => {
                               applicationId: application.id,
                               currentNotes: application.status_notes || ""
                             })}
+                            onEditVerification={() => setEditingVerification({ 
+                              candidateId: application.candidate_id, 
+                              verification: application.candidate_verifications 
+                            })}
                           />
                         </div>
                       ))}
@@ -1074,6 +1080,17 @@ export const ApplicationPipeline = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Edit Verification Drawer */}
+      {editingVerification && (
+        <EditVerificationDrawer
+          open={!!editingVerification}
+          onOpenChange={(open) => !open && setEditingVerification(null)}
+          candidateId={editingVerification.candidateId}
+          verification={editingVerification.verification}
+          onSuccess={fetchApplications}
+        />
+      )}
     </div>
   );
 };

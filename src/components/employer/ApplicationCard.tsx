@@ -57,9 +57,10 @@ interface ApplicationCardProps {
   onStageChange: (applicationId: string, newStage: PipelineStage) => void;
   onToggleStar?: () => void;
   onAddNotes?: () => void;
+  onEditVerification?: () => void;
 }
 
-export const ApplicationCard = ({ application, onStageChange, onToggleStar, onAddNotes }: ApplicationCardProps) => {
+export const ApplicationCard = ({ application, onStageChange, onToggleStar, onAddNotes, onEditVerification }: ApplicationCardProps) => {
   const [showDetails, setShowDetails] = useState(false);
   const [showHireDialog, setShowHireDialog] = useState(false);
   const [showMessageDialog, setShowMessageDialog] = useState(false);
@@ -133,6 +134,12 @@ export const ApplicationCard = ({ application, onStageChange, onToggleStar, onAd
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48 bg-popover z-50">
+                {onEditVerification && (
+                  <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onEditVerification(); }}>
+                    <Shield className="h-4 w-4 mr-2" />
+                    Edit Verification
+                  </DropdownMenuItem>
+                )}
                 {onToggleStar && (
                   <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onToggleStar(); }}>
                     <Star className={`h-4 w-4 mr-2 ${application.is_starred ? "fill-current" : ""}`} />
