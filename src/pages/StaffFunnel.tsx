@@ -823,7 +823,7 @@ export default function StaffFunnel() {
                               onClick={() => setEditingVerification({ candidateId: candidate.candidate_id, verification: candidate.verification })}
                             >
                               <ShieldCheck className="h-3 w-3 mr-1" />
-                              Verify
+                              Edit Verification
                             </Button>
                           </div>
 
