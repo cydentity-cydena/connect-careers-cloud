@@ -202,23 +202,27 @@ export default function ProfileDetail() {
           .eq('is_visible_to_employers', true) // Only show resumes candidate made visible
           .order('is_primary', { ascending: false });
         
-        // Generate signed URLs for resumes from storage
         if (resumesData) {
           const resumesWithSignedUrls = await Promise.all(
             resumesData.map(async (resume) => {
-              // Check if it's a storage path (not a base64 data URL or external URL)
-              if (!resume.resume_url.startsWith('data:') && !resume.resume_url.startsWith('http')) {
-                try {
-                  const { data: signedData } = await supabase.storage
-                    .from('resumes')
-                    .createSignedUrl(resume.resume_url, 3600); // 1 hour expiry
-                  
-                  if (signedData) {
-                    return { ...resume, resume_url: signedData.signedUrl };
-                  }
-                } catch (error) {
-                  console.error('Error generating signed URL for resume:', error);
+              const normalizePath = (value: string) => value
+                .replace(/^\/?resumes\//, '')
+                .replace(/^\//, '');
+
+              // If it's already a full URL or data URL, keep as is
+              if (resume.resume_url.startsWith('http') || resume.resume_url.startsWith('data:')) {
+                return resume;
+              }
+
+              try {
+                const { data: signedData } = await supabase.storage
+                  .from('resumes')
+                  .createSignedUrl(normalizePath(resume.resume_url), 3600); // 1 hour expiry
+                if (signedData) {
+                  return { ...resume, resume_url: signedData.signedUrl };
                 }
+              } catch (error) {
+                console.error('Error generating signed URL for resume:', error);
               }
               return resume;
             })
@@ -246,7 +250,7 @@ export default function ProfileDetail() {
 
   const handleViewResume = async (resumeUrl: string, resumeName: string) => {
     try {
-      // Extract the file path if it's a full URL
+      // Normalize to a bucket-relative path (no leading slash or 'resumes/')
       const derivePath = (value: string) => {
         try {
           if (value.startsWith("http")) {
@@ -255,28 +259,27 @@ export default function ProfileDetail() {
             if (match?.[1]) return match[1];
           }
         } catch {}
-        return value;
+        // strip leading slash and optional 'resumes/' prefix
+        return value.replace(/^\/?resumes\//, '').replace(/^\//, '');
       };
 
       const filePath = derivePath(resumeUrl);
 
-      // Generate a signed URL for secure access
       const { data, error } = await supabase.storage
         .from('resumes')
-        .createSignedUrl(filePath, 3600); // 1 hour expiry
+        .createSignedUrl(filePath, 3600);
 
-      if (error || !data?.signedUrl) throw error || new Error("Unable to generate signed URL");
-      
-      // Force the PDF to fill the viewer width
+      if (error || !data?.signedUrl) throw error || new Error('Unable to generate signed URL');
+
       const signed = data.signedUrl;
       const separator = signed.includes('#') ? '&' : '#';
       const zoomUrl = `${signed}${separator}zoom=page-width`;
       setViewingResumeUrl(zoomUrl);
       setViewingResumeName(resumeName);
     } catch (error: any) {
-      console.error("Error loading resume:", error);
-      toast.error("Failed to load resume", {
-        description: error.message || "Unable to load the resume file"
+      console.error('Error loading resume:', error);
+      toast.error('Failed to load resume', {
+        description: error?.message || 'Unable to load the resume file',
       });
     }
   };
