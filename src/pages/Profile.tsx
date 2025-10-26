@@ -24,7 +24,7 @@ const Profile = () => {
   const [desiredJobTitle, setDesiredJobTitle] = useState('');
 
   const [title, setTitle] = useState('');
-  const [yearsExperience, setYearsExperience] = useState<number>(0);
+  const [yearsExperience, setYearsExperience] = useState<string>('');
   const [linkedinUrl, setLinkedinUrl] = useState('');
   const [githubUrl, setGithubUrl] = useState('');
   const [portfolioUrl, setPortfolioUrl] = useState('');
@@ -69,7 +69,7 @@ const Profile = () => {
 
       if (candidate) {
         setTitle(candidate.title ?? '');
-        setYearsExperience(candidate.years_experience ?? 0);
+        setYearsExperience(candidate.years_experience ? candidate.years_experience.toString() : '');
         setLinkedinUrl(candidate.linkedin_url ?? '');
         setGithubUrl(candidate.github_url ?? '');
         setPortfolioUrl(candidate.portfolio_url ?? '');
@@ -142,7 +142,7 @@ const Profile = () => {
         .from('candidate_profiles')
         .update({ 
           title, 
-          years_experience: yearsExperience, 
+          years_experience: parseInt(yearsExperience) || 0, 
           linkedin_url: linkedinUrl, 
           github_url: githubUrl, 
           portfolio_url: portfolioUrl, 
@@ -303,16 +303,38 @@ const Profile = () => {
                 />
                 
                 <Label htmlFor="years">Years of experience</Label>
-                <Input id="years" type="number" value={yearsExperience} onChange={(e) => setYearsExperience(parseInt(e.target.value || '0'))} />
+                <Input 
+                  id="years" 
+                  type="number" 
+                  min="0"
+                  value={yearsExperience} 
+                  onChange={(e) => setYearsExperience(e.target.value)}
+                  placeholder="0"
+                />
                 
                 <Label htmlFor="linkedin">LinkedIn URL</Label>
-                <Input id="linkedin" value={linkedinUrl} onChange={(e) => setLinkedinUrl(e.target.value)} />
+                <Input 
+                  id="linkedin" 
+                  value={linkedinUrl} 
+                  onChange={(e) => setLinkedinUrl(e.target.value)}
+                  placeholder="https://linkedin.com/in/your-username or /in/your-username"
+                />
                 
                 <Label htmlFor="github">GitHub URL</Label>
-                <Input id="github" value={githubUrl} onChange={(e) => setGithubUrl(e.target.value)} />
+                <Input 
+                  id="github" 
+                  value={githubUrl} 
+                  onChange={(e) => setGithubUrl(e.target.value)}
+                  placeholder="https://github.com/your-username"
+                />
                 
                 <Label htmlFor="portfolio">Portfolio URL</Label>
-                <Input id="portfolio" value={portfolioUrl} onChange={(e) => setPortfolioUrl(e.target.value)} />
+                <Input 
+                  id="portfolio" 
+                  value={portfolioUrl} 
+                  onChange={(e) => setPortfolioUrl(e.target.value)}
+                  placeholder="https://your-portfolio.com"
+                />
                 
                 <Label htmlFor="resume">Resume URL</Label>
                 <Input id="resume" value={resumeUrl} onChange={(e) => setResumeUrl(e.target.value)} />
