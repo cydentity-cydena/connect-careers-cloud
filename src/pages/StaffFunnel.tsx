@@ -669,12 +669,12 @@ export default function StaffFunnel() {
         )}
 
         {/* Kanban Board */}
-        <div className="overflow-x-auto pb-4 -mx-3 sm:mx-0">
-          <div className="inline-flex lg:grid lg:grid-cols-6 gap-3 sm:gap-4 min-w-full px-3 sm:px-0">
+        <div className="overflow-x-auto pb-4">
+          <div className="flex lg:grid lg:grid-cols-6 gap-3 sm:gap-4 lg:gap-3">
           {STAGES.map((stage) => {
             const stageCandidates = getCandidatesByStage(stage.name);
             return (
-              <div key={stage.name} className={`rounded-lg border ${stage.color} p-3 sm:p-4 min-w-[320px] lg:min-w-0 flex-shrink-0`}>
+              <div key={stage.name} className={`rounded-lg border ${stage.color} p-3 sm:p-4 w-[300px] lg:w-auto flex-shrink-0`}>
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="font-semibold">{formatStageName(stage.name)}</h3>
                   <Badge variant="secondary">{stageCandidates.length}</Badge>
@@ -720,11 +720,11 @@ export default function StaffFunnel() {
                     ];
 
                     return (
-                    <Card key={candidate.id} className="p-4 hover:shadow-md transition-shadow">
+                    <Card key={candidate.id} className="p-4 hover:shadow-md transition-shadow w-full">
                       <div className="space-y-3">
                         {/* Header with name and actions */}
                         <div className="flex items-start justify-between gap-2">
-                          <div className="flex items-center gap-2 flex-1 min-w-0">
+                          <div className="flex items-center gap-2 flex-1 min-w-0 overflow-hidden">
                             <Button
                               variant={candidate.is_founding_20 ? "default" : "ghost"}
                               size="sm"
@@ -777,13 +777,13 @@ export default function StaffFunnel() {
                         </div>
 
                         {candidate.source && (
-                          <div className="text-xs text-muted-foreground">
+                          <div className="text-xs text-muted-foreground truncate">
                             Source: {candidate.source}
                           </div>
                         )}
                         
                         {candidate.sla_due_at && (
-                          <div className="text-xs text-muted-foreground">
+                          <div className="text-xs text-muted-foreground truncate">
                             Due: {format(new Date(candidate.sla_due_at), "MMM dd")}
                           </div>
                         )}
