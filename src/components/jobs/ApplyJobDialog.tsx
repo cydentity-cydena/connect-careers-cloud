@@ -71,6 +71,22 @@ export const ApplyJobDialog = ({ jobId, jobTitle, children }: ApplyJobDialogProp
         return;
       }
 
+      // Gate: require ID + RTW verified (green or amber)
+      const { data: verData, error: verError } = await supabase
+        .from('candidate_verifications')
+        .select('identity_status, rtw_status')
+        .eq('candidate_id', user.id)
+        .maybeSingle();
+      if (verError) console.warn('Verification check error', verError);
+      const idOk = verData && ['green','amber'].includes(verData.identity_status || '');
+      const rtwOk = verData && ['green','amber'].includes(verData.rtw_status || '');
+      if (!idOk || !rtwOk) {
+        toast.error("Complete Identity and Right to Work verification before applying. Redirecting to HR-Ready...");
+        setOpen(false);
+        setTimeout(() => window.location.assign('/hr-ready'), 600);
+        return;
+      }
+
       // Check if already applied
       const { data: existing } = await supabase
         .from("applications")
@@ -184,6 +200,7 @@ export const ApplyJobDialog = ({ jobId, jobTitle, children }: ApplyJobDialogProp
               onClick={handleApply}
               disabled={loading || !selectedResumeId}
               className="flex-1"
+              aria-label="Submit application"
             >
               <Send className="h-4 w-4 mr-2" />
               {loading ? "Submitting..." : "Submit Application"}

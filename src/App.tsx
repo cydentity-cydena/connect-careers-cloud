@@ -35,6 +35,7 @@ import CareerAssistant from "./pages/CareerAssistant";
 import BugReport from "./pages/BugReport";
 import StaffFunnel from "./pages/StaffFunnel";
 import UserManagement from "./pages/admin/UserManagement";
+import HRReady from "./pages/HRReady";
 import RoleManagement from "./pages/admin/RoleManagement";
 import JobModeration from "./pages/admin/JobModeration";
 import PodManagement from "./pages/admin/PodManagement";
@@ -81,6 +82,7 @@ const App = () => (
               <Route path="/career-assistant" element={<ProtectedRoute><CareerAssistant /></ProtectedRoute>} />
               <Route path="/bug-report" element={<ProtectedRoute><BugReport /></ProtectedRoute>} />
               <Route path="/staff/funnel" element={<ProtectedRoute><StaffFunnel /></ProtectedRoute>} />
+              <Route path="/hr-ready" element={<ProtectedRoute><HRReady /></ProtectedRoute>} />
               
               {/* Admin Routes */}
               <Route path="/admin/users" element={<ProtectedRoute><UserManagement /></ProtectedRoute>} />

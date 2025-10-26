@@ -2108,49 +2108,52 @@ export type Database = {
       }
       verification_requests: {
         Row: {
-          additional_info: string | null
-          business_registration_number: string | null
-          company_name: string
-          company_website: string
+          candidate_id: string
           created_at: string
+          document_urls: string[] | null
+          expiry_date: string | null
           id: string
-          rejection_reason: string | null
+          metadata: Json | null
+          notes: string | null
+          review_notes: string | null
           reviewed_at: string | null
           reviewed_by: string | null
           status: string
+          submitted_at: string
           updated_at: string
-          user_id: string
-          verification_documents: string[] | null
+          verification_type: string
         }
         Insert: {
-          additional_info?: string | null
-          business_registration_number?: string | null
-          company_name: string
-          company_website: string
+          candidate_id: string
           created_at?: string
+          document_urls?: string[] | null
+          expiry_date?: string | null
           id?: string
-          rejection_reason?: string | null
+          metadata?: Json | null
+          notes?: string | null
+          review_notes?: string | null
           reviewed_at?: string | null
           reviewed_by?: string | null
           status?: string
+          submitted_at?: string
           updated_at?: string
-          user_id: string
-          verification_documents?: string[] | null
+          verification_type: string
         }
         Update: {
-          additional_info?: string | null
-          business_registration_number?: string | null
-          company_name?: string
-          company_website?: string
+          candidate_id?: string
           created_at?: string
+          document_urls?: string[] | null
+          expiry_date?: string | null
           id?: string
-          rejection_reason?: string | null
+          metadata?: Json | null
+          notes?: string | null
+          review_notes?: string | null
           reviewed_at?: string | null
           reviewed_by?: string | null
           status?: string
+          submitted_at?: string
           updated_at?: string
-          user_id?: string
-          verification_documents?: string[] | null
+          verification_type?: string
         }
         Relationships: []
       }
