@@ -18,6 +18,7 @@ import {
   Github, Linkedin, Globe, FileText, Shield, ArrowLeft,
   Building2, GraduationCap, Code, ExternalLink, Eye, Info
 } from "lucide-react";
+import { CertificationCard } from "@/components/certifications/CertificationCard";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
@@ -627,47 +628,20 @@ export default function ProfileDetail() {
 
                 {/* Certifications - Always visible for community credibility */}
                 {candidateProfile.certifications?.length > 0 && (
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <Award className="h-5 w-5" />
-                        Certifications
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      {candidateProfile.certifications.map((cert: any, idx: number) => (
-                        <div key={idx} className="border-b last:border-0 pb-4 last:pb-0">
-                          <h4 className="font-semibold">{cert.name}</h4>
-                          {cert.issuer && (
-                            <p className="text-sm text-muted-foreground">{cert.issuer}</p>
-                          )}
-                          <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
-                            {cert.issue_date && (
-                              <span className="flex items-center gap-1">
-                                <Calendar className="h-3 w-3" />
-                                Issued: {new Date(cert.issue_date).toLocaleDateString()}
-                              </span>
-                            )}
-                            {cert.expiry_date && (
-                              <span>
-                                Expires: {new Date(cert.expiry_date).toLocaleDateString()}
-                              </span>
-                            )}
-                          </div>
-                          {isUnlocked && !isCandidateViewingCandidate && cert.credential_url && (
-                            <a 
-                              href={cert.credential_url} 
-                              target="_blank" 
-                              rel="noopener noreferrer"
-                              className="text-sm text-primary hover:underline mt-2 inline-block"
-                            >
-                              View Credential
-                            </a>
-                          )}
-                        </div>
-                      ))}
-                    </CardContent>
-                  </Card>
+                  <div className="space-y-3">
+                    <h3 className="text-lg font-semibold flex items-center gap-2">
+                      <Award className="h-5 w-5" />
+                      Certifications
+                    </h3>
+                    {candidateProfile.certifications.map((cert: any, idx: number) => (
+                      <CertificationCard
+                        key={idx}
+                        certification={cert}
+                        isUnlocked={isUnlocked && !isCandidateViewingCandidate}
+                        showCredentialUrl={isUnlocked && !isCandidateViewingCandidate}
+                      />
+                    ))}
+                  </div>
                 )}
 
                 {/* Resumes (Unlocked Only) - Hidden for candidates */}

@@ -15,6 +15,8 @@ const Certifications = () => {
   const [issuer, setIssuer] = useState('');
   const [credentialUrl, setCredentialUrl] = useState('');
   const [credentialId, setCredentialId] = useState('');
+  const [issueDate, setIssueDate] = useState('');
+  const [expiryDate, setExpiryDate] = useState('');
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -35,6 +37,8 @@ const Certifications = () => {
       issuer,
       credential_url: credentialUrl,
       credential_id: credentialId,
+      issue_date: issueDate || null,
+      expiry_date: expiryDate || null,
     });
     
     if (error) { 
@@ -87,8 +91,18 @@ const Certifications = () => {
             <Input id="cid" value={credentialId} onChange={(e) => setCredentialId(e.target.value)} />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="curl">Credential URL</Label>
-            <Input id="curl" value={credentialUrl} onChange={(e) => setCredentialUrl(e.target.value)} />
+            <Label htmlFor="curl">Credential URL (e.g., Credly badge URL)</Label>
+            <Input id="curl" value={credentialUrl} onChange={(e) => setCredentialUrl(e.target.value)} placeholder="https://www.credly.com/badges/..." />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="issueDate">Issue Date (Optional)</Label>
+              <Input id="issueDate" type="date" value={issueDate} onChange={(e) => setIssueDate(e.target.value)} />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="expiryDate">Expiry Date (Optional)</Label>
+              <Input id="expiryDate" type="date" value={expiryDate} onChange={(e) => setExpiryDate(e.target.value)} />
+            </div>
           </div>
           <div className="flex justify-end gap-3">
             <Button variant="outline" onClick={() => navigate('/dashboard')}>Cancel</Button>

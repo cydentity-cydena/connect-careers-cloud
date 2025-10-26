@@ -7,7 +7,7 @@ const corsHeaders = {
 };
 
 interface WebhookPayload {
-  provider: 'comptia' | 'isc2' | 'cresta';
+  provider: 'comptia' | 'isc2' | 'cresta' | 'credly';
   candidateEmail: string;
   certificationName: string;
   issuer: string;
@@ -75,6 +75,9 @@ serve(async (req) => {
         break;
       case 'cresta':
         secret = Deno.env.get('WEBHOOK_SIGNING_SECRET_CRESTA');
+        break;
+      case 'credly':
+        secret = Deno.env.get('WEBHOOK_SIGNING_SECRET_CREDLY');
         break;
     }
 
