@@ -157,8 +157,9 @@ export const ApplicationPipeline = () => {
         event: 'INSERT', 
         schema: 'public', 
         table: 'applications' 
-      }, () => {
-        fetchApplications();
+      }, async () => {
+        await fetchApplications();
+        await fetchUnlockedCandidates(); // Refresh talent pool after new application
       })
       .subscribe();
 
@@ -197,7 +198,10 @@ export const ApplicationPipeline = () => {
   };
 
   const fetchData = async () => {
-    await Promise.all([fetchJobs(), fetchApplications(), fetchUnlockedCandidates()]);
+    await fetchJobs();
+    await fetchApplications();
+    // Fetch unlocked candidates AFTER applications so the filter works correctly
+    await fetchUnlockedCandidates();
   };
 
   const fetchJobs = async () => {
