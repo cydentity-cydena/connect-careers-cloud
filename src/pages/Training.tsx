@@ -92,7 +92,10 @@ const Training = () => {
           name: "TCM Security Academy",
           description: "Affordable courses with PNPT certification. Rapidly growing recognition in the industry.",
           color: "bg-red-600",
-          features: ["PNPT Certification", "Practical Training", "Course Certificates", "Industry Recognition"]
+          features: ["PNPT Certification", "Practical Training", "Course Certificates", "Industry Recognition"],
+          freeCourses: [
+            { name: "Learn Penetration Testing (Free)", url: "https://academy.tcm-sec.com/p/learn-penetration-testing-free" }
+          ]
         }
       ]
     },
