@@ -712,7 +712,7 @@ export const ApplicationPipeline = () => {
             <div className="relative flex-1 sm:max-w-md">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Search: name, has:hr_ready, rtw:green..."
+                placeholder="Search by name, role, or email..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-9 w-full"
