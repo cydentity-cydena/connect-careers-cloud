@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 import SEO from '@/components/SEO';
-import { ArrowLeft, Plus, Trash2 } from 'lucide-react';
+import { ArrowLeft, Plus, Trash2, Upload, Image as ImageIcon } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 
 const Profile = () => {
@@ -23,6 +23,7 @@ const Profile = () => {
   const [bio, setBio] = useState('');
   const [avatarUrl, setAvatarUrl] = useState('');
   const [desiredJobTitle, setDesiredJobTitle] = useState('');
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
 
   const [title, setTitle] = useState('');
   const [yearsExperience, setYearsExperience] = useState<string>('');
@@ -246,6 +247,103 @@ const Profile = () => {
     setEducation(updated);
   };
 
+  const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file || !userId) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please upload an image file');
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Image size must be less than 5MB');
+      return;
+    }
+
+    setUploadingAvatar(true);
+    try {
+      const hadAvatar = !!avatarUrl;
+      
+      // Delete old avatar if exists
+      if (avatarUrl) {
+        const oldPath = avatarUrl.split('/').slice(-2).join('/');
+        await supabase.storage.from('avatars').remove([oldPath]);
+      }
+
+      // Upload new avatar
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${userId}/${Date.now()}.${fileExt}`;
+      
+      const { error: uploadError, data } = await supabase.storage
+        .from('avatars')
+        .upload(fileName, file, {
+          cacheControl: '3600',
+          upsert: true
+        });
+
+      if (uploadError) throw uploadError;
+
+      // Get public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(fileName);
+
+      setAvatarUrl(publicUrl);
+
+      // Save to profile
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({ avatar_url: publicUrl })
+        .eq('id', userId);
+
+      if (updateError) throw updateError;
+
+      // Award points only if this is their first avatar
+      if (!hadAvatar) {
+        await supabase.functions.invoke('award-points-helper', {
+          body: {
+            candidateId: userId,
+            code: 'PROFILE_UPDATED',
+            meta: { field: 'avatar' }
+          }
+        });
+        toast.success('Profile picture uploaded! +50 points');
+      } else {
+        toast.success('Profile picture updated!');
+      }
+    } catch (error: any) {
+      console.error('Error uploading avatar:', error);
+      toast.error(error.message || 'Failed to upload profile picture');
+    } finally {
+      setUploadingAvatar(false);
+    }
+  };
+
+  const handleAvatarRemove = async () => {
+    if (!userId || !avatarUrl) return;
+
+    try {
+      // Delete from storage
+      const oldPath = avatarUrl.split('/').slice(-2).join('/');
+      await supabase.storage.from('avatars').remove([oldPath]);
+
+      // Update profile
+      await supabase
+        .from('profiles')
+        .update({ avatar_url: null })
+        .eq('id', userId);
+
+      setAvatarUrl('');
+      toast.success('Profile picture removed');
+    } catch (error: any) {
+      console.error('Error removing avatar:', error);
+      toast.error('Failed to remove profile picture');
+    }
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       <SEO title="Edit Profile | Cydena" description="Edit your cybersecurity profile and experience." />
@@ -310,8 +408,56 @@ const Profile = () => {
                 <Label htmlFor="location">Location</Label>
                 <Input id="location" value={location} onChange={(e) => setLocation(e.target.value)} />
                 
-                <Label htmlFor="avatar">Avatar URL</Label>
-                <Input id="avatar" value={avatarUrl} onChange={(e) => setAvatarUrl(e.target.value)} />
+                <div className="space-y-2">
+                  <Label htmlFor="avatar" className="flex items-center gap-2">
+                    <ImageIcon className="h-4 w-4" />
+                    Profile Picture
+                  </Label>
+                  {avatarUrl && (
+                    <div className="flex items-center gap-4 mb-2 p-3 border rounded-lg bg-muted/30">
+                      <img 
+                        src={avatarUrl} 
+                        alt="Profile" 
+                        className="h-20 w-20 rounded-full object-cover border-2 border-primary/20"
+                      />
+                      <div className="flex-1">
+                        <p className="text-sm font-medium">Current profile picture</p>
+                        <p className="text-xs text-muted-foreground">Upload a new one to replace it</p>
+                      </div>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={handleAvatarRemove}
+                      >
+                        <Trash2 className="h-4 w-4 mr-2" />
+                        Remove
+                      </Button>
+                    </div>
+                  )}
+                  <div className="relative">
+                    <Input 
+                      id="avatar" 
+                      type="file"
+                      accept="image/*"
+                      onChange={handleAvatarUpload}
+                      disabled={uploadingAvatar}
+                      className="cursor-pointer"
+                    />
+                    {uploadingAvatar && (
+                      <div className="absolute inset-0 bg-background/80 flex items-center justify-center rounded-md">
+                        <div className="flex items-center gap-2 text-sm">
+                          <Upload className="h-4 w-4 animate-pulse" />
+                          <span>Uploading...</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  <p className="text-xs text-muted-foreground flex items-center gap-1">
+                    <Upload className="h-3 w-3" />
+                    Upload JPG, PNG, or WEBP (max 5MB). <span className="text-primary font-medium">Earn +50 points!</span>
+                  </p>
+                </div>
               </div>
               <div className="space-y-3">
                 <Label htmlFor="title">Current job title</Label>
