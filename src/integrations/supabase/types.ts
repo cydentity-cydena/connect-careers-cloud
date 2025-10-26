@@ -1091,13 +1091,18 @@ export type Database = {
           is_active: boolean | null
           job_type: Database["public"]["Enums"]["job_type"]
           location: string | null
+          must_haves: string[] | null
+          nice_to_haves: string[] | null
           remote_allowed: boolean | null
+          required_certifications: string[] | null
           required_clearance: string | null
           required_skills: string[] | null
           salary_max: number | null
           salary_min: number | null
           title: string
           updated_at: string
+          years_experience_max: number | null
+          years_experience_min: number | null
         }
         Insert: {
           client_id?: string | null
@@ -1109,13 +1114,18 @@ export type Database = {
           is_active?: boolean | null
           job_type: Database["public"]["Enums"]["job_type"]
           location?: string | null
+          must_haves?: string[] | null
+          nice_to_haves?: string[] | null
           remote_allowed?: boolean | null
+          required_certifications?: string[] | null
           required_clearance?: string | null
           required_skills?: string[] | null
           salary_max?: number | null
           salary_min?: number | null
           title: string
           updated_at?: string
+          years_experience_max?: number | null
+          years_experience_min?: number | null
         }
         Update: {
           client_id?: string | null
@@ -1127,13 +1137,18 @@ export type Database = {
           is_active?: boolean | null
           job_type?: Database["public"]["Enums"]["job_type"]
           location?: string | null
+          must_haves?: string[] | null
+          nice_to_haves?: string[] | null
           remote_allowed?: boolean | null
+          required_certifications?: string[] | null
           required_clearance?: string | null
           required_skills?: string[] | null
           salary_max?: number | null
           salary_min?: number | null
           title?: string
           updated_at?: string
+          years_experience_max?: number | null
+          years_experience_min?: number | null
         }
         Relationships: [
           {

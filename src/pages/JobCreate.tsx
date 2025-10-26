@@ -31,6 +31,11 @@ const JobCreate = () => {
   const [salaryMax, setSalaryMax] = useState('');
   const [requiredClearance, setRequiredClearance] = useState('');
   const [requiredSkills, setRequiredSkills] = useState('');
+  const [requiredCerts, setRequiredCerts] = useState('');
+  const [mustHaves, setMustHaves] = useState('');
+  const [niceToHaves, setNiceToHaves] = useState('');
+  const [yearsExpMin, setYearsExpMin] = useState('');
+  const [yearsExpMax, setYearsExpMax] = useState('');
 
   useEffect(() => {
     const init = async () => {
@@ -116,6 +121,10 @@ const JobCreate = () => {
       }
 
       const skills = requiredSkills.split(',').map(s => s.trim()).filter(Boolean);
+      const certs = requiredCerts.split(',').map(s => s.trim()).filter(Boolean);
+      const mustHavesList = mustHaves.split(',').map(s => s.trim()).filter(Boolean);
+      const niceToHavesList = niceToHaves.split(',').map(s => s.trim()).filter(Boolean);
+      
       const { error } = await supabase.from('jobs').insert({
         company_id: finalCompanyId,
         created_by: userId,
@@ -129,6 +138,11 @@ const JobCreate = () => {
         salary_max: salaryMax ? parseInt(salaryMax) : null,
         required_clearance: requiredClearance || null,
         required_skills: skills.length > 0 ? skills : null,
+        required_certifications: certs.length > 0 ? certs : null,
+        must_haves: mustHavesList.length > 0 ? mustHavesList : null,
+        nice_to_haves: niceToHavesList.length > 0 ? niceToHavesList : null,
+        years_experience_min: yearsExpMin ? parseInt(yearsExpMin) : null,
+        years_experience_max: yearsExpMax ? parseInt(yearsExpMax) : null,
         is_active: true,
       } as any);
 
@@ -255,12 +269,46 @@ const JobCreate = () => {
                   <Input id="salaryMax" type="number" value={salaryMax} onChange={(e) => setSalaryMax(e.target.value)} placeholder="70000" />
                 </div>
                 <div className="space-y-2">
+                  <Label htmlFor="yearsExpMin">Min Years Experience</Label>
+                  <Input id="yearsExpMin" type="number" value={yearsExpMin} onChange={(e) => setYearsExpMin(e.target.value)} placeholder="2" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="yearsExpMax">Max Years Experience</Label>
+                  <Input id="yearsExpMax" type="number" value={yearsExpMax} onChange={(e) => setYearsExpMax(e.target.value)} placeholder="5" />
+                </div>
+                <div className="space-y-2">
                   <Label htmlFor="clearance">Required Clearance</Label>
                   <Input id="clearance" value={requiredClearance} onChange={(e) => setRequiredClearance(e.target.value)} placeholder="Secret, Top Secret, etc." />
                 </div>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="mustHaves">Must-Haves (comma-separated)</Label>
+                <Textarea 
+                  id="mustHaves" 
+                  value={mustHaves} 
+                  onChange={(e) => setMustHaves(e.target.value)} 
+                  placeholder="Strong communication skills, Team leadership experience, Problem-solving ability"
+                  rows={3}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="niceToHaves">Nice-to-Haves (comma-separated)</Label>
+                <Textarea 
+                  id="niceToHaves" 
+                  value={niceToHaves} 
+                  onChange={(e) => setNiceToHaves(e.target.value)} 
+                  placeholder="Public speaking experience, Open source contributions, Industry certifications"
+                  rows={3}
+                />
+              </div>
+              <div className="grid md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="skills">Required Skills (comma-separated)</Label>
-                  <Input id="skills" value={requiredSkills} onChange={(e) => setRequiredSkills(e.target.value)} placeholder="CISSP, Python, AWS" />
+                  <Label htmlFor="skills">Skills (comma-separated)</Label>
+                  <Input id="skills" value={requiredSkills} onChange={(e) => setRequiredSkills(e.target.value)} placeholder="Python, AWS, Linux" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="certs">Certifications (comma-separated)</Label>
+                  <Input id="certs" value={requiredCerts} onChange={(e) => setRequiredCerts(e.target.value)} placeholder="CISSP, CEH, Security+" />
                 </div>
               </div>
               <div className="flex items-center gap-2">
