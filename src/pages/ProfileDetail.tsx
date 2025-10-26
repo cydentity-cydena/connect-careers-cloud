@@ -19,6 +19,7 @@ import {
   Building2, GraduationCap, Code, ExternalLink, Eye, Info
 } from "lucide-react";
 import { toast } from "sonner";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 export default function ProfileDetail() {
   const { id } = useParams();
@@ -35,6 +36,8 @@ export default function ProfileDetail() {
   const [resumes, setResumes] = useState<any[]>([]);
   const [viewerRole, setViewerRole] = useState<string | null>(null);
   const [candidateXp, setCandidateXp] = useState<any>(null);
+  const [viewingResumeUrl, setViewingResumeUrl] = useState<string | null>(null);
+  const [viewingResumeName, setViewingResumeName] = useState<string>("");
 
   useEffect(() => {
     loadProfileData();
@@ -233,6 +236,34 @@ export default function ProfileDetail() {
     setIsUnlocked(true);
     setCredits(prev => prev - 1);
     loadProfileData();
+  };
+
+  const handleViewResume = async (resumeUrl: string, resumeName: string) => {
+    try {
+      // If it's already a signed URL or external URL, just use it directly
+      if (resumeUrl.startsWith('http')) {
+        const separator = resumeUrl.includes('#') ? '&' : '#';
+        const zoomUrl = `${resumeUrl}${separator}zoom=page-width`;
+        setViewingResumeUrl(zoomUrl);
+        setViewingResumeName(resumeName);
+        return;
+      }
+
+      // Otherwise, generate a signed URL
+      const { data, error } = await supabase.storage
+        .from('resumes')
+        .createSignedUrl(resumeUrl, 3600); // 1 hour expiry
+
+      if (error || !data?.signedUrl) throw error || new Error("Unable to generate signed URL");
+      
+      const separator = data.signedUrl.includes('#') ? '&' : '#';
+      const zoomUrl = `${data.signedUrl}${separator}zoom=page-width`;
+      setViewingResumeUrl(zoomUrl);
+      setViewingResumeName(resumeName);
+    } catch (error: any) {
+      console.error("Error loading resume:", error);
+      toast.error("Failed to load resume");
+    }
   };
 
   if (loading) {
@@ -665,9 +696,9 @@ export default function ProfileDetail() {
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => window.open(resume.resume_url, '_blank')}
+                            onClick={() => handleViewResume(resume.resume_url, resume.resume_name)}
                           >
-                            <ExternalLink className="h-4 w-4 mr-1" />
+                            <Eye className="h-4 w-4 mr-1" />
                             View
                           </Button>
                         </div>
@@ -829,6 +860,24 @@ export default function ProfileDetail() {
             )}
           </div>
         </div>
+
+        {/* Resume Viewer Dialog */}
+        <Dialog open={!!viewingResumeUrl} onOpenChange={(open) => !open && setViewingResumeUrl(null)}>
+          <DialogContent className="max-w-none w-screen h-screen p-0 sm:rounded-none flex flex-col">
+            <DialogHeader className="px-4 py-3 border-b">
+              <DialogTitle>{viewingResumeName} - Resume</DialogTitle>
+            </DialogHeader>
+            <div className="flex-1 overflow-hidden">
+              {viewingResumeUrl && (
+                <iframe
+                  src={viewingResumeUrl}
+                  className="w-full h-full border-0"
+                  title="Resume Viewer"
+                />
+              )}
+            </div>
+          </DialogContent>
+        </Dialog>
       </main>
     </div>
   );
