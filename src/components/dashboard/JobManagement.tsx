@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -11,7 +12,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
-import { Edit, Trash2, Briefcase, MapPin, Clock, Banknote } from 'lucide-react';
+import { Edit, Trash2, Briefcase, MapPin, Clock, Banknote, Eye } from 'lucide-react';
 
 interface Job {
   id: string;
@@ -40,6 +41,7 @@ export const JobManagement = () => {
   const [editingJob, setEditingJob] = useState<Job | null>(null);
   const [deleteJob, setDeleteJob] = useState<Job | null>(null);
   const [formData, setFormData] = useState<Partial<Job>>({});
+  const navigate = useNavigate();
 
   useEffect(() => {
     loadJobs();
@@ -237,6 +239,14 @@ export const JobManagement = () => {
                   title={job.is_active ? 'Deactivate' : 'Activate'}
                 >
                   <Switch checked={job.is_active} />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => navigate(`/jobs/${job.id}`)}
+                  title="View Job"
+                >
+                  <Eye className="h-4 w-4" />
                 </Button>
                 <Dialog open={editingJob?.id === job.id} onOpenChange={(open) => !open && setEditingJob(null)}>
                   <DialogTrigger asChild>
