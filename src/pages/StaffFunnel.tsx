@@ -256,6 +256,18 @@ export default function StaffFunnel() {
   };
 
   const handleStageChange = async (candidateId: string, newStage: string) => {
+    const candidateToMove = candidates.find((c) => c.id === candidateId);
+    if (!candidateToMove) return;
+    
+    // Optimistically update UI
+    setCandidates(prevCandidates =>
+      prevCandidates.map(c =>
+        c.id === candidateId
+          ? { ...c, stage: newStage, moved_to_stage_at: new Date().toISOString() }
+          : c
+      )
+    );
+
     try {
       const { error } = await supabase
         .from("candidate_pipeline")
@@ -270,18 +282,28 @@ export default function StaffFunnel() {
       // Insert stage history
       await supabase.from("pipeline_stage_history").insert({
         pipeline_id: candidateId,
-        from_stage: candidates.find((c) => c.id === candidateId)?.stage,
+        from_stage: candidateToMove.stage,
         to_stage: newStage,
         moved_by: (await supabase.auth.getUser()).data.user?.id,
       });
 
       toast({
-        title: "Stage updated",
-        description: "Candidate moved successfully",
+        title: "Application Updated",
+        description: `Moved existing application to ${formatStageName(newStage)}`,
       });
 
+      // Refresh to ensure consistency
       fetchCandidates();
     } catch (error: any) {
+      // Revert optimistic update on error
+      setCandidates(prevCandidates =>
+        prevCandidates.map(c =>
+          c.id === candidateId
+            ? candidateToMove
+            : c
+        )
+      );
+      
       toast({
         title: "Error updating stage",
         description: error.message,
@@ -652,13 +674,15 @@ export default function StaffFunnel() {
           {STAGES.map((stage) => {
             const stageCandidates = getCandidatesByStage(stage.name);
             return (
-              <div key={stage.name} className={`rounded-lg border ${stage.color} p-3 sm:p-4 min-w-[280px] lg:min-w-0 flex-shrink-0`}>
+              <div key={stage.name} className={`rounded-lg border ${stage.color} p-3 sm:p-4 min-w-[320px] lg:min-w-0 flex-shrink-0`}>
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="font-semibold">{formatStageName(stage.name)}</h3>
                   <Badge variant="secondary">{stageCandidates.length}</Badge>
                 </div>
                 <div className="space-y-3">
-                  {stageCandidates.map((candidate) => {
+                  {stageCandidates.length === 0 ? (
+                    <div className="text-center text-sm text-muted-foreground py-8">No applications</div>
+                  ) : stageCandidates.map((candidate) => {
                     // Prepare badge items for HR verification display
                     const badgeItems: BadgeItem[] = [
                       {
@@ -696,114 +720,129 @@ export default function StaffFunnel() {
                     ];
 
                     return (
-                    <Card key={candidate.id} className="p-3 hover:shadow-md transition-shadow">
-                      <div className="space-y-2">
+                    <Card key={candidate.id} className="p-4 hover:shadow-md transition-shadow">
+                      <div className="space-y-3">
+                        {/* Header with name and actions */}
                         <div className="flex items-start justify-between gap-2">
-                          <div className="flex items-center gap-1 flex-1 min-w-0">
+                          <div className="flex items-center gap-2 flex-1 min-w-0">
                             <Button
                               variant={candidate.is_founding_20 ? "default" : "ghost"}
                               size="sm"
-                              className="h-6 w-6 p-0 shrink-0"
+                              className="h-7 w-7 p-0 shrink-0"
                               onClick={() => toggleChosen(candidate.id, candidate.is_founding_20)}
                             >
-                              <Star className={`h-3 w-3 ${candidate.is_founding_20 ? 'fill-current' : ''}`} />
+                              <Star className={`h-3.5 w-3.5 ${candidate.is_founding_20 ? 'fill-current' : ''}`} />
                             </Button>
-                            <div className="font-medium text-sm truncate">
-                              {candidate.profiles?.full_name || "Unknown"}
+                            <div className="flex-1 min-w-0">
+                              <div className="font-semibold text-sm truncate">
+                                {candidate.profiles?.full_name || "Unknown"}
+                              </div>
+                              {candidate.profiles?.email && (
+                                <div className="text-xs text-muted-foreground truncate">{candidate.profiles.email}</div>
+                              )}
                             </div>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="h-6 w-6 p-0 shrink-0 ml-auto text-destructive hover:text-destructive hover:bg-destructive/10"
-                              onClick={() => setDeletingCandidateId(candidate.id)}
-                            >
-                              <Trash2 className="h-3 w-3" />
-                            </Button>
                           </div>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-7 w-7 p-0 shrink-0 text-destructive hover:text-destructive hover:bg-destructive/10"
+                            onClick={() => setDeletingCandidateId(candidate.id)}
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </Button>
                         </div>
                         
                         {/* HR-Ready Badges Row */}
                         <BadgesRow items={badgeItems} showHrReady={candidate.verification?.hr_ready} />
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="h-6 text-xs w-full"
-                          onClick={() => setEditingVerification({ candidateId: candidate.candidate_id, verification: candidate.verification })}
-                        >
-                          <ShieldCheck className="h-3 w-3 mr-1" />
-                          Edit Verification
-                        </Button>
-                        {candidate.is_priority && (
-                          <Badge 
-                            variant="destructive" 
-                            className="text-xs cursor-pointer hover:opacity-80 transition-opacity"
-                            onClick={() => togglePriority(candidate.id, candidate.is_priority)}
-                          >
-                            Priority
-                          </Badge>
-                        )}
-                        {candidate.desired_role && (
-                          <Badge variant="outline" className="text-xs">
-                            {candidate.desired_role}
-                          </Badge>
-                        )}
+
+                        {/* Role and metadata */}
+                        <div className="flex flex-wrap gap-2">
+                          {candidate.is_priority && (
+                            <Badge 
+                              variant="destructive" 
+                              className="text-xs cursor-pointer hover:opacity-80 transition-opacity"
+                              onClick={() => togglePriority(candidate.id, candidate.is_priority)}
+                            >
+                              Priority
+                            </Badge>
+                          )}
+                          {candidate.desired_role && (
+                            <Badge variant="outline" className="text-xs">
+                              {candidate.desired_role}
+                            </Badge>
+                          )}
+                          {candidate.is_founding_20 && (
+                            <Badge variant="default" className="text-xs">Chosen</Badge>
+                          )}
+                        </div>
+
                         {candidate.source && (
                           <div className="text-xs text-muted-foreground">
                             Source: {candidate.source}
                           </div>
                         )}
-                        {candidate.is_founding_20 && (
-                          <Badge variant="default" className="text-xs">Chosen</Badge>
-                        )}
+                        
                         {candidate.sla_due_at && (
                           <div className="text-xs text-muted-foreground">
                             Due: {format(new Date(candidate.sla_due_at), "MMM dd")}
                           </div>
                         )}
-                        
-                        {/* CV Upload/View */}
-                        <div className="flex gap-2">
-                          {candidate.cv_url ? (
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              className="h-7 text-xs flex-1"
-                              onClick={() => handleViewCV(candidate.cv_url!, candidate.profiles?.full_name || "Unknown")}
-                            >
-                              <FileText className="h-3 w-3 mr-1" />
-                              View CV
-                            </Button>
-                          ) : (
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              className="h-7 text-xs flex-1"
-                              onClick={() => triggerFileUpload(candidate.id)}
-                            >
-                              <Upload className="h-3 w-3 mr-1" />
-                              Upload CV
-                            </Button>
-                          )}
-                        </div>
 
-                        <Select
-                          value={candidate.stage}
-                          onValueChange={(value) => handleStageChange(candidate.id, value)}
-                        >
-                          <SelectTrigger className="h-8 text-xs">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {STAGES.map((s) => (
-                              <SelectItem key={s.name} value={s.name}>
-                                {formatStageName(s.name)}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
                         {stage.name === 'verified' && candidate.verification?.hr_ready && (
                           <div className="text-xs text-primary font-medium">✅ Ready to Present</div>
                         )}
+                        
+                        {/* Actions */}
+                        <div className="space-y-2 pt-2 border-t">
+                          <div className="flex gap-2">
+                            {candidate.cv_url ? (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="h-8 text-xs flex-1"
+                                onClick={() => handleViewCV(candidate.cv_url!, candidate.profiles?.full_name || "Unknown")}
+                              >
+                                <FileText className="h-3 w-3 mr-1" />
+                                View CV
+                              </Button>
+                            ) : (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="h-8 text-xs flex-1"
+                                onClick={() => triggerFileUpload(candidate.id)}
+                              >
+                                <Upload className="h-3 w-3 mr-1" />
+                                Upload CV
+                              </Button>
+                            )}
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="h-8 text-xs flex-1"
+                              onClick={() => setEditingVerification({ candidateId: candidate.candidate_id, verification: candidate.verification })}
+                            >
+                              <ShieldCheck className="h-3 w-3 mr-1" />
+                              Verify
+                            </Button>
+                          </div>
+
+                          <Select
+                            value={candidate.stage}
+                            onValueChange={(value) => handleStageChange(candidate.id, value)}
+                          >
+                            <SelectTrigger className="h-9 text-xs">
+                              <SelectValue placeholder="Move to stage..." />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {STAGES.map((s) => (
+                                <SelectItem key={s.name} value={s.name}>
+                                  {formatStageName(s.name)}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
                       </div>
                     </Card>
                   );
