@@ -299,9 +299,20 @@ export const ApplicationPipeline = () => {
         candidate_verifications: verificationMap.get(u.candidate_id) || null,
       }));
 
-      const candidatesWithoutApps = merged.filter((unlock: any) =>
-        !applications.some(app => app.candidate_id === unlock.candidate_id)
-      );
+      // Filter out candidates that already have any application in the backend (authoritative)
+      let appsSet = new Set<string>();
+      try {
+        const { data: appsForUnlocks } = await supabase
+          .from('applications')
+          .select('candidate_id')
+          .in('candidate_id', candidateIds);
+        appsSet = new Set((appsForUnlocks || []).map((a: any) => a.candidate_id));
+      } catch (e) {
+        console.warn('Unable to fetch apps for unlock filter, falling back to client state');
+        appsSet = new Set(applications.map(a => a.candidate_id));
+      }
+
+      const candidatesWithoutApps = merged.filter((unlock: any) => !appsSet.has(unlock.candidate_id));
 
       setUnlockedCandidates(candidatesWithoutApps as any);
     } catch (error) {
