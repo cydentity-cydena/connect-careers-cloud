@@ -16,11 +16,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { 
   Mail, Phone, MapPin, Calendar, Briefcase, Award, 
   Github, Linkedin, Globe, FileText, Shield, ArrowLeft,
-  Building2, GraduationCap, Code, ExternalLink, Eye, Info
+  Building2, GraduationCap, Code, ExternalLink, Eye, Info, ChevronDown, ChevronRight
 } from "lucide-react";
 import { CertificationCard } from "@/components/certifications/CertificationCard";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 export default function ProfileDetail() {
   const { id } = useParams();
@@ -39,6 +40,7 @@ export default function ProfileDetail() {
   const [candidateXp, setCandidateXp] = useState<any>(null);
   const [viewingResumeUrl, setViewingResumeUrl] = useState<string | null>(null);
   const [viewingResumeName, setViewingResumeName] = useState<string>("");
+  const [certificationsOpen, setCertificationsOpen] = useState(false);
 
   useEffect(() => {
     loadProfileData();
@@ -628,20 +630,30 @@ export default function ProfileDetail() {
 
                 {/* Certifications - Always visible for community credibility */}
                 {candidateProfile.certifications?.length > 0 && (
-                  <div className="space-y-3">
-                    <h3 className="text-lg font-semibold flex items-center gap-2">
-                      <Award className="h-5 w-5" />
-                      Certifications
-                    </h3>
-                    {candidateProfile.certifications.map((cert: any, idx: number) => (
-                      <CertificationCard
-                        key={idx}
-                        certification={cert}
-                        isUnlocked={isUnlocked && !isCandidateViewingCandidate}
-                        showCredentialUrl={isUnlocked && !isCandidateViewingCandidate}
-                      />
-                    ))}
-                  </div>
+                  <Collapsible open={certificationsOpen} onOpenChange={setCertificationsOpen}>
+                    <div className="space-y-3">
+                      <CollapsibleTrigger asChild>
+                        <Button variant="ghost" className="p-0 hover:bg-transparent w-full justify-start">
+                          <h3 className="text-lg font-semibold flex items-center gap-2">
+                            {certificationsOpen ? <ChevronDown className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />}
+                            <Award className="h-5 w-5" />
+                            Certifications
+                            <span className="text-sm text-muted-foreground font-normal">({candidateProfile.certifications.length})</span>
+                          </h3>
+                        </Button>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent className="space-y-3">
+                        {candidateProfile.certifications.map((cert: any, idx: number) => (
+                          <CertificationCard
+                            key={idx}
+                            certification={cert}
+                            isUnlocked={isUnlocked && !isCandidateViewingCandidate}
+                            showCredentialUrl={isUnlocked && !isCandidateViewingCandidate}
+                          />
+                        ))}
+                      </CollapsibleContent>
+                    </div>
+                  </Collapsible>
                 )}
 
                 {/* Resumes (Unlocked Only) - Hidden for candidates */}
