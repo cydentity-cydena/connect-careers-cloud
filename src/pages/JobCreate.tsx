@@ -121,7 +121,7 @@ const JobCreate = () => {
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="location">Location</Label>
-                  <Input id="location" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Remote / San Francisco" />
+                  <Input id="location" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Remote / London" />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="jobType">Job Type</Label>
@@ -139,11 +139,11 @@ const JobCreate = () => {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="salaryMin">Min Salary</Label>
-                  <Input id="salaryMin" type="number" value={salaryMin} onChange={(e) => setSalaryMin(e.target.value)} placeholder="80000" />
+                  <Input id="salaryMin" type="number" value={salaryMin} onChange={(e) => setSalaryMin(e.target.value)} placeholder="40000" />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="salaryMax">Max Salary</Label>
-                  <Input id="salaryMax" type="number" value={salaryMax} onChange={(e) => setSalaryMax(e.target.value)} placeholder="120000" />
+                  <Input id="salaryMax" type="number" value={salaryMax} onChange={(e) => setSalaryMax(e.target.value)} placeholder="70000" />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="clearance">Required Clearance</Label>

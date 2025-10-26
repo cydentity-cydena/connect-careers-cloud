@@ -111,9 +111,9 @@ export const CreditsPurchaseDialog = ({ currentCredits, onPurchaseComplete }: Cr
               </CardHeader>
               <CardContent className="space-y-3 md:space-y-4 p-4 md:p-6 pt-0">
                 <div>
-                  <p className="text-3xl md:text-4xl font-bold">${pkg.price}</p>
+                  <p className="text-3xl md:text-4xl font-bold">£{pkg.price}</p>
                   <p className="text-xs md:text-sm text-muted-foreground mt-1">
-                    ${pkg.perCredit.toFixed(2)} per unlock
+                    £{pkg.perCredit.toFixed(2)} per unlock
                   </p>
                   <p className="text-xl md:text-2xl font-bold text-primary mt-2">{pkg.credits} Credits</p>
                 </div>

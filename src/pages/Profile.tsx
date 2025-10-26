@@ -611,7 +611,7 @@ const Profile = () => {
                         <Input 
                           value={work.location || ''} 
                           onChange={(e) => updateWorkHistory(index, 'location', e.target.value)}
-                          placeholder="City, State/Country"
+                          placeholder="City, County/Country"
                         />
                       </div>
                       <div>
@@ -816,11 +816,11 @@ const Profile = () => {
                       />
                     </div>
                     <div>
-                      <Label>GPA (optional, if applicable)</Label>
+                      <Label>Grade (optional)</Label>
                       <Input 
                         value={edu.gpa || ''} 
                         onChange={(e) => updateEducation(index, 'gpa', e.target.value)}
-                        placeholder="e.g., 3.8/4.0 or 85%"
+                        placeholder="e.g., Pass, Merit, Distinction, First Class"
                       />
                     </div>
                     <div>

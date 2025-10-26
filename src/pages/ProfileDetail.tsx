@@ -863,7 +863,7 @@ export default function ProfileDetail() {
                                   </span>
                                 )}
                                 {edu.gpa && (
-                                  <span>GPA: {edu.gpa}</span>
+                                  <span>Grade: {edu.gpa}</span>
                                 )}
                               </div>
                               {edu.description && (

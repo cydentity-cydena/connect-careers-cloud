@@ -74,7 +74,7 @@ const CompanyCreate = () => {
             </div>
             <div className="space-y-2">
               <Label htmlFor="location">Location</Label>
-              <Input id="location" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="San Francisco, CA" />
+              <Input id="location" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="London, UK" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="industry">Industry</Label>
