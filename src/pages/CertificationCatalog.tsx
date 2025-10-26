@@ -42,27 +42,6 @@ const CertificationCatalog = () => {
       enrollUrl: "https://www.comptia.org/certifications/comptia-advanced-security-practitioner"
     },
     {
-      name: "Certified Ethical Hacker (CEH)",
-      description: "Focuses on hacking tools, techniques, and methodologies.",
-      provider: "EC-Council",
-      roles: "Ethical Hacker, Penetration Tester, Network Security Specialist",
-      enrollUrl: "https://www.eccouncil.org/train-certify/certified-ethical-hacker-ceh/"
-    },
-    {
-      name: "Certified Network Defender (CND)",
-      description: "Focuses on network security technologies and operations.",
-      provider: "EC-Council",
-      roles: "Network Administrator, Network Defense Technician",
-      enrollUrl: "https://www.eccouncil.org/train-certify/certified-network-defender-cnd/"
-    },
-    {
-      name: "Certified Information Security Manager (CISM)",
-      description: "Advanced certification focusing on managing and governing information security programs.",
-      provider: "EC-Council",
-      roles: "Information Security Manager, IT Audit Manager",
-      enrollUrl: "https://www.eccouncil.org/train-certify/certified-chief-information-security-officer-cciso/"
-    },
-    {
       name: "GIAC Security Essentials (GSEC)",
       description: "Comprehensive information security certification.",
       provider: "SANS",
@@ -99,12 +78,11 @@ const CertificationCatalog = () => {
     },
   ];
 
-  const providers = ["CompTIA", "EC-Council", "SANS", "ISC2"];
+  const providers = ["CompTIA", "SANS", "ISC2"];
 
   const getProviderIcon = (provider: string) => {
     const icons: { [key: string]: string } = {
       "CompTIA": "🔴",
-      "EC-Council": "🔵",
       "SANS": "🟢",
       "ISC2": "🟣",
       "TRECCert": "🔷",
@@ -116,9 +94,9 @@ const CertificationCatalog = () => {
     <div className="min-h-screen bg-background">
       <Navigation />
       <SEO 
-        title="Cybersecurity Certifications Catalog - CISSP, CEH, Security+"
-        description="Explore cybersecurity certification paths from CompTIA, ISC2, EC-Council, SANS. Find Security+, CISSP, CEH, OSCP exam vouchers and training."
-        keywords="cybersecurity certifications, CISSP certification, CompTIA Security+, CEH certified, OSCP exam, GIAC certifications"
+        title="Cybersecurity Certifications Catalog - CISSP, Security+, GIAC"
+        description="Explore cybersecurity certification paths from CompTIA, ISC2, SANS. Find Security+, CISSP, OSCP exam vouchers and training."
+        keywords="cybersecurity certifications, CISSP certification, CompTIA Security+, OSCP exam, GIAC certifications"
       />
       <Schema type="breadcrumb" data={{
         items: [
@@ -160,7 +138,7 @@ const CertificationCatalog = () => {
         </Card>
 
         <div className="mb-12">
-          <h1 className="text-4xl font-bold mb-2">Cybersecurity Certifications - CISSP, CEH, Security+</h1>
+          <h1 className="text-4xl font-bold mb-2">Cybersecurity Certifications - CISSP, Security+, GIAC</h1>
           <p className="text-muted-foreground">
             Advance your cybersecurity career with industry-recognized professional certifications
           </p>
