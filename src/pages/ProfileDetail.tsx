@@ -42,6 +42,8 @@ export default function ProfileDetail() {
   const [viewingResumeUrl, setViewingResumeUrl] = useState<string | null>(null);
   const [viewingResumeName, setViewingResumeName] = useState<string>("");
   const [certificationsOpen, setCertificationsOpen] = useState(false);
+  const [workHistoryOpen, setWorkHistoryOpen] = useState(false);
+  const [educationOpen, setEducationOpen] = useState(false);
 
   useEffect(() => {
     loadProfileData();
@@ -698,48 +700,58 @@ export default function ProfileDetail() {
 
                 {/* Work History - Hidden for candidates viewing candidates */}
                 {workHistory.length > 0 && !isCandidateViewingCandidate && (
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <Building2 className="h-5 w-5" />
-                        Work Experience
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-6">
-                      {workHistory.map((work, idx) => (
-                        <div key={idx} className="border-b last:border-0 pb-6 last:pb-0">
-                          <div className="flex justify-between items-start mb-2">
-                            <div>
-                              <h4 className="font-semibold text-lg">{work.role}</h4>
-                              <p className="text-muted-foreground">{work.company}</p>
+                  <Collapsible open={workHistoryOpen} onOpenChange={setWorkHistoryOpen}>
+                    <Card>
+                      <CardHeader>
+                        <CollapsibleTrigger asChild>
+                          <button className="p-0 w-full text-left cursor-pointer bg-transparent border-0">
+                            <CardTitle className="flex items-center gap-2">
+                              {workHistoryOpen ? <ChevronDown className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />}
+                              <Building2 className="h-5 w-5" />
+                              Work Experience
+                              <span className="text-sm text-muted-foreground font-normal">({workHistory.length})</span>
+                            </CardTitle>
+                          </button>
+                        </CollapsibleTrigger>
+                      </CardHeader>
+                      <CollapsibleContent>
+                        <CardContent className="space-y-6">
+                          {workHistory.map((work, idx) => (
+                            <div key={idx} className="border-b last:border-0 pb-6 last:pb-0">
+                              <div className="flex justify-between items-start mb-2">
+                                <div>
+                                  <h4 className="font-semibold text-lg">{work.role}</h4>
+                                  <p className="text-muted-foreground">{work.company}</p>
+                                </div>
+                                {work.is_current && (
+                                  <Badge variant="default">Current</Badge>
+                                )}
+                              </div>
+                              <div className="flex items-center gap-4 text-sm text-muted-foreground mb-2">
+                                {work.start_date && (
+                                  <span className="flex items-center gap-1">
+                                    <Calendar className="h-3 w-3" />
+                                    {new Date(work.start_date).toLocaleDateString()} - {work.end_date ? new Date(work.end_date).toLocaleDateString() : 'Present'}
+                                  </span>
+                                )}
+                                {work.location && (
+                                  <span className="flex items-center gap-1">
+                                    <MapPin className="h-3 w-3" />
+                                    {work.location}
+                                  </span>
+                                )}
+                              </div>
+                              {work.description && (
+                                <p className="text-sm text-muted-foreground mt-2 whitespace-pre-line">
+                                  {work.description}
+                                </p>
+                              )}
                             </div>
-                            {work.is_current && (
-                              <Badge variant="default">Current</Badge>
-                            )}
-                          </div>
-                          <div className="flex items-center gap-4 text-sm text-muted-foreground mb-2">
-                            {work.start_date && (
-                              <span className="flex items-center gap-1">
-                                <Calendar className="h-3 w-3" />
-                                {new Date(work.start_date).toLocaleDateString()} - {work.end_date ? new Date(work.end_date).toLocaleDateString() : 'Present'}
-                              </span>
-                            )}
-                            {work.location && (
-                              <span className="flex items-center gap-1">
-                                <MapPin className="h-3 w-3" />
-                                {work.location}
-                              </span>
-                            )}
-                          </div>
-                          {work.description && (
-                            <p className="text-sm text-muted-foreground mt-2 whitespace-pre-line">
-                              {work.description}
-                            </p>
-                          )}
-                        </div>
-                      ))}
-                    </CardContent>
-                  </Card>
+                          ))}
+                        </CardContent>
+                      </CollapsibleContent>
+                    </Card>
+                  </Collapsible>
                 )}
 
                 {/* Projects - Hidden for candidates viewing candidates */}
@@ -808,41 +820,51 @@ export default function ProfileDetail() {
 
                 {/* Education - Hidden for candidates viewing candidates */}
                 {education.length > 0 && !isCandidateViewingCandidate && (
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <GraduationCap className="h-5 w-5" />
-                        Education
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-6">
-                      {education.map((edu, idx) => (
-                        <div key={idx} className="border-b last:border-0 pb-6 last:pb-0">
-                          <h4 className="font-semibold text-lg">{edu.degree}</h4>
-                          <p className="text-muted-foreground">{edu.institution}</p>
-                          {edu.field_of_study && (
-                            <p className="text-sm text-muted-foreground mt-1">{edu.field_of_study}</p>
-                          )}
-                          <div className="flex items-center gap-4 text-sm text-muted-foreground mt-2">
-                            {edu.start_date && (
-                              <span className="flex items-center gap-1">
-                                <Calendar className="h-3 w-3" />
-                                {new Date(edu.start_date).toLocaleDateString(undefined, { year: 'numeric', month: 'short' })} - {edu.end_date ? new Date(edu.end_date).toLocaleDateString(undefined, { year: 'numeric', month: 'short' }) : 'Present'}
-                              </span>
-                            )}
-                            {edu.gpa && (
-                              <span>GPA: {edu.gpa}</span>
-                            )}
-                          </div>
-                          {edu.description && (
-                            <p className="text-sm text-muted-foreground mt-2 whitespace-pre-line">
-                              {edu.description}
-                            </p>
-                          )}
-                        </div>
-                      ))}
-                    </CardContent>
-                  </Card>
+                  <Collapsible open={educationOpen} onOpenChange={setEducationOpen}>
+                    <Card>
+                      <CardHeader>
+                        <CollapsibleTrigger asChild>
+                          <button className="p-0 w-full text-left cursor-pointer bg-transparent border-0">
+                            <CardTitle className="flex items-center gap-2">
+                              {educationOpen ? <ChevronDown className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />}
+                              <GraduationCap className="h-5 w-5" />
+                              Education
+                              <span className="text-sm text-muted-foreground font-normal">({education.length})</span>
+                            </CardTitle>
+                          </button>
+                        </CollapsibleTrigger>
+                      </CardHeader>
+                      <CollapsibleContent>
+                        <CardContent className="space-y-6">
+                          {education.map((edu, idx) => (
+                            <div key={idx} className="border-b last:border-0 pb-6 last:pb-0">
+                              <h4 className="font-semibold text-lg">{edu.degree}</h4>
+                              <p className="text-muted-foreground">{edu.institution}</p>
+                              {edu.field_of_study && (
+                                <p className="text-sm text-muted-foreground mt-1">{edu.field_of_study}</p>
+                              )}
+                              <div className="flex items-center gap-4 text-sm text-muted-foreground mt-2">
+                                {edu.start_date && (
+                                  <span className="flex items-center gap-1">
+                                    <Calendar className="h-3 w-3" />
+                                    {new Date(edu.start_date).toLocaleDateString(undefined, { year: 'numeric', month: 'short' })} - {edu.end_date ? new Date(edu.end_date).toLocaleDateString(undefined, { year: 'numeric', month: 'short' }) : 'Present'}
+                                  </span>
+                                )}
+                                {edu.gpa && (
+                                  <span>GPA: {edu.gpa}</span>
+                                )}
+                              </div>
+                              {edu.description && (
+                                <p className="text-sm text-muted-foreground mt-2 whitespace-pre-line">
+                                  {edu.description}
+                                </p>
+                              )}
+                            </div>
+                          ))}
+                        </CardContent>
+                      </CollapsibleContent>
+                    </Card>
+                  </Collapsible>
                 )}
 
               </>
