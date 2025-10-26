@@ -406,6 +406,16 @@ export const ApplicationPipeline = () => {
   };
 
   const handleStageChange = async (applicationId: string, newStage: PipelineStage) => {
+    const appToMove = applications.find(app => app.id === applicationId);
+    if (!appToMove) return;
+
+    // Optimistically update UI
+    setApplications(prev =>
+      prev.map(app =>
+        app.id === applicationId ? { ...app, stage: newStage } : app
+      )
+    );
+
     try {
       const { error } = await supabase
         .from('applications')
@@ -414,17 +424,18 @@ export const ApplicationPipeline = () => {
 
       if (error) throw error;
 
+      toast({
+        title: "Application Updated",
+        description: `Moved existing application to ${stageConfig[newStage].title}`,
+      });
+    } catch (error) {
+      // Revert optimistic update on error
       setApplications(prev =>
         prev.map(app =>
-          app.id === applicationId ? { ...app, stage: newStage } : app
+          app.id === applicationId ? appToMove : app
         )
       );
 
-      toast({
-        title: "Success",
-        description: `Application moved to ${stageConfig[newStage].title}`,
-      });
-    } catch (error) {
       console.error('Error updating stage:', error);
       toast({
         title: "Error",
@@ -776,7 +787,7 @@ export const ApplicationPipeline = () => {
       <div className="flex flex-col lg:flex-row gap-4 overflow-x-auto pb-4">
         <div className="flex gap-4 lg:flex-1">
           {/* Talent Pool Column */}
-          <Card className="border-2 border-primary/50 bg-primary/5 min-w-[280px] lg:min-w-0 lg:flex-1">
+          <Card className="border-2 border-primary/50 bg-primary/5 min-w-[320px] lg:min-w-0 lg:flex-1">
             <CardHeader className="pb-3">
               <CardTitle className="flex items-center justify-between text-base">
                 <div className="flex items-center gap-2">
@@ -924,7 +935,7 @@ export const ApplicationPipeline = () => {
             return (
               <Card 
                 key={stage} 
-                className="border-2 min-w-[280px] lg:min-w-0 lg:flex-1"
+                className="border-2 min-w-[320px] lg:min-w-0 lg:flex-1"
                 onDragOver={handleDragOver}
                 onDrop={(e) => handleDrop(e, stage)}
               >
