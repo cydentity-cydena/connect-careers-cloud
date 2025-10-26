@@ -6,7 +6,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Briefcase, Clock, UserCheck, FileCheck, XCircle, CheckCircle2, Users, Search, Eye, MessageCircle, GripVertical, Download, Star, StickyNote, Filter, Shield, Award, MapPin, AlertCircle } from "lucide-react";
+import { Briefcase, Clock, UserCheck, FileCheck, XCircle, CheckCircle2, Users, Search, Eye, MessageCircle, Download, Star, StickyNote, Filter, Shield, Award, MapPin, AlertCircle } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ApplicationCard } from "./ApplicationCard";
 import { toast } from "@/hooks/use-toast";
@@ -121,7 +121,6 @@ export const ApplicationPipeline = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterRole, setFilterRole] = useState<string>("all");
   const [filterStarred, setFilterStarred] = useState(false);
-  const [draggedItem, setDraggedItem] = useState<{ id: string; type: 'application' | 'unlock' } | null>(null);
   const [userRole, setUserRole] = useState<'employer' | 'recruiter' | null>(null);
   const [jobs, setJobs] = useState<{ id: string; title: string }[]>([]);
   const [notesDialog, setNotesDialog] = useState<{ open: boolean; applicationId: string; currentNotes: string }>({
@@ -447,55 +446,17 @@ export const ApplicationPipeline = () => {
     }
   };
 
-  const handleDragStart = (id: string, type: 'application' | 'unlock') => {
-    setDraggedItem({ id, type });
-  };
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-  };
-
-  const handleDrop = async (e: React.DragEvent, targetStage: PipelineStage) => {
-    e.preventDefault();
-    if (!draggedItem) return;
-
-    if (draggedItem.type === 'application') {
-      await handleStageChange(draggedItem.id, targetStage);
-    } else if (draggedItem.type === 'unlock') {
-      // Talent Pool candidates cannot be moved to "Applied" stage
-      // "Applied" is only for candidates who actively applied for a job
-      if (targetStage === 'applied') {
-        toast({
-          title: "Invalid Move",
-          description: "Talent Pool candidates cannot be moved to Applied. They can only move to Screening or later stages.",
-          variant: "destructive"
-        });
-        setDraggedItem(null);
-        return;
-      }
-
-      // Moving from Talent Pool - create an application
-      const candidate = unlockedCandidates.find(c => c.id === draggedItem.id);
-      if (!candidate) return;
-
-      if (!selectedJob) {
-        // Show job selection dialog
-        setJobSelectDialog({
-          open: true,
-          candidateId: candidate.candidate_id,
-          candidateName: candidate.profile.full_name,
-          targetStage
-        });
-      } else {
-        // Create application directly
-        await createApplication(candidate.candidate_id, selectedJob, targetStage);
-      }
-    }
-    
-    setDraggedItem(null);
-  };
-
   const createApplication = async (candidateId: string, jobId: string, stage: PipelineStage) => {
+    // Talent Pool candidates cannot be moved to "Applied" stage
+    if (stage === 'applied') {
+      toast({
+        title: "Invalid Stage",
+        description: "Talent Pool candidates cannot be moved to Applied. They can only move to Screening or later stages.",
+        variant: "destructive"
+      });
+      return;
+    }
+
     try {
       console.log('Creating application:', { candidateId, jobId, stage });
       
@@ -821,14 +782,9 @@ export const ApplicationPipeline = () => {
                   {getFilteredUnlockedCandidates().map((candidate) => (
                     <Card 
                       key={candidate.id} 
-                      draggable
-                      onDragStart={() => handleDragStart(candidate.id, 'unlock')}
-                      onDragEnd={() => setDraggedItem(null)}
-                      className="p-3 hover:border-primary/50 transition-all cursor-move overflow-hidden"
-                      style={{ cursor: 'grab' }}
+                      className="p-3 hover:border-primary/50 transition-all overflow-hidden"
                     >
                       <div className="flex items-start gap-2 mb-3">
-                        <GripVertical className="h-4 w-4 text-muted-foreground flex-shrink-0 mt-1" />
                         <Avatar className="h-10 w-10 flex-shrink-0">
                           <AvatarImage src={candidate.profile.avatar_url || undefined} />
                           <AvatarFallback className="bg-primary text-primary-foreground text-xs">
@@ -962,16 +918,11 @@ export const ApplicationPipeline = () => {
             const config = stageConfig[stage];
             const stageApplications = getApplicationsByStage(stage);
             const Icon = config.icon;
-            const isValidDropTarget = !(draggedItem?.type === 'unlock' && stage === 'applied');
 
             return (
               <Card 
                 key={stage} 
-                className={`border-2 min-w-[320px] lg:min-w-0 lg:flex-1 transition-colors ${
-                  draggedItem && isValidDropTarget ? 'border-primary/50 bg-primary/5' : ''
-                } ${draggedItem && !isValidDropTarget ? 'opacity-50 cursor-not-allowed' : ''}`}
-                onDragOver={isValidDropTarget ? handleDragOver : undefined}
-                onDrop={isValidDropTarget ? (e) => handleDrop(e, stage) : undefined}
+                className="border-2 min-w-[320px] lg:min-w-0 lg:flex-1"
               >
                 <CardHeader className="pb-3">
                   <CardTitle className="flex items-center justify-between text-base">
@@ -987,36 +938,24 @@ export const ApplicationPipeline = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="p-2">
-                  <ScrollArea 
-                    className="h-[500px] pr-2" 
-                    onDragOver={isValidDropTarget ? handleDragOver : undefined} 
-                    onDrop={isValidDropTarget ? (e) => handleDrop(e, stage) : undefined}
-                  >
+                  <ScrollArea className="h-[500px] pr-2">
                     <div className="space-y-2">
                       {stageApplications.map((application) => (
-                        <div
+                        <ApplicationCard
                           key={application.id}
-                          draggable
-                          onDragStart={() => handleDragStart(application.id, 'application')}
-                          onDragEnd={() => setDraggedItem(null)}
-                          className="cursor-move"
-                          style={{ cursor: 'grab' }}
-                        >
-                          <ApplicationCard
-                            application={application}
-                            onStageChange={handleStageChange}
-                            onToggleStar={() => toggleStar(application.id)}
-                            onAddNotes={() => setNotesDialog({
-                              open: true,
-                              applicationId: application.id,
-                              currentNotes: application.status_notes || ""
-                            })}
-                            onEditVerification={() => setEditingVerification({ 
-                              candidateId: application.candidate_id, 
-                              verification: application.candidate_verifications 
-                            })}
-                          />
-                        </div>
+                          application={application}
+                          onStageChange={handleStageChange}
+                          onToggleStar={() => toggleStar(application.id)}
+                          onAddNotes={() => setNotesDialog({
+                            open: true,
+                            applicationId: application.id,
+                            currentNotes: application.status_notes || ""
+                          })}
+                          onEditVerification={() => setEditingVerification({ 
+                            candidateId: application.candidate_id, 
+                            verification: application.candidate_verifications 
+                          })}
+                        />
                       ))}
                       {stageApplications.length === 0 && (
                         <div className="text-center py-8 text-muted-foreground text-sm">

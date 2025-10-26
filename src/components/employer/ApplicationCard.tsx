@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,7 +17,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { MessageSquare, MoreVertical, Calendar, Briefcase, GripVertical, Eye, MapPin, Award, Star, StickyNote, CheckCircle, XCircle, AlertCircle, Shield } from "lucide-react";
+import { MessageSquare, MoreVertical, Calendar, Briefcase, Eye, MapPin, Star, StickyNote, Shield } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { HireConfirmationDialog } from "./HireConfirmationDialog";
 import { SendMessageDialog } from "@/components/messaging/SendMessageDialog";
@@ -67,11 +68,12 @@ export const ApplicationCard = ({ application, onStageChange, onToggleStar, onAd
   const [showMessageDialog, setShowMessageDialog] = useState(false);
 
   const stages: { value: PipelineStage; label: string }[] = [
-    { value: "screening", label: "Move to Screening" },
-    { value: "interview", label: "Schedule Interview" },
-    { value: "offer", label: "Send Offer" },
-    { value: "hired", label: "Mark as Hired" },
-    { value: "rejected", label: "Reject" },
+    { value: "applied", label: "Applied" },
+    { value: "screening", label: "Screening" },
+    { value: "interview", label: "Interview" },
+    { value: "offer", label: "Offer" },
+    { value: "rejected", label: "Rejected" },
+    { value: "hired", label: "Hired" },
   ];
 
   const getInitials = (name: string) => {
@@ -145,12 +147,6 @@ export const ApplicationCard = ({ application, onStageChange, onToggleStar, onAd
         )}
         <CardContent className="p-4 space-y-3">
           <div className="flex items-start gap-3">
-            <div 
-              className="cursor-move mt-1 flex-shrink-0"
-              onMouseDown={(e) => e.stopPropagation()}
-            >
-              <GripVertical className="h-4 w-4 text-muted-foreground" />
-            </div>
             <Avatar className="h-12 w-12 flex-shrink-0">
               <AvatarImage src={application.profile.avatar_url || undefined} />
               <AvatarFallback className="bg-primary text-primary-foreground text-sm">
@@ -190,29 +186,6 @@ export const ApplicationCard = ({ application, onStageChange, onToggleStar, onAd
                     {application.status_notes ? "Edit Notes" : "Add Notes"}
                   </DropdownMenuItem>
                 )}
-                {onEditVerification && (
-                  <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onEditVerification(); }}>
-                    <Shield className="h-4 w-4 mr-2" />
-                    Edit Verification
-                  </DropdownMenuItem>
-                )}
-                {stages
-                  .filter(s => s.value !== application.stage)
-                  .map((stage) => (
-                    <DropdownMenuItem
-                      key={stage.value}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        if (stage.value === 'hired') {
-                          setShowHireDialog(true);
-                        } else {
-                          onStageChange(application.id, stage.value);
-                        }
-                      }}
-                    >
-                      {stage.label}
-                    </DropdownMenuItem>
-                  ))}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
@@ -283,6 +256,29 @@ export const ApplicationCard = ({ application, onStageChange, onToggleStar, onAd
               <span className="hidden sm:inline">Message</span>
             </Button>
           </div>
+
+          {/* Stage Selection Dropdown */}
+          <Select
+            value={application.stage}
+            onValueChange={(value) => {
+              if (value === 'hired') {
+                setShowHireDialog(true);
+              } else {
+                onStageChange(application.id, value as PipelineStage);
+              }
+            }}
+          >
+            <SelectTrigger className="h-9 text-xs w-full">
+              <SelectValue placeholder="Change stage..." />
+            </SelectTrigger>
+            <SelectContent className="bg-popover z-50">
+              {stages.map((stage) => (
+                <SelectItem key={stage.value} value={stage.value}>
+                  {stage.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </CardContent>
       </Card>
 
