@@ -10,6 +10,7 @@ import { ApplicationPipeline } from "@/components/employer/ApplicationPipeline";
 import { UnlockUsageTracker } from "@/components/employer/UnlockUsageTracker";
 import { VerificationRequestDialog } from "@/components/verification/VerificationRequestDialog";
 import { SubscriptionStatus } from "@/components/subscription/SubscriptionStatus";
+import { JobManagement } from "./JobManagement";
 import { useQuery } from "@tanstack/react-query";
 
 const EmployerDashboard = () => {
@@ -221,11 +222,15 @@ const EmployerDashboard = () => {
       </Card>
 
       <Tabs defaultValue="overview" className="w-full">
-        <TabsList className="grid w-full max-w-md grid-cols-2">
+        <TabsList className="grid w-full max-w-2xl grid-cols-3">
           <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="jobs" className="gap-2">
+            <Briefcase className="h-4 w-4" />
+            Jobs
+          </TabsTrigger>
           <TabsTrigger value="pipeline" className="gap-2">
             <Workflow className="h-4 w-4" />
-            Application Pipeline
+            Pipeline
           </TabsTrigger>
         </TabsList>
 
@@ -336,6 +341,10 @@ const EmployerDashboard = () => {
         </Card>
       </div>
 
+        </TabsContent>
+
+        <TabsContent value="jobs" className="mt-6">
+          <JobManagement />
         </TabsContent>
 
         <TabsContent value="pipeline" className="mt-6">
