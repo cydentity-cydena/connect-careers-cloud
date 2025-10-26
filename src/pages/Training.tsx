@@ -52,12 +52,6 @@ const Training = () => {
           freeCourses: [
             { name: "Introduction to HTB", url: "https://academy.hackthebox.com/course/preview/intro-to-academy" }
           ]
-        },
-        {
-          name: "Immersive Labs",
-          description: "Skills benchmarking platform with strong employer-facing analytics and completion tracking.",
-          color: "bg-purple-600",
-          features: ["Skills Assessment", "Lab Exercises", "Progress Tracking", "Employer Dashboards"]
         }
       ]
     },
@@ -116,15 +110,6 @@ const Training = () => {
       description: "Hands-on cyber ranges with realistic scenarios and free community challenges",
       icon: <Shield className="h-6 w-6" />,
       providers: [
-        {
-          name: "CyberRanges",
-          description: "Official cyber range of UN's ITU. Military-grade platform for realistic cybersecurity scenarios and team exercises.",
-          color: "bg-indigo-700",
-          features: ["Team Exercises", "MITRE ATT&CK", "Realistic Scenarios", "Professional Platform"],
-          freeCourses: [
-            { name: "Request Demo", url: "https://cyberranges.com/" }
-          ]
-        },
         {
           name: "CyberDefenders",
           description: "Blue team training platform with free forensics and incident response challenges.",
