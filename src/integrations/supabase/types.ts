@@ -2195,6 +2195,10 @@ export type Database = {
         Args: { user_id: string }
         Returns: number
       }
+      check_and_award_achievements: {
+        Args: { p_category: string; p_current_count: number; p_user_id: string }
+        Returns: undefined
+      }
       get_public_candidate_profile: {
         Args: { profile_user_id: string }
         Returns: {
