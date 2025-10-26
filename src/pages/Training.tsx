@@ -76,7 +76,7 @@ const Training = () => {
           color: "bg-cyan-600",
           features: ["SOC Analyst Training", "Real-World Scenarios", "SIEM Practice", "Completion Certificates"],
           freeCourses: [
-            { name: "SOC Analyst Path", url: "https://letsdefend.io/training/lessons/soc-analyst-learning-path" }
+            { name: "SOC Analyst Path", url: "https://app.letsdefend.io/accounts/login?from=%2Fhomepage" }
           ]
         },
         {
