@@ -96,11 +96,11 @@ export const ApplicationCard = ({ application, onStageChange, onToggleStar, onAd
   return (
     <>
       <Card 
-        className="hover:shadow-md transition-shadow border relative"
+        className={`hover:shadow-md transition-all border relative ${application.is_starred ? 'border-amber-400 shadow-sm' : ''}`}
       >
         {application.is_starred && (
           <div className="absolute top-2 right-2 z-10">
-            <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
+            <Star className="h-5 w-5 fill-amber-400 text-amber-400" />
           </div>
         )}
         <CardContent className="p-3 space-y-3">
@@ -165,38 +165,47 @@ export const ApplicationCard = ({ application, onStageChange, onToggleStar, onAd
             </DropdownMenu>
           </div>
 
-          {/* Verification Status Badges */}
-          {application.candidate_verifications && (
-            <div className="flex flex-wrap gap-1">
-              {application.candidate_verifications.identity_status && (
-                <Badge variant="outline" className="text-xs px-1.5 py-0.5">
-                  <Shield className={`h-3 w-3 mr-1 ${getVerificationColor(application.candidate_verifications.identity_status)}`} />
-                  ID
-                </Badge>
-              )}
-              {application.candidate_verifications.rtw_status && (
-                <Badge variant="outline" className="text-xs px-1.5 py-0.5">
-                  {(() => {
-                    const Icon = getVerificationIcon(application.candidate_verifications.rtw_status);
-                    return <Icon className={`h-3 w-3 mr-1 ${getVerificationColor(application.candidate_verifications.rtw_status)}`} />;
-                  })()}
-                  RTW
-                </Badge>
-              )}
-              {application.candidate_verifications.certifications && (
-                <Badge variant="outline" className="text-xs px-1.5 py-0.5">
-                  <Award className="h-3 w-3 mr-1 text-blue-500" />
-                  Cert
-                </Badge>
-              )}
-              {application.candidate_verifications.logistics_status && (
-                <Badge variant="outline" className="text-xs px-1.5 py-0.5">
-                  <MapPin className={`h-3 w-3 mr-1 ${getVerificationColor(application.candidate_verifications.logistics_status)}`} />
-                  Logistics
-                </Badge>
-              )}
-            </div>
-          )}
+          {/* Verification Status Badges - Always show with defaults */}
+          <div className="flex flex-wrap gap-1">
+            {/* HR Ready Badge */}
+            {application.candidate_verifications?.hr_ready && (
+              <Badge variant="default" className="text-xs px-1.5 py-0.5 bg-green-500">
+                <CheckCircle className="h-3 w-3 mr-1" />
+                HR Ready
+              </Badge>
+            )}
+            
+            {/* Identity Status */}
+            <Badge variant="outline" className="text-xs px-1.5 py-0.5">
+              <Shield className={`h-3 w-3 mr-1 ${getVerificationColor(application.candidate_verifications?.identity_status || null)}`} />
+              ID
+            </Badge>
+            
+            {/* RTW Status */}
+            <Badge variant="outline" className="text-xs px-1.5 py-0.5">
+              {(() => {
+                const Icon = getVerificationIcon(application.candidate_verifications?.rtw_status || null);
+                return <Icon className={`h-3 w-3 mr-1 ${getVerificationColor(application.candidate_verifications?.rtw_status || null)}`} />;
+              })()}
+              RTW
+            </Badge>
+            
+            {/* Certifications */}
+            {application.candidate_verifications?.certifications && (
+              <Badge variant="outline" className="text-xs px-1.5 py-0.5">
+                <Award className="h-3 w-3 mr-1 text-blue-500" />
+                Cert
+              </Badge>
+            )}
+            
+            {/* Logistics Status */}
+            {application.candidate_verifications?.logistics_status && (
+              <Badge variant="outline" className="text-xs px-1.5 py-0.5">
+                <MapPin className={`h-3 w-3 mr-1 ${getVerificationColor(application.candidate_verifications.logistics_status)}`} />
+                Logistics
+              </Badge>
+            )}
+          </div>
 
           <div className="space-y-2">
             {/* Years of Experience Badge */}
@@ -221,12 +230,12 @@ export const ApplicationCard = ({ application, onStageChange, onToggleStar, onAd
               <span className="truncate">{formatDistanceToNow(new Date(application.applied_at), { addSuffix: true })}</span>
             </div>
 
-            {/* Notes indicator */}
+            {/* Notes indicator - More prominent */}
             {application.status_notes && (
-              <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                <StickyNote className="h-3 w-3 flex-shrink-0" />
-                <span className="truncate italic">Has notes</span>
-              </div>
+              <Badge variant="secondary" className="text-xs">
+                <StickyNote className="h-3 w-3 mr-1" />
+                Notes
+              </Badge>
             )}
           </div>
 
