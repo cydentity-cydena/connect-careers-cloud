@@ -220,7 +220,10 @@ export default function ProfileDetail() {
 
     } catch (error: any) {
       console.error("Error loading profile:", error);
-      toast.error("Failed to load profile");
+      toast.error("Failed to load profile: " + (error.message || "Unknown error"));
+      // Set loading to false even on error so the UI can show something
+      setLoading(false);
+      // Keep profile as null to show "not found" message
     } finally {
       setLoading(false);
     }
@@ -251,20 +254,16 @@ export default function ProfileDetail() {
     return (
       <div className="min-h-screen bg-background">
         <SEO 
-          title={`${profile?.username || 'Profile'} - Cybersecurity Professional`}
-          description={`View ${profile?.username || 'this cybersecurity professional'}'s verified profile, certifications, and experience on Cydena.`}
+          title="Profile Not Found - Cydena"
+          description="The requested profile could not be found."
         />
-        <Schema type="breadcrumb" data={{
-          items: [
-            { name: "Home", path: "/" },
-            { name: "Profiles", path: "/profiles" },
-            { name: profile?.username || "Profile", path: `/profiles/${id}` }
-          ]
-        }} />
         <Navigation />
         <main className="container mx-auto px-4 py-8 text-center">
           <h1 className="text-2xl font-bold mb-4">Profile Not Found</h1>
-          <Button onClick={() => navigate("/profiles")}>Back to Profiles</Button>
+          <p className="text-muted-foreground mb-4">
+            The profile you're looking for doesn't exist or you don't have permission to view it.
+          </p>
+          <Button onClick={() => navigate("/dashboard")}>Back to Dashboard</Button>
         </main>
       </div>
     );
