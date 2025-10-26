@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Building2, Users, Briefcase, TrendingUp, DollarSign, UserPlus, Bug, Award, ListChecks, Workflow } from "lucide-react";
+import { Building2, Users, Briefcase, TrendingUp, PoundSterling, UserPlus, Bug, Award, ListChecks, Workflow } from "lucide-react";
 import RecruiterClientsList from "./RecruiterClientsList";
 import RecruiterPlacements from "./RecruiterPlacements";
 import { ApplicationPipeline } from "@/components/employer/ApplicationPipeline";
@@ -211,7 +211,7 @@ const RecruiterDashboard = () => {
             <Card className="border-border shadow-card hover:scale-105 transition-transform">
               <CardHeader className="pb-3">
                 <CardTitle className="flex items-center gap-2 text-lg">
-                  <DollarSign className="h-5 w-5 text-green-500" />
+                  <PoundSterling className="h-5 w-5 text-green-500" />
                   Commissions
                 </CardTitle>
               </CardHeader>

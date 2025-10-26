@@ -14,7 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import SEO from "@/components/SEO";
 import Navigation from "@/components/Navigation";
 import { toast } from "sonner";
-import { UserPlus, DollarSign, TrendingUp, Calendar } from "lucide-react";
+import { UserPlus, PoundSterling, TrendingUp, Calendar } from "lucide-react";
 import { z } from "zod";
 
 const placementSchema = z.object({
@@ -226,13 +226,13 @@ const Placements = () => {
           <Card className="border-green-500/50">
             <CardHeader className="pb-3">
               <CardTitle className="flex items-center gap-2 text-lg">
-                <DollarSign className="h-5 w-5 text-green-500" />
+                <PoundSterling className="h-5 w-5 text-green-500" />
                 Completed Commissions
               </CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-3xl font-bold text-green-500">
-                ${totalCommissions.toLocaleString()}
+                £{totalCommissions.toLocaleString()}
               </p>
             </CardContent>
           </Card>
@@ -246,7 +246,7 @@ const Placements = () => {
             </CardHeader>
             <CardContent>
               <p className="text-3xl font-bold text-orange-500">
-                ${pendingCommissions.toLocaleString()}
+                £{pendingCommissions.toLocaleString()}
               </p>
             </CardContent>
           </Card>
