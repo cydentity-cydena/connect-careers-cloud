@@ -969,7 +969,7 @@ export const ApplicationPipeline = () => {
             return (
               <Card 
                 key={stage} 
-                className="border-2 min-w-[320px] lg:min-w-0 lg:flex-1"
+                className="border-2 min-w-[340px] lg:min-w-[300px] lg:flex-1"
               >
                 <CardHeader className="pb-3">
                   <CardTitle className="flex items-center justify-between text-base">

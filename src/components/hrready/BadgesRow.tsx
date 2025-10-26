@@ -31,7 +31,7 @@ const icons = {
 
 export function BadgesRow({ items, showHrReady }: BadgesRowProps) {
   return (
-    <div className="flex items-center gap-1.5 flex-wrap">
+    <div className="flex items-center gap-2 flex-wrap">
       <TooltipProvider>
         {items.map((item, index) => {
           const Icon = icons[item.label as keyof typeof icons] || Shield;
@@ -40,7 +40,7 @@ export function BadgesRow({ items, showHrReady }: BadgesRowProps) {
               <TooltipTrigger asChild>
                 <Badge
                   variant="outline"
-                  className={`${statusColors[item.status]} text-xs px-1.5 py-0.5 gap-1`}
+                  className={`${statusColors[item.status]} text-[11px] px-2 py-0.5 gap-1 font-medium whitespace-nowrap`}
                 >
                   <Icon className="h-3 w-3" />
                   {item.label}
@@ -56,7 +56,7 @@ export function BadgesRow({ items, showHrReady }: BadgesRowProps) {
         })}
       </TooltipProvider>
       {showHrReady && (
-        <Badge variant="default" className="text-xs px-2 py-0.5 bg-primary">
+        <Badge variant="default" className="text-[11px] px-2 py-0.5 bg-primary font-medium whitespace-nowrap">
           ✓ HR-Ready
         </Badge>
       )}
