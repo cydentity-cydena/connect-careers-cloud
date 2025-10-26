@@ -462,6 +462,18 @@ export const ApplicationPipeline = () => {
     if (draggedItem.type === 'application') {
       await handleStageChange(draggedItem.id, targetStage);
     } else if (draggedItem.type === 'unlock') {
+      // Talent Pool candidates cannot be moved to "Applied" stage
+      // "Applied" is only for candidates who actively applied for a job
+      if (targetStage === 'applied') {
+        toast({
+          title: "Invalid Move",
+          description: "Talent Pool candidates cannot be moved to Applied. They can only move to Screening or later stages.",
+          variant: "destructive"
+        });
+        setDraggedItem(null);
+        return;
+      }
+
       // Moving from Talent Pool - create an application
       const candidate = unlockedCandidates.find(c => c.id === draggedItem.id);
       if (!candidate) return;
@@ -811,7 +823,9 @@ export const ApplicationPipeline = () => {
                       key={candidate.id} 
                       draggable
                       onDragStart={() => handleDragStart(candidate.id, 'unlock')}
+                      onDragEnd={() => setDraggedItem(null)}
                       className="p-3 hover:border-primary/50 transition-all cursor-move overflow-hidden"
+                      style={{ cursor: 'grab' }}
                     >
                       <div className="flex items-start gap-2 mb-3">
                         <GripVertical className="h-4 w-4 text-muted-foreground flex-shrink-0 mt-1" />
@@ -948,13 +962,16 @@ export const ApplicationPipeline = () => {
             const config = stageConfig[stage];
             const stageApplications = getApplicationsByStage(stage);
             const Icon = config.icon;
+            const isValidDropTarget = !(draggedItem?.type === 'unlock' && stage === 'applied');
 
             return (
               <Card 
                 key={stage} 
-                className="border-2 min-w-[320px] lg:min-w-0 lg:flex-1"
-                onDragOver={handleDragOver}
-                onDrop={(e) => handleDrop(e, stage)}
+                className={`border-2 min-w-[320px] lg:min-w-0 lg:flex-1 transition-colors ${
+                  draggedItem && isValidDropTarget ? 'border-primary/50 bg-primary/5' : ''
+                } ${draggedItem && !isValidDropTarget ? 'opacity-50 cursor-not-allowed' : ''}`}
+                onDragOver={isValidDropTarget ? handleDragOver : undefined}
+                onDrop={isValidDropTarget ? (e) => handleDrop(e, stage) : undefined}
               >
                 <CardHeader className="pb-3">
                   <CardTitle className="flex items-center justify-between text-base">
@@ -970,14 +987,20 @@ export const ApplicationPipeline = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="p-2">
-                  <ScrollArea className="h-[500px] pr-2" onDragOver={handleDragOver} onDrop={(e) => handleDrop(e, stage)}>
+                  <ScrollArea 
+                    className="h-[500px] pr-2" 
+                    onDragOver={isValidDropTarget ? handleDragOver : undefined} 
+                    onDrop={isValidDropTarget ? (e) => handleDrop(e, stage) : undefined}
+                  >
                     <div className="space-y-2">
                       {stageApplications.map((application) => (
                         <div
                           key={application.id}
                           draggable
                           onDragStart={() => handleDragStart(application.id, 'application')}
+                          onDragEnd={() => setDraggedItem(null)}
                           className="cursor-move"
+                          style={{ cursor: 'grab' }}
                         >
                           <ApplicationCard
                             application={application}
