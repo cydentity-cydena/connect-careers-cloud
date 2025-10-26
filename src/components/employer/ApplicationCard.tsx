@@ -50,6 +50,7 @@ interface ApplicationCardProps {
       identity_status: string | null;
       rtw_status: string | null;
       logistics_status: string | null;
+      logistics_location: string | null;
       certifications: any;
     } | null;
   };
@@ -227,10 +228,10 @@ export const ApplicationCard = ({ application, onStageChange, onToggleStar, onAd
             </div>
 
             {/* Location if available */}
-            {application.profile.location && (
+            {(application.candidate_verifications?.logistics_location || application.profile.location) && (
               <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                 <MapPin className="h-3 w-3 flex-shrink-0" />
-                <span className="truncate">{application.profile.location}</span>
+                <span className="truncate">{application.candidate_verifications?.logistics_location || application.profile.location}</span>
               </div>
             )}
 

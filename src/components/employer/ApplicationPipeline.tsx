@@ -43,6 +43,7 @@ interface Application {
     identity_status: string | null;
     rtw_status: string | null;
     logistics_status: string | null;
+    logistics_location: string | null;
     certifications: any;
   } | null;
 }
@@ -66,6 +67,7 @@ interface UnlockedCandidate {
     identity_status: string | null;
     rtw_status: string | null;
     logistics_status: string | null;
+    logistics_location: string | null;
     certifications: any;
   } | null;
 }
@@ -863,10 +865,10 @@ export const ApplicationPipeline = () => {
                             {candidate.candidate_profile.years_experience} yrs
                           </Badge>
                         )}
-                        {candidate.profile.location && (
+                        {(candidate.candidate_verifications?.logistics_location || candidate.profile.location) && (
                           <div className="flex items-center gap-1 text-xs text-muted-foreground">
                             <MapPin className="h-3 w-3 flex-shrink-0" />
-                            <span className="truncate">{candidate.profile.location}</span>
+                            <span className="truncate">{candidate.candidate_verifications?.logistics_location || candidate.profile.location}</span>
                           </div>
                         )}
                       </div>
@@ -940,7 +942,7 @@ export const ApplicationPipeline = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="p-2">
-                  <ScrollArea className="h-[500px] pr-2">
+                  <ScrollArea className="h-[500px] pr-2" onDragOver={handleDragOver} onDrop={(e) => handleDrop(e, stage)}>
                     <div className="space-y-2">
                       {stageApplications.map((application) => (
                         <div
