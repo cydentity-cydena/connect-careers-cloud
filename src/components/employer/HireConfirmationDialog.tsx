@@ -105,7 +105,6 @@ export function HireConfirmationDialog({
           <div className="bg-muted/50 rounded-lg p-4 text-sm space-y-2">
             <p>✓ One-time payment - no subscriptions</p>
             <p>✓ Risk-free - pay only on successful hire</p>
-            <p>✓ 90% cheaper than agency fees (typically £7,500+)</p>
           </div>
         </div>
 
