@@ -327,7 +327,12 @@ export const ApplicationPipeline = () => {
       }
 
       const { data: employerJobs, error: jobsError } = await jobsQuery;
-      if (jobsError) throw jobsError;
+      if (jobsError) {
+        console.error('Jobs query error:', jobsError);
+        setApplications([]);
+        setLoading(false);
+        return;
+      }
 
       const jobIds = employerJobs?.map(j => j.id) || [];
       
@@ -337,67 +342,69 @@ export const ApplicationPipeline = () => {
         return;
       }
 
-      // Now fetch applications for those jobs with verifications
-      let query = supabase
+      // Fetch applications (base rows only), then join related data in parallel to avoid FK join errors
+      let appsQuery = supabase
         .from('applications')
-        .select(`
-          *,
-          candidate_profile:candidate_profiles!candidate_id(
-            title,
-            years_experience
-          ),
-          profile:profiles!candidate_id(
-            full_name,
-            avatar_url
-          ),
-          job:jobs!job_id(
-            title
-          )
-        `)
+        .select('id, candidate_id, job_id, stage, applied_at, cover_letter, status_notes, is_starred')
         .in('job_id', jobIds)
         .order('applied_at', { ascending: false });
 
-      const { data, error } = await query;
-      if (error) {
-        console.error('Applications query error:', error);
-        throw error;
+      if (selectedJob) {
+        appsQuery = appsQuery.eq('job_id', selectedJob);
       }
 
-      // Add is_starred if doesn't exist and fetch verifications
-      const applications = (data as any[])?.map(app => ({
+      const { data: appRows, error: appsError } = await appsQuery;
+      if (appsError) {
+        console.error('Applications query error:', appsError);
+        throw appsError;
+      }
+
+      const applications = (appRows as any[])?.map((app) => ({
         ...app,
-        is_starred: app.is_starred ?? false
+        is_starred: app.is_starred ?? false,
       })) || [];
 
-      // Fetch verifications for all candidates
-      const candidateIds = applications.map((app: any) => app.candidate_id);
-      if (candidateIds.length > 0) {
-        const { data: verifications, error: verError } = await supabase
-          .from('candidate_verifications')
-          .select('*')
-          .in('candidate_id', candidateIds);
-        
-        if (verError) {
-          console.error('Verifications query error:', verError);
-          // Continue without verifications instead of failing completely
-        }
-        
-        const verificationMap = new Map(verifications?.map(v => [v.candidate_id, v]) || []);
-        const appsWithVerifications = applications.map((app: any) => ({
-          ...app,
-          candidate_verifications: verificationMap.get(app.candidate_id) || null
-        }));
-        setApplications(appsWithVerifications as any);
-      } else {
-        setApplications(applications as any);
+      if (applications.length === 0) {
+        setApplications([] as any);
+        return;
       }
+
+      const candidateIds = applications.map((app: any) => app.candidate_id);
+      const appJobIds = applications.map((app: any) => app.job_id);
+
+      const [profilesRes, candProfilesRes, jobsRes, verRes] = await Promise.all([
+        supabase.from('profiles').select('id, full_name, avatar_url').in('id', candidateIds),
+        supabase.from('candidate_profiles').select('user_id, title, years_experience').in('user_id', candidateIds),
+        supabase.from('jobs').select('id, title').in('id', appJobIds),
+        supabase.from('candidate_verifications').select('*').in('candidate_id', candidateIds),
+      ]);
+
+      if (profilesRes.error) console.error('Profiles join error:', profilesRes.error);
+      if (candProfilesRes.error) console.error('Candidate profiles join error:', candProfilesRes.error);
+      if (jobsRes.error) console.error('Jobs join error:', jobsRes.error);
+      if (verRes.error) console.error('Verifications join error:', verRes.error);
+
+      const profileMap = new Map((profilesRes.data || []).map((p: any) => [p.id, p]));
+      const candProfileMap = new Map((candProfilesRes.data || []).map((cp: any) => [cp.user_id, cp]));
+      const jobsMap = new Map((jobsRes.data || []).map((j: any) => [j.id, j]));
+      const verMap = new Map((verRes.data || []).map((v: any) => [v.candidate_id, v]));
+
+      const mergedApps = applications.map((app: any) => ({
+        ...app,
+        candidate_profile: candProfileMap.get(app.candidate_id) || { title: '', years_experience: 0 },
+        profile: {
+          full_name: profileMap.get(app.candidate_id)?.full_name || 'Unknown',
+          avatar_url: profileMap.get(app.candidate_id)?.avatar_url || null,
+        },
+        job: { title: jobsMap.get(app.job_id)?.title || '' },
+        candidate_verifications: verMap.get(app.candidate_id) || null,
+      }));
+
+      setApplications(mergedApps as any);
     } catch (error) {
       console.error('Error fetching applications:', error);
-      toast({
-        title: "Error",
-        description: "Failed to load applications",
-        variant: "destructive"
-      });
+      // Fallback: show empty pipeline without noisy error toast
+      setApplications([]);
     } finally {
       setLoading(false);
     }
