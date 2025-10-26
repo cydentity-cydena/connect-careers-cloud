@@ -8,9 +8,10 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 import SEO from '@/components/SEO';
-import { ArrowLeft, Plus, Trash2, Upload, Image as ImageIcon, User } from 'lucide-react';
+import { ArrowLeft, Plus, Trash2, Upload, Image as ImageIcon, User, ChevronDown, ChevronRight } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -38,6 +39,10 @@ const Profile = () => {
   const [workHistory, setWorkHistory] = useState<any[]>([]);
   const [projects, setProjects] = useState<any[]>([]);
   const [education, setEducation] = useState<any[]>([]);
+  
+  const [workHistoryOpen, setWorkHistoryOpen] = useState(false);
+  const [projectsOpen, setProjectsOpen] = useState(false);
+  const [educationOpen, setEducationOpen] = useState(false);
 
   useEffect(() => {
     const init = async () => {
@@ -553,197 +558,226 @@ const Profile = () => {
           <Separator />
 
           {/* Work History */}
-          <div>
+          <Collapsible open={workHistoryOpen} onOpenChange={setWorkHistoryOpen}>
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold">Work History</h3>
+              <CollapsibleTrigger asChild>
+                <Button variant="ghost" className="p-0 hover:bg-transparent">
+                  <h3 className="text-lg font-semibold flex items-center gap-2">
+                    {workHistoryOpen ? <ChevronDown className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />}
+                    Work History
+                    <span className="text-sm text-muted-foreground font-normal">({workHistory.length})</span>
+                  </h3>
+                </Button>
+              </CollapsibleTrigger>
               <Button onClick={addWorkHistory} size="sm" variant="outline">
                 <Plus className="mr-2 h-4 w-4" />
                 Add Experience
               </Button>
             </div>
-            <div className="space-y-6">
-              {workHistory.map((work, index) => (
-                <Card key={index} className="p-4">
-                  <div className="flex justify-between items-start mb-4">
-                    <h4 className="font-medium">Experience {index + 1}</h4>
-                    <Button 
-                      onClick={() => removeWorkHistory(index)} 
-                      size="sm" 
-                      variant="ghost"
-                      className="text-destructive"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div>
-                      <Label>Company</Label>
-                      <Input 
-                        value={work.company} 
-                        onChange={(e) => updateWorkHistory(index, 'company', e.target.value)}
-                        placeholder="Company name"
-                      />
+            <CollapsibleContent>
+              <div className="space-y-6">
+                {workHistory.map((work, index) => (
+                  <Card key={index} className="p-4">
+                    <div className="flex justify-between items-start mb-4">
+                      <h4 className="font-medium">Experience {index + 1}</h4>
+                      <Button 
+                        onClick={() => removeWorkHistory(index)} 
+                        size="sm" 
+                        variant="ghost"
+                        className="text-destructive"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
                     </div>
-                    <div>
-                      <Label>Role</Label>
-                      <Input 
-                        value={work.role} 
-                        onChange={(e) => updateWorkHistory(index, 'role', e.target.value)}
-                        placeholder="Job title"
-                      />
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div>
+                        <Label>Company</Label>
+                        <Input 
+                          value={work.company} 
+                          onChange={(e) => updateWorkHistory(index, 'company', e.target.value)}
+                          placeholder="Company name"
+                        />
+                      </div>
+                      <div>
+                        <Label>Role</Label>
+                        <Input 
+                          value={work.role} 
+                          onChange={(e) => updateWorkHistory(index, 'role', e.target.value)}
+                          placeholder="Job title"
+                        />
+                      </div>
+                      <div>
+                        <Label>Location</Label>
+                        <Input 
+                          value={work.location || ''} 
+                          onChange={(e) => updateWorkHistory(index, 'location', e.target.value)}
+                          placeholder="City, State/Country"
+                        />
+                      </div>
+                      <div>
+                        <Label>Start Date</Label>
+                        <Input 
+                          type="date"
+                          value={work.start_date || ''} 
+                          onChange={(e) => updateWorkHistory(index, 'start_date', e.target.value)}
+                        />
+                      </div>
+                      <div>
+                        <Label>End Date</Label>
+                        <Input 
+                          type="date"
+                          value={work.end_date || ''} 
+                          onChange={(e) => updateWorkHistory(index, 'end_date', e.target.value)}
+                          disabled={work.is_current}
+                        />
+                      </div>
+                      <div className="flex items-center pt-8">
+                        <input 
+                          type="checkbox"
+                          id={`current-${index}`}
+                          checked={work.is_current || false}
+                          onChange={(e) => updateWorkHistory(index, 'is_current', e.target.checked)}
+                          className="mr-2"
+                        />
+                        <Label htmlFor={`current-${index}`} className="cursor-pointer">Currently working here</Label>
+                      </div>
+                      <div className="md:col-span-2">
+                        <Label>Description</Label>
+                        <Textarea 
+                          value={work.description || ''} 
+                          onChange={(e) => updateWorkHistory(index, 'description', e.target.value)}
+                          placeholder="Describe your responsibilities and achievements..."
+                          rows={4}
+                        />
+                      </div>
                     </div>
-                    <div>
-                      <Label>Location</Label>
-                      <Input 
-                        value={work.location || ''} 
-                        onChange={(e) => updateWorkHistory(index, 'location', e.target.value)}
-                        placeholder="City, State/Country"
-                      />
-                    </div>
-                    <div>
-                      <Label>Start Date</Label>
-                      <Input 
-                        type="date"
-                        value={work.start_date || ''} 
-                        onChange={(e) => updateWorkHistory(index, 'start_date', e.target.value)}
-                      />
-                    </div>
-                    <div>
-                      <Label>End Date</Label>
-                      <Input 
-                        type="date"
-                        value={work.end_date || ''} 
-                        onChange={(e) => updateWorkHistory(index, 'end_date', e.target.value)}
-                        disabled={work.is_current}
-                      />
-                    </div>
-                    <div className="flex items-center pt-8">
-                      <input 
-                        type="checkbox"
-                        id={`current-${index}`}
-                        checked={work.is_current || false}
-                        onChange={(e) => updateWorkHistory(index, 'is_current', e.target.checked)}
-                        className="mr-2"
-                      />
-                      <Label htmlFor={`current-${index}`} className="cursor-pointer">Currently working here</Label>
-                    </div>
-                    <div className="md:col-span-2">
-                      <Label>Description</Label>
-                      <Textarea 
-                        value={work.description || ''} 
-                        onChange={(e) => updateWorkHistory(index, 'description', e.target.value)}
-                        placeholder="Describe your responsibilities and achievements..."
-                        rows={4}
-                      />
-                    </div>
-                  </div>
-                </Card>
-              ))}
-            </div>
-          </div>
+                  </Card>
+                ))}
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
 
           <Separator />
 
           {/* Projects */}
-          <div>
+          <Collapsible open={projectsOpen} onOpenChange={setProjectsOpen}>
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold">Projects</h3>
+              <CollapsibleTrigger asChild>
+                <Button variant="ghost" className="p-0 hover:bg-transparent">
+                  <h3 className="text-lg font-semibold flex items-center gap-2">
+                    {projectsOpen ? <ChevronDown className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />}
+                    Projects
+                    <span className="text-sm text-muted-foreground font-normal">({projects.length})</span>
+                  </h3>
+                </Button>
+              </CollapsibleTrigger>
               <Button onClick={addProject} size="sm" variant="outline">
                 <Plus className="mr-2 h-4 w-4" />
                 Add Project
               </Button>
             </div>
-            <div className="space-y-6">
-              {projects.map((project, index) => (
-                <Card key={index} className="p-4">
-                  <div className="flex justify-between items-start mb-4">
-                    <h4 className="font-medium">Project {index + 1}</h4>
-                    <Button 
-                      onClick={() => removeProject(index)} 
-                      size="sm" 
-                      variant="ghost"
-                      className="text-destructive"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div className="md:col-span-2">
-                      <Label>Project Name</Label>
-                      <Input 
-                        value={project.name} 
-                        onChange={(e) => updateProject(index, 'name', e.target.value)}
-                        placeholder="Project name"
-                      />
+            <CollapsibleContent>
+              <div className="space-y-6">
+                {projects.map((project, index) => (
+                  <Card key={index} className="p-4">
+                    <div className="flex justify-between items-start mb-4">
+                      <h4 className="font-medium">Project {index + 1}</h4>
+                      <Button 
+                        onClick={() => removeProject(index)} 
+                        size="sm" 
+                        variant="ghost"
+                        className="text-destructive"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
                     </div>
-                    <div>
-                      <Label>Project URL</Label>
-                      <Input 
-                        value={project.url || ''} 
-                        onChange={(e) => updateProject(index, 'url', e.target.value)}
-                        placeholder="https://..."
-                      />
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div className="md:col-span-2">
+                        <Label>Project Name</Label>
+                        <Input 
+                          value={project.name} 
+                          onChange={(e) => updateProject(index, 'name', e.target.value)}
+                          placeholder="Project name"
+                        />
+                      </div>
+                      <div>
+                        <Label>Project URL</Label>
+                        <Input 
+                          value={project.url || ''} 
+                          onChange={(e) => updateProject(index, 'url', e.target.value)}
+                          placeholder="https://..."
+                        />
+                      </div>
+                      <div>
+                        <Label>GitHub URL</Label>
+                        <Input 
+                          value={project.github_url || ''} 
+                          onChange={(e) => updateProject(index, 'github_url', e.target.value)}
+                          placeholder="https://github.com/..."
+                        />
+                      </div>
+                      <div>
+                        <Label>Start Date</Label>
+                        <Input 
+                          type="date"
+                          value={project.start_date || ''} 
+                          onChange={(e) => updateProject(index, 'start_date', e.target.value)}
+                        />
+                      </div>
+                      <div>
+                        <Label>End Date</Label>
+                        <Input 
+                          type="date"
+                          value={project.end_date || ''} 
+                          onChange={(e) => updateProject(index, 'end_date', e.target.value)}
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <Label>Tech Stack (comma-separated)</Label>
+                        <Input 
+                          value={project.tech_stack?.join(', ') || ''} 
+                          onChange={(e) => updateProject(index, 'tech_stack', e.target.value.split(',').map((s: string) => s.trim()))}
+                          placeholder="React, TypeScript, Python, etc."
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <Label>Description</Label>
+                        <Textarea 
+                          value={project.description || ''} 
+                          onChange={(e) => updateProject(index, 'description', e.target.value)}
+                          placeholder="Describe the project, your role, and key achievements..."
+                          rows={4}
+                        />
+                      </div>
                     </div>
-                    <div>
-                      <Label>GitHub URL</Label>
-                      <Input 
-                        value={project.github_url || ''} 
-                        onChange={(e) => updateProject(index, 'github_url', e.target.value)}
-                        placeholder="https://github.com/..."
-                      />
-                    </div>
-                    <div>
-                      <Label>Start Date</Label>
-                      <Input 
-                        type="date"
-                        value={project.start_date || ''} 
-                        onChange={(e) => updateProject(index, 'start_date', e.target.value)}
-                      />
-                    </div>
-                    <div>
-                      <Label>End Date</Label>
-                      <Input 
-                        type="date"
-                        value={project.end_date || ''} 
-                        onChange={(e) => updateProject(index, 'end_date', e.target.value)}
-                      />
-                    </div>
-                    <div className="md:col-span-2">
-                      <Label>Tech Stack (comma-separated)</Label>
-                      <Input 
-                        value={project.tech_stack?.join(', ') || ''} 
-                        onChange={(e) => updateProject(index, 'tech_stack', e.target.value.split(',').map((s: string) => s.trim()))}
-                        placeholder="React, TypeScript, Python, etc."
-                      />
-                    </div>
-                    <div className="md:col-span-2">
-                      <Label>Description</Label>
-                      <Textarea 
-                        value={project.description || ''} 
-                        onChange={(e) => updateProject(index, 'description', e.target.value)}
-                        placeholder="Describe the project, your role, and key achievements..."
-                        rows={4}
-                      />
-                    </div>
-                  </div>
-                </Card>
-              ))}
-            </div>
-          </div>
+                  </Card>
+                ))}
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
 
           <Separator />
 
           {/* Education */}
-          <div>
+          <Collapsible open={educationOpen} onOpenChange={setEducationOpen}>
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold">Education</h3>
+              <CollapsibleTrigger asChild>
+                <Button variant="ghost" className="p-0 hover:bg-transparent">
+                  <h3 className="text-lg font-semibold flex items-center gap-2">
+                    {educationOpen ? <ChevronDown className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />}
+                    Education
+                    <span className="text-sm text-muted-foreground font-normal">({education.length})</span>
+                  </h3>
+                </Button>
+              </CollapsibleTrigger>
               <Button onClick={addEducation} size="sm" variant="outline">
                 <Plus className="mr-2 h-4 w-4" />
                 Add Education
               </Button>
             </div>
-            <div className="space-y-6">
-              {education.map((edu, index) => (
+            <CollapsibleContent>
+              <div className="space-y-6">
+                {education.map((edu, index) => (
                 <Card key={index} className="p-4">
                   <div className="flex justify-between items-start mb-4">
                     <h4 className="font-medium">Education {index + 1}</h4>
@@ -816,9 +850,10 @@ const Profile = () => {
                     </div>
                   </div>
                 </Card>
-              ))}
-            </div>
-          </div>
+                ))}
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
 
           <div className="flex justify-end pt-4">
             <Button onClick={handleSave} disabled={loading}>{loading ? 'Saving...' : 'Save changes'}</Button>
