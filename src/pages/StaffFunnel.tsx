@@ -794,38 +794,36 @@ export default function StaffFunnel() {
                         
                         {/* Actions */}
                         <div className="space-y-2 pt-2 border-t">
-                          <div className="grid grid-cols-2 gap-2">
-                            {candidate.cv_url ? (
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                className="h-8 text-xs flex-1"
-                                onClick={() => handleViewCV(candidate.cv_url!, candidate.profiles?.full_name || "Unknown")}
-                              >
-                                <FileText className="h-3 w-3 mr-1" />
-                                View CV
-                              </Button>
-                            ) : (
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                className="h-8 text-xs flex-1"
-                                onClick={() => triggerFileUpload(candidate.id)}
-                              >
-                                <Upload className="h-3 w-3 mr-1" />
-                                Upload CV
-                              </Button>
-                            )}
+                          {candidate.cv_url ? (
                             <Button
                               variant="outline"
                               size="sm"
-                              className="h-8 text-xs flex-1"
-                              onClick={() => setEditingVerification({ candidateId: candidate.candidate_id, verification: candidate.verification })}
+                              className="h-8 text-xs w-full"
+                              onClick={() => handleViewCV(candidate.cv_url!, candidate.profiles?.full_name || "Unknown")}
                             >
-                              <ShieldCheck className="h-3 w-3 mr-1" />
-                              Edit Verification
+                              <FileText className="h-3 w-3 mr-1" />
+                              View CV
                             </Button>
-                          </div>
+                          ) : (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="h-8 text-xs w-full"
+                              onClick={() => triggerFileUpload(candidate.id)}
+                            >
+                              <Upload className="h-3 w-3 mr-1" />
+                              Upload CV
+                            </Button>
+                          )}
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="h-8 text-xs w-full"
+                            onClick={() => setEditingVerification({ candidateId: candidate.candidate_id, verification: candidate.verification })}
+                          >
+                            <ShieldCheck className="h-3 w-3 mr-1" />
+                            Edit Verification
+                          </Button>
 
                           <Select
                             value={candidate.stage}
