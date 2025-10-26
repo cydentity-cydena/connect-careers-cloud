@@ -16,12 +16,13 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { 
   Mail, Phone, MapPin, Calendar, Briefcase, Award, 
   Github, Linkedin, Globe, FileText, Shield, ArrowLeft,
-  Building2, GraduationCap, Code, ExternalLink, Eye, Info, ChevronDown, ChevronRight
+  Building2, GraduationCap, Code, ExternalLink, Eye, Info, ChevronDown, ChevronRight, User
 } from "lucide-react";
 import { CertificationCard } from "@/components/certifications/CertificationCard";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function ProfileDetail() {
   const { id } = useParams();
@@ -359,12 +360,14 @@ export default function ProfileDetail() {
             <Card>
               <CardContent className="pt-6">
                 <div className="flex flex-col items-center text-center mb-6">
-                  <div className="w-32 h-32 rounded-full bg-gradient-cyber flex items-center justify-center text-5xl mb-4">
-                    {profile.avatar_url ? (
-                      <img src={profile.avatar_url} alt={profile.username || "User"} className="rounded-full" />
-                    ) : (
-                      "👤"
-                    )}
+                  <div className="relative mb-4">
+                    <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary via-primary/80 to-primary/60 blur-sm"></div>
+                    <Avatar className="relative h-32 w-32 border-4 border-primary shadow-xl ring-4 ring-primary/20">
+                      <AvatarImage src={profile.avatar_url || undefined} alt={profile.username || "User"} className="object-cover" />
+                      <AvatarFallback className="bg-primary/10 text-primary text-4xl">
+                        <User className="h-16 w-16" />
+                      </AvatarFallback>
+                    </Avatar>
                   </div>
                   <h1 className="text-2xl font-bold mb-1">
                     {isUnlocked && profile.full_name ? profile.full_name : `@${profile.username || "anonymous"}`}
