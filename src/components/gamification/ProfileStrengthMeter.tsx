@@ -100,10 +100,51 @@ export const ProfileStrengthMeter = ({ userId }: ProfileStrengthMeterProps) => {
 
       setCompletion(score);
       setMissingFields(missing);
+
+      // Award achievements for profile completion milestones
+      await checkAndAwardProfileAchievements(score);
     } catch (error) {
       console.error('Error calculating completion:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const checkAndAwardProfileAchievements = async (score: number) => {
+    try {
+      // Get profile achievements
+      const { data: achievements } = await supabase
+        .from('achievements')
+        .select('id, requirement_value')
+        .eq('category', 'profile');
+
+      if (!achievements) return;
+
+      // Check each achievement
+      for (const achievement of achievements) {
+        if (score >= achievement.requirement_value) {
+          // Check if user already has this achievement
+          const { data: existing } = await supabase
+            .from('user_achievements')
+            .select('id')
+            .eq('user_id', userId)
+            .eq('achievement_id', achievement.id)
+            .maybeSingle();
+
+          // Award if not already earned
+          if (!existing) {
+            await supabase
+              .from('user_achievements')
+              .insert({
+                user_id: userId,
+                achievement_id: achievement.id,
+                earned_at: new Date().toISOString()
+              });
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error awarding achievements:', error);
     }
   };
 
