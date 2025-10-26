@@ -280,6 +280,15 @@ const Profile = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="your.email@example.com"
                 />
+
+                <Label htmlFor="phone">Phone number (private until unlocked)</Label>
+                <Input 
+                  id="phone" 
+                  type="tel"
+                  value={phone} 
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="+44 7700 900000 or +1 (555) 123-4567"
+                />
                 
                 <Label htmlFor="username">
                   Username (public, 3-20 chars) <span className="text-destructive">*</span>
@@ -307,15 +316,6 @@ const Profile = () => {
               <div className="space-y-3">
                 <Label htmlFor="title">Current job title</Label>
                 <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} />
-                
-                <Label htmlFor="phone">Phone number (private until unlocked)</Label>
-                <Input 
-                  id="phone" 
-                  type="tel"
-                  value={phone} 
-                  onChange={(e) => setPhone(e.target.value)}
-                  placeholder="+44 7700 900000"
-                />
                 
                 <Label htmlFor="desiredJobTitle">Desired job title (optional)</Label>
                 <Input 
