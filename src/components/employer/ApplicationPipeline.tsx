@@ -6,7 +6,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Briefcase, Clock, UserCheck, FileCheck, XCircle, CheckCircle2, Users, Search, Eye, MessageCircle, GripVertical, Download, Star, StickyNote, Filter } from "lucide-react";
+import { Briefcase, Clock, UserCheck, FileCheck, XCircle, CheckCircle2, Users, Search, Eye, MessageCircle, GripVertical, Download, Star, StickyNote, Filter, Shield, Award, MapPin, AlertCircle } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ApplicationCard } from "./ApplicationCard";
 import { toast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
@@ -54,11 +55,19 @@ interface UnlockedCandidate {
     full_name: string;
     username: string;
     avatar_url: string | null;
+    location?: string | null;
   };
   candidate_profile: {
     title: string;
     years_experience: number;
   };
+  candidate_verifications?: {
+    hr_ready: boolean;
+    identity_status: string | null;
+    rtw_status: string | null;
+    logistics_status: string | null;
+    certifications: any;
+  } | null;
 }
 
 const stageConfig = {
@@ -236,34 +245,42 @@ export const ApplicationPipeline = () => {
         return;
       }
 
-      // 2) Fetch profile info and candidate profile info in parallel
-      const [profilesRes, candidateProfilesRes] = await Promise.all([
+      // 2) Fetch profile info, candidate profile info, and verifications in parallel
+      const [profilesRes, candidateProfilesRes, verificationsRes] = await Promise.all([
         supabase
           .from('profiles')
-          .select('id, full_name, username, avatar_url')
+          .select('id, full_name, username, avatar_url, location')
           .in('id', candidateIds),
         supabase
           .from('candidate_profiles')
           .select('user_id, title, years_experience')
           .in('user_id', candidateIds),
+        supabase
+          .from('candidate_verifications')
+          .select('*')
+          .in('candidate_id', candidateIds),
       ]);
 
       if (profilesRes.error) throw profilesRes.error;
       if (candidateProfilesRes.error) throw candidateProfilesRes.error;
+      if (verificationsRes.error) throw verificationsRes.error;
 
       const profiles = profilesRes.data || [];
       const candidateProfiles = candidateProfilesRes.data || [];
+      const verifications = verificationsRes.data || [];
 
       const profileMap = new Map(profiles.map((p: any) => [p.id, p]));
       const candidateProfileMap = new Map(candidateProfiles.map((cp: any) => [cp.user_id, cp]));
+      const verificationMap = new Map(verifications.map((v: any) => [v.candidate_id, v]));
 
       // 3) Merge and filter out candidates that already have applications
       const merged = (unlocks || []).map((u: any) => ({
         id: u.id,
         candidate_id: u.candidate_id,
         unlocked_at: u.unlocked_at,
-        profile: profileMap.get(u.candidate_id) || { full_name: 'Unknown', username: '', avatar_url: null },
+        profile: profileMap.get(u.candidate_id) || { full_name: 'Unknown', username: '', avatar_url: null, location: null },
         candidate_profile: candidateProfileMap.get(u.candidate_id) || { title: '', years_experience: 0 },
+        candidate_verifications: verificationMap.get(u.candidate_id) || null,
       }));
 
       const candidatesWithoutApps = merged.filter((unlock: any) =>
@@ -779,38 +796,98 @@ export const ApplicationPipeline = () => {
                       key={candidate.id} 
                       draggable
                       onDragStart={() => handleDragStart(candidate.id, 'unlock')}
-                      className="p-2 hover:border-primary/50 transition-all cursor-move"
+                      className="p-3 hover:border-primary/50 transition-all cursor-move"
                     >
-                      <div className="flex items-center gap-2 mb-2">
-                        <GripVertical className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                      <div className="flex items-start gap-2 mb-3">
+                        <GripVertical className="h-4 w-4 text-muted-foreground flex-shrink-0 mt-1" />
+                        <Avatar className="h-10 w-10 flex-shrink-0">
+                          <AvatarImage src={candidate.profile.avatar_url || undefined} />
+                          <AvatarFallback className="bg-primary text-primary-foreground text-xs">
+                            {candidate.profile.full_name.split(" ").map((n) => n[0]).join("").toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
                         <div className="flex-1 min-w-0">
-                          <h4 className="font-semibold text-sm truncate">{candidate.profile.full_name}</h4>
+                          <h4 className="font-semibold text-sm leading-tight mb-1">{candidate.profile.full_name}</h4>
                           {candidate.candidate_profile?.title && (
-                            <p className="text-xs text-muted-foreground truncate">{candidate.candidate_profile.title}</p>
-                          )}
-                          {candidate.candidate_profile?.years_experience > 0 && (
-                            <p className="text-xs text-muted-foreground">
-                              {candidate.candidate_profile.years_experience} yrs exp
-                            </p>
+                            <p className="text-xs text-muted-foreground line-clamp-1 leading-tight">{candidate.candidate_profile.title}</p>
                           )}
                         </div>
                       </div>
+
+                      {/* Verification Badges */}
+                      {candidate.candidate_verifications && (
+                        <div className="flex flex-wrap gap-1 mb-2">
+                          {candidate.candidate_verifications.hr_ready && (
+                            <Badge variant="default" className="text-xs px-1.5 py-0.5 bg-green-500">
+                              <CheckCircle2 className="h-3 w-3 mr-1" />
+                              HR Ready
+                            </Badge>
+                          )}
+                          <Badge variant="outline" className="text-xs px-1.5 py-0.5">
+                            <Shield className={`h-3 w-3 mr-1 ${
+                              !candidate.candidate_verifications.identity_status ? "text-red-500" :
+                              candidate.candidate_verifications.identity_status === "verified" ? "text-green-500" :
+                              candidate.candidate_verifications.identity_status === "pending" ? "text-amber-500" :
+                              "text-red-500"
+                            }`} />
+                            ID
+                          </Badge>
+                          <Badge variant="outline" className="text-xs px-1.5 py-0.5">
+                            {(() => {
+                              const rtwStatus = candidate.candidate_verifications.rtw_status;
+                              const Icon = !rtwStatus ? XCircle :
+                                rtwStatus === "verified" ? CheckCircle2 :
+                                rtwStatus === "pending" ? AlertCircle : XCircle;
+                              const color = !rtwStatus ? "text-red-500" :
+                                rtwStatus === "verified" ? "text-green-500" :
+                                rtwStatus === "pending" ? "text-amber-500" :
+                                "text-red-500";
+                              return <Icon className={`h-3 w-3 mr-1 ${color}`} />;
+                            })()}
+                            RTW
+                          </Badge>
+                          {candidate.candidate_verifications.certifications && (
+                            <Badge variant="outline" className="text-xs px-1.5 py-0.5">
+                              <Award className="h-3 w-3 mr-1 text-blue-500" />
+                              Cert
+                            </Badge>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Experience and Location */}
+                      <div className="space-y-1.5 mb-3">
+                        {candidate.candidate_profile?.years_experience > 0 && (
+                          <Badge variant="secondary" className="text-xs px-2 py-0.5">
+                            <Briefcase className="h-3 w-3 mr-1" />
+                            {candidate.candidate_profile.years_experience} yrs
+                          </Badge>
+                        )}
+                        {candidate.profile.location && (
+                          <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                            <MapPin className="h-3 w-3 flex-shrink-0" />
+                            <span className="truncate">{candidate.profile.location}</span>
+                          </div>
+                        )}
+                      </div>
+
                       <div className="flex gap-1.5">
                         <Button
                           size="sm"
                           variant="outline"
-                          className="flex-1 h-7 text-xs px-2"
+                          className="flex-1 h-8 text-xs px-2"
                           onClick={(e) => {
                             e.stopPropagation();
                             navigate(`/profiles/${candidate.candidate_id}`);
                           }}
                         >
-                          <Eye className="h-3 w-3" />
+                          <Eye className="h-3 w-3 mr-1" />
+                          View
                         </Button>
                         <Button
                           size="sm"
                           variant="default"
-                          className="flex-1 h-7 text-xs px-2"
+                          className="flex-1 h-8 text-xs px-2"
                           onClick={(e) => {
                             e.stopPropagation();
                             setMessageDialog({
@@ -820,7 +897,8 @@ export const ApplicationPipeline = () => {
                             });
                           }}
                         >
-                          <MessageCircle className="h-3 w-3" />
+                          <MessageCircle className="h-3 w-3 mr-1" />
+                          Message
                         </Button>
                       </div>
                     </Card>
