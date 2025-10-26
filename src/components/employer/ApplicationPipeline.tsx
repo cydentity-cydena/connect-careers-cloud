@@ -328,37 +328,17 @@ export const ApplicationPipeline = () => {
         .in('job_id', jobIds)
         .order('applied_at', { ascending: false });
 
-      // Add is_starred column if doesn't exist (default to false)
-      const applications = (await query).data?.map(app => ({
+      const { data, error } = await query;
+      if (error) throw error;
+
+      // Add is_starred if doesn't exist and fetch verifications
+      const applications = (data as any[])?.map(app => ({
         ...app,
         is_starred: app.is_starred ?? false
       })) || [];
 
       if (selectedJob) {
-        const { data, error } = await supabase
-          .from('applications')
-          .select(`
-            *,
-            candidate_profile:candidate_profiles!candidate_id(
-              title,
-              years_experience
-            ),
-            profile:profiles!candidate_id(
-              full_name,
-              avatar_url
-            ),
-            job:jobs!job_id(
-              title
-            )
-          `)
-          .eq('job_id', selectedJob)
-          .in('job_id', jobIds)
-          .order('applied_at', { ascending: false });
-        
-        if (error) throw error;
-        setApplications((data as any)?.map((app: any) => ({ ...app, is_starred: app.is_starred ?? false })) || []);
-      } else {
-        // Fetch verifications separately for all candidates
+        // Fetch verifications for filtered candidates
         const candidateIds = applications.map((app: any) => app.candidate_id);
         if (candidateIds.length > 0) {
           const { data: verifications } = await supabase
@@ -371,9 +351,27 @@ export const ApplicationPipeline = () => {
             ...app,
             candidate_verifications: verificationMap.get(app.candidate_id) || null
           }));
-          setApplications(appsWithVerifications);
+          setApplications(appsWithVerifications as any);
         } else {
-          setApplications(applications);
+          setApplications(applications as any);
+        }
+      } else {
+        // Fetch verifications for all candidates
+        const candidateIds = applications.map((app: any) => app.candidate_id);
+        if (candidateIds.length > 0) {
+          const { data: verifications } = await supabase
+            .from('candidate_verifications')
+            .select('*')
+            .in('candidate_id', candidateIds);
+          
+          const verificationMap = new Map(verifications?.map(v => [v.candidate_id, v]) || []);
+          const appsWithVerifications = applications.map((app: any) => ({
+            ...app,
+            candidate_verifications: verificationMap.get(app.candidate_id) || null
+          }));
+          setApplications(appsWithVerifications as any);
+        } else {
+          setApplications(applications as any);
         }
       }
     } catch (error) {

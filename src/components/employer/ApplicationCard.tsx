@@ -16,7 +16,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { MessageSquare, MoreVertical, Calendar, Briefcase, GripVertical, Eye, MapPin, Award } from "lucide-react";
+import { MessageSquare, MoreVertical, Calendar, Briefcase, GripVertical, Eye, MapPin, Award, Star, StickyNote, CheckCircle, XCircle, AlertCircle, Shield } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { HireConfirmationDialog } from "./HireConfirmationDialog";
 import { SendMessageDialog } from "@/components/messaging/SendMessageDialog";
@@ -31,6 +31,8 @@ interface ApplicationCardProps {
     stage: PipelineStage;
     applied_at: string;
     cover_letter: string | null;
+    status_notes?: string | null;
+    is_starred?: boolean;
     candidate_profile: {
       title: string;
       years_experience: number;
@@ -43,11 +45,20 @@ interface ApplicationCardProps {
     job: {
       title: string;
     };
+    candidate_verifications?: {
+      hr_ready: boolean;
+      identity_status: string | null;
+      rtw_status: string | null;
+      logistics_status: string | null;
+      certifications: any;
+    } | null;
   };
   onStageChange: (applicationId: string, newStage: PipelineStage) => void;
+  onToggleStar?: () => void;
+  onAddNotes?: () => void;
 }
 
-export const ApplicationCard = ({ application, onStageChange }: ApplicationCardProps) => {
+export const ApplicationCard = ({ application, onStageChange, onToggleStar, onAddNotes }: ApplicationCardProps) => {
   const [showDetails, setShowDetails] = useState(false);
   const [showHireDialog, setShowHireDialog] = useState(false);
   const [showMessageDialog, setShowMessageDialog] = useState(false);
@@ -68,11 +79,30 @@ export const ApplicationCard = ({ application, onStageChange }: ApplicationCardP
       .toUpperCase();
   };
 
+  const getVerificationColor = (status: string | null) => {
+    if (!status) return "text-red-500";
+    if (status === "verified") return "text-green-500";
+    if (status === "pending") return "text-amber-500";
+    return "text-red-500";
+  };
+
+  const getVerificationIcon = (status: string | null) => {
+    if (!status) return XCircle;
+    if (status === "verified") return CheckCircle;
+    if (status === "pending") return AlertCircle;
+    return XCircle;
+  };
+
   return (
     <>
       <Card 
-        className="hover:shadow-md transition-shadow border"
+        className="hover:shadow-md transition-shadow border relative"
       >
+        {application.is_starred && (
+          <div className="absolute top-2 right-2 z-10">
+            <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
+          </div>
+        )}
         <CardContent className="p-3 space-y-3">
           <div className="flex items-start gap-2">
             <div 
@@ -102,6 +132,18 @@ export const ApplicationCard = ({ application, onStageChange }: ApplicationCardP
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
+                {onToggleStar && (
+                  <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onToggleStar(); }}>
+                    <Star className={`h-4 w-4 mr-2 ${application.is_starred ? "fill-current" : ""}`} />
+                    {application.is_starred ? "Unstar" : "Star"}
+                  </DropdownMenuItem>
+                )}
+                {onAddNotes && (
+                  <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onAddNotes(); }}>
+                    <StickyNote className="h-4 w-4 mr-2" />
+                    {application.status_notes ? "Edit Notes" : "Add Notes"}
+                  </DropdownMenuItem>
+                )}
                 {stages
                   .filter(s => s.value !== application.stage)
                   .map((stage) => (
@@ -122,6 +164,39 @@ export const ApplicationCard = ({ application, onStageChange }: ApplicationCardP
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
+
+          {/* Verification Status Badges */}
+          {application.candidate_verifications && (
+            <div className="flex flex-wrap gap-1">
+              {application.candidate_verifications.identity_status && (
+                <Badge variant="outline" className="text-xs px-1.5 py-0.5">
+                  <Shield className={`h-3 w-3 mr-1 ${getVerificationColor(application.candidate_verifications.identity_status)}`} />
+                  ID
+                </Badge>
+              )}
+              {application.candidate_verifications.rtw_status && (
+                <Badge variant="outline" className="text-xs px-1.5 py-0.5">
+                  {(() => {
+                    const Icon = getVerificationIcon(application.candidate_verifications.rtw_status);
+                    return <Icon className={`h-3 w-3 mr-1 ${getVerificationColor(application.candidate_verifications.rtw_status)}`} />;
+                  })()}
+                  RTW
+                </Badge>
+              )}
+              {application.candidate_verifications.certifications && (
+                <Badge variant="outline" className="text-xs px-1.5 py-0.5">
+                  <Award className="h-3 w-3 mr-1 text-blue-500" />
+                  Cert
+                </Badge>
+              )}
+              {application.candidate_verifications.logistics_status && (
+                <Badge variant="outline" className="text-xs px-1.5 py-0.5">
+                  <MapPin className={`h-3 w-3 mr-1 ${getVerificationColor(application.candidate_verifications.logistics_status)}`} />
+                  Logistics
+                </Badge>
+              )}
+            </div>
+          )}
 
           <div className="space-y-2">
             {/* Years of Experience Badge */}
@@ -145,6 +220,14 @@ export const ApplicationCard = ({ application, onStageChange }: ApplicationCardP
               <Calendar className="h-3 w-3 flex-shrink-0" />
               <span className="truncate">{formatDistanceToNow(new Date(application.applied_at), { addSuffix: true })}</span>
             </div>
+
+            {/* Notes indicator */}
+            {application.status_notes && (
+              <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                <StickyNote className="h-3 w-3 flex-shrink-0" />
+                <span className="truncate italic">Has notes</span>
+              </div>
+            )}
           </div>
 
           <div className="flex gap-2 pt-2">

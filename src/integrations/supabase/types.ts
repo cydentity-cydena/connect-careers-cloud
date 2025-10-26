@@ -94,6 +94,7 @@ export type Database = {
           candidate_id: string
           cover_letter: string | null
           id: string
+          is_starred: boolean | null
           job_id: string
           resume_id: string | null
           stage: Database["public"]["Enums"]["pipeline_stage"]
@@ -105,6 +106,7 @@ export type Database = {
           candidate_id: string
           cover_letter?: string | null
           id?: string
+          is_starred?: boolean | null
           job_id: string
           resume_id?: string | null
           stage?: Database["public"]["Enums"]["pipeline_stage"]
@@ -116,6 +118,7 @@ export type Database = {
           candidate_id?: string
           cover_letter?: string | null
           id?: string
+          is_starred?: boolean | null
           job_id?: string
           resume_id?: string | null
           stage?: Database["public"]["Enums"]["pipeline_stage"]
