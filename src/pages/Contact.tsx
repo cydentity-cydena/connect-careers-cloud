@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Mail, MessageSquare, Send, Bug } from "lucide-react";
+import { Mail, MessageSquare, Send, Bug, ChevronDown, Clock, AlertCircle } from "lucide-react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import Navigation from "@/components/Navigation";
 import SEO from "@/components/SEO";
 import Schema from "@/components/Schema";
@@ -69,17 +70,60 @@ const Contact = () => {
       <main className="container mx-auto px-4 py-8 animate-fade-in">
         <div className="mb-8">
           <h1 className="text-4xl font-bold mb-4">Contact Cydena Support</h1>
-          <p className="text-lg text-muted-foreground mb-4">
-            Get in touch with our team - we're here to help with your cybersecurity recruitment needs
-          </p>
-          <div className="prose prose-lg max-w-none text-muted-foreground">
-            <p>
-              Whether you're a cybersecurity professional looking for your next opportunity, an employer seeking to fill critical security positions, or a training partner interested in collaboration, we're committed to providing prompt and helpful support. Our team typically responds to all inquiries within 24 hours during business days.
-            </p>
-            <p>
-              For urgent matters related to active job applications, account access issues, or payment concerns, please use the appropriate contact email below for the fastest response. Technical issues and bug reports help us improve the platform for everyone in the cybersecurity community.
-            </p>
-          </div>
+          
+          <Collapsible className="mb-6">
+            <Card className="border-border shadow-card">
+              <CardHeader className="pb-3">
+                <CollapsibleTrigger className="flex w-full items-center justify-between hover:opacity-80 transition-opacity [&[data-state=open]>svg]:rotate-180">
+                  <div>
+                    <CardTitle className="text-left">
+                      Get in touch with our team
+                    </CardTitle>
+                    <CardDescription className="text-left mt-1">
+                      We're here to help with your cybersecurity recruitment needs
+                    </CardDescription>
+                  </div>
+                  <ChevronDown className="h-5 w-5 shrink-0 transition-transform duration-200 text-muted-foreground" />
+                </CollapsibleTrigger>
+              </CardHeader>
+              
+              <CollapsibleContent>
+                <CardContent className="space-y-4 pt-0">
+                  <div className="space-y-3">
+                    <div className="flex gap-3">
+                      <MessageSquare className="h-5 w-5 text-primary mt-0.5 shrink-0" />
+                      <div>
+                        <h3 className="font-semibold mb-1">Who We Support</h3>
+                        <p className="text-sm text-muted-foreground">
+                          Whether you're a cybersecurity professional looking for your next opportunity, an employer seeking to fill critical security positions, or a training partner interested in collaboration, we're committed to providing prompt and helpful support.
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex gap-3">
+                      <Clock className="h-5 w-5 text-primary mt-0.5 shrink-0" />
+                      <div>
+                        <h3 className="font-semibold mb-1">Response Time</h3>
+                        <p className="text-sm text-muted-foreground">
+                          Our team typically responds to all inquiries within 24 hours during business days.
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex gap-3">
+                      <AlertCircle className="h-5 w-5 text-primary mt-0.5 shrink-0" />
+                      <div>
+                        <h3 className="font-semibold mb-1">Urgent Matters</h3>
+                        <p className="text-sm text-muted-foreground">
+                          For urgent matters related to active job applications, account access issues, or payment concerns, please use the appropriate contact email below for the fastest response. Technical issues and bug reports help us improve the platform for everyone in the cybersecurity community.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </CollapsibleContent>
+            </Card>
+          </Collapsible>
         </div>
 
         <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
