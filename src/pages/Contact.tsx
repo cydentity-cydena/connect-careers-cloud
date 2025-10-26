@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Mail, MessageSquare, Send, Bug, ChevronDown, Clock, AlertCircle } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import Navigation from "@/components/Navigation";
 import SEO from "@/components/SEO";
 import Schema from "@/components/Schema";
@@ -286,60 +287,62 @@ const Contact = () => {
                 <CardTitle>Frequently Asked Questions</CardTitle>
                 <CardDescription>Common questions about using Cydena</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <h3 className="font-semibold mb-1">
-                    How do I verify my cybersecurity certifications?
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    Upload your certification documents (CompTIA, CISSP, CEH, SANS, etc.) in your profile settings. Our verification team reviews submissions within 48 hours. Verified certifications increase your visibility to employers.
-                  </p>
-                </div>
+              <CardContent>
+                <Accordion type="single" collapsible className="w-full">
+                  <AccordionItem value="item-1">
+                    <AccordionTrigger className="text-left">
+                      How do I verify my cybersecurity certifications?
+                    </AccordionTrigger>
+                    <AccordionContent className="text-muted-foreground">
+                      Upload your certification documents (CompTIA, CISSP, CEH, SANS, etc.) in your profile settings. Our verification team reviews submissions within 48 hours. Verified certifications increase your visibility to employers.
+                    </AccordionContent>
+                  </AccordionItem>
 
-                <div>
-                  <h3 className="font-semibold mb-1">
-                    What is your typical response time?
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    We respond to all inquiries within 24 hours during business days (Monday-Friday). Urgent account issues are prioritized and typically addressed within 4-6 hours.
-                  </p>
-                </div>
+                  <AccordionItem value="item-2">
+                    <AccordionTrigger className="text-left">
+                      What is your typical response time?
+                    </AccordionTrigger>
+                    <AccordionContent className="text-muted-foreground">
+                      We respond to all inquiries within 24 hours during business days (Monday-Friday). Urgent account issues are prioritized and typically addressed within 4-6 hours.
+                    </AccordionContent>
+                  </AccordionItem>
 
-                <div>
-                  <h3 className="font-semibold mb-1">
-                    How does the leaderboard ranking work?
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    Your ranking is based on verified certifications, completed training courses, profile completeness, and community engagement. Higher rankings increase your visibility to employers searching for top cybersecurity talent.
-                  </p>
-                </div>
+                  <AccordionItem value="item-3">
+                    <AccordionTrigger className="text-left">
+                      How does the leaderboard ranking work?
+                    </AccordionTrigger>
+                    <AccordionContent className="text-muted-foreground">
+                      Your ranking is based on verified certifications, completed training courses, profile completeness, and community engagement. Higher rankings increase your visibility to employers searching for top cybersecurity talent.
+                    </AccordionContent>
+                  </AccordionItem>
 
-                <div>
-                  <h3 className="font-semibold mb-1">
-                    Is Cydena free for cybersecurity professionals?
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    Yes! Cydena is 100% free for all cybersecurity professionals - no hidden fees, no credit card required. Employers and recruiters pay subscription fees to access our talent pool and post jobs.
-                  </p>
-                </div>
+                  <AccordionItem value="item-4">
+                    <AccordionTrigger className="text-left">
+                      Is Cydena free for cybersecurity professionals?
+                    </AccordionTrigger>
+                    <AccordionContent className="text-muted-foreground">
+                      Yes! Cydena is 100% free for all cybersecurity professionals - no hidden fees, no credit card required. Employers and recruiters pay subscription fees to access our talent pool and post jobs.
+                    </AccordionContent>
+                  </AccordionItem>
 
-                <div>
-                  <h3 className="font-semibold mb-1">
-                    How do I report a technical issue or bug?
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    Click the "Report a Bug" button above or visit our bug report page. Include details about what you were doing when the issue occurred, and we'll investigate promptly.
-                  </p>
-                </div>
+                  <AccordionItem value="item-5">
+                    <AccordionTrigger className="text-left">
+                      How do I report a technical issue or bug?
+                    </AccordionTrigger>
+                    <AccordionContent className="text-muted-foreground">
+                      Click the "Report a Bug" button above or visit our bug report page. Include details about what you were doing when the issue occurred, and we'll investigate promptly.
+                    </AccordionContent>
+                  </AccordionItem>
 
-                <div>
-                  <h3 className="font-semibold mb-1">
-                    Can I contact employers directly through the platform?
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    Yes! Once you apply for a position, you can message the employer directly through our in-platform messaging system. This direct communication helps speed up the hiring process.
-                  </p>
-                </div>
+                  <AccordionItem value="item-6">
+                    <AccordionTrigger className="text-left">
+                      Can I contact employers directly through the platform?
+                    </AccordionTrigger>
+                    <AccordionContent className="text-muted-foreground">
+                      Yes! Once you apply for a position, you can message the employer directly through our in-platform messaging system. This direct communication helps speed up the hiring process.
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
               </CardContent>
             </Card>
           </div>
