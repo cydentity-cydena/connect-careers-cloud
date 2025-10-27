@@ -30,13 +30,16 @@ const Index = () => {
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto text-center animate-fade-in">
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 md:mb-6">
-              Hire Cyber Talent{" "}
+              The Future of{" "}
               <span className="bg-gradient-cyber bg-clip-text text-transparent">
-                70% Faster
+                Cyber Recruitment
               </span>
             </h1>
-            <p className="text-base md:text-xl text-muted-foreground mb-6 md:mb-8 max-w-2xl mx-auto px-2">
-              The only platform with pre-verified cybersecurity professionals. Interview-ready candidates who can start in days, not weeks.
+            <p className="text-xl md:text-2xl font-semibold mb-3 md:mb-4">
+              Hire Cyber Talent 70% Faster
+            </p>
+            <p className="text-base md:text-lg text-muted-foreground mb-6 md:mb-8 max-w-2xl mx-auto px-2">
+              Join the platform with pre-verified cybersecurity professionals. Interview-ready candidates who can start in days, not weeks.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center px-4">
               <Link to="/auth" className="w-full sm:w-auto">
