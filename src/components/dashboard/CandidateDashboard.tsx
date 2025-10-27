@@ -12,6 +12,7 @@ import { MultipleResumesManager } from "./MultipleResumesManager";
 import { BoostYourScore } from "./BoostYourScore";
 import { UsernameChangeDialog } from "./UsernameChangeDialog";
 import { ApplicationTracker } from "./ApplicationTracker";
+import { HRReadyCTA } from "./HRReadyCTA";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 
@@ -135,6 +136,9 @@ const CandidateDashboard = () => {
         )}
       </div>
 
+      {/* HR-Ready CTA Banner */}
+      {userId && <HRReadyCTA userId={userId} />}
+
       {showGettingStarted && (
         <Card className="border-border shadow-card">
           <CardHeader>
@@ -158,34 +162,31 @@ const CandidateDashboard = () => {
                 <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-primary opacity-0 group-hover:opacity-100 transition-all" />
               </Link>
               
-              <Link to="/jobs" className="flex items-start gap-4 p-3 rounded-lg hover:bg-muted/50 transition-colors group">
-                <div className="bg-primary/10 rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
-                  <span className="text-primary font-semibold">2</span>
+              <Link to="/hr-ready" className="flex items-start gap-4 p-3 rounded-lg hover:bg-muted/50 transition-colors group border-2 border-primary/20">
+                <div className="bg-primary rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
+                  <span className="text-primary-foreground font-semibold">2</span>
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-semibold mb-1 group-hover:text-primary transition-colors">Browse Job Opportunities</h3>
+                  <h3 className="font-semibold mb-1 group-hover:text-primary transition-colors">Get HR-Ready Verified</h3>
                   <p className="text-sm text-muted-foreground">
-                    Find cybersecurity roles that match your skills
+                    Required to apply for jobs - prove identity & right to work
                   </p>
                 </div>
                 <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-primary opacity-0 group-hover:opacity-100 transition-all" />
               </Link>
               
-              <button 
-                onClick={() => document.getElementById('active-applications')?.scrollIntoView({ behavior: 'smooth' })}
-                className="flex items-start gap-4 p-3 rounded-lg hover:bg-muted/50 transition-colors group w-full text-left"
-              >
+              <Link to="/jobs" className="flex items-start gap-4 p-3 rounded-lg hover:bg-muted/50 transition-colors group">
                 <div className="bg-primary/10 rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
                   <span className="text-primary font-semibold">3</span>
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-semibold mb-1 group-hover:text-primary transition-colors">Apply & Track Progress</h3>
+                  <h3 className="font-semibold mb-1 group-hover:text-primary transition-colors">Apply to Jobs</h3>
                   <p className="text-sm text-muted-foreground">
-                    Submit applications and track them right here on your dashboard
+                    Browse cybersecurity roles and apply instantly
                   </p>
                 </div>
                 <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-primary opacity-0 group-hover:opacity-100 transition-all" />
-              </button>
+              </Link>
             </div>
           </CardContent>
         </Card>

@@ -59,6 +59,8 @@ export function VerificationRequestDialog({ userId, existingRequest }: Verificat
         .from('verification_requests')
         .upsert({
           user_id: userId,
+          candidate_id: userId,
+          verification_type: 'identity',
           company_name: companyName,
           company_website: companyWebsite,
           business_registration_number: registrationNumber || null,

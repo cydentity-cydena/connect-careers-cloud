@@ -30,14 +30,13 @@ const Index = () => {
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto text-center animate-fade-in">
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 md:mb-6">
-              The Future of{" "}
+              Hire Cyber Talent{" "}
               <span className="bg-gradient-cyber bg-clip-text text-transparent">
-                Cyber Recruitment
+                70% Faster
               </span>
             </h1>
             <p className="text-base md:text-xl text-muted-foreground mb-6 md:mb-8 max-w-2xl mx-auto px-2">
-              Connect elite cybersecurity talent with cutting-edge opportunities. 
-              Skills-based matching, verified certifications, and real-time collaboration.
+              The only platform with pre-verified cybersecurity professionals. Interview-ready candidates who can start in days, not weeks.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center px-4">
               <Link to="/auth" className="w-full sm:w-auto">
@@ -84,6 +83,13 @@ const Index = () => {
                 <div>
                   <h3 className="font-semibold mb-1">Career Transitioners Welcome</h3>
                   <p className="text-sm text-muted-foreground">Breaking into cybersecurity? We support entry-level talent with partner certifications</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <CheckCircle className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
+                <div>
+                  <h3 className="font-semibold mb-1">Get HR-Ready Verified</h3>
+                  <p className="text-sm text-muted-foreground">Submit identity & right-to-work once, apply everywhere. Stand out with verified badges</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
@@ -177,36 +183,36 @@ const Index = () => {
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-12 md:mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-3 md:mb-4">
-              Say Goodbye to <span className="text-destructive">Traditional Recruitment</span>
+              Stop Wasting Time on <span className="text-destructive">Admin Overheads</span>
             </h2>
             <p className="text-base md:text-xl text-muted-foreground max-w-3xl mx-auto px-2">
-              Access curated, validated cybersecurity talent ready to make an impact
+              Interview-ready cyber talent with identity, right-to-work, and compliance already verified
             </p>
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-5xl mx-auto">
             <div className="text-center p-5 md:p-6 rounded-lg border border-primary/20 bg-gradient-card hover:scale-105 transition-transform">
               <div className="bg-primary/10 w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center mx-auto mb-3 md:mb-4">
-                <Shield className="h-7 w-7 md:h-8 md:w-8 text-primary" />
+                <Clock className="h-7 w-7 md:h-8 md:w-8 text-primary" />
               </div>
-              <h3 className="text-xl md:text-2xl font-bold mb-2">Validated Credentials</h3>
-              <p className="text-sm md:text-base text-muted-foreground">Verified certifications and security clearances you can trust</p>
+              <h3 className="text-xl md:text-2xl font-bold mb-2">70% Faster Hiring</h3>
+              <p className="text-sm md:text-base text-muted-foreground">Start interviews in 48 hours. No 2-week admin delays.</p>
             </div>
 
             <div className="text-center p-5 md:p-6 rounded-lg border border-primary/20 bg-gradient-card hover:scale-105 transition-transform" style={{animationDelay: '0.1s'}}>
               <div className="bg-primary/10 w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center mx-auto mb-3 md:mb-4">
-                <Users className="h-7 w-7 md:h-8 md:w-8 text-primary" />
+                <DollarSign className="h-7 w-7 md:h-8 md:w-8 text-primary" />
               </div>
-              <h3 className="text-xl md:text-2xl font-bold mb-2">Curated Talent Pool</h3>
-              <p className="text-sm md:text-base text-muted-foreground">Pre-screened professionals with proven cybersecurity skills</p>
+              <h3 className="text-xl md:text-2xl font-bold mb-2">Save £500+ Per Hire</h3>
+              <p className="text-sm md:text-base text-muted-foreground">Zero ID checks, RTW verifications, or compliance fees</p>
             </div>
 
             <div className="text-center p-5 md:p-6 rounded-lg border border-primary/20 bg-gradient-card hover:scale-105 transition-transform sm:col-span-2 lg:col-span-1" style={{animationDelay: '0.2s'}}>
               <div className="bg-primary/10 w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center mx-auto mb-3 md:mb-4">
-                <Target className="h-7 w-7 md:h-8 md:w-8 text-primary" />
+                <Shield className="h-7 w-7 md:h-8 md:w-8 text-primary" />
               </div>
-              <h3 className="text-xl md:text-2xl font-bold mb-2">Hire with Confidence</h3>
-              <p className="text-sm md:text-base text-muted-foreground">Transparent profiles and skills-based matching for quality hires</p>
+              <h3 className="text-xl md:text-2xl font-bold mb-2">Zero Compliance Risk</h3>
+              <p className="text-sm md:text-base text-muted-foreground">Pre-verified identity and right-to-work documentation</p>
             </div>
           </div>
         </div>
@@ -236,19 +242,19 @@ const Index = () => {
                     </li>
                     <li className="flex gap-3">
                       <span className="font-bold text-primary">2.</span>
-                      <span>Upload and verify your certifications (CISSP, CEH, Security+, etc.)</span>
+                      <span>Get HR-Ready verified - submit identity & right-to-work once</span>
                     </li>
                     <li className="flex gap-3">
                       <span className="font-bold text-primary">3.</span>
-                      <span>Browse cybersecurity jobs from vetted employers and apply instantly</span>
+                      <span>Upload and verify your certifications (CISSP, CEH, Security+, etc.)</span>
                     </li>
                     <li className="flex gap-3">
                       <span className="font-bold text-primary">4.</span>
-                      <span>Track your applications in real-time through our transparent pipeline</span>
+                      <span>Apply to jobs instantly with verified badges - skip admin delays</span>
                     </li>
                     <li className="flex gap-3">
                       <span className="font-bold text-primary">5.</span>
-                      <span>Connect directly with hiring managers - no recruiter middlemen</span>
+                      <span>Track applications in real-time and connect directly with employers</span>
                     </li>
                   </ol>
                 </div>
@@ -262,19 +268,19 @@ const Index = () => {
                     </li>
                     <li className="flex gap-3">
                       <span className="font-bold text-secondary">2.</span>
-                      <span>Post unlimited cybersecurity jobs with detailed requirements</span>
+                      <span>Filter by HR-Ready candidates - identity & RTW pre-verified</span>
                     </li>
                     <li className="flex gap-3">
                       <span className="font-bold text-secondary">3.</span>
-                      <span>Access a curated talent pool with verified certifications</span>
+                      <span>Save £500+ per hire on verification costs & admin time</span>
                     </li>
                     <li className="flex gap-3">
                       <span className="font-bold text-secondary">4.</span>
-                      <span>Use our kanban pipeline to manage candidates efficiently</span>
+                      <span>Start interviews in 48 hours instead of 2 weeks</span>
                     </li>
                     <li className="flex gap-3">
                       <span className="font-bold text-secondary">5.</span>
-                      <span>Hire faster and cheaper than traditional recruitment agencies</span>
+                      <span>Zero compliance risk - we've already done the checks</span>
                     </li>
                   </ol>
                 </div>

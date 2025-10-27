@@ -37,7 +37,7 @@ export function VerificationReviewPanel() {
       
       // Fetch profiles separately
       if (data && data.length > 0) {
-        const userIds = data.map(r => r.user_id);
+        const userIds = data.map(r => r.user_id || r.candidate_id);
         const { data: profiles } = await supabase
           .from('profiles')
           .select('id, full_name, email')
@@ -46,7 +46,7 @@ export function VerificationReviewPanel() {
         // Merge profile data
         return data.map(request => ({
           ...request,
-          profile: profiles?.find(p => p.id === request.user_id)
+          profile: profiles?.find(p => p.id === (request.user_id || request.candidate_id))
         }));
       }
       
@@ -54,7 +54,11 @@ export function VerificationReviewPanel() {
     },
   });
 
-  const handleApprove = async (requestId: string, userId: string) => {
+  const handleApprove = async (requestId: string, userId: string | undefined) => {
+    if (!userId) {
+      toast({ title: "Error", description: "User ID missing", variant: "destructive" });
+      return;
+    }
     setProcessing(true);
     try {
       // Update verification request
@@ -208,7 +212,7 @@ export function VerificationReviewPanel() {
                       <Button
                         size="sm"
                         variant="default"
-                        onClick={() => handleApprove(request.id, request.user_id)}
+                        onClick={() => handleApprove(request.id, request.user_id || request.candidate_id)}
                         disabled={processing}
                       >
                         <CheckCircle className="h-4 w-4 mr-2" />

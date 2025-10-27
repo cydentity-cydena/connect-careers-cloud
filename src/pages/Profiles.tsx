@@ -12,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { SpecializationBadges } from "@/components/profiles/SpecializationBadges";
 import { detectSpecializations, SPECIALIZATIONS, type Specialization } from "@/lib/specializations";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { HRReadyBadge } from "@/components/hrready/HRReadyBadge";
 
 interface CandidateProfile {
   id: string;
@@ -35,6 +36,8 @@ const Profiles = () => {
   const [userRole, setUserRole] = useState<string | null>(null);
   const [checkingAccess, setCheckingAccess] = useState(true);
   const [selectedSpecialization, setSelectedSpecialization] = useState<Specialization | 'all'>('all');
+  const [hrReadyOnly, setHrReadyOnly] = useState(false);
+  const [verificationStatuses, setVerificationStatuses] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     checkUserAccess();
@@ -147,6 +150,18 @@ const Profiles = () => {
         .select('candidate_id, skills(name, category)')
         .in('candidate_id', candidateIds);
 
+      // Fetch HR-Ready statuses
+      const { data: verData } = await supabase
+        .from('candidate_verifications')
+        .select('candidate_id, hr_ready')
+        .in('candidate_id', candidateIds);
+      
+      const verMap: Record<string, boolean> = {};
+      verData?.forEach(v => {
+        verMap[v.candidate_id] = v.hr_ready || false;
+      });
+      setVerificationStatuses(verMap);
+
       // Create lookup maps
       const profileMap = new Map(profileResults.map((p) => [p.id, p]));
       const candidateProfileMap = new Map(candidateProfileResults.map((cp) => [cp.user_id, cp]));
@@ -216,7 +231,9 @@ const Profiles = () => {
       selectedSpecialization === 'all' ||
       candidate.specializations.includes(selectedSpecialization);
 
-    return matchesSearch && matchesSpecialization;
+    const matchesHRReady = !hrReadyOnly || verificationStatuses[candidate.id];
+
+    return matchesSearch && matchesSpecialization && matchesHRReady;
   });
 
   const getRankBadgeColor = (rank: number) => {
@@ -259,10 +276,28 @@ const Profiles = () => {
         ) : (
           <>
             <div className="mb-8">
-              <h1 className="text-4xl font-bold mb-2">Verified Cybersecurity Talent Profiles</h1>
+              <h1 className="text-4xl font-bold mb-2">Interview-Ready Cybersecurity Talent</h1>
               <p className="text-muted-foreground mb-4">
-                Browse and connect with verified cybersecurity professionals
+                Pre-verified professionals ready to start immediately
               </p>
+              
+              {/* HR-Ready Filter */}
+              <div className="mb-4 flex items-center gap-3">
+                <Button
+                  variant={hrReadyOnly ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setHrReadyOnly(!hrReadyOnly)}
+                  className="gap-2"
+                >
+                  <Shield className="h-4 w-4" />
+                  {hrReadyOnly ? "Showing HR-Ready Only" : "Show All Candidates"}
+                </Button>
+                {hrReadyOnly && (
+                  <span className="text-sm text-muted-foreground">
+                    {filteredCandidates.length} verified candidate{filteredCandidates.length !== 1 ? 's' : ''}
+                  </span>
+                )}
+              </div>
               
               {/* Specialization Filter */}
               <div className="flex flex-wrap items-center gap-2">
@@ -325,11 +360,12 @@ const Profiles = () => {
                     {candidate.avatar}
                   </div>
                   <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
+                    <div className="flex items-center gap-2 mb-1 flex-wrap">
                       <h3 className="font-bold text-lg">@{candidate.username}</h3>
                       {candidate.ranking <= 3 && (
                         <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
                       )}
+                      <HRReadyBadge isReady={verificationStatuses[candidate.id]} size="sm" />
                     </div>
                     <p className="text-sm text-muted-foreground mb-2">
                       {candidate.title}
