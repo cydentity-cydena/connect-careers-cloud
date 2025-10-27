@@ -68,12 +68,12 @@ export const UserManagement = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-users"] });
       toast({
-        title: "Verification status updated",
+        title: "Business verification status updated",
       });
     },
     onError: () => {
       toast({
-        title: "Failed to update verification",
+        title: "Failed to update business verification",
         variant: "destructive",
       });
     },
@@ -95,7 +95,7 @@ export const UserManagement = () => {
     <Card>
       <CardHeader>
         <CardTitle>User Management</CardTitle>
-        <CardDescription>Manage platform users and their verification status</CardDescription>
+        <CardDescription>Manage platform users and business verification status</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
@@ -137,7 +137,7 @@ export const UserManagement = () => {
                       <TableHead>Email</TableHead>
                       <TableHead>Name</TableHead>
                       <TableHead>Roles</TableHead>
-                      <TableHead>Verified</TableHead>
+                      <TableHead>Business Verified</TableHead>
                       <TableHead>Actions</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -178,7 +178,7 @@ export const UserManagement = () => {
                             }
                           >
                             <Shield className="h-4 w-4 mr-1" />
-                            {user.is_verified ? "Remove" : "Verify"}
+                            {user.is_verified ? "Unverify Business" : "Verify Business"}
                           </Button>
                         </div>
                       </TableCell>
