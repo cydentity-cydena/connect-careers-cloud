@@ -356,8 +356,15 @@ const Profiles = () => {
             >
               <CardContent className="pt-6">
                 <div className="flex items-start gap-4 mb-4">
-                  <div className="bg-gradient-cyber w-20 h-20 rounded-full flex items-center justify-center text-4xl">
-                    {candidate.avatar}
+                  <div className="relative">
+                    <div className="bg-gradient-cyber w-20 h-20 rounded-full flex items-center justify-center text-4xl">
+                      {candidate.avatar}
+                    </div>
+                    {verificationStatuses[candidate.id] && (
+                      <div className="absolute -bottom-0.5 -right-0.5 bg-background rounded-full p-0.5 shadow-lg">
+                        <Shield className="h-4 w-4 text-primary fill-primary/20" />
+                      </div>
+                    )}
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1 flex-wrap">

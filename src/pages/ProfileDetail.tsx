@@ -23,6 +23,7 @@ import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { HRReadyBadge } from "@/components/hrready/HRReadyBadge";
 
 export default function ProfileDetail() {
   const { id } = useParams();
@@ -44,6 +45,7 @@ export default function ProfileDetail() {
   const [certificationsOpen, setCertificationsOpen] = useState(false);
   const [workHistoryOpen, setWorkHistoryOpen] = useState(false);
   const [educationOpen, setEducationOpen] = useState(false);
+  const [verification, setVerification] = useState<any>(null);
 
   useEffect(() => {
     loadProfileData();
@@ -247,6 +249,14 @@ export default function ProfileDetail() {
         }
       }
 
+      // Fetch verification status (publicly visible)
+      const { data: verificationData } = await supabase
+        .from('candidate_verifications')
+        .select('hr_ready, identity_status, rtw_status, logistics_status, compliance_score')
+        .eq('candidate_id', id)
+        .maybeSingle();
+      setVerification(verificationData);
+
     } catch (error: any) {
       console.error("Error loading profile:", error);
       toast.error("Failed to load profile: " + (error.message || "Unknown error"));
@@ -430,6 +440,11 @@ export default function ProfileDetail() {
                         <User className="h-16 w-16" />
                       </AvatarFallback>
                     </Avatar>
+                    {verification?.hr_ready && (
+                      <div className="absolute -bottom-1 -right-1 bg-background rounded-full p-1 shadow-lg">
+                        <Shield className="h-6 w-6 text-primary fill-primary/20" />
+                      </div>
+                    )}
                   </div>
                   <h1 className="text-2xl font-bold mb-1">
                     {isUnlocked && profile.full_name ? profile.full_name : `@${profile.username || "anonymous"}`}
@@ -439,6 +454,11 @@ export default function ProfileDetail() {
                   )}
                   {candidateProfile?.title && (
                     <p className="text-muted-foreground mb-2">{candidateProfile.title}</p>
+                  )}
+                  {verification?.hr_ready && (
+                    <div className="mb-2">
+                      <HRReadyBadge isReady={true} size="md" />
+                    </div>
                   )}
                   {profile.desired_job_title && (
                     <div className="flex items-center gap-2 justify-center">
