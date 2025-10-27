@@ -85,22 +85,27 @@ export function VerificationPanel({ verification, onEdit }: VerificationPanelPro
             <FileCheck className="h-5 w-5 mt-1 text-muted-foreground" />
             <div className="flex-1">
               <h4 className="font-medium mb-2">Certifications</h4>
-              {verification.certifications && JSON.parse(verification.certifications).length > 0 ? (
-                <div className="space-y-2">
-                  {JSON.parse(verification.certifications).map((cert: any, index: number) => (
-                    <div key={index} className="flex items-center gap-2">
-                      <Badge className={statusColors[cert.status || 'grey']} variant="outline">
-                        {cert.name}
-                      </Badge>
-                      {cert.issuer && (
-                        <span className="text-xs text-muted-foreground">by {cert.issuer}</span>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-sm text-muted-foreground">No certifications recorded</p>
-              )}
+              {(() => {
+                const certs = typeof verification.certifications === 'string' 
+                  ? JSON.parse(verification.certifications) 
+                  : verification.certifications;
+                return certs && Array.isArray(certs) && certs.length > 0 ? (
+                  <div className="space-y-2">
+                    {certs.map((cert: any, index: number) => (
+                      <div key={index} className="flex items-center gap-2">
+                        <Badge className={statusColors[cert.status || 'grey']} variant="outline">
+                          {cert.name}
+                        </Badge>
+                        {cert.issuer && (
+                          <span className="text-xs text-muted-foreground">by {cert.issuer}</span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-sm text-muted-foreground">No certifications recorded</p>
+                );
+              })()}
             </div>
           </div>
         </Card>
