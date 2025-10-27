@@ -221,6 +221,80 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Hire with Confidence Section */}
+      <section className="py-16 md:py-24 bg-gradient-to-br from-primary/5 via-background to-secondary/5">
+        <div className="container mx-auto px-4">
+          <div className="max-w-5xl mx-auto">
+            <div className="text-center mb-12 md:mb-16 animate-fade-in">
+              <h2 className="text-3xl md:text-5xl font-bold mb-4">
+                Hire with <span className="bg-gradient-cyber bg-clip-text text-transparent">Confidence</span>
+              </h2>
+              <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
+                Expert support to curate top talent. We don't just connect you with candidates—we help you find the perfect fit.
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-6 md:gap-8">
+              <Card className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/50 bg-card/80 backdrop-blur">
+                <CardContent className="p-6 md:p-8">
+                  <div className="bg-primary/10 w-14 h-14 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <Shield className="h-7 w-7 text-primary" />
+                  </div>
+                  <h3 className="text-xl md:text-2xl font-bold mb-3">Pre-Vetted Talent Pool</h3>
+                  <p className="text-muted-foreground leading-relaxed">
+                    Every candidate on Cydena is verified for identity, right-to-work, and certifications. Focus on skills and culture fit, not paperwork validation.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-secondary/50 bg-card/80 backdrop-blur">
+                <CardContent className="p-6 md:p-8">
+                  <div className="bg-secondary/10 w-14 h-14 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <Users className="h-7 w-7 text-secondary" />
+                  </div>
+                  <h3 className="text-xl md:text-2xl font-bold mb-3">Expert Curation Support</h3>
+                  <p className="text-muted-foreground leading-relaxed">
+                    Our team understands cybersecurity roles deeply. Get guidance on talent selection, market insights, and hiring best practices tailored to your needs.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-accent/50 bg-card/80 backdrop-blur">
+                <CardContent className="p-6 md:p-8">
+                  <div className="bg-accent/10 w-14 h-14 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <Target className="h-7 w-7 text-accent" />
+                  </div>
+                  <h3 className="text-xl md:text-2xl font-bold mb-3">Skills-Match Technology</h3>
+                  <p className="text-muted-foreground leading-relaxed">
+                    Our intelligent matching algorithm considers certifications, experience levels, and specializations to surface candidates who truly fit your requirements.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/50 bg-card/80 backdrop-blur">
+                <CardContent className="p-6 md:p-8">
+                  <div className="bg-primary/10 w-14 h-14 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <Briefcase className="h-7 w-7 text-primary" />
+                  </div>
+                  <h3 className="text-xl md:text-2xl font-bold mb-3">Dedicated Partner Success</h3>
+                  <p className="text-muted-foreground leading-relaxed">
+                    From onboarding to your first hire and beyond, our partner success team is here to optimize your hiring strategy and maximize ROI.
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+
+            <div className="text-center mt-10 md:mt-12">
+              <Link to="/auth">
+                <Button variant="hero" size="lg" className="gap-2">
+                  Start Hiring Top Talent <ArrowRight className="h-5 w-5" />
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* How It Works Section */}
       <section className="py-16 md:py-24 bg-card/20">
         <div className="container mx-auto px-4">
