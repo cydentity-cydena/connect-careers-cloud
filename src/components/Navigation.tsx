@@ -85,6 +85,7 @@ const Navigation = () => {
   const navLinks = allNavLinks.filter(link => {
     // Hide if hideForRoles includes any of the user's roles
     if (link.hideForRoles && userRoles.some(role => link.hideForRoles?.includes(role))) {
+      console.log(`Hiding ${link.label} for roles:`, userRoles);
       return false;
     }
     // Show only if showForRoles includes any of the user's roles (or if no showForRoles specified)
