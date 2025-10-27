@@ -81,9 +81,9 @@ export const ApplyJobDialog = ({ jobId, jobTitle, children }: ApplyJobDialogProp
       const idOk = verData && ['green','amber'].includes(verData.identity_status || '');
       const rtwOk = verData && ['green','amber'].includes(verData.rtw_status || '');
       if (!idOk || !rtwOk) {
-        toast.error("Complete Identity and Right to Work verification in your dashboard before applying.");
+        toast.error("Complete Identity and Right to Work verification before applying. Redirecting to HR-Ready...");
         setOpen(false);
-        setTimeout(() => window.location.assign('/dashboard'), 600);
+        setTimeout(() => window.location.assign('/hr-ready'), 600);
         return;
       }
 
