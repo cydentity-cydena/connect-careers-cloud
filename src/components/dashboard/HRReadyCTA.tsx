@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Shield, ArrowRight, CheckCircle, Clock, DollarSign } from "lucide-react";
+import { Shield, ArrowRight, CheckCircle, Clock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { Progress } from "@/components/ui/progress";
@@ -115,19 +115,19 @@ export function HRReadyCTA({ userId }: HRReadyCTAProps) {
 
             <div className="grid grid-cols-3 gap-2 text-xs mb-4 p-3 bg-background/50 rounded-lg">
               <div className="text-center">
-                <DollarSign className="h-4 w-4 mx-auto mb-1 text-primary" />
-                <p className="font-semibold">Save £500+</p>
-                <p className="text-muted-foreground">per hire</p>
-              </div>
-              <div className="text-center">
-                <Clock className="h-4 w-4 mx-auto mb-1 text-primary" />
-                <p className="font-semibold">Start in 48hrs</p>
-                <p className="text-muted-foreground">not weeks</p>
-              </div>
-              <div className="text-center">
                 <CheckCircle className="h-4 w-4 mx-auto mb-1 text-primary" />
                 <p className="font-semibold">3x visibility</p>
                 <p className="text-muted-foreground">to employers</p>
+              </div>
+              <div className="text-center">
+                <Clock className="h-4 w-4 mx-auto mb-1 text-primary" />
+                <p className="font-semibold">Get hired faster</p>
+                <p className="text-muted-foreground">skip delays</p>
+              </div>
+              <div className="text-center">
+                <Shield className="h-4 w-4 mx-auto mb-1 text-primary" />
+                <p className="font-semibold">Verify once</p>
+                <p className="text-muted-foreground">apply everywhere</p>
               </div>
             </div>
 
