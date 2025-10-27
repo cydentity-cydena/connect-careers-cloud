@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -13,6 +13,8 @@ import SEO from '@/components/SEO';
 
 const JobCreate = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const editJobId = searchParams.get('edit');
   const [userId, setUserId] = useState<string | null>(null);
   const [companies, setCompanies] = useState<any[]>([]);
   const [clients, setClients] = useState<any[]>([]);
@@ -69,9 +71,43 @@ const JobCreate = () => {
           .eq('created_by', session.user.id);
         setCompanies(companiesData || []);
       }
+
+      // Load existing job data if in edit mode
+      if (editJobId) {
+        const { data: jobData, error } = await supabase
+          .from('jobs')
+          .select('*, company:companies(name)')
+          .eq('id', editJobId)
+          .single();
+
+        if (error) {
+          toast.error('Failed to load job data');
+          return;
+        }
+
+        if (jobData) {
+          setTitle(jobData.title || '');
+          setDescription(jobData.description || '');
+          setLocation(jobData.location || '');
+          setJobType(jobData.job_type || 'full-time');
+          setRemoteAllowed(jobData.remote_allowed || false);
+          setSalaryMin(jobData.salary_min?.toString() || '');
+          setSalaryMax(jobData.salary_max?.toString() || '');
+          setRequiredClearance(jobData.required_clearance || '');
+          setRequiredSkills(jobData.required_skills?.join(', ') || '');
+          setRequiredCerts(jobData.required_certifications?.join(', ') || '');
+          setMustHaves(jobData.must_haves?.join(', ') || '');
+          setNiceToHaves(jobData.nice_to_haves?.join(', ') || '');
+          setYearsExpMin(jobData.years_experience_min?.toString() || '');
+          setYearsExpMax(jobData.years_experience_max?.toString() || '');
+          setCompanyId(jobData.company_id || '');
+          setSelectedClientId(jobData.client_id || '');
+          setCompanyName(jobData.company?.name || '');
+        }
+      }
     };
     init();
-  }, [navigate]);
+  }, [navigate, editJobId]);
 
   const handleCreate = async () => {
     if (!userId) return;
@@ -94,7 +130,7 @@ const JobCreate = () => {
       // For recruiters, we need to ensure company exists or create it
       let finalCompanyId = companyId;
       
-      if (isRecruiter) {
+      if (isRecruiter && !editJobId) {
         // Check if company already exists for this client
         const { data: existingCompany } = await supabase
           .from('companies')
@@ -125,9 +161,8 @@ const JobCreate = () => {
       const mustHavesList = mustHaves.split(',').map(s => s.trim()).filter(Boolean);
       const niceToHavesList = niceToHaves.split(',').map(s => s.trim()).filter(Boolean);
       
-      const { error } = await supabase.from('jobs').insert({
+      const jobData = {
         company_id: finalCompanyId,
-        created_by: userId,
         client_id: isRecruiter ? selectedClientId : null,
         title,
         description,
@@ -144,14 +179,33 @@ const JobCreate = () => {
         years_experience_min: yearsExpMin ? parseInt(yearsExpMin) : null,
         years_experience_max: yearsExpMax ? parseInt(yearsExpMax) : null,
         is_active: true,
-      } as any);
+      };
+
+      let error;
+      if (editJobId) {
+        // Update existing job
+        const result = await supabase
+          .from('jobs')
+          .update(jobData as any)
+          .eq('id', editJobId);
+        error = result.error;
+      } else {
+        // Create new job
+        const result = await supabase
+          .from('jobs')
+          .insert({
+            ...jobData,
+            created_by: userId,
+          } as any);
+        error = result.error;
+      }
 
       if (error) throw error;
 
-      toast.success('Job posted successfully');
+      toast.success(editJobId ? 'Job updated successfully' : 'Job posted successfully');
       navigate('/dashboard');
     } catch (error: any) {
-      toast.error(error.message || 'Failed to post job');
+      toast.error(error.message || (editJobId ? 'Failed to update job' : 'Failed to post job'));
     } finally {
       setLoading(false);
     }
@@ -162,7 +216,7 @@ const JobCreate = () => {
       <SEO title="Post a Job | Cydena" description="Post a new cybersecurity job opening." />
       <Card className="max-w-3xl mx-auto">
         <CardHeader>
-          <CardTitle>Post a Job</CardTitle>
+          <CardTitle>{editJobId ? 'Edit Job' : 'Post a Job'}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           {isRecruiter && clients.length === 0 ? (
@@ -318,7 +372,7 @@ const JobCreate = () => {
               <div className="flex justify-end gap-2">
                 <Button variant="outline" onClick={() => navigate('/dashboard')}>Cancel</Button>
                 <Button onClick={handleCreate} disabled={loading}>
-                  {loading ? 'Posting...' : 'Post Job'}
+                  {loading ? (editJobId ? 'Updating...' : 'Posting...') : (editJobId ? 'Update Job' : 'Post Job')}
                 </Button>
               </div>
             </>
