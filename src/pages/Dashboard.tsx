@@ -113,9 +113,11 @@ const Dashboard = () => {
               <Link to="/leaderboard" className="text-sm font-medium hover:text-primary transition-colors">
                 Leaderboard
               </Link>
-              <Link to="/community" className="text-sm font-medium hover:text-primary transition-colors">
-                Community
-              </Link>
+              {!(userRole === 'employer' || userRole === 'recruiter') && (
+                <Link to="/community" className="text-sm font-medium hover:text-primary transition-colors">
+                  Community
+                </Link>
+              )}
               <Link to="/profiles" className="text-sm font-medium hover:text-primary transition-colors">
                 Profiles
               </Link>
@@ -177,13 +179,15 @@ const Dashboard = () => {
               >
                 Leaderboard
               </Link>
-              <Link 
-                to="/community" 
-                className="block text-sm font-medium hover:text-primary transition-colors py-2"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Community
-              </Link>
+              {!(userRole === 'employer' || userRole === 'recruiter') && (
+                <Link 
+                  to="/community" 
+                  className="block text-sm font-medium hover:text-primary transition-colors py-2"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Community
+                </Link>
+              )}
               <Link 
                 to="/profiles" 
                 className="block text-sm font-medium hover:text-primary transition-colors py-2"
