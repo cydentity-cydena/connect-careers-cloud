@@ -73,7 +73,6 @@ const Navigation = () => {
     { to: "/profiles", label: "Profiles" },
     { to: "/community", label: "Community", hideForRoles: ["employer", "recruiter"] },
     { to: "/jobs", label: "Jobs" },
-    { to: "/hr-ready", label: "HR-Ready", showForRoles: ["candidate"] },
     { to: "/career-assistant", label: "AI Assistant", showForRoles: ["candidate"] },
     { to: "/training", label: "Training" },
     { to: "/certifications-catalog", label: "Certifications" },
