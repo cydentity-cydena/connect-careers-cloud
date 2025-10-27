@@ -20,6 +20,7 @@ const HRReady = () => {
   const [loading, setLoading] = useState(true);
   const [verification, setVerification] = useState<any | null>(null);
   const [editDrawerOpen, setEditDrawerOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   // Upload form state
   const [idFiles, setIdFiles] = useState<FileList | null>(null);
@@ -35,6 +36,15 @@ const HRReady = () => {
         return;
       }
       setUserId(session.user.id);
+
+      // Check if user is admin
+      const { data: roleData } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', session.user.id);
+      
+      const adminRole = roleData?.some(r => r.role === 'admin');
+      setIsAdmin(adminRole || false);
 
       // Load current verification snapshot
       try {
@@ -117,7 +127,11 @@ const HRReady = () => {
               {loading ? (
                 <p className="text-sm text-muted-foreground">Loading...</p>
               ) : (
-                <VerificationPanel verification={verification} onEdit={() => setEditDrawerOpen(true)} />
+                <VerificationPanel 
+                  verification={verification} 
+                  onEdit={() => setEditDrawerOpen(true)}
+                  showEditButton={isAdmin}
+                />
               )}
             </Card>
           </section>

@@ -7,6 +7,7 @@ import { format } from "date-fns";
 interface VerificationPanelProps {
   verification: any;
   onEdit: () => void;
+  showEditButton?: boolean;
 }
 
 const statusColors: Record<string, string> = {
@@ -16,16 +17,18 @@ const statusColors: Record<string, string> = {
   grey: 'bg-muted text-muted-foreground',
 };
 
-export function VerificationPanel({ verification, onEdit }: VerificationPanelProps) {
+export function VerificationPanel({ verification, onEdit, showEditButton = false }: VerificationPanelProps) {
   if (!verification) {
     return (
       <Card className="p-6">
         <div className="text-center space-y-4">
           <p className="text-muted-foreground">No verification data available</p>
-          <Button onClick={onEdit}>
-            <Edit className="h-4 w-4 mr-2" />
-            Add Verification
-          </Button>
+          {showEditButton && (
+            <Button onClick={onEdit}>
+              <Edit className="h-4 w-4 mr-2" />
+              Add Verification
+            </Button>
+          )}
         </div>
       </Card>
     );
@@ -35,10 +38,12 @@ export function VerificationPanel({ verification, onEdit }: VerificationPanelPro
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold">Pre-Verification Status</h3>
-        <Button onClick={onEdit} variant="outline" size="sm">
-          <Edit className="h-4 w-4 mr-2" />
-          Edit
-        </Button>
+        {showEditButton && (
+          <Button onClick={onEdit} variant="outline" size="sm">
+            <Edit className="h-4 w-4 mr-2" />
+            Edit
+          </Button>
+        )}
       </div>
 
       {verification.hr_ready && (
