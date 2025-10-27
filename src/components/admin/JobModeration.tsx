@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { Search, Eye, Trash2, CheckCircle, XCircle } from "lucide-react";
+import { Search, Eye, Trash2, Pencil } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import {
@@ -41,29 +41,6 @@ export const JobModeration = () => {
 
       if (error) throw error;
       return data;
-    },
-  });
-
-  const toggleJobStatusMutation = useMutation({
-    mutationFn: async ({ jobId, currentStatus }: { jobId: string; currentStatus: boolean }) => {
-      const { error } = await supabase
-        .from("jobs")
-        .update({ is_active: !currentStatus })
-        .eq("id", jobId);
-
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin-jobs"] });
-      toast({
-        title: "Job status updated",
-      });
-    },
-    onError: () => {
-      toast({
-        title: "Failed to update job",
-        variant: "destructive",
-      });
     },
   });
 
@@ -180,18 +157,9 @@ export const JobModeration = () => {
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() =>
-                              toggleJobStatusMutation.mutate({
-                                jobId: job.id,
-                                currentStatus: job.is_active,
-                              })
-                            }
+                            onClick={() => navigate(`/job-create?edit=${job.id}`)}
                           >
-                            {job.is_active ? (
-                              <XCircle className="h-4 w-4" />
-                            ) : (
-                              <CheckCircle className="h-4 w-4" />
-                            )}
+                            <Pencil className="h-4 w-4" />
                           </Button>
                           <Button
                             variant="destructive"
