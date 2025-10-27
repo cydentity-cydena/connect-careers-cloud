@@ -195,38 +195,54 @@ export default function ProfileDetail() {
 
       // Fetch resumes if unlocked (only visible ones for employers)
       if (unlocked) {
-        const { data: resumesData } = await supabase
+        const { data: resumesData, error: resumesError } = await supabase
           .from('candidate_resumes')
           .select('id, resume_name, resume_type, resume_url, is_primary, created_at, is_visible_to_employers')
           .eq('candidate_id', id)
           .eq('is_visible_to_employers', true) // Only show resumes candidate made visible
           .order('is_primary', { ascending: false });
         
+        console.log('Fetched resumes data:', { resumesData, resumesError });
+        
         if (resumesData) {
           const resumesWithSignedUrls = await Promise.all(
             resumesData.map(async (resume) => {
+              console.log('Processing resume:', resume);
+              
               const normalizePath = (value: string) => value
                 .replace(/^\/?resumes\//, '')
                 .replace(/^\//, '');
 
               // If it's already a full URL or data URL, keep as is
               if (resume.resume_url.startsWith('http') || resume.resume_url.startsWith('data:')) {
+                console.log('Resume already has full URL, skipping signed URL generation');
                 return resume;
               }
 
               try {
-                const { data: signedData } = await supabase.storage
+                const normalizedPath = normalizePath(resume.resume_url);
+                console.log('Generating signed URL for path:', normalizedPath);
+                
+                const { data: signedData, error: signedError } = await supabase.storage
                   .from('resumes')
-                  .createSignedUrl(normalizePath(resume.resume_url), 3600); // 1 hour expiry
-                if (signedData) {
+                  .createSignedUrl(normalizedPath, 3600); // 1 hour expiry
+                
+                console.log('Signed URL result:', { signedData, signedError });
+                
+                if (signedData?.signedUrl) {
                   return { ...resume, resume_url: signedData.signedUrl };
                 }
+                
+                if (signedError) {
+                  console.error('Error generating signed URL:', signedError);
+                }
               } catch (error) {
-                console.error('Error generating signed URL for resume:', error);
+                console.error('Exception generating signed URL for resume:', error);
               }
               return resume;
             })
           );
+          console.log('Final resumes with signed URLs:', resumesWithSignedUrls);
           setResumes(resumesWithSignedUrls);
         }
       }
@@ -250,34 +266,66 @@ export default function ProfileDetail() {
 
   const handleViewResume = async (resumeUrl: string, resumeName: string) => {
     try {
+      console.log('handleViewResume called with:', { resumeUrl, resumeName });
+      
+      // If it's already a data URL or full http URL, use it directly
+      if (resumeUrl.startsWith('data:') || resumeUrl.startsWith('http')) {
+        console.log('Resume already has full URL or data URL, using directly');
+        const separator = resumeUrl.includes('#') ? '&' : '#';
+        const zoomUrl = `${resumeUrl}${separator}zoom=page-width`;
+        setViewingResumeUrl(zoomUrl);
+        setViewingResumeName(resumeName);
+        return;
+      }
+      
       // Normalize to a bucket-relative path (no leading slash or 'resumes/')
       const derivePath = (value: string) => {
         try {
           if (value.startsWith("http")) {
             const url = new URL(value);
             const match = url.pathname.match(/\/object\/(?:public|sign)\/resumes\/(.*)$/);
-            if (match?.[1]) return match[1];
+            if (match?.[1]) {
+              console.log('Extracted path from URL:', match[1]);
+              return match[1];
+            }
           }
-        } catch {}
+        } catch (e) {
+          console.error('Error parsing URL:', e);
+        }
         // strip leading slash and optional 'resumes/' prefix
-        return value.replace(/^\/?resumes\//, '').replace(/^\//, '');
+        const cleaned = value.replace(/^\/?resumes\//, '').replace(/^\//, '');
+        console.log('Cleaned path:', cleaned);
+        return cleaned;
       };
 
       const filePath = derivePath(resumeUrl);
+      console.log('Final file path for signed URL:', filePath);
 
       const { data, error } = await supabase.storage
         .from('resumes')
         .createSignedUrl(filePath, 3600);
 
-      if (error || !data?.signedUrl) throw error || new Error('Unable to generate signed URL');
+      console.log('Signed URL response:', { data, error });
+
+      if (error) {
+        console.error('Supabase storage error:', error);
+        throw error;
+      }
+      
+      if (!data?.signedUrl) {
+        throw new Error('No signed URL returned from storage');
+      }
 
       const signed = data.signedUrl;
+      console.log('Generated signed URL:', signed);
+      
       const separator = signed.includes('#') ? '&' : '#';
       const zoomUrl = `${signed}${separator}zoom=page-width`;
+      
       setViewingResumeUrl(zoomUrl);
       setViewingResumeName(resumeName);
     } catch (error: any) {
-      console.error('Error loading resume:', error);
+      console.error('Error loading resume - full details:', error);
       toast.error('Failed to load resume', {
         description: error?.message || 'Unable to load the resume file',
       });
@@ -896,6 +944,12 @@ export default function ProfileDetail() {
                   src={viewingResumeUrl}
                   className="w-full h-full border-0"
                   title="Resume Viewer"
+                  onError={(e) => {
+                    console.error('Iframe failed to load:', e);
+                    toast.error('Failed to display resume', {
+                      description: 'The resume file could not be displayed in the browser',
+                    });
+                  }}
                 />
               )}
             </div>
