@@ -82,14 +82,23 @@ const Navigation = () => {
     { to: "/contact", label: "Contact" },
   ];
 
+  console.log('Current user roles:', userRoles, 'isLoading:', isLoading);
+  
   const navLinks = allNavLinks.filter(link => {
+    console.log(`Checking ${link.label}:`, { 
+      hideForRoles: link.hideForRoles, 
+      showForRoles: link.showForRoles,
+      userRoles 
+    });
+    
     // Hide if hideForRoles includes any of the user's roles
     if (link.hideForRoles && userRoles.some(role => link.hideForRoles?.includes(role))) {
-      console.log(`Hiding ${link.label} for roles:`, userRoles);
+      console.log(`✓ Hiding ${link.label} for roles:`, userRoles);
       return false;
     }
     // Show only if showForRoles includes any of the user's roles (or if no showForRoles specified)
     if (link.showForRoles && !userRoles.some(role => link.showForRoles?.includes(role))) {
+      console.log(`✗ Not showing ${link.label} - role requirement not met`);
       return false;
     }
     return true;
