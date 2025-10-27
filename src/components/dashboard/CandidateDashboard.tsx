@@ -162,22 +162,9 @@ const CandidateDashboard = () => {
                 <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-primary opacity-0 group-hover:opacity-100 transition-all" />
               </Link>
               
-              <Link to="/hr-ready" className="flex items-start gap-4 p-3 rounded-lg hover:bg-muted/50 transition-colors group border-2 border-primary/20">
-                <div className="bg-primary rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
-                  <span className="text-primary-foreground font-semibold">2</span>
-                </div>
-                <div className="flex-1">
-                  <h3 className="font-semibold mb-1 group-hover:text-primary transition-colors">Get HR-Ready Verified</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Required to apply for jobs - prove identity & right to work
-                  </p>
-                </div>
-                <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-primary opacity-0 group-hover:opacity-100 transition-all" />
-              </Link>
-              
               <Link to="/jobs" className="flex items-start gap-4 p-3 rounded-lg hover:bg-muted/50 transition-colors group">
                 <div className="bg-primary/10 rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
-                  <span className="text-primary font-semibold">3</span>
+                  <span className="text-primary font-semibold">2</span>
                 </div>
                 <div className="flex-1">
                   <h3 className="font-semibold mb-1 group-hover:text-primary transition-colors">Apply to Jobs</h3>
