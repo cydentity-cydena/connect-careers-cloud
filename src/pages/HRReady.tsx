@@ -11,6 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { VerificationPanel } from "@/components/hrready/VerificationPanel";
+import { EditVerificationDrawer } from "@/components/hrready/EditVerificationDrawer";
 
 const HRReady = () => {
   const navigate = useNavigate();
@@ -18,6 +19,7 @@ const HRReady = () => {
   const [userId, setUserId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [verification, setVerification] = useState<any | null>(null);
+  const [editDrawerOpen, setEditDrawerOpen] = useState(false);
 
   // Upload form state
   const [idFiles, setIdFiles] = useState<FileList | null>(null);
@@ -47,6 +49,17 @@ const HRReady = () => {
     };
     init();
   }, [navigate]);
+
+  const refreshVerification = async () => {
+    if (!userId) return;
+    try {
+      const { data, error } = await supabase.functions.invoke(`hrready-get/${userId}`);
+      if (error) throw error;
+      setVerification(data?.verification || null);
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   const uploadFiles = async (files: FileList, folder: string) => {
     if (!userId) throw new Error("Not authenticated");
@@ -104,7 +117,7 @@ const HRReady = () => {
               {loading ? (
                 <p className="text-sm text-muted-foreground">Loading...</p>
               ) : (
-                <VerificationPanel verification={verification} onEdit={() => {}} />
+                <VerificationPanel verification={verification} onEdit={() => setEditDrawerOpen(true)} />
               )}
             </Card>
           </section>
@@ -135,6 +148,16 @@ const HRReady = () => {
           Files are stored securely. Our team validates submissions promptly. Once approved, your profile shows HR-Ready badges and you can apply to jobs.
         </div>
       </main>
+
+      {userId && (
+        <EditVerificationDrawer
+          open={editDrawerOpen}
+          onOpenChange={setEditDrawerOpen}
+          candidateId={userId}
+          verification={verification}
+          onSuccess={refreshVerification}
+        />
+      )}
     </div>
   );
 };
