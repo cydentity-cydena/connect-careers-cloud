@@ -206,7 +206,7 @@ const Index = () => {
               <div className="bg-primary/10 w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center mx-auto mb-3 md:mb-4">
                 <DollarSign className="h-7 w-7 md:h-8 md:w-8 text-primary" />
               </div>
-              <h3 className="text-xl md:text-2xl font-bold mb-2">Save £500+ Per Hire</h3>
+              <h3 className="text-xl md:text-2xl font-bold mb-2">Reduce Admin Costs</h3>
               <p className="text-sm md:text-base text-muted-foreground">Zero ID checks, RTW verifications, or compliance fees</p>
             </div>
 
@@ -275,7 +275,7 @@ const Index = () => {
                     </li>
                     <li className="flex gap-3">
                       <span className="font-bold text-secondary">3.</span>
-                      <span>Save £500+ per hire on verification costs & admin time</span>
+                      <span>Access verified candidates with credentials already confirmed</span>
                     </li>
                     <li className="flex gap-3">
                       <span className="font-bold text-secondary">4.</span>
