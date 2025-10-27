@@ -224,13 +224,13 @@ const EmployerDashboard = () => {
       <Tabs defaultValue="overview" className="w-full">
         <TabsList className="grid w-full max-w-2xl grid-cols-3">
           <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="jobs" className="gap-2">
-            <Briefcase className="h-4 w-4" />
-            Jobs
-          </TabsTrigger>
           <TabsTrigger value="pipeline" className="gap-2">
             <Workflow className="h-4 w-4" />
             Pipeline
+          </TabsTrigger>
+          <TabsTrigger value="jobs" className="gap-2">
+            <Briefcase className="h-4 w-4" />
+            Jobs
           </TabsTrigger>
         </TabsList>
 
