@@ -157,7 +157,7 @@ export const JobModeration = () => {
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => navigate(`/job-create?edit=${job.id}`)}
+                            onClick={() => navigate(`/jobs/create?edit=${job.id}`)}
                           >
                             <Pencil className="h-4 w-4" />
                           </Button>
