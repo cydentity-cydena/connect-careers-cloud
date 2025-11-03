@@ -820,8 +820,8 @@ export const ApplicationPipeline = () => {
                     >
                       <div className="flex items-start gap-2 mb-3">
                         <Avatar className="h-10 w-10 flex-shrink-0">
-                          <AvatarFallback className="bg-primary text-primary-foreground text-xs">
-                            {candidate.profile.full_name.split(" ").map((n) => n[0]).join("").toUpperCase()}
+                          <AvatarFallback className="bg-primary text-primary-foreground text-xs font-semibold">
+                            {candidate.profile.full_name?.split(" ").map((n) => n[0]).join("").toUpperCase() || "??"}
                           </AvatarFallback>
                         </Avatar>
                         <div className="flex-1 min-w-0">
