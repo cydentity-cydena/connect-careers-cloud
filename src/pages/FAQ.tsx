@@ -40,24 +40,32 @@ const FAQ = () => {
       answer: "Yes! 100% free forever for all candidates, from entry-level to CISO. No hidden fees, no premium tiers. We believe in giving cybersecurity professionals equal access to opportunities."
     },
     {
+      question: "What is HR-Ready verification and should I get it?",
+      answer: "HR-Ready verification means you've submitted identity documents (passport/license) and right-to-work proof (UK work visa, citizenship, etc.) that we've reviewed. It shows employers you're pre-cleared and interview-ready, significantly increasing your chances of getting shortlisted. It's optional but highly recommended!"
+    },
+    {
+      question: "Can I prove my skills with assessments?",
+      answer: "Yes! Connect your TryHackMe or HackTheBox accounts to display your rank and completed challenges. These verified platforms show real technical ability, not just claimed skills. Employers can see your actual penetration testing, forensics, and other hands-on capabilities."
+    },
+    {
+      question: "How does the leaderboard and XP system work?",
+      answer: "The leaderboard ranks candidates based on profile completion, verified certifications, skills assessments, and community engagement (peer endorsements, helping others). Earn XP by adding certifications, completing training, and contributing to the community. Higher ranks = more visibility to employers."
+    },
+    {
       question: "Can I track my applications in real-time?",
       answer: "Absolutely! Unlike other platforms where applications go into a black hole, Cydena shows you exactly where your application stands. You'll see when it moves from 'Applied' to 'Under Review' to 'Offer Extended' - all in real-time on your dashboard. Employers update the status as they progress, so you're never left wondering."
     },
     {
-      question: "How does the leaderboard work?",
-      answer: "The leaderboard ranks candidates based on profile completion, certifications, skills, and activity on the platform. The more you engage and showcase your expertise, the higher you rank, giving you more visibility to employers."
-    },
-    {
       question: "Can I apply if I'm transitioning into cybersecurity?",
-      answer: "Absolutely! We welcome career transitioners. Focus on completing your profile with relevant certifications (even entry-level ones), transferable skills, and your willingness to learn. Many employers specifically look for motivated entry-level talent."
+      answer: "Absolutely! We welcome career transitioners. Focus on completing your profile with relevant certifications (even entry-level ones like CompTIA Security+), connect your TryHackMe/HackTheBox accounts, and showcase transferable skills. Many employers specifically look for motivated entry-level talent."
     },
     {
-      question: "What certifications should I add?",
-      answer: "Add any cybersecurity-related certifications from our partner organizations: CompTIA (Security+), EC-Council (CEH), SANS, ISC2 (CISSP), ISACA (CISA/CISM), or Real LMS training certificates. Even foundational certs help!"
+      question: "What training partnerships do you have?",
+      answer: "We partner with Cydentity Academy, LetsDefend, Credly, and other training platforms. Complete courses through our partners and your achievements automatically sync to your profile, earning you XP and increasing your leaderboard ranking."
     },
     {
       question: "How do employers see my profile?",
-      answer: "Employers see your basic information (username, title, years of experience, certifications) for free. To see your full profile with your real name, contact details, and resume, they must unlock it using credits. You'll be notified when someone unlocks your profile."
+      answer: "Employers see your basic information (username, title, years of experience, certifications, HR-Ready status) for free. To see your full profile with your real name, contact details, and resume, they must unlock it using credits. You'll be notified when someone unlocks your profile."
     },
     {
       question: "Can I apply for multiple jobs at once?",
@@ -68,50 +76,66 @@ const FAQ = () => {
   const employerFAQs = [
     {
       question: "How is Cydena different from LinkedIn Recruiter?",
-      answer: "Unlike LinkedIn's subscription model (£8,000+/year), we use a pay-per-unlock system. You only pay when you find a candidate you want to contact. Plus, our platform is specialized for cybersecurity with verified certifications, security clearance filters, and skills-based matching."
+      answer: "Unlike LinkedIn's subscription model (£8,000+/year), we use a pay-per-unlock system. You only pay when you find a candidate you want to contact. Plus, our platform is specialized for cybersecurity with HR-Ready verification, verified skills assessments (TryHackMe/HackTheBox), certification validation, and security clearance filters."
+    },
+    {
+      question: "What is HR-Ready verification and why does it matter?",
+      answer: "HR-Ready candidates have submitted and had identity (passport/license) and right-to-work documentation verified by our team. This means zero compliance risk for you - they're pre-cleared and can start immediately. Filter by HR-Ready status to see only interview-ready candidates and hire 70% faster."
+    },
+    {
+      question: "Can I integrate Cydena with my existing ATS?",
+      answer: "Yes! We support direct integrations with Greenhouse, Lever, Workday, and other major ATS platforms. Push candidates directly to your ATS with one click. You can also set up custom webhooks to automate workflows. Available on Growth and Enterprise plans."
+    },
+    {
+      question: "How are skills actually verified?",
+      answer: "We verify skills through multiple sources: (1) TryHackMe & HackTheBox platform rankings showing actual hands-on performance, (2) Certification verification through issuing bodies, (3) Training course completion from our partners, (4) Peer endorsements from other verified professionals. This goes far beyond self-reported skills on other platforms."
     },
     {
       question: "What's included in a profile unlock?",
-      answer: "When you unlock a candidate profile (£10-£15 depending on your subscription tier), you get: full resume/CV, direct email and phone contact, LinkedIn profile, portfolio links, detailed work history, and the ability to message them directly in-platform."
+      answer: "When you unlock a candidate profile (£10-£15 depending on your subscription tier), you get: full resume/CV, direct email and phone contact, LinkedIn profile, portfolio links, detailed work history, skills assessment results, and the ability to message them directly in-platform."
     },
     {
       question: "Do I need to sign a contract?",
-      answer: "No contracts, ever. Buy credits as you need them. No monthly subscriptions, no retainer fees, no exclusivity agreements. Cancel anytime without penalty."
+      answer: "No contracts, ever. Buy credits as you need them or choose a subscription tier. No retainer fees, no exclusivity agreements. Cancel anytime without penalty."
     },
     {
       question: "How quickly can I start interviewing candidates?",
-      answer: "Instantly! Browse profiles immediately after signing up, unlock qualified candidates, and connect with them directly via email, phone, or in-platform messaging. No waiting for a recruiter to send you CVs - you're in control from day one."
-    },
-    {
-      question: "What if I unlock a profile and they're not interested?",
-      answer: "While we can't refund individual unlocks, we recommend using our free preview features first: view certifications, years of experience, skills, and leaderboard ranking before unlocking. Most candidates on Cydena are actively job seeking."
+      answer: "Instantly! Browse profiles immediately after signing up, filter by HR-Ready status to see pre-verified candidates, unlock qualified talent, and connect with them directly via email, phone, or in-platform messaging. No waiting for a recruiter to send you CVs - you're in control from day one."
     },
     {
       question: "Can I post multiple jobs?",
-      answer: "Yes! Small teams can post up to 5 active jobs. Enterprise customers get unlimited job postings. Each job can have custom requirements, pipeline stages, and application tracking."
-    },
-    {
-      question: "What's your refund policy?",
-      answer: "Unused credits never expire and are fully refundable within 30 days of purchase. Once you unlock a profile, that credit is consumed (since you've accessed candidate information)."
+      answer: "Yes! Starter tier: up to 5 active jobs. Growth: up to 15 jobs. Scale & Enterprise: unlimited job postings. Each job can have custom requirements, pipeline stages, and application tracking."
     }
   ];
 
   const technicalFAQs = [
     {
       question: "How do you verify certifications?",
-      answer: "We partner with leading certification bodies (CompTIA, EC-Council, SANS, ISC2, ISACA) to verify credentials. Candidates are encouraged to provide certificate IDs and URLs. We're working on automated verification with our partners."
+      answer: "Candidates submit certification documents which our team manually reviews. We check certificate IDs, issue dates, and expiration dates. We also integrate with Credly for digital badges. Verified certifications display a checkmark badge on candidate profiles."
+    },
+    {
+      question: "What ATS platforms do you integrate with?",
+      answer: "We support Greenhouse, Lever, Workday, and Workable out-of-the-box. You can also set up custom webhooks to push candidate data to any system via JSON payloads. Configure field mappings to ensure data flows correctly into your ATS. Available on Growth plans and above."
+    },
+    {
+      question: "How do webhooks work?",
+      answer: "Set up webhooks to automatically send candidate data to your systems when specific events occur (profile unlocked, application received, candidate hired, etc.). You receive a JSON payload with candidate information that you can parse and insert into your database, CRM, or ATS. Includes retry logic and delivery tracking."
+    },
+    {
+      question: "What training platforms are integrated?",
+      answer: "We integrate with Cydentity Academy, LetsDefend, Credly, TryHackMe, and HackTheBox. When candidates complete courses or challenges on these platforms, their achievements automatically sync to their Cydena profile, earning XP and increasing their leaderboard ranking."
     },
     {
       question: "Is my data secure?",
-      answer: "Yes. We use bank-level encryption (AES-256), secure authentication, and comply with GDPR/UK data protection laws. As a cybersecurity platform, security is our top priority. Your data is never sold to third parties."
-    },
-    {
-      question: "Can I integrate Cydena with my ATS?",
-      answer: "API access and ATS integrations are available for Enterprise customers. Contact our sales team to discuss your specific integration needs."
+      answer: "Yes. We use bank-level encryption (AES-256), secure authentication, and comply with GDPR/UK data protection laws. As a cybersecurity platform, security is our top priority. Your data is never sold to third parties. HR-Ready verification documents are stored encrypted and only accessible to our verification team and the candidate."
     },
     {
       question: "Do you support security clearance filtering?",
       answer: "Yes! Candidates can indicate their security clearance level (SC, DV, etc.), and employers can filter by required clearance. This is especially useful for government and defense contractor roles."
+    },
+    {
+      question: "Can I white-label the platform?",
+      answer: "Custom branding and white-label options are available for Enterprise plans. Display your company branding while using our infrastructure, verification, and candidate pool. Contact our sales team to discuss requirements."
     }
   ];
 

@@ -112,8 +112,15 @@ const Index = () => {
               <div className="flex items-start gap-3">
                 <CheckCircle className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
                 <div>
-                  <h3 className="font-semibold mb-1">Gamified Profile Building</h3>
-                  <p className="text-sm text-muted-foreground">Earn XP, climb the leaderboard, unlock achievements as you grow</p>
+                  <h3 className="font-semibold mb-1">Prove Your Skills with Assessments</h3>
+                  <p className="text-sm text-muted-foreground">Take TryHackMe and HackTheBox verified assessments to showcase real technical ability</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <CheckCircle className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
+                <div>
+                  <h3 className="font-semibold mb-1">Gamified Profile & Peer Endorsements</h3>
+                  <p className="text-sm text-muted-foreground">Earn XP, climb the leaderboard, get endorsed by peers, unlock achievements as you grow</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
@@ -149,11 +156,11 @@ const Index = () => {
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             <div className="bg-gradient-card backdrop-blur-sm border border-border rounded-lg p-6 md:p-8 hover:scale-105 transition-transform animate-slide-up">
               <div className="bg-primary/10 w-12 h-12 md:w-14 md:h-14 rounded-lg flex items-center justify-center mb-4 md:mb-6">
-                <Users className="h-6 w-6 md:h-7 md:w-7 text-primary" />
+                <Shield className="h-6 w-6 md:h-7 md:w-7 text-primary" />
               </div>
-              <h3 className="text-lg md:text-xl font-semibold mb-2 md:mb-3">Skills-Based Matching</h3>
+              <h3 className="text-lg md:text-xl font-semibold mb-2 md:mb-3">HR-Ready Verification</h3>
               <p className="text-sm md:text-base text-muted-foreground">
-                Match candidates with jobs based on verified skills, certifications, and security clearances
+                Candidates pre-verified for identity and right-to-work with documented proof - hire with zero compliance risk
               </p>
             </div>
 
@@ -161,19 +168,19 @@ const Index = () => {
               <div className="bg-secondary/10 w-12 h-12 md:w-14 md:h-14 rounded-lg flex items-center justify-center mb-4 md:mb-6">
                 <Briefcase className="h-6 w-6 md:h-7 md:w-7 text-secondary" />
               </div>
-              <h3 className="text-lg md:text-xl font-semibold mb-2 md:mb-3">Application Pipeline</h3>
+              <h3 className="text-lg md:text-xl font-semibold mb-2 md:mb-3">ATS & Webhook Integration</h3>
               <p className="text-sm md:text-base text-muted-foreground">
-                Track candidates through customizable pipeline stages with in-app kanban board
+                Push candidates to Greenhouse, Lever, or custom ATS. Automate workflows with webhooks
               </p>
             </div>
 
             <div className="bg-gradient-card backdrop-blur-sm border border-border rounded-lg p-6 md:p-8 hover:scale-105 transition-transform animate-slide-up sm:col-span-2 lg:col-span-1" style={{animationDelay: '0.2s'}}>
               <div className="bg-accent/10 w-12 h-12 md:w-14 md:h-14 rounded-lg flex items-center justify-center mb-4 md:mb-6">
-                <TrendingUp className="h-6 w-6 md:h-7 md:w-7 text-accent" />
+                <Users className="h-6 w-6 md:h-7 md:w-7 text-accent" />
               </div>
-              <h3 className="text-lg md:text-xl font-semibold mb-2 md:mb-3">Leaderboards & Rankings</h3>
+              <h3 className="text-lg md:text-xl font-semibold mb-2 md:mb-3">Skills Verified by Platforms</h3>
               <p className="text-sm md:text-base text-muted-foreground">
-                Showcase top talent with skills-based rankings and endorsement systems
+                TryHackMe, HackTheBox rankings and verified assessments prove real technical ability
               </p>
             </div>
           </div>
