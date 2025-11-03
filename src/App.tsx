@@ -41,6 +41,7 @@ import HRReady from "./pages/HRReady";
 import RoleManagement from "./pages/admin/RoleManagement";
 import JobModeration from "./pages/admin/JobModeration";
 import PodManagement from "./pages/admin/PodManagement";
+import VerificationReview from "./pages/admin/VerificationReview";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -92,6 +93,7 @@ const App = () => (
               <Route path="/admin/roles" element={<ProtectedRoute><RoleManagement /></ProtectedRoute>} />
               <Route path="/admin/jobs" element={<ProtectedRoute><JobModeration /></ProtectedRoute>} />
               <Route path="/admin/pods" element={<ProtectedRoute><PodManagement /></ProtectedRoute>} />
+              <Route path="/admin/verification-review" element={<ProtectedRoute><VerificationReview /></ProtectedRoute>} />
               
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />

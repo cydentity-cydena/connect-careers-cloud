@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Shield, Users, Briefcase, AlertCircle, UserCog, CheckCircle, Bug, Settings, FolderKanban } from "lucide-react";
+import { Shield, Users, Briefcase, AlertCircle, UserCog, CheckCircle, Bug, Settings, FolderKanban, FileCheck } from "lucide-react";
 import { SeedDemoCandidates } from "@/components/admin/SeedDemoCandidates";
 import { VerificationReviewPanel } from "@/components/admin/VerificationReviewPanel";
 import { AdminNotifications } from "@/components/admin/AdminNotifications";
@@ -289,6 +289,26 @@ const AdminDashboard = () => {
             <CardContent>
               <Button variant="outline" className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
                 Manage Pods
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card 
+            className="border-border shadow-card hover:shadow-lg transition-all cursor-pointer group"
+            onClick={() => navigate('/admin/verification-review')}
+          >
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 group-hover:text-primary transition-colors">
+                <FileCheck className="h-5 w-5" />
+                Verification Review
+              </CardTitle>
+              <CardDescription>
+                Review and verify candidate documents and submissions
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button variant="outline" className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                Review Verifications
               </Button>
             </CardContent>
           </Card>
