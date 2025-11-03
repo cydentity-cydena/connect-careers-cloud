@@ -602,6 +602,8 @@ export type Database = {
           issuer: string | null
           name: string
           signed_webhook: boolean | null
+          source: string | null
+          verification_status: string | null
           webhook_provider: string | null
           webhook_verified_at: string | null
         }
@@ -616,6 +618,8 @@ export type Database = {
           issuer?: string | null
           name: string
           signed_webhook?: boolean | null
+          source?: string | null
+          verification_status?: string | null
           webhook_provider?: string | null
           webhook_verified_at?: string | null
         }
@@ -630,6 +634,8 @@ export type Database = {
           issuer?: string | null
           name?: string
           signed_webhook?: boolean | null
+          source?: string | null
+          verification_status?: string | null
           webhook_provider?: string | null
           webhook_verified_at?: string | null
         }
