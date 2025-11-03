@@ -142,6 +142,42 @@ export type Database = {
           },
         ]
       }
+      ats_connections: {
+        Row: {
+          active: boolean | null
+          created_at: string | null
+          credentials: Json
+          field_mappings: Json | null
+          id: string
+          name: string
+          provider: Database["public"]["Enums"]["ats_provider"]
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          active?: boolean | null
+          created_at?: string | null
+          credentials: Json
+          field_mappings?: Json | null
+          id?: string
+          name: string
+          provider: Database["public"]["Enums"]["ats_provider"]
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          active?: boolean | null
+          created_at?: string | null
+          credentials?: Json
+          field_mappings?: Json | null
+          id?: string
+          name?: string
+          provider?: Database["public"]["Enums"]["ats_provider"]
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       candidate_notes: {
         Row: {
           content: string
@@ -1077,6 +1113,45 @@ export type Database = {
           start_date?: string
           updated_at?: string | null
           website_url?: string
+        }
+        Relationships: []
+      }
+      integration_logs: {
+        Row: {
+          candidate_id: string
+          created_at: string | null
+          error_message: string | null
+          id: string
+          integration_id: string | null
+          integration_type: string
+          payload: Json | null
+          response: Json | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          candidate_id: string
+          created_at?: string | null
+          error_message?: string | null
+          id?: string
+          integration_id?: string | null
+          integration_type: string
+          payload?: Json | null
+          response?: Json | null
+          status: string
+          user_id: string
+        }
+        Update: {
+          candidate_id?: string
+          created_at?: string | null
+          error_message?: string | null
+          id?: string
+          integration_id?: string | null
+          integration_type?: string
+          payload?: Json | null
+          response?: Json | null
+          status?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -2175,6 +2250,39 @@ export type Database = {
         }
         Relationships: []
       }
+      webhook_integrations: {
+        Row: {
+          active: boolean | null
+          created_at: string | null
+          id: string
+          name: string
+          trigger_on_verification: boolean | null
+          updated_at: string | null
+          user_id: string
+          webhook_url: string
+        }
+        Insert: {
+          active?: boolean | null
+          created_at?: string | null
+          id?: string
+          name: string
+          trigger_on_verification?: boolean | null
+          updated_at?: string | null
+          user_id: string
+          webhook_url: string
+        }
+        Update: {
+          active?: boolean | null
+          created_at?: string | null
+          id?: string
+          name?: string
+          trigger_on_verification?: boolean | null
+          updated_at?: string | null
+          user_id?: string
+          webhook_url?: string
+        }
+        Relationships: []
+      }
       work_history: {
         Row: {
           candidate_id: string
@@ -2289,6 +2397,7 @@ export type Database = {
         | "community"
         | "training"
       app_role: "candidate" | "employer" | "admin" | "recruiter" | "staff"
+      ats_provider: "workday" | "greenhouse" | "lever" | "bamboohr" | "webhook"
       job_type: "full-time" | "part-time" | "contract" | "freelance"
       notification_type:
         | "application"
@@ -2445,6 +2554,7 @@ export const Constants = {
         "training",
       ],
       app_role: ["candidate", "employer", "admin", "recruiter", "staff"],
+      ats_provider: ["workday", "greenhouse", "lever", "bamboohr", "webhook"],
       job_type: ["full-time", "part-time", "contract", "freelance"],
       notification_type: [
         "application",

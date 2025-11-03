@@ -136,6 +136,31 @@ const RecruiterDashboard = () => {
       <Card className="border-border shadow-card bg-primary/5">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
+            <Workflow className="h-5 w-5 text-primary" />
+            ATS Integrations
+          </CardTitle>
+          <CardDescription>
+            Push verified candidates to your ATS
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-muted-foreground mb-4">
+            Connect to Workday, Greenhouse, or use webhooks to automatically sync candidates.
+          </p>
+          <Button 
+            variant="default" 
+            className="w-full gap-2"
+            onClick={() => navigate('/integrations')}
+          >
+            <Workflow className="h-4 w-4" />
+            Manage Integrations
+          </Button>
+        </CardContent>
+      </Card>
+
+      <Card className="border-border shadow-card">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
             <Bug className="h-5 w-5 text-primary" />
             Report a Bug
           </CardTitle>
