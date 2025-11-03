@@ -50,10 +50,10 @@ export const AssessmentResults = ({ candidateId }: AssessmentResultsProps) => {
       <CardHeader>
         <div className="flex items-center gap-2">
           <Brain className="h-5 w-5 text-primary" />
-          <CardTitle>AI Skills Assessments</CardTitle>
+          <CardTitle>Skills Assessments</CardTitle>
         </div>
         <CardDescription>
-          Technical assessments graded by AI
+          Professional technical assessments with instant grading
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">

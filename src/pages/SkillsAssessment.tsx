@@ -204,25 +204,25 @@ export default function SkillsAssessment() {
     return (
       <div className="min-h-screen bg-background py-12">
         <SEO
-          title="AI Skills Assessment"
-          description="Validate your cybersecurity skills with AI-powered technical assessments"
+          title="Technical Skills Assessment"
+          description="Validate your cybersecurity skills with professional technical assessments"
         />
         <div className="container max-w-4xl mx-auto px-4">
           <div className="text-center mb-8">
             <div className="flex justify-center mb-4">
               <Brain className="h-16 w-16 text-primary" />
             </div>
-            <h1 className="text-4xl font-bold mb-4">AI Skills Assessment</h1>
+            <h1 className="text-4xl font-bold mb-4">Technical Skills Assessment</h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-4">
-              Validate your expertise with AI-powered technical assessments. Get instant feedback and add results to your profile.
+              Validate your expertise with professional technical assessments. Get instant feedback and add results to your profile.
             </p>
             <div className="max-w-2xl mx-auto bg-muted/50 border border-primary/20 rounded-lg p-4 text-sm text-left">
               <p className="font-semibold mb-2">⚠️ Academic Integrity Notice</p>
               <ul className="space-y-1 text-muted-foreground">
                 <li>• Answers should reflect your personal experience and knowledge</li>
-                <li>• Using AI to generate responses defeats the purpose and will be flagged</li>
+                <li>• Using external tools to generate responses defeats the purpose and will be flagged</li>
                 <li>• Employers use these as initial screenings, not replacements for interviews</li>
-                <li>• AI-detected responses receive significantly reduced scores</li>
+                <li>• Inauthentic responses receive significantly reduced scores</li>
               </ul>
             </div>
           </div>

@@ -20,13 +20,13 @@ export const SkillsAssessmentCTA = () => {
           <CardTitle>Validate Your Skills</CardTitle>
         </div>
         <CardDescription>
-          Take AI-powered technical assessments to demonstrate your expertise
+          Take professional technical assessments to demonstrate your expertise
         </CardDescription>
       </CardHeader>
       <CardContent>
         <div className="space-y-3">
           <p className="text-sm text-muted-foreground">
-            Stand out to employers with verified skills assessments. Get instant AI feedback and showcase results on your profile.
+            Stand out to employers with verified skills assessments. Get instant feedback and showcase results on your profile.
           </p>
           <Button asChild className="w-full">
             <Link to="/skills-assessment">
