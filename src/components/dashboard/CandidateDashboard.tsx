@@ -255,7 +255,7 @@ const CandidateDashboard = () => {
                 onClick={() => navigate('/certifications')}
               >
                 <img 
-                  src="https://info.credly.com/hubfs/Credly_Logo_Orange.png" 
+                  src="/logos/credly-logo.png" 
                   alt="Credly" 
                   className="h-4 w-auto mr-2"
                 />

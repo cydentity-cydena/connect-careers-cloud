@@ -96,7 +96,7 @@ export function CertificationCard({
                   <TooltipTrigger asChild>
                     <Badge variant="outline" className="text-xs px-1.5 py-0.5">
                       <img 
-                        src="https://info.credly.com/hubfs/Credly_Logo_Orange.png" 
+                        src="/logos/credly-logo.png" 
                         alt="Credly" 
                         className="h-3 w-auto"
                       />

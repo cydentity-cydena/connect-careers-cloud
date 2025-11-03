@@ -152,7 +152,7 @@ const Certifications = () => {
       <div className="max-w-2xl mx-auto mb-6 p-4 bg-gradient-to-r from-orange-500/10 to-orange-600/10 border border-orange-500/20 rounded-lg">
         <div className="flex items-start gap-4">
           <img 
-            src="https://info.credly.com/hubfs/Credly_Logo_Orange.png" 
+            src="/logos/credly-logo.png" 
             alt="Credly" 
             className="h-8 w-auto mt-1"
           />
