@@ -1794,9 +1794,13 @@ export type Database = {
           desired_job_title: string | null
           email: string
           full_name: string | null
+          hackthebox_rank: string | null
+          hackthebox_username: string | null
           id: string
           is_verified: boolean | null
           location: string | null
+          tryhackme_rank: string | null
+          tryhackme_username: string | null
           updated_at: string
           username: string | null
           username_changes: number | null
@@ -1809,9 +1813,13 @@ export type Database = {
           desired_job_title?: string | null
           email: string
           full_name?: string | null
+          hackthebox_rank?: string | null
+          hackthebox_username?: string | null
           id: string
           is_verified?: boolean | null
           location?: string | null
+          tryhackme_rank?: string | null
+          tryhackme_username?: string | null
           updated_at?: string
           username?: string | null
           username_changes?: number | null
@@ -1824,9 +1832,13 @@ export type Database = {
           desired_job_title?: string | null
           email?: string
           full_name?: string | null
+          hackthebox_rank?: string | null
+          hackthebox_username?: string | null
           id?: string
           is_verified?: boolean | null
           location?: string | null
+          tryhackme_rank?: string | null
+          tryhackme_username?: string | null
           updated_at?: string
           username?: string | null
           username_changes?: number | null
@@ -1998,6 +2010,50 @@ export type Database = {
           name?: string
         }
         Relationships: []
+      }
+      skills_assessments: {
+        Row: {
+          ai_feedback: Json | null
+          answers: Json
+          assessment_type: string
+          candidate_id: string
+          completed_at: string
+          created_at: string
+          id: string
+          questions: Json
+          score: number
+        }
+        Insert: {
+          ai_feedback?: Json | null
+          answers: Json
+          assessment_type: string
+          candidate_id: string
+          completed_at?: string
+          created_at?: string
+          id?: string
+          questions: Json
+          score: number
+        }
+        Update: {
+          ai_feedback?: Json | null
+          answers?: Json
+          assessment_type?: string
+          candidate_id?: string
+          completed_at?: string
+          created_at?: string
+          id?: string
+          questions?: Json
+          score?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "skills_assessments_candidate_id_fkey"
+            columns: ["candidate_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       team_members: {
         Row: {

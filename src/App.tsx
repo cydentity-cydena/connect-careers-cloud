@@ -36,6 +36,7 @@ import BugReport from "./pages/BugReport";
 import StaffFunnel from "./pages/StaffFunnel";
 import UserManagement from "./pages/admin/UserManagement";
 import Integrations from "./pages/Integrations";
+import SkillsAssessment from "./pages/SkillsAssessment";
 
 import HRReady from "./pages/HRReady";
 import RoleManagement from "./pages/admin/RoleManagement";
@@ -75,6 +76,7 @@ const App = () => (
               <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
               <Route path="/skills" element={<ProtectedRoute><Skills /></ProtectedRoute>} />
               <Route path="/certifications" element={<ProtectedRoute><Certifications /></ProtectedRoute>} />
+              <Route path="/skills-assessment" element={<ProtectedRoute><SkillsAssessment /></ProtectedRoute>} />
               <Route path="/company/create" element={<ProtectedRoute><CompanyCreate /></ProtectedRoute>} />
               <Route path="/clients/create" element={<ProtectedRoute><ClientCreate /></ProtectedRoute>} />
               <Route path="/placements" element={<ProtectedRoute><Placements /></ProtectedRoute>} />

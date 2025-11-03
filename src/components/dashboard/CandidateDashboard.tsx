@@ -10,6 +10,7 @@ import { RecentPointsFeed } from "@/components/rewards/RecentPointsFeed";
 import { ProfileViewsNotification } from "./ProfileViewsNotification";
 import { MultipleResumesManager } from "./MultipleResumesManager";
 import { BoostYourScore } from "./BoostYourScore";
+import { SkillsAssessmentCTA } from "./SkillsAssessmentCTA";
 import { UsernameChangeDialog } from "./UsernameChangeDialog";
 import { ApplicationTracker } from "./ApplicationTracker";
 import { HRReadyCTA } from "./HRReadyCTA";
@@ -321,6 +322,10 @@ const CandidateDashboard = () => {
 
       {userId && (
         <BoostYourScore />
+      )}
+
+      {userId && (
+        <SkillsAssessmentCTA />
       )}
 
       {userId && (

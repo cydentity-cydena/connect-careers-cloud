@@ -24,6 +24,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { HRReadyBadge } from "@/components/hrready/HRReadyBadge";
 import { CandidateAvatar } from "@/components/profiles/CandidateAvatar";
+import { SkillsValidation } from "@/components/profiles/SkillsValidation";
+import { AssessmentResults } from "@/components/profiles/AssessmentResults";
 
 export default function ProfileDetail() {
   const { id } = useParams();
@@ -743,6 +745,19 @@ export default function ProfileDetail() {
                     </div>
                   </Collapsible>
                 )}
+
+                {/* Skills Validation Platforms */}
+                <SkillsValidation
+                  candidateId={id!}
+                  isOwnProfile={currentUserId === id}
+                  tryHackMeUsername={profile?.tryhackme_username}
+                  hackTheBoxUsername={profile?.hackthebox_username}
+                  tryHackMeRank={profile?.tryhackme_rank}
+                  hackTheBoxRank={profile?.hackthebox_rank}
+                />
+
+                {/* AI Skills Assessments */}
+                <AssessmentResults candidateId={id!} />
 
                 {/* Resumes (Unlocked Only) - Hidden for candidates */}
                 {isUnlocked && resumes.length > 0 && !isCandidateViewingCandidate && (
