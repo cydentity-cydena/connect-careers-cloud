@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Brain, CheckCircle2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { AssessmentIntegrityBadge } from "./AssessmentIntegrityBadge";
 
 interface AssessmentResultsProps {
   candidateId: string;
@@ -68,9 +69,20 @@ export const AssessmentResults = ({ candidateId }: AssessmentResultsProps) => {
                   {getAssessmentTitle(assessment.assessment_type)}
                 </span>
               </div>
-              <Badge variant="outline" className={getScoreColor(assessment.score)}>
-                {assessment.score}%
-              </Badge>
+              <div className="flex items-center gap-2">
+                <AssessmentIntegrityBadge 
+                  integrityScore={
+                    typeof assessment.ai_feedback === 'object' && 
+                    assessment.ai_feedback !== null && 
+                    'integrityScore' in assessment.ai_feedback
+                      ? (assessment.ai_feedback as any).integrityScore
+                      : undefined
+                  } 
+                />
+                <Badge variant="outline" className={getScoreColor(assessment.score)}>
+                  {assessment.score}%
+                </Badge>
+              </div>
             </div>
             <Progress value={assessment.score} className="h-2" />
             <p className="text-sm text-muted-foreground">

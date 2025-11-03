@@ -89,15 +89,25 @@ serve(async (req) => {
         throw new Error('Invalid assessment type');
       }
 
-      // Prepare evaluation prompt
+      // Prepare evaluation prompt with AI detection
       const systemPrompt = `You are an expert cybersecurity interviewer evaluating a candidate's technical knowledge for a ${assessment.title} position. 
-      
+
+CRITICAL: Detect if answers appear to be AI-generated rather than from genuine human experience.
+
 Grade each answer on a scale of 0-20 points based on:
 - Technical accuracy (40%)
 - Depth of understanding (30%)
 - Practical application (20%)
 - Communication clarity (10%)
 
+AI DETECTION CRITERIA:
+- Generic, textbook-style responses without personal context → Flag as "likely_ai"
+- Overly perfect formatting and structure → Suspicious
+- Lack of specific tools, company names, or real scenarios → Red flag
+- Too comprehensive without depth in specific areas → AI characteristic
+- Missing personal pronouns or experiential language → Warning sign
+
+Deduct 50% from scores if answers appear AI-generated.
 Provide constructive feedback for each answer.`;
 
       const evaluationPrompt = `Evaluate these answers for a ${assessment.title}:
@@ -111,8 +121,11 @@ Return your evaluation in this exact JSON format:
 {
   "scores": [score1, score2, score3, score4, score5],
   "feedback": ["feedback1", "feedback2", "feedback3", "feedback4", "feedback5"],
+  "aiDetectionFlags": [boolean1, boolean2, boolean3, boolean4, boolean5],
   "overallScore": totalScore,
-  "summary": "Overall assessment summary"
+  "summary": "Overall assessment summary",
+  "integrityScore": 0-100 (100 = definitely human, 0 = definitely AI),
+  "integrityNotes": "Brief explanation of AI detection findings"
 }`;
 
       const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {

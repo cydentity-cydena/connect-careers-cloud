@@ -40,6 +40,8 @@ export default function SkillsAssessment() {
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [showCancelDialog, setShowCancelDialog] = useState(false);
+  const [questionStartTimes, setQuestionStartTimes] = useState<number[]>([]);
+  const [questionTimeSpent, setQuestionTimeSpent] = useState<number[]>([]);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -48,25 +50,50 @@ export default function SkillsAssessment() {
     const savedProgress = localStorage.getItem('skills-assessment-progress');
     if (savedProgress) {
       try {
-        const { type, questions: savedQuestions, answers: savedAnswers, currentQ } = JSON.parse(savedProgress);
+        const { type, questions: savedQuestions, answers: savedAnswers, currentQ, timeSpent, startTimes } = JSON.parse(savedProgress);
         setSelectedType(type);
         setQuestions(savedQuestions);
         setAnswers(savedAnswers);
         setCurrentQuestion(currentQ);
+        setQuestionTimeSpent(timeSpent || []);
+        setQuestionStartTimes(startTimes || []);
       } catch (e) {
         console.error('Error loading saved progress:', e);
       }
     }
   }, []);
 
+  // Track time spent on current question
+  useEffect(() => {
+    if (selectedType && questions.length > 0) {
+      const now = Date.now();
+      setQuestionStartTimes(prev => {
+        const newTimes = [...prev];
+        newTimes[currentQuestion] = now;
+        return newTimes;
+      });
+    }
+  }, [currentQuestion, selectedType, questions.length]);
+
   // Auto-save progress when answers change
   useEffect(() => {
     if (selectedType && questions.length > 0) {
+      // Calculate time spent on current question
+      const now = Date.now();
+      const startTime = questionStartTimes[currentQuestion];
+      if (startTime) {
+        const timeSpent = [...questionTimeSpent];
+        timeSpent[currentQuestion] = (timeSpent[currentQuestion] || 0) + (now - startTime) / 1000;
+        setQuestionTimeSpent(timeSpent);
+      }
+
       localStorage.setItem('skills-assessment-progress', JSON.stringify({
         type: selectedType,
         questions,
         answers,
-        currentQ: currentQuestion
+        currentQ: currentQuestion,
+        timeSpent: questionTimeSpent,
+        startTimes: questionStartTimes
       }));
     }
   }, [selectedType, questions, answers, currentQuestion]);
@@ -87,6 +114,8 @@ export default function SkillsAssessment() {
       setQuestions(data.questions);
       setAnswers(new Array(data.questions.length).fill(""));
       setCurrentQuestion(0);
+      setQuestionStartTimes(new Array(data.questions.length).fill(0));
+      setQuestionTimeSpent(new Array(data.questions.length).fill(0));
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -124,11 +153,19 @@ export default function SkillsAssessment() {
   const submitAssessment = async () => {
     setSubmitting(true);
     try {
+      // Calculate average time per question for integrity check
+      const avgTimePerQuestion = questionTimeSpent.reduce((a, b) => a + b, 0) / questionTimeSpent.length;
+
       const { data, error } = await supabase.functions.invoke("skills-assessment", {
         body: {
           action: "gradeAssessment",
           assessmentType: selectedType,
           answers: answers,
+          metadata: {
+            timeSpent: questionTimeSpent,
+            avgTimePerQuestion,
+            totalTime: questionTimeSpent.reduce((a, b) => a + b, 0)
+          }
         },
       });
 
@@ -137,10 +174,19 @@ export default function SkillsAssessment() {
       // Clear saved progress after successful submission
       localStorage.removeItem('skills-assessment-progress');
 
-      toast({
-        title: "Assessment Complete!",
-        description: `You scored ${data.score}%. Results saved to your profile.`,
-      });
+      // Show integrity warning if detected
+      if (data.feedback?.integrityScore < 60) {
+        toast({
+          title: "Assessment Complete",
+          description: `Score: ${data.score}%. Note: Some answers flagged for review by employers.`,
+          variant: "destructive"
+        });
+      } else {
+        toast({
+          title: "Assessment Complete!",
+          description: `You scored ${data.score}%. Results saved to your profile.`,
+        });
+      }
 
       navigate("/dashboard");
     } catch (error: any) {
@@ -162,14 +208,23 @@ export default function SkillsAssessment() {
           description="Validate your cybersecurity skills with AI-powered technical assessments"
         />
         <div className="container max-w-4xl mx-auto px-4">
-          <div className="text-center mb-12">
+          <div className="text-center mb-8">
             <div className="flex justify-center mb-4">
               <Brain className="h-16 w-16 text-primary" />
             </div>
             <h1 className="text-4xl font-bold mb-4">AI Skills Assessment</h1>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-4">
               Validate your expertise with AI-powered technical assessments. Get instant feedback and add results to your profile.
             </p>
+            <div className="max-w-2xl mx-auto bg-muted/50 border border-primary/20 rounded-lg p-4 text-sm text-left">
+              <p className="font-semibold mb-2">⚠️ Academic Integrity Notice</p>
+              <ul className="space-y-1 text-muted-foreground">
+                <li>• Answers should reflect your personal experience and knowledge</li>
+                <li>• Using AI to generate responses defeats the purpose and will be flagged</li>
+                <li>• Employers use these as initial screenings, not replacements for interviews</li>
+                <li>• AI-detected responses receive significantly reduced scores</li>
+              </ul>
+            </div>
           </div>
 
           <div className="grid md:grid-cols-3 gap-6">
