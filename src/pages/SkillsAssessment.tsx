@@ -6,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { Brain, ArrowRight, CheckCircle2, Loader2, X, Save } from "lucide-react";
+import { Brain, ArrowRight, CheckCircle2, Loader2, X, Save, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import SEO from "@/components/SEO";
@@ -244,6 +244,16 @@ export default function SkillsAssessment() {
           description="Validate your cybersecurity skills with professional technical assessments"
         />
         <div className="container max-w-4xl mx-auto px-4">
+          <div className="mb-6">
+            <Button
+              variant="ghost"
+              onClick={() => navigate('/dashboard')}
+              className="gap-2"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back to Dashboard
+            </Button>
+          </div>
           <div className="text-center mb-8">
             <div className="flex justify-center mb-4">
               <Brain className="h-16 w-16 text-primary" />
