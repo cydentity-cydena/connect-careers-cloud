@@ -6,7 +6,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Briefcase, Clock, UserCheck, FileCheck, XCircle, CheckCircle2, Users, Search, Eye, MessageCircle, Download, Star, StickyNote, Filter, Shield, Award, MapPin, AlertCircle } from "lucide-react";
+import { Briefcase, Clock, UserCheck, FileCheck, XCircle, CheckCircle2, Users, Search, Eye, MessageCircle, Download, Star, StickyNote, Filter, Shield, MapPin } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ApplicationCard } from "./ApplicationCard";
 import { toast } from "@/hooks/use-toast";
@@ -16,6 +16,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { EditVerificationDrawer } from "@/components/hrready/EditVerificationDrawer";
+import { BadgesRow, BadgeItem, BadgeStatus } from "@/components/hrready/BadgesRow";
 
 type PipelineStage = "applied" | "screening" | "interview" | "offer" | "rejected" | "hired";
 
@@ -110,6 +111,87 @@ const stageConfig = {
     color: "bg-green-500",
     textColor: "text-green-600"
   }
+};
+
+const getVerificationStatus = (status: string | null): BadgeStatus => {
+  if (!status) return "grey";
+  if (status === "green" || status === "amber" || status === "red" || status === "grey") {
+    return status as BadgeStatus;
+  }
+  return "grey";
+};
+
+const getCertificationStatus = (certifications: any): BadgeStatus => {
+  if (!certifications || (Array.isArray(certifications) && certifications.length === 0)) {
+    return "grey";
+  }
+  
+  const certArray = Array.isArray(certifications) ? certifications : [];
+  if (certArray.length === 0) return "grey";
+  
+  let hasRed = false;
+  let hasAmber = false;
+  let hasGrey = false;
+  let hasGreen = false;
+  
+  certArray.forEach((cert: any) => {
+    const status = cert.status || "grey";
+    if (status === "red") hasRed = true;
+    else if (status === "amber") hasAmber = true;
+    else if (status === "grey") hasGrey = true;
+    else if (status === "green") hasGreen = true;
+  });
+  
+  if (hasRed) return "red";
+  if (hasAmber) return "amber";
+  if (hasGrey) return "grey";
+  if (hasGreen) return "green";
+  
+  return "grey";
+};
+
+const getVerificationBadges = (verifications: any): BadgeItem[] => {
+  const badges: BadgeItem[] = [];
+  
+  badges.push({
+    label: "ID",
+    status: getVerificationStatus(verifications?.identity_status || null),
+    tooltip: verifications?.identity_status 
+      ? `Identity: ${verifications.identity_status}` 
+      : "Identity: Not verified"
+  });
+  
+  badges.push({
+    label: "RTW",
+    status: getVerificationStatus(verifications?.rtw_status || null),
+    tooltip: verifications?.rtw_status 
+      ? `Right to Work: ${verifications.rtw_status}` 
+      : "Right to Work: Not verified"
+  });
+  
+  const certStatus = getCertificationStatus(verifications?.certifications);
+  const certs = verifications?.certifications;
+  const certCount = Array.isArray(certs) ? certs.length : 0;
+  
+  badges.push({
+    label: "Cert",
+    status: certStatus,
+    tooltip: certCount > 0 
+      ? `Certifications: ${certCount} cert${certCount !== 1 ? 's' : ''} (${certStatus})` 
+      : "No certifications"
+  });
+  
+  if (verifications?.logistics_status) {
+    badges.push({
+      label: "Logistics",
+      status: getVerificationStatus(verifications.logistics_status),
+      tooltip: verifications.logistics_location 
+        ? `Location: ${verifications.logistics_location}`
+        : "Logistics verified"
+    });
+  }
+  
+  return badges;
 };
 
 export const ApplicationPipeline = () => {
@@ -816,125 +898,99 @@ export const ApplicationPipeline = () => {
                   {getFilteredUnlockedCandidates().map((candidate) => (
                     <Card 
                       key={candidate.id} 
-                      className="p-3 hover:border-primary/50 transition-all overflow-hidden"
+                      className="hover:shadow-lg transition-all duration-200 border-2 border-border/50 hover:border-border relative"
                     >
-                      <div className="flex items-start gap-2 mb-3">
-                        <Avatar className="h-10 w-10 flex-shrink-0">
-                          <AvatarFallback className="bg-primary text-primary-foreground text-xs font-semibold">
-                            {candidate.profile.full_name?.split(" ").map((n) => n[0]).join("").toUpperCase() || "??"}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className="flex-1 min-w-0">
-                          <h4 className="font-semibold text-sm leading-tight mb-1">{candidate.profile.full_name}</h4>
-                          {candidate.candidate_profile?.title && (
-                            <p className="text-xs text-muted-foreground line-clamp-1 leading-tight">{candidate.candidate_profile.title}</p>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Verification Badges */}
-                      {candidate.candidate_verifications && (
-                        <div className="flex flex-wrap gap-1 mb-2">
-                          {candidate.candidate_verifications.hr_ready && (
-                            <Badge variant="default" className="text-xs px-1.5 py-0.5 bg-green-500">
-                              <CheckCircle2 className="h-3 w-3 mr-1" />
-                              HR Ready
-                            </Badge>
-                          )}
-                          <Badge variant="outline" className="text-xs px-1.5 py-0.5">
-                            <Shield className={`h-3 w-3 mr-1 ${
-                              !candidate.candidate_verifications.identity_status ? "text-red-500" :
-                              candidate.candidate_verifications.identity_status === "verified" ? "text-green-500" :
-                              candidate.candidate_verifications.identity_status === "pending" ? "text-amber-500" :
-                              "text-red-500"
-                            }`} />
-                            ID
-                          </Badge>
-                          <Badge variant="outline" className="text-xs px-1.5 py-0.5">
-                            {(() => {
-                              const rtwStatus = candidate.candidate_verifications.rtw_status;
-                              const Icon = !rtwStatus ? XCircle :
-                                rtwStatus === "verified" ? CheckCircle2 :
-                                rtwStatus === "pending" ? AlertCircle : XCircle;
-                              const color = !rtwStatus ? "text-red-500" :
-                                rtwStatus === "verified" ? "text-green-500" :
-                                rtwStatus === "pending" ? "text-amber-500" :
-                                "text-red-500";
-                              return <Icon className={`h-3 w-3 mr-1 ${color}`} />;
-                            })()}
-                            RTW
-                          </Badge>
-                          {candidate.candidate_verifications.certifications && (
-                            <Badge variant="outline" className="text-xs px-1.5 py-0.5">
-                              <Award className="h-3 w-3 mr-1 text-blue-500" />
-                              Cert
-                            </Badge>
-                          )}
-                        </div>
-                      )}
-
-                      {/* Experience and Location */}
-                      <div className="space-y-1.5 mb-3">
-                        {candidate.candidate_profile?.years_experience > 0 && (
-                          <Badge variant="secondary" className="text-xs px-2 py-0.5">
-                            <Briefcase className="h-3 w-3 mr-1" />
-                            {candidate.candidate_profile.years_experience} yrs
-                          </Badge>
-                        )}
-                        {(candidate.candidate_verifications?.logistics_location || candidate.profile.location) && (
-                          <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                            <MapPin className="h-3 w-3 flex-shrink-0" />
-                            <span className="truncate">{candidate.candidate_verifications?.logistics_location || candidate.profile.location}</span>
+                      <CardContent className="p-5 space-y-4">
+                        <div className="flex items-start gap-3">
+                          <Avatar className="h-14 w-14 flex-shrink-0 ring-2 ring-background shadow-md">
+                            <AvatarFallback className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground text-base font-semibold">
+                              {candidate.profile.full_name?.split(" ").map((n) => n[0]).join("").toUpperCase() || "??"}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="flex-1 min-w-0 pr-6">
+                            <h4 className="font-bold text-base leading-tight mb-1.5 text-foreground">
+                              {candidate.profile.full_name}
+                            </h4>
+                            <p className="text-sm text-muted-foreground line-clamp-2 leading-snug">
+                              {candidate.candidate_profile?.title || "No title"}
+                            </p>
                           </div>
-                        )}
-                      </div>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="h-8 w-8 p-0 flex-shrink-0 absolute top-2 right-2"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setEditingVerification({ 
+                                candidateId: candidate.candidate_id, 
+                                verification: candidate.candidate_verifications 
+                              });
+                            }}
+                          >
+                            <Shield className="h-4 w-4" />
+                          </Button>
+                        </div>
 
-                      <div className="space-y-2">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="h-8 text-xs w-full"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            navigate(`/profiles/${candidate.candidate_id}`);
-                          }}
-                        >
-                          <Eye className="h-3 w-3 mr-1" />
-                          View
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="default"
-                          className="h-8 text-xs w-full"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setMessageDialog({
-                              open: true,
-                              recipientId: candidate.candidate_id,
-                              recipientName: candidate.profile.full_name
-                            });
-                          }}
-                        >
-                          <MessageCircle className="h-3 w-3 mr-1" />
-                          Message
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="h-8 text-xs w-full"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setEditingVerification({ 
-                              candidateId: candidate.candidate_id, 
-                              verification: candidate.candidate_verifications 
-                            });
-                          }}
-                        >
-                          <Shield className="h-3 w-3 mr-1" />
-                          Edit Verification
-                        </Button>
-                        
-                        {/* Stage Selection for Talent Pool - excluding "Applied" */}
+                        {/* Verification Status Badges */}
+                        <div className="py-1">
+                          <BadgesRow 
+                            items={getVerificationBadges(candidate.candidate_verifications)} 
+                            showHrReady={candidate.candidate_verifications?.hr_ready || false}
+                          />
+                        </div>
+
+                        <div className="space-y-2.5 pt-1">
+                          <div className="flex flex-wrap gap-2 items-center">
+                            {/* Years of Experience Badge */}
+                            {candidate.candidate_profile?.years_experience !== undefined && (
+                              <Badge variant="secondary" className="text-xs px-2.5 py-1 font-medium">
+                                <Briefcase className="h-3.5 w-3.5 mr-1.5" />
+                                {candidate.candidate_profile.years_experience} yrs
+                              </Badge>
+                            )}
+                          </div>
+
+                          {/* Location if available */}
+                          {(candidate.candidate_verifications?.logistics_location || candidate.profile.location) && (
+                            <div className="flex items-center gap-2 text-xs text-muted-foreground/90">
+                              <MapPin className="h-3.5 w-3.5 flex-shrink-0" />
+                              <span className="truncate font-medium">{candidate.candidate_verifications?.logistics_location || candidate.profile.location}</span>
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="flex gap-2 pt-2 min-w-0">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="flex-1 h-10 text-xs font-medium px-2"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              navigate(`/profiles/${candidate.candidate_id}`);
+                            }}
+                          >
+                            <Eye className="h-4 w-4 mr-1.5" />
+                            <span className="truncate">View</span>
+                          </Button>
+                          <Button
+                            variant="default"
+                            size="sm"
+                            className="flex-1 h-10 text-xs font-medium px-2"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setMessageDialog({
+                                open: true,
+                                recipientId: candidate.candidate_id,
+                                recipientName: candidate.profile.full_name
+                              });
+                            }}
+                          >
+                            <MessageCircle className="h-4 w-4 mr-1.5" />
+                            <span className="truncate">Message</span>
+                          </Button>
+                        </div>
+
+                        {/* Stage Selection Dropdown */}
                         <Select
                           onValueChange={(value) => {
                             const targetStage = value as PipelineStage;
@@ -950,18 +1006,18 @@ export const ApplicationPipeline = () => {
                             }
                           }}
                         >
-                          <SelectTrigger className="h-9 text-xs w-full bg-card border-border">
+                          <SelectTrigger className="h-10 text-sm w-full bg-muted/30 border-border hover:bg-muted/50 transition-colors font-medium">
                             <SelectValue placeholder="Add to stage..." />
                           </SelectTrigger>
                           <SelectContent className="bg-card border-border z-[100]">
-                            <SelectItem value="screening" className="cursor-pointer hover:bg-accent">Screening</SelectItem>
-                            <SelectItem value="interview" className="cursor-pointer hover:bg-accent">Interview</SelectItem>
-                            <SelectItem value="offer" className="cursor-pointer hover:bg-accent">Offer</SelectItem>
-                            <SelectItem value="hired" className="cursor-pointer hover:bg-accent">Hired</SelectItem>
-                            <SelectItem value="rejected" className="cursor-pointer hover:bg-accent">Rejected</SelectItem>
+                            <SelectItem value="screening" className="cursor-pointer hover:bg-accent text-sm font-medium">Screening</SelectItem>
+                            <SelectItem value="interview" className="cursor-pointer hover:bg-accent text-sm font-medium">Interview</SelectItem>
+                            <SelectItem value="offer" className="cursor-pointer hover:bg-accent text-sm font-medium">Offer</SelectItem>
+                            <SelectItem value="hired" className="cursor-pointer hover:bg-accent text-sm font-medium">Hired</SelectItem>
+                            <SelectItem value="rejected" className="cursor-pointer hover:bg-accent text-sm font-medium">Rejected</SelectItem>
                           </SelectContent>
                         </Select>
-                      </div>
+                      </CardContent>
                     </Card>
                   ))}
                   {getFilteredUnlockedCandidates().length === 0 && (
