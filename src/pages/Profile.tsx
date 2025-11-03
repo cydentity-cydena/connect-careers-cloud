@@ -10,8 +10,8 @@ import { toast } from 'sonner';
 import SEO from '@/components/SEO';
 import { ArrowLeft, Plus, Trash2, Upload, Image as ImageIcon, User, ChevronDown, ChevronRight } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { CandidateAvatar } from '@/components/profiles/CandidateAvatar';
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -38,6 +38,8 @@ const Profile = () => {
   const [workHistory, setWorkHistory] = useState<any[]>([]);
   const [projects, setProjects] = useState<any[]>([]);
   const [education, setEducation] = useState<any[]>([]);
+  const [resumes, setResumes] = useState<any[]>([]);
+  const [verification, setVerification] = useState<any>(null);
   
   const [workHistoryOpen, setWorkHistoryOpen] = useState(false);
   const [projectsOpen, setProjectsOpen] = useState(false);
@@ -109,6 +111,14 @@ const Profile = () => {
         .eq('candidate_id', session.user.id)
         .order('start_date', { ascending: false });
       if (educationData) setEducation(educationData);
+
+      // Load verification status
+      const { data: verificationData } = await supabase
+        .from('candidate_verifications')
+        .select('hr_ready')
+        .eq('candidate_id', session.user.id)
+        .maybeSingle();
+      setVerification(verificationData);
 
       setLoading(false);
     };
@@ -418,12 +428,14 @@ const Profile = () => {
                   {avatarUrl && (
                     <div className="flex flex-col items-center gap-4 p-6 border rounded-xl bg-gradient-to-b from-muted/50 to-muted/20">
                       <div className="relative group">
-                        <Avatar className="h-32 w-32 border-4 border-background shadow-lg ring-2 ring-primary/20">
-                          <AvatarImage src={avatarUrl} alt="Profile" className="object-cover" />
-                          <AvatarFallback className="bg-primary/10">
-                            <User className="h-16 w-16 text-primary/60" />
-                          </AvatarFallback>
-                        </Avatar>
+                        <CandidateAvatar
+                          avatarUrl={avatarUrl}
+                          username={username}
+                          fullName={fullName}
+                          isHrReady={verification?.hr_ready}
+                          size="xl"
+                          showGradientRing
+                        />
                         <div className="absolute inset-0 rounded-full bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                           <ImageIcon className="h-8 w-8 text-white" />
                         </div>
