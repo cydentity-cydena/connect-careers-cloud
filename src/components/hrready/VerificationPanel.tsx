@@ -101,9 +101,15 @@ export function VerificationPanel({ verification, onEdit, showEditButton = false
                 const certs = typeof verification.certifications === 'string' 
                   ? JSON.parse(verification.certifications) 
                   : verification.certifications;
-                return certs && Array.isArray(certs) && certs.length > 0 ? (
+                
+                // Filter out certifications with 'Unknown' issuer (incomplete data)
+                const validCerts = certs && Array.isArray(certs) 
+                  ? certs.filter((cert: any) => cert.issuer && cert.issuer !== 'Unknown')
+                  : [];
+                
+                return validCerts.length > 0 ? (
                   <div className="space-y-2">
-                    {certs.map((cert: any, index: number) => (
+                    {validCerts.map((cert: any, index: number) => (
                       <div key={index} className="space-y-1">
                         <div className="flex items-center gap-2">
                           <Badge className={statusColors[cert.status || 'grey']} variant="outline">
@@ -111,10 +117,10 @@ export function VerificationPanel({ verification, onEdit, showEditButton = false
                           </Badge>
                         </div>
                         <div className="flex items-center gap-2 text-xs text-muted-foreground ml-1">
-                          {cert.issuer && <span>by {cert.issuer}</span>}
+                          <span>by {cert.issuer}</span>
                           {cert.source && (
                             <Badge variant="outline" className="text-xs py-0 h-5">
-                              {cert.source === 'credly' ? '🎖️ Credly' : '📄 Upload'}
+                              {cert.source === 'credly' ? '🎖️ Credly' : '📄 Manual'}
                             </Badge>
                           )}
                         </div>
