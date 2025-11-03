@@ -6,7 +6,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Briefcase, Clock, UserCheck, FileCheck, XCircle, CheckCircle2, Users, Search, Eye, MessageCircle, Download, Star, StickyNote, Filter, Shield, MapPin } from "lucide-react";
+import { Briefcase, Clock, UserCheck, FileCheck, XCircle, CheckCircle2, Users, Search, Eye, MessageCircle, Download, Star, StickyNote, Filter, Shield, MapPin, MoreVertical } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ApplicationCard } from "./ApplicationCard";
 import { toast } from "@/hooks/use-toast";
@@ -15,6 +15,12 @@ import { SendMessageDialog } from "@/components/messaging/SendMessageDialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { EditVerificationDrawer } from "@/components/hrready/EditVerificationDrawer";
 import { BadgesRow, BadgeItem, BadgeStatus } from "@/components/hrready/BadgesRow";
 
@@ -54,6 +60,8 @@ interface UnlockedCandidate {
   id: string;
   candidate_id: string;
   unlocked_at: string;
+  is_starred?: boolean;
+  notes?: string | null;
   profile: {
     full_name: string;
     username: string;
@@ -322,7 +330,7 @@ export const ApplicationPipeline = () => {
       // 1) Fetch unlock rows (no joins to avoid relationship/FK name issues)
       const { data: unlocks, error: unlocksError } = await supabase
         .from('profile_unlocks')
-        .select('id, candidate_id, unlocked_at')
+        .select('id, candidate_id, unlocked_at, is_starred, notes')
         .eq('employer_id', user.id)
         .order('unlocked_at', { ascending: false });
 
@@ -376,6 +384,8 @@ export const ApplicationPipeline = () => {
         id: u.id,
         candidate_id: u.candidate_id,
         unlocked_at: u.unlocked_at,
+        is_starred: u.is_starred || false,
+        notes: u.notes || null,
         profile: profileMap.get(u.candidate_id) || { full_name: 'Unknown', username: '', avatar_url: null, location: null },
         candidate_profile: candidateProfileMap.get(u.candidate_id) || { title: '', years_experience: 0 },
         candidate_verifications: verificationMap.get(u.candidate_id) || null,
@@ -694,6 +704,67 @@ export const ApplicationPipeline = () => {
 
       setApplications(prev =>
         prev.map(app => app.id === applicationId ? { ...app, status_notes: notes } : app)
+      );
+
+      toast({
+        title: "Success",
+        description: "Notes updated successfully"
+      });
+      setNotesDialog({ open: false, applicationId: "", currentNotes: "" });
+    } catch (error) {
+      console.error('Error updating notes:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update notes",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const toggleUnlockedCandidateStar = async (unlockId: string, currentStarred: boolean) => {
+    try {
+      const { error } = await supabase
+        .from('profile_unlocks')
+        .update({ is_starred: !currentStarred })
+        .eq('id', unlockId);
+
+      if (error) throw error;
+
+      setUnlockedCandidates(prev =>
+        prev.map(candidate => 
+          candidate.id === unlockId 
+            ? { ...candidate, is_starred: !currentStarred } 
+            : candidate
+        )
+      );
+
+      toast({
+        title: "Success",
+        description: currentStarred ? "Candidate unstarred" : "Candidate starred"
+      });
+    } catch (error) {
+      console.error('Error toggling star:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update star status",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const updateUnlockedCandidateNotes = async (unlockId: string, notes: string) => {
+    try {
+      const { error } = await supabase
+        .from('profile_unlocks')
+        .update({ notes })
+        .eq('id', unlockId);
+
+      if (error) throw error;
+
+      setUnlockedCandidates(prev =>
+        prev.map(candidate => 
+          candidate.id === unlockId ? { ...candidate, notes } : candidate
+        )
       );
 
       toast({
