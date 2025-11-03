@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Brain, ArrowRight, CheckCircle2, Loader2 } from "lucide-react";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { Brain, ArrowRight, CheckCircle2, Loader2, X, Save } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import SEO from "@/components/SEO";
@@ -38,12 +39,44 @@ export default function SkillsAssessment() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [showCancelDialog, setShowCancelDialog] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  // Load saved progress on mount
+  useEffect(() => {
+    const savedProgress = localStorage.getItem('skills-assessment-progress');
+    if (savedProgress) {
+      try {
+        const { type, questions: savedQuestions, answers: savedAnswers, currentQ } = JSON.parse(savedProgress);
+        setSelectedType(type);
+        setQuestions(savedQuestions);
+        setAnswers(savedAnswers);
+        setCurrentQuestion(currentQ);
+      } catch (e) {
+        console.error('Error loading saved progress:', e);
+      }
+    }
+  }, []);
+
+  // Auto-save progress when answers change
+  useEffect(() => {
+    if (selectedType && questions.length > 0) {
+      localStorage.setItem('skills-assessment-progress', JSON.stringify({
+        type: selectedType,
+        questions,
+        answers,
+        currentQ: currentQuestion
+      }));
+    }
+  }, [selectedType, questions, answers, currentQuestion]);
 
   const startAssessment = async (type: string) => {
     setLoading(true);
     try {
+      // Clear any saved progress when starting new assessment
+      localStorage.removeItem('skills-assessment-progress');
+      
       const { data, error } = await supabase.functions.invoke("skills-assessment", {
         body: { action: "getQuestions", assessmentType: type },
       });
@@ -65,6 +98,23 @@ export default function SkillsAssessment() {
     }
   };
 
+  const handleCancel = () => {
+    setShowCancelDialog(true);
+  };
+
+  const confirmCancel = () => {
+    localStorage.removeItem('skills-assessment-progress');
+    navigate('/dashboard');
+  };
+
+  const saveAndExit = () => {
+    toast({
+      title: "Progress Saved",
+      description: "You can continue this assessment later from your dashboard.",
+    });
+    navigate('/dashboard');
+  };
+
   const handleAnswerChange = (index: number, value: string) => {
     const newAnswers = [...answers];
     newAnswers[index] = value;
@@ -83,6 +133,9 @@ export default function SkillsAssessment() {
       });
 
       if (error) throw error;
+
+      // Clear saved progress after successful submission
+      localStorage.removeItem('skills-assessment-progress');
 
       toast({
         title: "Assessment Complete!",
@@ -160,18 +213,39 @@ export default function SkillsAssessment() {
         <Card>
           <CardHeader>
             <div className="flex items-center justify-between mb-4">
-              <Badge variant="outline">
-                Question {currentQuestion + 1} of {questions.length}
-              </Badge>
-              <div className="flex gap-1">
-                {questions.map((_, idx) => (
-                  <div
-                    key={idx}
-                    className={`h-2 w-8 rounded ${
-                      idx <= currentQuestion ? "bg-primary" : "bg-muted"
-                    }`}
-                  />
-                ))}
+              <div className="flex items-center gap-3">
+                <Badge variant="outline">
+                  Question {currentQuestion + 1} of {questions.length}
+                </Badge>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={saveAndExit}
+                  className="text-muted-foreground"
+                >
+                  <Save className="h-4 w-4 mr-2" />
+                  Save & Exit
+                </Button>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="flex gap-1">
+                  {questions.map((_, idx) => (
+                    <div
+                      key={idx}
+                      className={`h-2 w-8 rounded ${
+                        idx <= currentQuestion ? "bg-primary" : "bg-muted"
+                      }`}
+                    />
+                  ))}
+                </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={handleCancel}
+                  className="text-muted-foreground hover:text-destructive"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
               </div>
             </div>
             <CardTitle className="text-2xl">{questions[currentQuestion]}</CardTitle>
@@ -229,6 +303,27 @@ export default function SkillsAssessment() {
             </div>
           </CardContent>
         </Card>
+
+        <AlertDialog open={showCancelDialog} onOpenChange={setShowCancelDialog}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Cancel Assessment?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Your progress will be permanently lost. Would you like to save your progress instead?
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Continue Assessment</AlertDialogCancel>
+              <Button variant="outline" onClick={saveAndExit}>
+                <Save className="h-4 w-4 mr-2" />
+                Save & Exit
+              </Button>
+              <AlertDialogAction onClick={confirmCancel} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                Discard Progress
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </div>
   );

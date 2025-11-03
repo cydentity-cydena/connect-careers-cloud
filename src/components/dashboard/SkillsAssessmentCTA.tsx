@@ -1,9 +1,17 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Brain, ArrowRight } from "lucide-react";
+import { Brain, ArrowRight, RefreshCw } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 export const SkillsAssessmentCTA = () => {
+  const [hasSavedProgress, setHasSavedProgress] = useState(false);
+
+  useEffect(() => {
+    const savedProgress = localStorage.getItem('skills-assessment-progress');
+    setHasSavedProgress(!!savedProgress);
+  }, []);
+
   return (
     <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10">
       <CardHeader>
@@ -22,8 +30,17 @@ export const SkillsAssessmentCTA = () => {
           </p>
           <Button asChild className="w-full">
             <Link to="/skills-assessment">
-              Take Assessment
-              <ArrowRight className="ml-2 h-4 w-4" />
+              {hasSavedProgress ? (
+                <>
+                  <RefreshCw className="mr-2 h-4 w-4" />
+                  Resume Assessment
+                </>
+              ) : (
+                <>
+                  Take Assessment
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </>
+              )}
             </Link>
           </Button>
         </div>
