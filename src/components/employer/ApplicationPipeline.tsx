@@ -792,10 +792,11 @@ export const ApplicationPipeline = () => {
         </div>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-4 overflow-x-auto pb-4">
-        <div className="flex gap-4 lg:flex-1">
+      {/* Kanban Board with Horizontal Scroll */}
+      <div className="w-full">
+        <div className="flex gap-4 overflow-x-auto pb-4">
           {/* Talent Pool Column */}
-          <Card className="border-2 border-primary/50 bg-primary/5 min-w-[320px] lg:min-w-0 lg:flex-1">
+          <Card className="border-2 border-primary/50 bg-primary/5 w-[300px] flex-shrink-0">
             <CardHeader className="pb-3">
               <CardTitle className="flex items-center justify-between text-base">
                 <div className="flex items-center gap-2">
@@ -810,7 +811,7 @@ export const ApplicationPipeline = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="p-2">
-              <ScrollArea className="h-[500px] pr-2">
+              <ScrollArea className="h-[calc(100vh-400px)] min-h-[400px] max-h-[600px] pr-2">
                 <div className="space-y-2">
                   {getFilteredUnlockedCandidates().map((candidate) => (
                     <Card 
@@ -983,7 +984,7 @@ export const ApplicationPipeline = () => {
             return (
               <Card 
                 key={stage} 
-                className="border-2 min-w-[340px] lg:min-w-[300px] lg:flex-1"
+                className="border-2 w-[300px] flex-shrink-0"
               >
                 <CardHeader className="pb-3">
                   <CardTitle className="flex items-center justify-between text-base">
@@ -999,7 +1000,7 @@ export const ApplicationPipeline = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="p-2">
-                  <ScrollArea className="h-[500px] pr-2">
+                  <ScrollArea className="h-[calc(100vh-400px)] min-h-[400px] max-h-[600px] pr-2">
                     <div className="space-y-2">
                       {stageApplications.map((application) => (
                         <ApplicationCard
