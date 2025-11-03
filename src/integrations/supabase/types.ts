@@ -878,6 +878,35 @@ export type Database = {
         }
         Relationships: []
       }
+      conversation_archives: {
+        Row: {
+          archived_at: string
+          id: string
+          other_user_id: string
+          user_id: string
+        }
+        Insert: {
+          archived_at?: string
+          id?: string
+          other_user_id: string
+          user_id: string
+        }
+        Update: {
+          archived_at?: string
+          id?: string
+          other_user_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversation_archives_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       course_completions: {
         Row: {
           awarded_points: number | null
@@ -963,6 +992,9 @@ export type Database = {
         Row: {
           content: string
           created_at: string
+          deleted_at: string | null
+          deleted_by: string | null
+          edited_at: string | null
           id: string
           is_read: boolean | null
           read_at: string | null
@@ -972,6 +1004,9 @@ export type Database = {
         Insert: {
           content: string
           created_at?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
+          edited_at?: string | null
           id?: string
           is_read?: boolean | null
           read_at?: string | null
@@ -981,13 +1016,24 @@ export type Database = {
         Update: {
           content?: string
           created_at?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
+          edited_at?: string | null
           id?: string
           is_read?: boolean | null
           read_at?: string | null
           recipient_id?: string
           sender_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "direct_messages_deleted_by_fkey"
+            columns: ["deleted_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       education: {
         Row: {

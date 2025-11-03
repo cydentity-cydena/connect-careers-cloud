@@ -8,7 +8,23 @@ import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import { Send, ArrowLeft } from "lucide-react";
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { Send, ArrowLeft, MoreVertical, Pencil, Trash2, Archive } from "lucide-react";
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
 
@@ -20,6 +36,9 @@ interface Message {
   created_at: string;
   is_read: boolean;
   read_at: string | null;
+  edited_at: string | null;
+  deleted_by: string | null;
+  deleted_at: string | null;
   sender?: {
     full_name: string;
     avatar_url: string | null;
@@ -47,6 +66,11 @@ export default function Messages() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [sending, setSending] = useState(false);
+  const [editingMessageId, setEditingMessageId] = useState<string | null>(null);
+  const [editingContent, setEditingContent] = useState("");
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [messageToDelete, setMessageToDelete] = useState<string | null>(null);
+  const [archiveDialogOpen, setArchiveDialogOpen] = useState(false);
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
@@ -125,11 +149,20 @@ export default function Messages() {
         }
       });
 
-      const sortedConversations = Array.from(conversationMap.values()).sort(
-        (a, b) => new Date(b.last_message_time).getTime() - new Date(a.last_message_time).getTime()
-      );
+      // Fetch archived conversations
+      const { data: archivedConvs } = await supabase
+        .from('conversation_archives')
+        .select('other_user_id')
+        .eq('user_id', currentUserId);
 
-      setConversations(sortedConversations);
+      const archivedUserIds = new Set(archivedConvs?.map(a => a.other_user_id) || []);
+
+      // Filter out archived conversations
+      const activeConversations = Array.from(conversationMap.values())
+        .filter(conv => !archivedUserIds.has(conv.user_id))
+        .sort((a, b) => new Date(b.last_message_time).getTime() - new Date(a.last_message_time).getTime());
+
+      setConversations(activeConversations);
     };
 
     fetchConversations();
@@ -246,6 +279,73 @@ export default function Messages() {
     }
   };
 
+  const editMessage = async (messageId: string, newContent: string) => {
+    if (!newContent.trim()) return;
+
+    try {
+      const { error } = await supabase
+        .from('direct_messages')
+        .update({ 
+          content: newContent.trim(),
+          edited_at: new Date().toISOString()
+        })
+        .eq('id', messageId)
+        .eq('sender_id', currentUserId);
+
+      if (error) throw error;
+
+      toast.success("Message updated");
+      setEditingMessageId(null);
+      setEditingContent("");
+    } catch (error) {
+      console.error('Error editing message:', error);
+      toast.error("Failed to edit message");
+    }
+  };
+
+  const deleteMessage = async (messageId: string) => {
+    try {
+      const { error } = await supabase
+        .from('direct_messages')
+        .update({ 
+          deleted_by: currentUserId,
+          deleted_at: new Date().toISOString()
+        })
+        .eq('id', messageId);
+
+      if (error) throw error;
+
+      toast.success("Message deleted");
+      setDeleteDialogOpen(false);
+      setMessageToDelete(null);
+    } catch (error) {
+      console.error('Error deleting message:', error);
+      toast.error("Failed to delete message");
+    }
+  };
+
+  const archiveConversation = async () => {
+    if (!selectedConversation || !currentUserId) return;
+
+    try {
+      const { error } = await supabase
+        .from('conversation_archives')
+        .upsert({
+          user_id: currentUserId,
+          other_user_id: selectedConversation
+        });
+
+      if (error) throw error;
+
+      toast.success("Conversation archived");
+      setArchiveDialogOpen(false);
+      setSelectedConversation(null);
+    } catch (error) {
+      console.error('Error archiving conversation:', error);
+      toast.error("Failed to archive conversation");
+    }
+  };
+
   if (!selectedConversation) {
     return (
       <div className="container mx-auto p-6">
@@ -303,19 +403,28 @@ export default function Messages() {
   return (
     <div className="container mx-auto p-6">
       <Card className="p-6">
-        <div className="flex items-center gap-3 mb-4">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setSelectedConversation(null)}
+            >
+              <ArrowLeft className="h-5 w-5" />
+            </Button>
+            <Avatar>
+              <AvatarImage src={selectedConv?.user_avatar || undefined} />
+              <AvatarFallback>{selectedConv?.user_name[0]}</AvatarFallback>
+            </Avatar>
+            <h2 className="text-xl font-semibold">{selectedConv?.user_name}</h2>
+          </div>
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => setSelectedConversation(null)}
+            onClick={() => setArchiveDialogOpen(true)}
           >
-            <ArrowLeft className="h-5 w-5" />
+            <Archive className="h-5 w-5" />
           </Button>
-          <Avatar>
-            <AvatarImage src={selectedConv?.user_avatar || undefined} />
-            <AvatarFallback>{selectedConv?.user_name[0]}</AvatarFallback>
-          </Avatar>
-          <h2 className="text-xl font-semibold">{selectedConv?.user_name}</h2>
         </div>
         
         <Separator className="mb-4" />
@@ -324,6 +433,32 @@ export default function Messages() {
           <div className="space-y-4">
             {messages.map((message) => {
               const isSent = message.sender_id === currentUserId;
+              const isDeleted = message.deleted_at !== null;
+              const isEditing = editingMessageId === message.id;
+              
+              if (isDeleted) {
+                return (
+                  <div
+                    key={message.id}
+                    className={`flex gap-2 ${isSent ? 'flex-row-reverse' : 'flex-row'}`}
+                  >
+                    <Avatar className="h-8 w-8">
+                      <AvatarFallback>
+                        {isSent ? 'You' : message.sender?.full_name?.[0] || 'U'}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className={`flex flex-col ${isSent ? 'items-end' : 'items-start'} max-w-[70%]`}>
+                      <div className="rounded-lg px-4 py-2 bg-muted/50 italic text-muted-foreground">
+                        <p>Message deleted</p>
+                      </div>
+                      <span className="text-xs text-muted-foreground mt-1">
+                        {formatDistanceToNow(new Date(message.created_at), { addSuffix: true })}
+                      </span>
+                    </div>
+                  </div>
+                );
+              }
+              
               return (
                 <div
                   key={message.id}
@@ -336,14 +471,82 @@ export default function Messages() {
                     </AvatarFallback>
                   </Avatar>
                   <div className={`flex flex-col ${isSent ? 'items-end' : 'items-start'} max-w-[70%]`}>
-                    <div
-                      className={`rounded-lg px-4 py-2 ${
-                        isSent
-                          ? 'bg-primary text-primary-foreground'
-                          : 'bg-muted'
-                      }`}
-                    >
-                      <p>{message.content}</p>
+                    <div className={`flex items-start gap-2 ${isSent ? 'flex-row-reverse' : 'flex-row'}`}>
+                      <div
+                        className={`rounded-lg px-4 py-2 ${
+                          isSent
+                            ? 'bg-primary text-primary-foreground'
+                            : 'bg-muted'
+                        }`}
+                      >
+                        {isEditing ? (
+                          <div className="space-y-2">
+                            <Textarea
+                              value={editingContent}
+                              onChange={(e) => setEditingContent(e.target.value)}
+                              className="min-w-[200px]"
+                              rows={3}
+                            />
+                            <div className="flex gap-2">
+                              <Button
+                                size="sm"
+                                onClick={() => editMessage(message.id, editingContent)}
+                              >
+                                Save
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => {
+                                  setEditingMessageId(null);
+                                  setEditingContent("");
+                                }}
+                              >
+                                Cancel
+                              </Button>
+                            </div>
+                          </div>
+                        ) : (
+                          <>
+                            <p>{message.content}</p>
+                            {message.edited_at && (
+                              <span className="text-xs opacity-70 block mt-1">
+                                (edited)
+                              </span>
+                            )}
+                          </>
+                        )}
+                      </div>
+                      {isSent && !isEditing && (
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon" className="h-6 w-6">
+                              <MoreVertical className="h-3 w-3" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align={isSent ? "end" : "start"}>
+                            <DropdownMenuItem
+                              onClick={() => {
+                                setEditingMessageId(message.id);
+                                setEditingContent(message.content);
+                              }}
+                            >
+                              <Pencil className="h-4 w-4 mr-2" />
+                              Edit
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => {
+                                setMessageToDelete(message.id);
+                                setDeleteDialogOpen(true);
+                              }}
+                              className="text-destructive"
+                            >
+                              <Trash2 className="h-4 w-4 mr-2" />
+                              Delete
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      )}
                     </div>
                     <span className="text-xs text-muted-foreground mt-1">
                       {formatDistanceToNow(new Date(message.created_at), { addSuffix: true })}
@@ -378,6 +581,45 @@ export default function Messages() {
           </Button>
         </div>
       </Card>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Message</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this message? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => messageToDelete && deleteMessage(messageToDelete)}
+              className="bg-destructive hover:bg-destructive/90"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Archive Confirmation Dialog */}
+      <AlertDialog open={archiveDialogOpen} onOpenChange={setArchiveDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Archive Conversation</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to archive this conversation? You can restore it later from archived messages.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={archiveConversation}>
+              Archive
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
