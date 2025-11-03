@@ -811,7 +811,7 @@ export const ApplicationPipeline = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="p-2">
-              <ScrollArea className="h-[calc(100vh-400px)] min-h-[400px] max-h-[600px] pr-2">
+              <ScrollArea className="h-[calc(100vh-280px)] min-h-[500px] max-h-[800px] pr-2">
                 <div className="space-y-2">
                   {getFilteredUnlockedCandidates().map((candidate) => (
                     <Card 
@@ -1000,7 +1000,7 @@ export const ApplicationPipeline = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="p-2">
-                  <ScrollArea className="h-[calc(100vh-400px)] min-h-[400px] max-h-[600px] pr-2">
+                  <ScrollArea className="h-[calc(100vh-280px)] min-h-[500px] max-h-[800px] pr-2">
                     <div className="space-y-2">
                       {stageApplications.map((application) => (
                         <ApplicationCard
