@@ -1797,18 +1797,24 @@ export type Database = {
           candidate_id: string
           employer_id: string
           id: string
+          is_starred: boolean | null
+          notes: string | null
           unlocked_at: string
         }
         Insert: {
           candidate_id: string
           employer_id: string
           id?: string
+          is_starred?: boolean | null
+          notes?: string | null
           unlocked_at?: string
         }
         Update: {
           candidate_id?: string
           employer_id?: string
           id?: string
+          is_starred?: boolean | null
+          notes?: string | null
           unlocked_at?: string
         }
         Relationships: []

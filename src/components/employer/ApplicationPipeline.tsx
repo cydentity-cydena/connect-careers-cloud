@@ -213,10 +213,11 @@ export const ApplicationPipeline = () => {
   const [filterStarred, setFilterStarred] = useState(false);
   const [userRole, setUserRole] = useState<'employer' | 'recruiter' | null>(null);
   const [jobs, setJobs] = useState<{ id: string; title: string }[]>([]);
-  const [notesDialog, setNotesDialog] = useState<{ open: boolean; applicationId: string; currentNotes: string }>({
+  const [notesDialog, setNotesDialog] = useState<{ open: boolean; applicationId: string; currentNotes: string; isUnlockedCandidate?: boolean }>({
     open: false,
     applicationId: "",
-    currentNotes: ""
+    currentNotes: "",
+    isUnlockedCandidate: false
   });
   const [messageDialog, setMessageDialog] = useState<{ open: boolean; recipientId: string; recipientName: string }>({
     open: false,
@@ -845,12 +846,18 @@ export const ApplicationPipeline = () => {
   };
 
   const getFilteredUnlockedCandidates = () => {
-    if (searchQuery === "") return unlockedCandidates;
-    return unlockedCandidates.filter(candidate =>
-      candidate.profile.full_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      candidate.profile.username?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      candidate.candidate_profile?.title?.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    return unlockedCandidates.filter(candidate => {
+      // Search filter
+      const matchesSearch = searchQuery === "" || 
+        candidate.profile.full_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        candidate.profile.username?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        candidate.candidate_profile?.title?.toLowerCase().includes(searchQuery.toLowerCase());
+      
+      // Starred filter
+      const matchesStarred = !filterStarred || candidate.is_starred;
+      
+      return matchesSearch && matchesStarred;
+    });
   };
 
   if (loading) {
@@ -969,8 +976,13 @@ export const ApplicationPipeline = () => {
                   {getFilteredUnlockedCandidates().map((candidate) => (
                     <Card 
                       key={candidate.id} 
-                      className="hover:shadow-lg transition-all duration-200 border-2 border-border/50 hover:border-border relative"
+                      className={`hover:shadow-lg transition-all duration-200 border-2 relative ${candidate.is_starred ? 'border-amber-400 shadow-amber-100 dark:shadow-amber-900/20' : 'border-border/50 hover:border-border'}`}
                     >
+                      {candidate.is_starred && (
+                        <div className="absolute -top-1 -right-1 z-10 bg-background rounded-full p-0.5">
+                          <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
+                        </div>
+                      )}
                       <CardContent className="p-5 space-y-4">
                         <div className="flex items-start gap-3">
                           <Avatar className="h-14 w-14 flex-shrink-0 ring-2 ring-background shadow-md">
@@ -986,20 +998,44 @@ export const ApplicationPipeline = () => {
                               {candidate.candidate_profile?.title || "No title"}
                             </p>
                           </div>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="h-8 w-8 p-0 flex-shrink-0 absolute top-2 right-2"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setEditingVerification({ 
-                                candidateId: candidate.candidate_id, 
-                                verification: candidate.candidate_verifications 
-                              });
-                            }}
-                          >
-                            <Shield className="h-4 w-4" />
-                          </Button>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+                              <Button variant="ghost" size="sm" className="h-8 w-8 p-0 flex-shrink-0 absolute top-2 right-2">
+                                <MoreVertical className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="w-48 bg-popover z-50">
+                              <DropdownMenuItem onClick={(e) => { 
+                                e.stopPropagation(); 
+                                setEditingVerification({ 
+                                  candidateId: candidate.candidate_id, 
+                                  verification: candidate.candidate_verifications 
+                                }); 
+                              }}>
+                                <Shield className="h-4 w-4 mr-2" />
+                                Edit Verification
+                              </DropdownMenuItem>
+                              <DropdownMenuItem onClick={(e) => { 
+                                e.stopPropagation(); 
+                                toggleUnlockedCandidateStar(candidate.id, candidate.is_starred || false); 
+                              }}>
+                                <Star className={`h-4 w-4 mr-2 ${candidate.is_starred ? "fill-current" : ""}`} />
+                                {candidate.is_starred ? "Unstar" : "Star"}
+                              </DropdownMenuItem>
+                              <DropdownMenuItem onClick={(e) => { 
+                                e.stopPropagation(); 
+                                setNotesDialog({ 
+                                  open: true, 
+                                  applicationId: candidate.id, 
+                                  currentNotes: candidate.notes || "",
+                                  isUnlockedCandidate: true
+                                }); 
+                              }}>
+                                <StickyNote className="h-4 w-4 mr-2" />
+                                {candidate.notes ? "Edit Notes" : "Add Notes"}
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
                         </div>
 
                         {/* Verification Status Badges */}
@@ -1017,6 +1053,14 @@ export const ApplicationPipeline = () => {
                               <Badge variant="secondary" className="text-xs px-2.5 py-1 font-medium">
                                 <Briefcase className="h-3.5 w-3.5 mr-1.5" />
                                 {candidate.candidate_profile.years_experience} yrs
+                              </Badge>
+                            )}
+                            
+                            {/* Notes indicator */}
+                            {candidate.notes && (
+                              <Badge variant="secondary" className="text-xs px-2.5 py-1 font-medium bg-amber-100 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400">
+                                <StickyNote className="h-3.5 w-3.5 mr-1.5" />
+                                Notes
                               </Badge>
                             )}
                           </div>
@@ -1184,7 +1228,13 @@ export const ApplicationPipeline = () => {
             <Button variant="outline" onClick={() => setNotesDialog({ ...notesDialog, open: false })}>
               Cancel
             </Button>
-            <Button onClick={() => updateNotes(notesDialog.applicationId, notesDialog.currentNotes)}>
+            <Button onClick={() => {
+              if (notesDialog.isUnlockedCandidate) {
+                updateUnlockedCandidateNotes(notesDialog.applicationId, notesDialog.currentNotes);
+              } else {
+                updateNotes(notesDialog.applicationId, notesDialog.currentNotes);
+              }
+            }}>
               Save Notes
             </Button>
           </DialogFooter>
