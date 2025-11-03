@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
+import { ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner';
 import SEO from '@/components/SEO';
 
@@ -92,10 +93,20 @@ const Skills = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <SEO title="Add Skills | Cydena" description="Add skills to your candidate profile." />
-      <Card className="max-w-3xl mx-auto">
-        <CardHeader>
-          <CardTitle>Select your skills</CardTitle>
-        </CardHeader>
+      <div className="max-w-3xl mx-auto">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => navigate('/dashboard')}
+          className="mb-4"
+        >
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Back to Dashboard
+        </Button>
+        <Card>
+          <CardHeader>
+            <CardTitle>Select your skills</CardTitle>
+          </CardHeader>
         <CardContent className="space-y-4">
           {loading ? (
             <div>Loading...</div>
@@ -116,6 +127,7 @@ const Skills = () => {
           </div>
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 };
