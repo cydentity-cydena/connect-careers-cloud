@@ -21,7 +21,6 @@ const Profile = () => {
   const [fullName, setFullName] = useState('');
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
-  const [location, setLocation] = useState('');
   const [bio, setBio] = useState('');
   const [avatarUrl, setAvatarUrl] = useState('');
   const [desiredJobTitle, setDesiredJobTitle] = useState('');
@@ -56,7 +55,7 @@ const Profile = () => {
       // Load profile
       const { data: profile } = await supabase
         .from('profiles')
-        .select('full_name, username, location, bio, avatar_url, desired_job_title, email')
+        .select('full_name, username, bio, avatar_url, desired_job_title, email')
         .eq('id', session.user.id)
         .maybeSingle();
 
@@ -64,7 +63,6 @@ const Profile = () => {
         setFullName(profile.full_name ?? '');
         setUsername(profile.username ?? '');
         setEmail(profile.email ?? '');
-        setLocation(profile.location ?? '');
         setBio(profile.bio ?? '');
         setAvatarUrl(profile.avatar_url ?? '');
         setDesiredJobTitle(profile.desired_job_title ?? '');
@@ -138,7 +136,7 @@ const Profile = () => {
     try {
       const { error: pErr } = await supabase
         .from('profiles')
-        .update({ full_name: fullName, username, location, bio, avatar_url: avatarUrl, desired_job_title: desiredJobTitle })
+        .update({ full_name: fullName, username, bio, avatar_url: avatarUrl, desired_job_title: desiredJobTitle })
         .eq('id', userId);
       if (pErr) {
         if (pErr.message?.includes('profiles_username_unique')) {
@@ -407,12 +405,9 @@ const Profile = () => {
                 />
                 {!username && (
                   <p className="text-xs text-muted-foreground">
-                    ⚠️ Username is required to appear in public profiles
+                  ⚠️ Username is required to appear in public profiles
                   </p>
                 )}
-                
-                <Label htmlFor="location">Location</Label>
-                <Input id="location" value={location} onChange={(e) => setLocation(e.target.value)} />
                 
                 <div className="space-y-4">
                   <Label className="flex items-center gap-2 text-base">
