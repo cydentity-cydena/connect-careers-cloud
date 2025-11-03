@@ -257,8 +257,14 @@ export function CertificationVerificationReview() {
 
                   {request.status === 'pending' && (
                     <div className="space-y-3 pt-4 border-t">
+                      <div className="p-3 bg-primary/5 rounded text-sm">
+                        <p className="font-medium mb-1">💡 AI Analysis Available</p>
+                        <p className="text-muted-foreground text-xs">
+                          Review the AI verification notes above before making a decision
+                        </p>
+                      </div>
                       <Textarea
-                        placeholder="Rejection reason (optional, only needed if rejecting)"
+                        placeholder="Additional notes or rejection reason (optional)"
                         value={rejectionReasons[request.id] || ''}
                         onChange={(e) => setRejectionReasons(prev => ({
                           ...prev,

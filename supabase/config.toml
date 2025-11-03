@@ -32,3 +32,6 @@ verify_jwt = true
 
 [functions.skills-assessment]
 verify_jwt = true
+
+[functions.verify-certification-ai]
+verify_jwt = true

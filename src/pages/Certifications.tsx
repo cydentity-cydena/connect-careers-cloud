@@ -97,6 +97,30 @@ const Certifications = () => {
       return;
     }
 
+    // Trigger AI verification in the background
+    try {
+      const { data: verificationRequestData } = await supabase
+        .from('certification_verification_requests')
+        .select('id')
+        .eq('certification_id', certData.id)
+        .single();
+
+      if (verificationRequestData) {
+        // Call AI verification function (non-blocking)
+        supabase.functions.invoke('verify-certification-ai', {
+          body: { verificationRequestId: verificationRequestData.id }
+        }).then(({ data: aiData, error: aiError }) => {
+          if (aiError) {
+            console.error('AI verification error:', aiError);
+          } else if (aiData?.autoApproved) {
+            toast.success('🎉 Certification auto-verified by AI!');
+          }
+        });
+      }
+    } catch (e) {
+      console.error('Failed to trigger AI verification:', e);
+    }
+
     // Award points for manual certification
     try {
       const { data, error: pointsError } = await supabase.functions.invoke('award-points-helper', {
