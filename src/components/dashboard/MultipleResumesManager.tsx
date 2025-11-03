@@ -230,137 +230,146 @@ export const MultipleResumesManager = () => {
           Manage Resumes
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
-        {/* Upload New Resume */}
-        <div className="space-y-3 p-4 border rounded-lg">
-          <div className="space-y-2">
-            <Label htmlFor="resume-name">Resume Name</Label>
-            <Input
-              id="resume-name"
-              placeholder="e.g., Technical Resume, Managerial Resume"
-              value={newResume.name}
-              onChange={(e) => setNewResume({ ...newResume, name: e.target.value })}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="resume-type">Resume Type</Label>
-            <Select
-              value={newResume.type}
-              onValueChange={(value) => setNewResume({ ...newResume, type: value })}
-            >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="general">General</SelectItem>
-                <SelectItem value="technical">Technical</SelectItem>
-                <SelectItem value="managerial">Managerial</SelectItem>
-                <SelectItem value="executive">Executive</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="resume-file">Upload File</Label>
-            <Input
-              id="resume-file"
-              type="file"
-              accept=".pdf,.doc,.docx"
-              onChange={(e) => setNewResume({ ...newResume, file: e.target.files?.[0] || null })}
-            />
-          </div>
-          <Button onClick={handleUpload} disabled={uploading} className="w-full">
-            <Upload className="h-4 w-4 mr-2" />
-            {uploading ? "Uploading..." : "Upload Resume"}
-          </Button>
-        </div>
-
-        {/* Existing Resumes */}
-        <div className="space-y-2">
-          {loading ? (
-            <p className="text-sm text-muted-foreground">Loading resumes...</p>
-          ) : resumes.length === 0 ? (
-            <p className="text-sm text-muted-foreground">No resumes uploaded yet</p>
-          ) : (
-            resumes.map((resume) => (
-              <div
-                key={resume.id}
-                className="flex items-center gap-3 p-3 border rounded-lg hover:bg-muted/50 transition-colors"
+      <CardContent>
+        <div className="grid lg:grid-cols-[400px_1fr] gap-6">
+          {/* Upload New Resume */}
+          <div className="space-y-3 p-4 border rounded-lg bg-muted/20">
+            <div className="space-y-2">
+              <Label htmlFor="resume-name">Resume Name</Label>
+              <Input
+                id="resume-name"
+                placeholder="e.g., Technical Resume, Managerial Resume"
+                value={newResume.name}
+                onChange={(e) => setNewResume({ ...newResume, name: e.target.value })}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="resume-type">Resume Type</Label>
+              <Select
+                value={newResume.type}
+                onValueChange={(value) => setNewResume({ ...newResume, type: value })}
               >
-                <FileText className="h-5 w-5 text-muted-foreground" />
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <p className="font-medium truncate">{resume.resume_name}</p>
-                    {resume.is_primary && (
-                      <span className="flex items-center gap-1 text-xs font-medium text-primary">
-                        <Star className="h-3 w-3 fill-current" />
-                        Primary
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-xs text-muted-foreground capitalize">{resume.resume_type}</p>
-                  <div className="flex items-center gap-2 mt-1">
-                    <Switch
-                      checked={resume.is_visible_to_employers}
-                      onCheckedChange={() => handleToggleVisibility(resume.id, resume.is_visible_to_employers)}
-                      id={`visibility-${resume.id}`}
-                    />
-                    <label 
-                      htmlFor={`visibility-${resume.id}`}
-                      className="text-xs text-muted-foreground cursor-pointer flex items-center gap-1"
-                    >
-                      {resume.is_visible_to_employers ? (
-                        <>
-                          <Eye className="h-3 w-3" />
-                          Visible to employers
-                        </>
-                      ) : (
-                        <>
-                          <EyeOff className="h-3 w-3" />
-                          Hidden from employers
-                        </>
-                      )}
-                    </label>
-                  </div>
-                </div>
-                <div className="flex gap-2">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleView(resume.resume_url)}
-                    title="View resume"
-                  >
-                    <Eye className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleDownload(resume.resume_url, resume.resume_name)}
-                    title="Download resume"
-                  >
-                    <Download className="h-4 w-4" />
-                  </Button>
-                  {!resume.is_primary && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleSetPrimary(resume.id)}
-                      title="Set as primary"
-                    >
-                      Set Primary
-                    </Button>
-                  )}
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleDelete(resume.id)}
-                    title="Delete resume"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="general">General</SelectItem>
+                  <SelectItem value="technical">Technical</SelectItem>
+                  <SelectItem value="managerial">Managerial</SelectItem>
+                  <SelectItem value="executive">Executive</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="resume-file">Upload File</Label>
+              <Input
+                id="resume-file"
+                type="file"
+                accept=".pdf,.doc,.docx"
+                onChange={(e) => setNewResume({ ...newResume, file: e.target.files?.[0] || null })}
+              />
+            </div>
+            <Button onClick={handleUpload} disabled={uploading} className="w-full">
+              <Upload className="h-4 w-4 mr-2" />
+              {uploading ? "Uploading..." : "Upload Resume"}
+            </Button>
+          </div>
+
+          {/* Existing Resumes */}
+          <div className="space-y-3">
+            <h3 className="font-semibold text-sm text-muted-foreground">Your Resumes</h3>
+            {loading ? (
+              <p className="text-sm text-muted-foreground">Loading resumes...</p>
+            ) : resumes.length === 0 ? (
+              <div className="text-center py-8 text-muted-foreground">
+                <FileText className="h-12 w-12 mx-auto mb-3 opacity-20" />
+                <p className="text-sm">No resumes uploaded yet</p>
               </div>
-            ))
-          )}
+            ) : (
+              <div className="space-y-2">
+                {resumes.map((resume) => (
+                  <div
+                    key={resume.id}
+                    className="flex items-center gap-3 p-3 border rounded-lg hover:bg-muted/50 transition-colors"
+                  >
+                    <FileText className="h-5 w-5 text-muted-foreground flex-shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <p className="font-medium truncate">{resume.resume_name}</p>
+                        {resume.is_primary && (
+                          <span className="flex items-center gap-1 text-xs font-medium text-primary">
+                            <Star className="h-3 w-3 fill-current" />
+                            Primary
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-xs text-muted-foreground capitalize">{resume.resume_type}</p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <Switch
+                          checked={resume.is_visible_to_employers}
+                          onCheckedChange={() => handleToggleVisibility(resume.id, resume.is_visible_to_employers)}
+                          id={`visibility-${resume.id}`}
+                        />
+                        <label 
+                          htmlFor={`visibility-${resume.id}`}
+                          className="text-xs text-muted-foreground cursor-pointer flex items-center gap-1"
+                        >
+                          {resume.is_visible_to_employers ? (
+                            <>
+                              <Eye className="h-3 w-3" />
+                              Visible to employers
+                            </>
+                          ) : (
+                            <>
+                              <EyeOff className="h-3 w-3" />
+                              Hidden from employers
+                            </>
+                          )}
+                        </label>
+                      </div>
+                    </div>
+                    <div className="flex gap-1 flex-shrink-0">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleView(resume.resume_url)}
+                        title="View resume"
+                      >
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleDownload(resume.resume_url, resume.resume_name)}
+                        title="Download resume"
+                      >
+                        <Download className="h-4 w-4" />
+                      </Button>
+                      {!resume.is_primary && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleSetPrimary(resume.id)}
+                          title="Set as primary"
+                          className="text-xs px-2"
+                        >
+                          Set Primary
+                        </Button>
+                      )}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleDelete(resume.id)}
+                        title="Delete resume"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </CardContent>
     </Card>

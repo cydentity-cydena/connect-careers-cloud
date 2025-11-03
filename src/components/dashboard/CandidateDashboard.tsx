@@ -192,13 +192,11 @@ const CandidateDashboard = () => {
         </Card>
       )}
 
-      {/* Profile Views & Multiple Resumes */}
-      {userId && (
-        <div className="grid gap-6 md:grid-cols-2">
-          <ProfileViewsNotification />
-          <MultipleResumesManager />
-        </div>
-      )}
+      {/* Profile Views */}
+      {userId && <ProfileViewsNotification />}
+
+      {/* Multiple Resumes - Full Width */}
+      {userId && <MultipleResumesManager />}
 
       {userId && (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
