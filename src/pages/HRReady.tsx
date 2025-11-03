@@ -208,16 +208,16 @@ const HRReady = () => {
     <div>
       <SEO title="HR-Ready Verification | Cydena" description="Submit identity and right-to-work to become HR-Ready." />
       <Navigation />
-      <main className="container mx-auto px-4 py-8">
-        <header className="mb-6">
-          <h1 className="text-2xl font-bold">HR-Ready Verification</h1>
-          <p className="text-muted-foreground">Prove identity and right to work to apply for jobs faster and earn badges on your profile.</p>
+      <main className="container mx-auto px-4 py-8 max-w-7xl">
+        <header className="mb-8">
+          <h1 className="text-3xl font-bold mb-2">HR-Ready Verification</h1>
+          <p className="text-muted-foreground text-lg">Prove identity and right to work to apply for jobs faster and earn badges on your profile.</p>
         </header>
 
-        <div className="grid gap-6 md:grid-cols-2">
-          <section>
-            <Card className="p-4">
-              <h2 className="text-lg font-semibold mb-2">Your Current Status</h2>
+        <div className="grid gap-6 lg:grid-cols-2 items-start">
+          <section className="space-y-6">
+            <Card className="p-6">
+              <h2 className="text-xl font-semibold mb-4">Your Current Status</h2>
               {loading ? (
                 <p className="text-sm text-muted-foreground">Loading...</p>
               ) : (
@@ -231,109 +231,143 @@ const HRReady = () => {
           </section>
 
           <section className="space-y-6">
-            <Card className="p-4 space-y-3">
-              <h3 className="font-medium">Submit Identity</h3>
-              <Label>Document(s)</Label>
-              <Input type="file" multiple onChange={(e) => setIdFiles(e.target.files)} />
-              <Label>Notes (optional)</Label>
-              <Textarea rows={3} value={idNotes} onChange={(e) => setIdNotes(e.target.value)} placeholder="Passport, driving licence, etc." />
-              <Button onClick={() => submitRequest("identity", idFiles, idNotes)}>Submit Identity</Button>
+            <Card className="p-6">
+              <h3 className="text-xl font-semibold mb-4">Submit Identity</h3>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="id-docs">Document(s)</Label>
+                  <Input id="id-docs" type="file" multiple onChange={(e) => setIdFiles(e.target.files)} />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="id-notes">Notes (optional)</Label>
+                  <Textarea 
+                    id="id-notes"
+                    rows={3} 
+                    value={idNotes} 
+                    onChange={(e) => setIdNotes(e.target.value)} 
+                    placeholder="Passport, driving licence, etc." 
+                  />
+                </div>
+                <Button onClick={() => submitRequest("identity", idFiles, idNotes)} className="w-full">
+                  Submit Identity
+                </Button>
+              </div>
             </Card>
 
-            <Card className="p-4 space-y-3">
-              <h3 className="font-medium">Submit Right to Work</h3>
-              <Label>Document(s)</Label>
-              <Input type="file" multiple onChange={(e) => setRtwFiles(e.target.files)} />
-              <Label>Notes (optional)</Label>
-              <Textarea rows={3} value={rtwNotes} onChange={(e) => setRtwNotes(e.target.value)} placeholder="Visa type, country, permit details" />
-              <Button onClick={() => submitRequest("rtw", rtwFiles, rtwNotes)}>Submit RTW</Button>
+            <Card className="p-6">
+              <h3 className="text-xl font-semibold mb-4">Submit Right to Work</h3>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="rtw-docs">Document(s)</Label>
+                  <Input id="rtw-docs" type="file" multiple onChange={(e) => setRtwFiles(e.target.files)} />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="rtw-notes">Notes (optional)</Label>
+                  <Textarea 
+                    id="rtw-notes"
+                    rows={3} 
+                    value={rtwNotes} 
+                    onChange={(e) => setRtwNotes(e.target.value)} 
+                    placeholder="Visa type, country, permit details" 
+                  />
+                </div>
+                <Button onClick={() => submitRequest("rtw", rtwFiles, rtwNotes)} className="w-full">
+                  Submit RTW
+                </Button>
+              </div>
             </Card>
 
-            <Card className="p-4 space-y-3">
-              <h3 className="font-medium">Add Certifications</h3>
-              <p className="text-sm text-muted-foreground">Add your professional certifications to boost your HR-Ready score</p>
+            <Card className="p-6">
+              <h3 className="text-xl font-semibold mb-2">Add Certifications</h3>
+              <p className="text-sm text-muted-foreground mb-4">Add your professional certifications to boost your HR-Ready score</p>
               <Button onClick={() => navigate('/certifications')} className="w-full">
                 Add Certification
               </Button>
             </Card>
 
-            <Card className="p-4 space-y-4">
-              <h3 className="font-medium">Your Logistics Preferences</h3>
-              <p className="text-sm text-muted-foreground">Help employers understand your availability and requirements</p>
+            <Card className="p-6">
+              <h3 className="text-xl font-semibold mb-2">Your Logistics Preferences</h3>
+              <p className="text-sm text-muted-foreground mb-6">Help employers understand your availability and requirements</p>
               
-              <div className="space-y-2">
-                <Label>Work Mode Preference</Label>
-                <Select value={workMode} onValueChange={setWorkMode}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Remote">Remote</SelectItem>
-                    <SelectItem value="Hybrid">Hybrid</SelectItem>
-                    <SelectItem value="On-site">On-site</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+              <div className="space-y-6">
+                <div className="space-y-2">
+                  <Label htmlFor="work-mode">Work Mode Preference</Label>
+                  <Select value={workMode} onValueChange={setWorkMode}>
+                    <SelectTrigger id="work-mode">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Remote">Remote</SelectItem>
+                      <SelectItem value="Hybrid">Hybrid</SelectItem>
+                      <SelectItem value="On-site">On-site</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
 
-              <div className="space-y-2">
-                <Label>Notice Period (days)</Label>
-                <Input 
-                  type="number" 
-                  min="0" 
-                  max="365"
-                  value={noticeDays}
-                  onChange={(e) => setNoticeDays(Math.min(365, Math.max(0, parseInt(e.target.value) || 0)))}
-                  placeholder="30"
-                />
-                <p className="text-xs text-muted-foreground">How many days notice do you need to give?</p>
-              </div>
+                <div className="space-y-2">
+                  <Label htmlFor="notice-period">Notice Period (days)</Label>
+                  <Input 
+                    id="notice-period"
+                    type="number" 
+                    min="0" 
+                    max="365"
+                    value={noticeDays}
+                    onChange={(e) => setNoticeDays(Math.min(365, Math.max(0, parseInt(e.target.value) || 0)))}
+                    placeholder="30"
+                  />
+                  <p className="text-xs text-muted-foreground">How many days notice do you need to give?</p>
+                </div>
 
-              <div className="space-y-2">
-                <Label>Preferred Location</Label>
-                <Input 
-                  value={location}
-                  onChange={(e) => setLocation(e.target.value)}
-                  placeholder="London, UK"
-                  maxLength={200}
-                />
-              </div>
+                <div className="space-y-2">
+                  <Label htmlFor="location">Preferred Location</Label>
+                  <Input 
+                    id="location"
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
+                    placeholder="London, UK"
+                    maxLength={200}
+                  />
+                </div>
 
-              <div className="space-y-2">
-                <Label>Salary Expectations</Label>
-                <Input 
-                  value={salaryBand}
-                  onChange={(e) => setSalaryBand(e.target.value)}
-                  placeholder="£50k - £70k"
-                  maxLength={100}
-                />
-              </div>
+                <div className="space-y-2">
+                  <Label htmlFor="salary">Salary Expectations</Label>
+                  <Input 
+                    id="salary"
+                    value={salaryBand}
+                    onChange={(e) => setSalaryBand(e.target.value)}
+                    placeholder="£50k - £70k"
+                    maxLength={100}
+                  />
+                </div>
 
-              <div className="space-y-2">
-                <Label>Commute Radius (km)</Label>
-                <Input 
-                  type="number" 
-                  min="0" 
-                  max="500"
-                  value={commuteRadius}
-                  onChange={(e) => setCommuteRadius(Math.min(500, Math.max(0, parseInt(e.target.value) || 0)))}
-                  placeholder="20"
-                />
-                <p className="text-xs text-muted-foreground">Maximum distance willing to commute</p>
-              </div>
+                <div className="space-y-2">
+                  <Label htmlFor="commute">Commute Radius (km)</Label>
+                  <Input 
+                    id="commute"
+                    type="number" 
+                    min="0" 
+                    max="500"
+                    value={commuteRadius}
+                    onChange={(e) => setCommuteRadius(Math.min(500, Math.max(0, parseInt(e.target.value) || 0)))}
+                    placeholder="20"
+                  />
+                  <p className="text-xs text-muted-foreground">Maximum distance willing to commute</p>
+                </div>
 
-              <Button 
-                onClick={saveLogistics} 
-                disabled={savingLogistics}
-                className="w-full"
-              >
-                {savingLogistics ? "Saving..." : "Save Logistics Preferences"}
-              </Button>
+                <Button 
+                  onClick={saveLogistics} 
+                  disabled={savingLogistics}
+                  className="w-full"
+                >
+                  {savingLogistics ? "Saving..." : "Save Logistics Preferences"}
+                </Button>
+              </div>
             </Card>
           </section>
         </div>
 
         <Separator className="my-8" />
-        <div className="text-sm text-muted-foreground">
+        <div className="text-center text-sm text-muted-foreground max-w-2xl mx-auto">
           Files are stored securely. Our team validates submissions promptly. Once approved, your profile shows HR-Ready badges and you can apply to jobs.
         </div>
       </main>
