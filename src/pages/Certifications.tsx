@@ -147,11 +147,65 @@ const Certifications = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <SEO title="Add Certification | Cydena" description="Add a new certification to your profile." />
+      
+      {/* Credly Import Banner */}
+      <div className="max-w-2xl mx-auto mb-6 p-4 bg-gradient-to-r from-orange-500/10 to-orange-600/10 border border-orange-500/20 rounded-lg">
+        <div className="flex items-start gap-4">
+          <img 
+            src="https://info.credly.com/hubfs/Credly_Logo_Orange.png" 
+            alt="Credly" 
+            className="h-8 w-auto mt-1"
+          />
+          <div className="flex-1">
+            <h3 className="font-semibold text-lg mb-1">Got Credly Badges?</h3>
+            <p className="text-sm text-muted-foreground mb-3">
+              Most cybersecurity certifications are on Credly! Just paste your badge URL below and we'll import all the details automatically.
+            </p>
+            <p className="text-xs text-muted-foreground">
+              Works with: CompTIA, ISC², Cisco, AWS, Microsoft, and 1000+ other issuers
+            </p>
+          </div>
+        </div>
+      </div>
+
       <Card className="max-w-2xl mx-auto">
         <CardHeader>
           <CardTitle>Add Certification</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
+          {/* Quick Credly Import */}
+          <div className="space-y-2 p-4 bg-muted/50 rounded-lg border border-border">
+            <Label htmlFor="credlyUrl" className="text-base font-semibold">
+              🎖️ Quick Import from Credly
+            </Label>
+            <Input 
+              id="credlyUrl" 
+              value={credentialUrl} 
+              onChange={(e) => {
+                setCredentialUrl(e.target.value);
+                // Auto-detect if it's a Credly URL and suggest it
+                if (e.target.value.includes('credly.com')) {
+                  setIssuer('Credly Badge');
+                }
+              }}
+              placeholder="https://www.credly.com/badges/..." 
+              className="text-base"
+            />
+            <p className="text-xs text-muted-foreground">
+              Paste your Credly badge URL here. We'll extract the details automatically!
+            </p>
+          </div>
+          
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-background px-2 text-muted-foreground">
+                Or add manually
+              </span>
+            </div>
+          </div>
           <div className="space-y-2">
             <Label htmlFor="name">Name</Label>
             <Input id="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g., CompTIA Security+" />
@@ -161,12 +215,8 @@ const Certifications = () => {
             <Input id="issuer" value={issuer} onChange={(e) => setIssuer(e.target.value)} placeholder="e.g., CompTIA" />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="cid">Credential ID</Label>
+            <Label htmlFor="cid">Credential ID (Optional)</Label>
             <Input id="cid" value={credentialId} onChange={(e) => setCredentialId(e.target.value)} />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="curl">Credential URL (e.g., Credly badge URL)</Label>
-            <Input id="curl" value={credentialUrl} onChange={(e) => setCredentialUrl(e.target.value)} placeholder="https://www.credly.com/badges/..." />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">

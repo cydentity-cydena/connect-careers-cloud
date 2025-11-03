@@ -248,11 +248,24 @@ const CandidateDashboard = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
+              <Button 
+                variant="outline" 
+                className="w-full border-orange-500/50 bg-orange-500/10 hover:bg-orange-500/20 text-foreground" 
+                size="sm" 
+                onClick={() => navigate('/certifications')}
+              >
+                <img 
+                  src="https://info.credly.com/hubfs/Credly_Logo_Orange.png" 
+                  alt="Credly" 
+                  className="h-4 w-auto mr-2"
+                />
+                Import from Credly
+              </Button>
               <Button variant="cyber" className="w-full" size="sm" onClick={() => navigate('/skills')}>
                 Add Skills
               </Button>
               <Button variant="outline" className="w-full" size="sm" onClick={() => navigate('/certifications')}>
-                Add Certification
+                Add Other Certification
               </Button>
             </CardContent>
           </Card>
