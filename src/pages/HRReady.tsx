@@ -214,9 +214,9 @@ const HRReady = () => {
           <p className="text-muted-foreground text-lg">Prove identity and right to work to apply for jobs faster and earn badges on your profile.</p>
         </header>
 
-        <div className="grid gap-6 lg:grid-cols-[1fr_1.2fr]">
-          <section>
-            <Card className="p-6 h-full">
+        <div className="grid gap-6 lg:grid-cols-2">
+          <section className="space-y-5">
+            <Card className="p-6">
               <h2 className="text-xl font-semibold mb-4">Your Current Status</h2>
               {loading ? (
                 <p className="text-sm text-muted-foreground">Loading...</p>
@@ -228,9 +228,7 @@ const HRReady = () => {
                 />
               )}
             </Card>
-          </section>
 
-          <section className="space-y-5">
             <Card className="p-5">
               <h3 className="text-lg font-semibold mb-3">Submit Identity</h3>
               <div className="space-y-3">
@@ -276,7 +274,9 @@ const HRReady = () => {
                 </Button>
               </div>
             </Card>
+          </section>
 
+          <section className="space-y-5">
             <Card className="p-5">
               <h3 className="text-lg font-semibold mb-1.5">Add Certifications</h3>
               <p className="text-sm text-muted-foreground mb-3">Add your professional certifications to boost your HR-Ready score</p>
@@ -284,7 +284,6 @@ const HRReady = () => {
                 Add Certification
               </Button>
             </Card>
-
             <Card className="p-5">
               <h3 className="text-lg font-semibold mb-1.5">Your Logistics Preferences</h3>
               <p className="text-sm text-muted-foreground mb-4">Help employers understand your availability and requirements</p>
@@ -361,6 +360,44 @@ const HRReady = () => {
                 >
                   {savingLogistics ? "Saving..." : "Save Logistics Preferences"}
                 </Button>
+              </div>
+            </Card>
+
+            <Card className="p-5">
+              <h3 className="text-lg font-semibold mb-3">Frequently Asked Questions</h3>
+              <div className="space-y-4">
+                <div>
+                  <h4 className="font-medium text-sm mb-1">What is HR-Ready verification?</h4>
+                  <p className="text-xs text-muted-foreground">HR-Ready is a pre-verification process that confirms your identity, right to work, certifications, and availability. It saves employers time and money, making you a more attractive candidate.</p>
+                </div>
+                
+                <Separator />
+                
+                <div>
+                  <h4 className="font-medium text-sm mb-1">How long does verification take?</h4>
+                  <p className="text-xs text-muted-foreground">Most verifications are reviewed within 48 hours. You'll receive an email notification once each component is verified.</p>
+                </div>
+                
+                <Separator />
+                
+                <div>
+                  <h4 className="font-medium text-sm mb-1">What documents do I need?</h4>
+                  <p className="text-xs text-muted-foreground">For identity: passport or driving licence. For right to work: work visa, passport, or birth certificate depending on your country. All documents should be clear, legible scans or photos.</p>
+                </div>
+                
+                <Separator />
+                
+                <div>
+                  <h4 className="font-medium text-sm mb-1">How often do I need to update my verification?</h4>
+                  <p className="text-xs text-muted-foreground">Identity and right to work verifications typically last 12 months. Certifications should be updated when they expire or when you gain new ones. Logistics preferences can be updated anytime.</p>
+                </div>
+                
+                <Separator />
+                
+                <div>
+                  <h4 className="font-medium text-sm mb-1">Is my data secure?</h4>
+                  <p className="text-xs text-muted-foreground">Yes. All documents are encrypted and stored securely. Only verified staff members can access verification documents, and they're never shared with employers without your consent.</p>
+                </div>
               </div>
             </Card>
           </section>
