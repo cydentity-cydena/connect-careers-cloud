@@ -52,16 +52,29 @@ serve(async (req) => {
     }
 
     // Format certifications for display
-    const formattedCerts = (certifications || []).map(cert => ({
-      name: cert.name,
-      issuer: cert.issuing_organization || 'Unknown',
-      status: cert.verification_status === 'verified' ? 'green' : 
-              cert.verification_status === 'pending' ? 'amber' : 'grey',
-      issued_date: cert.issued_date,
-      expiry_date: cert.expiry_date,
-      credential_id: cert.credential_id,
-      source: cert.source || 'manual',
-    }));
+    const formattedCerts = (certifications || []).map(cert => {
+      // Determine status based on expiry date
+      let status = 'green'; // Default to verified
+      if (cert.expiry_date) {
+        const expiryDate = new Date(cert.expiry_date);
+        const now = new Date();
+        if (expiryDate < now) {
+          status = 'grey'; // Expired
+        } else if ((expiryDate.getTime() - now.getTime()) < (30 * 24 * 60 * 60 * 1000)) {
+          status = 'amber'; // Expiring within 30 days
+        }
+      }
+      
+      return {
+        name: cert.name,
+        issuer: cert.issuer || 'Unknown',
+        status,
+        issued_date: cert.issue_date,
+        expiry_date: cert.expiry_date,
+        credential_id: cert.credential_id,
+        source: 'manual',
+      };
+    });
 
     // Merge certifications into verification data
     const enrichedVerification = verification ? {

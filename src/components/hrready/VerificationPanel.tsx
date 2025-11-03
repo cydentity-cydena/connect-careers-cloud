@@ -193,7 +193,7 @@ export function VerificationPanel({ verification, onEdit, showEditButton = false
         <Card className="p-4">
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium">Compliance Score</span>
-            <Badge variant="secondary">{verification.compliance_score}/20</Badge>
+            <Badge variant="secondary">{verification.compliance_score}/100</Badge>
           </div>
         </Card>
       )}
