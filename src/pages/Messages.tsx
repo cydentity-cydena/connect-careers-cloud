@@ -60,28 +60,44 @@ export default function Messages() {
     if (!currentUserId) return;
 
     const fetchConversations = async () => {
+      // Fetch sent messages
       const { data: sentMessages } = await supabase
         .from('direct_messages')
-        .select('recipient_id, content, created_at, is_read, recipient:profiles!direct_messages_recipient_id_fkey(id, full_name, avatar_url)')
+        .select('recipient_id, content, created_at, is_read')
         .eq('sender_id', currentUserId)
         .order('created_at', { ascending: false });
 
+      // Fetch received messages
       const { data: receivedMessages } = await supabase
         .from('direct_messages')
-        .select('sender_id, content, created_at, is_read, sender:profiles!direct_messages_sender_id_fkey(id, full_name, avatar_url)')
+        .select('sender_id, content, created_at, is_read')
         .eq('recipient_id', currentUserId)
         .order('created_at', { ascending: false });
+
+      // Get all unique user IDs
+      const userIds = new Set<string>();
+      sentMessages?.forEach(msg => userIds.add(msg.recipient_id));
+      receivedMessages?.forEach(msg => userIds.add(msg.sender_id));
+
+      // Fetch profiles for all users
+      const { data: profiles } = await supabase
+        .from('profiles')
+        .select('id, full_name, avatar_url')
+        .in('id', Array.from(userIds));
+
+      const profilesMap = new Map(profiles?.map(p => [p.id, p]) || []);
 
       // Group messages by conversation partner
       const conversationMap = new Map<string, Conversation>();
 
       sentMessages?.forEach((msg: any) => {
         const userId = msg.recipient_id;
+        const profile = profilesMap.get(userId);
         if (!conversationMap.has(userId)) {
           conversationMap.set(userId, {
             user_id: userId,
-            user_name: msg.recipient?.full_name || 'Unknown',
-            user_avatar: msg.recipient?.avatar_url,
+            user_name: profile?.full_name || 'Unknown',
+            user_avatar: profile?.avatar_url || null,
             last_message: msg.content,
             last_message_time: msg.created_at,
             unread_count: 0
@@ -91,12 +107,13 @@ export default function Messages() {
 
       receivedMessages?.forEach((msg: any) => {
         const userId = msg.sender_id;
+        const profile = profilesMap.get(userId);
         const existing = conversationMap.get(userId);
         if (!existing || new Date(msg.created_at) > new Date(existing.last_message_time)) {
           conversationMap.set(userId, {
             user_id: userId,
-            user_name: msg.sender?.full_name || 'Unknown',
-            user_avatar: msg.sender?.avatar_url,
+            user_name: profile?.full_name || 'Unknown',
+            user_avatar: profile?.avatar_url || null,
             last_message: msg.content,
             last_message_time: msg.created_at,
             unread_count: existing?.unread_count || 0
