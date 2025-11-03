@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -189,7 +189,6 @@ export const ApplicationCard = ({ application, onStageChange, onToggleStar, onAd
         <CardContent className="p-5 space-y-4">
           <div className="flex items-start gap-3">
             <Avatar className="h-14 w-14 flex-shrink-0 ring-2 ring-background shadow-md">
-              <AvatarImage src={application.profile.avatar_url || undefined} />
               <AvatarFallback className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground text-base font-semibold">
                 {getInitials(application.profile.full_name)}
               </AvatarFallback>
@@ -330,7 +329,6 @@ export const ApplicationCard = ({ application, onStageChange, onToggleStar, onAd
           <DialogHeader>
             <DialogTitle className="flex items-center gap-3">
               <Avatar className="h-12 w-12">
-                <AvatarImage src={application.profile.avatar_url || undefined} />
                 <AvatarFallback className="bg-primary text-primary-foreground">
                   {getInitials(application.profile.full_name)}
                 </AvatarFallback>

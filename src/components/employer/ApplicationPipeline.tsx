@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Briefcase, Clock, UserCheck, FileCheck, XCircle, CheckCircle2, Users, Search, Eye, MessageCircle, Download, Star, StickyNote, Filter, Shield, Award, MapPin, AlertCircle } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ApplicationCard } from "./ApplicationCard";
 import { toast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
@@ -820,7 +820,6 @@ export const ApplicationPipeline = () => {
                     >
                       <div className="flex items-start gap-2 mb-3">
                         <Avatar className="h-10 w-10 flex-shrink-0">
-                          <AvatarImage src={candidate.profile.avatar_url || undefined} />
                           <AvatarFallback className="bg-primary text-primary-foreground text-xs">
                             {candidate.profile.full_name.split(" ").map((n) => n[0]).join("").toUpperCase()}
                           </AvatarFallback>
