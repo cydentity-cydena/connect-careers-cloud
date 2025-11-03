@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -39,6 +40,7 @@ interface Conversation {
 }
 
 export default function Messages() {
+  const navigate = useNavigate();
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [selectedConversation, setSelectedConversation] = useState<string | null>(null);
@@ -230,7 +232,16 @@ export default function Messages() {
   if (!selectedConversation) {
     return (
       <div className="container mx-auto p-6">
-        <h1 className="text-3xl font-bold mb-6">Messages</h1>
+        <div className="flex items-center gap-4 mb-6">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => navigate('/dashboard')}
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+          <h1 className="text-3xl font-bold">Messages</h1>
+        </div>
         <Card className="p-6">
           <h2 className="text-xl font-semibold mb-4">Conversations</h2>
           {conversations.length === 0 ? (
