@@ -89,35 +89,40 @@ export function VerificationPanel({ verification, onEdit, showEditButton = false
           <div className="flex items-start gap-3">
             <FileCheck className="h-5 w-5 mt-1 text-muted-foreground" />
             <div className="flex-1">
-              <div className="flex items-center gap-2 mb-2">
-                <h4 className="font-medium">Certifications</h4>
-                {verification.certifications_count > 0 && (
-                  <Badge variant="secondary">
-                    {verification.verified_certifications_count || 0}/{verification.certifications_count}
-                  </Badge>
-                )}
-              </div>
               {(() => {
-                const certs = typeof verification.certifications === 'string' 
-                  ? JSON.parse(verification.certifications) 
-                  : verification.certifications;
-                
-                // Filter out certifications with 'Unknown' issuer (incomplete data)
-                const validCerts = certs && Array.isArray(certs) 
-                  ? certs.filter((cert: any) => cert.issuer && cert.issuer !== 'Unknown')
-                  : [];
-                
-                return validCerts.length > 0 ? (
+                const raw = typeof verification.certifications === 'string'
+                  ? (() => { try { return JSON.parse(verification.certifications); } catch { return []; } })()
+                  : verification.certifications || [];
+                const certs = Array.isArray(raw) ? raw : [];
+                const derivedTotal = certs.length;
+                const derivedVerified = certs.filter((c: any) => (c.status || '').toLowerCase() === 'green').length;
+
+                return (
+                  <div className="flex items-center gap-2 mb-2">
+                    <h4 className="font-medium">Certifications</h4>
+                    {derivedTotal > 0 && (
+                      <Badge variant="secondary">{derivedVerified}/{derivedTotal}</Badge>
+                    )}
+                  </div>
+                );
+              })()}
+              {(() => {
+                const raw = typeof verification.certifications === 'string'
+                  ? (() => { try { return JSON.parse(verification.certifications); } catch { return []; } })()
+                  : verification.certifications || [];
+                const certs = Array.isArray(raw) ? raw : [];
+
+                return certs.length > 0 ? (
                   <div className="space-y-2">
-                    {validCerts.map((cert: any, index: number) => (
+                    {certs.map((cert: any, index: number) => (
                       <div key={index} className="space-y-1">
                         <div className="flex items-center gap-2">
                           <Badge className={statusColors[cert.status || 'grey']} variant="outline">
-                            {cert.status === 'green' ? '✓' : cert.status === 'amber' ? '⏳' : '○'} {cert.name}
+                            {(cert.status || 'grey') === 'green' ? '✓' : (cert.status || 'grey') === 'amber' ? '⏳' : '○'} {cert.name}
                           </Badge>
                         </div>
                         <div className="flex items-center gap-2 text-xs text-muted-foreground ml-1">
-                          <span>by {cert.issuer}</span>
+                          <span>by {cert.issuer || 'Unknown'}</span>
                           {cert.source && (
                             <Badge variant="outline" className="text-xs py-0 h-5">
                               {cert.source === 'credly' ? '🎖️ Credly' : '📄 Manual'}
