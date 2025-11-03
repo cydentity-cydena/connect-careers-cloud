@@ -42,12 +42,12 @@ const Index = () => {
               Join the platform with pre-verified cybersecurity professionals. Interview-ready candidates who can start in days, not weeks.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center px-4">
-              <Link to="/auth" className="w-full sm:w-auto">
+              <Link to="/profiles" className="w-full sm:w-auto">
                 <Button variant="hero" size="lg" className="gap-2 w-full sm:w-auto">
                   Find Talent <ArrowRight className="h-5 w-5" />
                 </Button>
               </Link>
-              <Link to="/auth" className="w-full sm:w-auto">
+              <Link to="/jobs" className="w-full sm:w-auto">
                 <Button variant="cyber" size="lg" className="w-full sm:w-auto">
                   Find Jobs
                 </Button>
