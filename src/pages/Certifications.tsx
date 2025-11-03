@@ -17,6 +17,7 @@ const Certifications = () => {
   const [credentialId, setCredentialId] = useState('');
   const [issueDate, setIssueDate] = useState('');
   const [expiryDate, setExpiryDate] = useState('');
+  const [proofFiles, setProofFiles] = useState<FileList | null>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -26,12 +27,38 @@ const Certifications = () => {
     });
   }, [navigate]);
 
+  const uploadProofDocuments = async (certId: string) => {
+    if (!proofFiles || proofFiles.length === 0) return [];
+    
+    const uploadedUrls: string[] = [];
+    for (const file of Array.from(proofFiles)) {
+      const ext = file.name.split('.').pop();
+      const filePath = `${userId}/certifications/${certId}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+      
+      const { error } = await supabase.storage
+        .from('verification-documents')
+        .upload(filePath, file, { upsert: true });
+      
+      if (error) {
+        console.error('Upload error:', error);
+        continue;
+      }
+      uploadedUrls.push(filePath);
+    }
+    return uploadedUrls;
+  };
+
   const handleAdd = async () => {
     if (!userId) return;
     if (!name) { toast.error('Certification name is required'); return; }
+    if (!proofFiles || proofFiles.length === 0) {
+      toast.error('Please upload proof documents (certificate, badge screenshot, etc.)');
+      return;
+    }
     setLoading(true);
     
-    const { error } = await supabase.from('certifications').insert({
+    // Insert certification with 'pending' status by default
+    const { data: certData, error } = await supabase.from('certifications').insert({
       candidate_id: userId,
       name,
       issuer,
@@ -39,12 +66,35 @@ const Certifications = () => {
       credential_id: credentialId,
       issue_date: issueDate || null,
       expiry_date: expiryDate || null,
-    });
+      verification_status: 'pending',
+      source: 'manual',
+    }).select().single();
     
-    if (error) { 
+    if (error || !certData) { 
       setLoading(false);
-      toast.error(error.message); 
+      toast.error(error?.message || 'Failed to add certification'); 
       return; 
+    }
+
+    // Upload proof documents
+    const documentUrls = await uploadProofDocuments(certData.id);
+    
+    // Create verification request
+    const { error: verificationError } = await supabase
+      .from('certification_verification_requests')
+      .insert({
+        certification_id: certData.id,
+        candidate_id: userId,
+        document_urls: documentUrls,
+        status: 'pending',
+      });
+
+    if (verificationError) {
+      console.error('Verification request error:', verificationError);
+      toast.warning('Certification added but verification request failed');
+      setLoading(false);
+      navigate('/dashboard');
+      return;
     }
 
     // Award points for manual certification
@@ -58,12 +108,12 @@ const Certifications = () => {
       });
 
       if (!pointsError && data?.success) {
-        toast.success(`✅ Certification added — +${data.amount} points! (Pending verification)`);
+        toast.success(`✅ Certification submitted for verification! Staff will review within 48 hours.`);
       } else {
-        toast.success('Certification added (points will be awarded after verification)');
+        toast.success('Certification submitted for verification');
       }
     } catch (e) {
-      toast.success('Certification added');
+      toast.success('Certification submitted for verification');
     }
     
     setLoading(false);
@@ -103,6 +153,19 @@ const Certifications = () => {
               <Label htmlFor="expiryDate">Expiry Date (Optional)</Label>
               <Input id="expiryDate" type="date" value={expiryDate} onChange={(e) => setExpiryDate(e.target.value)} />
             </div>
+          </div>
+          <div className="space-y-2 border-t pt-4">
+            <Label htmlFor="proofDocs">Proof Documents (Required)</Label>
+            <Input 
+              id="proofDocs" 
+              type="file" 
+              multiple 
+              accept=".pdf,.jpg,.jpeg,.png"
+              onChange={(e) => setProofFiles(e.target.files)} 
+            />
+            <p className="text-xs text-muted-foreground">
+              Upload certificate, badge screenshot, or verification email. Staff will review within 48 hours.
+            </p>
           </div>
           <div className="flex justify-end gap-3">
             <Button variant="outline" onClick={() => navigate('/dashboard')}>Cancel</Button>

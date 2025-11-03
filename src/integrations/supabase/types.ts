@@ -590,6 +590,56 @@ export type Database = {
         }
         Relationships: []
       }
+      certification_verification_requests: {
+        Row: {
+          candidate_id: string
+          certification_id: string
+          created_at: string
+          document_urls: Json
+          id: string
+          notes: string | null
+          rejection_reason: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          candidate_id: string
+          certification_id: string
+          created_at?: string
+          document_urls?: Json
+          id?: string
+          notes?: string | null
+          rejection_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          candidate_id?: string
+          certification_id?: string
+          created_at?: string
+          document_urls?: Json
+          id?: string
+          notes?: string | null
+          rejection_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "certification_verification_requests_certification_id_fkey"
+            columns: ["certification_id"]
+            isOneToOne: false
+            referencedRelation: "certifications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       certifications: {
         Row: {
           candidate_id: string
@@ -601,6 +651,7 @@ export type Database = {
           issue_date: string | null
           issuer: string | null
           name: string
+          proof_document_urls: Json | null
           signed_webhook: boolean | null
           source: string | null
           verification_status: string | null
@@ -617,6 +668,7 @@ export type Database = {
           issue_date?: string | null
           issuer?: string | null
           name: string
+          proof_document_urls?: Json | null
           signed_webhook?: boolean | null
           source?: string | null
           verification_status?: string | null
@@ -633,6 +685,7 @@ export type Database = {
           issue_date?: string | null
           issuer?: string | null
           name?: string
+          proof_document_urls?: Json | null
           signed_webhook?: boolean | null
           source?: string | null
           verification_status?: string | null
