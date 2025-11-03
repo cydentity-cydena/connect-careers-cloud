@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { VerificationPanel } from "@/components/hrready/VerificationPanel";
@@ -27,6 +28,14 @@ const HRReady = () => {
   const [idNotes, setIdNotes] = useState("");
   const [rtwFiles, setRtwFiles] = useState<FileList | null>(null);
   const [rtwNotes, setRtwNotes] = useState("");
+
+  // Logistics form state
+  const [workMode, setWorkMode] = useState("Remote");
+  const [noticeDays, setNoticeDays] = useState(30);
+  const [location, setLocation] = useState("");
+  const [salaryBand, setSalaryBand] = useState("");
+  const [commuteRadius, setCommuteRadius] = useState(20);
+  const [savingLogistics, setSavingLogistics] = useState(false);
 
   useEffect(() => {
     const init = async () => {
@@ -50,7 +59,17 @@ const HRReady = () => {
       try {
         const { data, error } = await supabase.functions.invoke(`hrready-get/${session.user.id}`);
         if (error) throw error;
-        setVerification(data?.verification || null);
+        const verif = data?.verification || null;
+        setVerification(verif);
+        
+        // Pre-fill logistics form if data exists
+        if (verif) {
+          setWorkMode(verif.logistics_work_mode || "Remote");
+          setNoticeDays(verif.logistics_notice_days || 30);
+          setLocation(verif.logistics_location || "");
+          setSalaryBand(verif.logistics_salary_band || "");
+          setCommuteRadius(verif.logistics_commute_radius_km || 20);
+        }
       } catch (e) {
         console.error(e);
       } finally {
@@ -110,6 +129,81 @@ const HRReady = () => {
     }
   };
 
+  const saveLogistics = async () => {
+    if (!userId) return;
+    
+    // Validate inputs
+    if (noticeDays < 0 || noticeDays > 365) {
+      toast({ 
+        title: "Invalid notice period", 
+        description: "Notice period must be between 0 and 365 days",
+        variant: "destructive" 
+      });
+      return;
+    }
+    
+    if (commuteRadius < 0 || commuteRadius > 500) {
+      toast({ 
+        title: "Invalid commute radius", 
+        description: "Commute radius must be between 0 and 500 km",
+        variant: "destructive" 
+      });
+      return;
+    }
+    
+    if (location.length > 200) {
+      toast({ 
+        title: "Location too long", 
+        description: "Please enter a shorter location",
+        variant: "destructive" 
+      });
+      return;
+    }
+    
+    if (salaryBand.length > 100) {
+      toast({ 
+        title: "Salary expectations too long", 
+        description: "Please enter a shorter description",
+        variant: "destructive" 
+      });
+      return;
+    }
+    
+    setSavingLogistics(true);
+    try {
+      const { data, error } = await supabase.functions.invoke(`hrready-upsert/${userId}`, {
+        body: {
+          logistics: {
+            status: "green",
+            workMode: workMode.trim(),
+            noticeDays,
+            location: location.trim(),
+            salaryBand: salaryBand.trim(),
+            commuteRadiusKm: commuteRadius,
+            confirmedAt: new Date().toISOString(),
+          }
+        }
+      });
+      
+      if (error) throw error;
+      
+      toast({ 
+        title: "Logistics preferences saved",
+        description: "Your work preferences have been updated"
+      });
+      
+      await refreshVerification();
+    } catch (e: any) {
+      toast({ 
+        title: "Failed to save preferences", 
+        description: e.message, 
+        variant: "destructive" 
+      });
+    } finally {
+      setSavingLogistics(false);
+    }
+  };
+
   return (
     <div>
       <SEO title="HR-Ready Verification | Cydena" description="Submit identity and right-to-work to become HR-Ready." />
@@ -153,6 +247,79 @@ const HRReady = () => {
               <Label>Notes (optional)</Label>
               <Textarea rows={3} value={rtwNotes} onChange={(e) => setRtwNotes(e.target.value)} placeholder="Visa type, country, permit details" />
               <Button onClick={() => submitRequest("rtw", rtwFiles, rtwNotes)}>Submit RTW</Button>
+            </Card>
+
+            <Card className="p-4 space-y-4">
+              <h3 className="font-medium">Your Logistics Preferences</h3>
+              <p className="text-sm text-muted-foreground">Help employers understand your availability and requirements</p>
+              
+              <div className="space-y-2">
+                <Label>Work Mode Preference</Label>
+                <Select value={workMode} onValueChange={setWorkMode}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Remote">Remote</SelectItem>
+                    <SelectItem value="Hybrid">Hybrid</SelectItem>
+                    <SelectItem value="On-site">On-site</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Notice Period (days)</Label>
+                <Input 
+                  type="number" 
+                  min="0" 
+                  max="365"
+                  value={noticeDays}
+                  onChange={(e) => setNoticeDays(Math.min(365, Math.max(0, parseInt(e.target.value) || 0)))}
+                  placeholder="30"
+                />
+                <p className="text-xs text-muted-foreground">How many days notice do you need to give?</p>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Preferred Location</Label>
+                <Input 
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)}
+                  placeholder="London, UK"
+                  maxLength={200}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Salary Expectations</Label>
+                <Input 
+                  value={salaryBand}
+                  onChange={(e) => setSalaryBand(e.target.value)}
+                  placeholder="£50k - £70k"
+                  maxLength={100}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Commute Radius (km)</Label>
+                <Input 
+                  type="number" 
+                  min="0" 
+                  max="500"
+                  value={commuteRadius}
+                  onChange={(e) => setCommuteRadius(Math.min(500, Math.max(0, parseInt(e.target.value) || 0)))}
+                  placeholder="20"
+                />
+                <p className="text-xs text-muted-foreground">Maximum distance willing to commute</p>
+              </div>
+
+              <Button 
+                onClick={saveLogistics} 
+                disabled={savingLogistics}
+                className="w-full"
+              >
+                {savingLogistics ? "Saving..." : "Save Logistics Preferences"}
+              </Button>
             </Card>
           </section>
         </div>
