@@ -62,10 +62,24 @@ function generateCandidate(index: number) {
 
   const selectedSkills = skills[index % skills.length];
 
+  // Generate a realistic username
+  const usernameVariations = [
+    `${firstName.toLowerCase()}_${lastName.toLowerCase()}`,
+    `${firstName.toLowerCase()}${lastName.toLowerCase()}${index}`,
+    `${firstName.toLowerCase()}_${lastName.toLowerCase()}_sec`,
+    `${firstName.toLowerCase()}.${lastName.toLowerCase()}`,
+    `${lastName.toLowerCase()}_${firstName.toLowerCase()}`,
+    `cyber_${firstName.toLowerCase()}_${lastName.toLowerCase()}`,
+    `${firstName.toLowerCase()}${lastName.toLowerCase()}_analyst`,
+    `${firstName.toLowerCase()}_${lastName.toLowerCase()}_${yearsExp}yr`
+  ];
+  const username = usernameVariations[index % usernameVariations.length];
+
   return {
     email: `${firstName.toLowerCase()}.${lastName.toLowerCase()}.${index}@cydena.demo`,
     password: "Demo123!",
     full_name: `${firstName} ${lastName}`,
+    username: username,
     profile: {
       title,
       years_experience: yearsExp,
@@ -101,10 +115,22 @@ function generateEmployer(index: number) {
   const industry = industries[index % industries.length];
   const size = sizes[index % sizes.length];
 
+  // Generate realistic employer username
+  const employerUsernameVariations = [
+    `${firstName.toLowerCase()}_${lastName.toLowerCase()}_hr`,
+    `${firstName.toLowerCase()}.${lastName.toLowerCase()}`,
+    `hr_${firstName.toLowerCase()}_${lastName.toLowerCase()}`,
+    `${lastName.toLowerCase()}_${firstName.toLowerCase()}`,
+    `${firstName.toLowerCase()}${lastName.toLowerCase()}_recruiter`,
+    `talent_${firstName.toLowerCase()}_${lastName.toLowerCase()}`
+  ];
+  const username = employerUsernameVariations[index % employerUsernameVariations.length];
+
   return {
     email: `${firstName.toLowerCase()}.${lastName.toLowerCase()}.employer${index}@cydena.demo`,
     password: "Demo123!",
     full_name: `${firstName} ${lastName}`,
+    username: username,
     location: `${locations[index % locations.length]}`,
     bio: `HR Manager at ${companyName}`,
     company: {
@@ -126,10 +152,20 @@ function generateRecruiter(index: number) {
   const firstName = names[index % names.length];
   const lastName = lastNames[index % lastNames.length];
 
+  // Generate realistic recruiter username
+  const recruiterUsernameVariations = [
+    `${firstName.toLowerCase()}_${lastName.toLowerCase()}_recruiter`,
+    `recruiter_${firstName.toLowerCase()}_${lastName.toLowerCase()}`,
+    `${firstName.toLowerCase()}.${lastName.toLowerCase()}`,
+    `talent_${firstName.toLowerCase()}_${lastName.toLowerCase()}`
+  ];
+  const username = recruiterUsernameVariations[index % recruiterUsernameVariations.length];
+
   return {
     email: `${firstName.toLowerCase()}.${lastName.toLowerCase()}.recruiter${index}@cydena.demo`,
     password: "Demo123!",
     full_name: `${firstName} ${lastName}`,
+    username: username,
     location: `${locations[index % locations.length]}`,
     bio: `Professional recruiter specializing in cybersecurity talent acquisition.`
   };
@@ -232,7 +268,8 @@ serve(async (req) => {
         // Update basic profile fields
         await supabaseAdmin.from('profiles').update({
           location: candidate.location,
-          bio: candidate.bio
+          bio: candidate.bio,
+          username: candidate.username
         }).eq('id', userId);
 
         // Ensure candidate role
@@ -370,7 +407,8 @@ serve(async (req) => {
         // Update profile
         await supabaseAdmin.from('profiles').update({
           location: employer.location,
-          bio: employer.bio
+          bio: employer.bio,
+          username: employer.username
         }).eq('id', userId);
 
         // Ensure employer role
@@ -467,7 +505,8 @@ serve(async (req) => {
         // Update profile
         await supabaseAdmin.from('profiles').update({
           location: recruiter.location,
-          bio: recruiter.bio
+          bio: recruiter.bio,
+          username: recruiter.username
         }).eq('id', userId);
 
         // Ensure recruiter role
