@@ -965,6 +965,7 @@ export type Database = {
           created_at: string
           id: string
           is_read: boolean | null
+          read_at: string | null
           recipient_id: string
           sender_id: string
         }
@@ -973,6 +974,7 @@ export type Database = {
           created_at?: string
           id?: string
           is_read?: boolean | null
+          read_at?: string | null
           recipient_id: string
           sender_id: string
         }
@@ -981,6 +983,7 @@ export type Database = {
           created_at?: string
           id?: string
           is_read?: boolean | null
+          read_at?: string | null
           recipient_id?: string
           sender_id?: string
         }
@@ -2509,6 +2512,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      mark_message_read: { Args: { message_id: string }; Returns: undefined }
     }
     Enums: {
       achievement_category:

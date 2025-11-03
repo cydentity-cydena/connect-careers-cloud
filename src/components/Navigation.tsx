@@ -1,10 +1,12 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Shield, LogOut, Menu, X } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Shield, LogOut, Menu, X, Mail } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { useUnreadMessages } from "@/hooks/useUnreadMessages";
 
 interface NavLink {
   to: string;
@@ -20,6 +22,7 @@ const Navigation = () => {
   const [userRoles, setUserRoles] = useState<string[]>([]);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const unreadCount = useUnreadMessages();
 
   useEffect(() => {
     const fetchUserRoles = async (userId: string) => {
@@ -141,6 +144,19 @@ const Navigation = () => {
                     </Button>
                   </Link>
                 )}
+                <Link to="/messages" className="relative">
+                  <Button variant="ghost" size="sm">
+                    <Mail className="h-4 w-4" />
+                    {unreadCount > 0 && (
+                      <Badge 
+                        variant="destructive" 
+                        className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center text-xs"
+                      >
+                        {unreadCount}
+                      </Badge>
+                    )}
+                  </Button>
+                </Link>
                 <Link to="/dashboard">
                   <Button variant="hero" size="sm" className="font-semibold">
                     Dashboard
@@ -175,11 +191,26 @@ const Navigation = () => {
               </Link>
             )}
             {user && (
-              <Link to="/dashboard" onClick={handleNavClick}>
-                <Button variant="hero" size="sm" className="font-semibold whitespace-nowrap">
-                  Dashboard
-                </Button>
-              </Link>
+              <>
+                <Link to="/messages" onClick={handleNavClick} className="relative">
+                  <Button variant="ghost" size="sm">
+                    <Mail className="h-4 w-4" />
+                    {unreadCount > 0 && (
+                      <Badge 
+                        variant="destructive" 
+                        className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center text-xs"
+                      >
+                        {unreadCount}
+                      </Badge>
+                    )}
+                  </Button>
+                </Link>
+                <Link to="/dashboard" onClick={handleNavClick}>
+                  <Button variant="hero" size="sm" className="font-semibold whitespace-nowrap">
+                    Dashboard
+                  </Button>
+                </Link>
+              </>
             )}
             
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
@@ -219,6 +250,20 @@ const Navigation = () => {
                             </Button>
                           </Link>
                         )}
+                        <Link to="/messages" onClick={handleNavClick}>
+                          <Button variant="outline" className="w-full relative">
+                            <Mail className="h-4 w-4 mr-2" />
+                            Messages
+                            {unreadCount > 0 && (
+                              <Badge 
+                                variant="destructive" 
+                                className="ml-2"
+                              >
+                                {unreadCount}
+                              </Badge>
+                            )}
+                          </Button>
+                        </Link>
                         <Link to="/dashboard" onClick={handleNavClick}>
                           <Button variant="hero" className="w-full font-semibold">
                             Dashboard

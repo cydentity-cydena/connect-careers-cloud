@@ -44,6 +44,7 @@ import JobModeration from "./pages/admin/JobModeration";
 import PodManagement from "./pages/admin/PodManagement";
 import VerificationReview from "./pages/admin/VerificationReview";
 import NotFound from "./pages/NotFound";
+import Messages from "./pages/Messages";
 
 const queryClient = new QueryClient();
 
@@ -89,6 +90,7 @@ const App = () => (
               <Route path="/staff/funnel" element={<ProtectedRoute><StaffFunnel /></ProtectedRoute>} />
               <Route path="/hr-ready" element={<ProtectedRoute><HRReady /></ProtectedRoute>} />
               <Route path="/integrations" element={<ProtectedRoute><Integrations /></ProtectedRoute>} />
+              <Route path="/messages" element={<ProtectedRoute><Messages /></ProtectedRoute>} />
               
               {/* Admin Routes */}
               <Route path="/admin/users" element={<ProtectedRoute><UserManagement /></ProtectedRoute>} />
