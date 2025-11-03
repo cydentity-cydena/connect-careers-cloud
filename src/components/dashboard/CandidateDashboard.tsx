@@ -199,6 +199,66 @@ const CandidateDashboard = () => {
       {userId && <MultipleResumesManager />}
 
       {userId && (
+        <div className="grid md:grid-cols-2 gap-6">
+          <Card className="border-border shadow-card hover:scale-105 transition-transform">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <User className="h-5 w-5 text-primary" />
+                Profile
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <p className="text-sm">
+                  <span className="font-medium">Name:</span> {profile?.full_name || 'Not set'}
+                </p>
+                <div className="flex items-center justify-between gap-2">
+                  <p className="text-sm">
+                    <span className="font-medium">Username:</span> @{profile?.username || 'Not set'}
+                  </p>
+                  {profile?.username && user?.id && (
+                    <UsernameChangeDialog 
+                      currentUsername={profile.username}
+                      usernameChanges={profile.username_changes || 0}
+                      userId={user.id}
+                    />
+                  )}
+                </div>
+                <p className="text-sm">
+                  <span className="font-medium">Email:</span> {profile?.email}
+                </p>
+              </div>
+              <div className="space-y-2">
+                <Button variant="cyber" className="w-full" onClick={() => navigate('/profile')}>
+                  Edit Profile
+                </Button>
+                <Button variant="outline" className="w-full" onClick={() => navigate('/profiles')}>
+                  View Public Profile
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-border shadow-card hover:scale-105 transition-transform">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <FileText className="h-5 w-5 text-accent" />
+                Skills & Certifications
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <Button variant="cyber" className="w-full" size="sm" onClick={() => navigate('/skills')}>
+                Add Skills
+              </Button>
+              <Button variant="outline" className="w-full" size="sm" onClick={() => navigate('/certifications')}>
+                Add Certification
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {userId && (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           <ProfileStrengthMeter userId={userId} />
           
@@ -250,7 +310,21 @@ const CandidateDashboard = () => {
               </div>
             </CardContent>
           </Card>
-          
+        </div>
+      )}
+
+      <ApplicationTracker />
+
+      {userId && (
+        <AchievementBadges userId={userId} />
+      )}
+
+      {userId && (
+        <BoostYourScore />
+      )}
+
+      {userId && (
+        <div className="grid md:grid-cols-2 gap-6">
           <Card className="border-border shadow-card bg-primary/5">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -275,78 +349,10 @@ const CandidateDashboard = () => {
               </Button>
             </CardContent>
           </Card>
-          
+
           <RecentPointsFeed userId={userId} limit={5} />
         </div>
       )}
-
-      {userId && (
-        <AchievementBadges userId={userId} />
-      )}
-
-      {userId && (
-        <BoostYourScore />
-      )}
-
-      <div id="active-applications" className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <Card className="border-border shadow-card hover:scale-105 transition-transform">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <User className="h-5 w-5 text-primary" />
-              Profile
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <p className="text-sm">
-                <span className="font-medium">Name:</span> {profile?.full_name || 'Not set'}
-              </p>
-              <div className="flex items-center justify-between gap-2">
-                <p className="text-sm">
-                  <span className="font-medium">Username:</span> @{profile?.username || 'Not set'}
-                </p>
-                {profile?.username && user?.id && (
-                  <UsernameChangeDialog 
-                    currentUsername={profile.username}
-                    usernameChanges={profile.username_changes || 0}
-                    userId={user.id}
-                  />
-                )}
-              </div>
-              <p className="text-sm">
-                <span className="font-medium">Email:</span> {profile?.email}
-              </p>
-            </div>
-            <div className="space-y-2">
-              <Button variant="cyber" className="w-full" onClick={() => navigate('/profile')}>
-                Edit Profile
-              </Button>
-              <Button variant="outline" className="w-full" onClick={() => navigate('/profiles')}>
-                View Public Profile
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-
-        <ApplicationTracker />
-
-        <Card className="border-border shadow-card hover:scale-105 transition-transform">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <FileText className="h-5 w-5 text-accent" />
-              Skills & Certifications
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            <Button variant="cyber" className="w-full" size="sm" onClick={() => navigate('/skills')}>
-              Add Skills
-            </Button>
-            <Button variant="outline" className="w-full" size="sm" onClick={() => navigate('/certifications')}>
-              Add Certification
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
 
     </div>
   );
