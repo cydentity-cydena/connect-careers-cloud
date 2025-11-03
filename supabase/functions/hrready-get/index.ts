@@ -41,10 +41,41 @@ serve(async (req) => {
       throw error;
     }
 
+    // Fetch certifications from certifications table
+    const { data: certifications, error: certsError } = await supabase
+      .from('certifications')
+      .select('*')
+      .eq('candidate_id', candidateId);
+
+    if (certsError) {
+      console.error('Error fetching certifications:', certsError);
+    }
+
+    // Format certifications for display
+    const formattedCerts = (certifications || []).map(cert => ({
+      name: cert.name,
+      issuer: cert.issuing_organization || 'Unknown',
+      status: cert.verification_status === 'verified' ? 'green' : 
+              cert.verification_status === 'pending' ? 'amber' : 'grey',
+      issued_date: cert.issued_date,
+      expiry_date: cert.expiry_date,
+      credential_id: cert.credential_id,
+      source: cert.source || 'manual',
+    }));
+
+    // Merge certifications into verification data
+    const enrichedVerification = verification ? {
+      ...verification,
+      certifications: formattedCerts,
+      certifications_count: formattedCerts.length,
+      verified_certifications_count: formattedCerts.filter(c => c.status === 'green').length,
+    } : null;
+
     return new Response(
       JSON.stringify({ 
-        verification: verification || null,
-        hrReady: verification?.hr_ready || false 
+        verification: enrichedVerification,
+        hrReady: verification?.hr_ready || false,
+        certifications: formattedCerts,
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );

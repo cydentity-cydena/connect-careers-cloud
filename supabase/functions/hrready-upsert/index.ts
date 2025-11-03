@@ -81,21 +81,30 @@ serve(async (req) => {
 
     if (upsertError) throw upsertError;
 
-    // Compute HR Ready status
+    // Fetch live certifications from certifications table
+    const { data: liveCerts, error: certsError } = await supabase
+      .from('certifications')
+      .select('*')
+      .eq('candidate_id', candidateId);
+
+    if (certsError) {
+      console.error('Error fetching certifications:', certsError);
+    }
+
+    // Format certifications
+    const formattedCerts = (liveCerts || []).map(cert => ({
+      name: cert.name,
+      issuer: cert.issuing_organization || 'Unknown',
+      status: cert.verification_status === 'verified' ? 'green' : 
+              cert.verification_status === 'pending' ? 'amber' : 'grey',
+      source: cert.source || 'manual',
+    }));
+
+    // Compute HR Ready status using live certifications
     const idOk = ['green', 'amber'].includes(verification.identity_status || 'grey');
     
-    let certOk = false;
-    if (verification.certifications) {
-      try {
-        const certs = typeof verification.certifications === 'string' 
-          ? JSON.parse(verification.certifications) 
-          : verification.certifications;
-        certOk = Array.isArray(certs) && certs.length > 0 && 
-          certs.some((c: any) => ['green', 'amber'].includes(c.status));
-      } catch (e) {
-        console.error('Error parsing certifications:', e);
-      }
-    }
+    const certOk = formattedCerts.length > 0 && 
+      formattedCerts.some((c: any) => ['green', 'amber'].includes(c.status));
     
     const rtwOk = ['green', 'amber'].includes(verification.rtw_status || 'grey');
     const logOk = ['green', 'amber'].includes(verification.logistics_status || 'grey');
@@ -106,17 +115,9 @@ serve(async (req) => {
     if (verification.identity_status === 'green') complianceScore += 5;
     else if (verification.identity_status === 'amber') complianceScore += 3;
 
-    if (certOk && verification.certifications) {
-      try {
-        const certs = typeof verification.certifications === 'string' 
-          ? JSON.parse(verification.certifications) 
-          : verification.certifications;
-        const greenCerts = certs.filter((c: any) => c.status === 'green').length;
-        complianceScore += Math.min(greenCerts * 2, 7);
-      } catch (e) {
-        console.error('Error calculating cert score:', e);
-      }
-    }
+    // Calculate certification score from live data
+    const greenCerts = formattedCerts.filter((c: any) => c.status === 'green').length;
+    complianceScore += Math.min(greenCerts * 2, 7); // Up to 7 points for certs
 
     if (verification.rtw_status === 'green') complianceScore += 5;
     else if (verification.rtw_status === 'amber') complianceScore += 3;
@@ -124,12 +125,13 @@ serve(async (req) => {
     if (verification.logistics_status === 'green') complianceScore += 3;
     else if (verification.logistics_status === 'amber') complianceScore += 2;
 
-    // Update with computed values
+    // Update with computed values and store cert snapshot
     const { data: updated, error: updateError } = await supabase
       .from('candidate_verifications')
       .update({ 
         hr_ready: hrReady, 
         compliance_score: complianceScore,
+        certifications: JSON.stringify(formattedCerts), // Store snapshot
         updated_at: new Date().toISOString()
       })
       .eq('candidate_id', candidateId)

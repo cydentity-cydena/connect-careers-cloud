@@ -89,7 +89,14 @@ export function VerificationPanel({ verification, onEdit, showEditButton = false
           <div className="flex items-start gap-3">
             <FileCheck className="h-5 w-5 mt-1 text-muted-foreground" />
             <div className="flex-1">
-              <h4 className="font-medium mb-2">Certifications</h4>
+              <div className="flex items-center gap-2 mb-2">
+                <h4 className="font-medium">Certifications</h4>
+                {verification.certifications_count > 0 && (
+                  <Badge variant="secondary">
+                    {verification.verified_certifications_count || 0}/{verification.certifications_count}
+                  </Badge>
+                )}
+              </div>
               {(() => {
                 const certs = typeof verification.certifications === 'string' 
                   ? JSON.parse(verification.certifications) 
@@ -97,13 +104,20 @@ export function VerificationPanel({ verification, onEdit, showEditButton = false
                 return certs && Array.isArray(certs) && certs.length > 0 ? (
                   <div className="space-y-2">
                     {certs.map((cert: any, index: number) => (
-                      <div key={index} className="flex items-center gap-2">
-                        <Badge className={statusColors[cert.status || 'grey']} variant="outline">
-                          {cert.name}
-                        </Badge>
-                        {cert.issuer && (
-                          <span className="text-xs text-muted-foreground">by {cert.issuer}</span>
-                        )}
+                      <div key={index} className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <Badge className={statusColors[cert.status || 'grey']} variant="outline">
+                            {cert.status === 'green' ? '✓' : cert.status === 'amber' ? '⏳' : '○'} {cert.name}
+                          </Badge>
+                        </div>
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground ml-1">
+                          {cert.issuer && <span>by {cert.issuer}</span>}
+                          {cert.source && (
+                            <Badge variant="outline" className="text-xs py-0 h-5">
+                              {cert.source === 'credly' ? '🎖️ Credly' : '📄 Upload'}
+                            </Badge>
+                          )}
+                        </div>
                       </div>
                     ))}
                   </div>
