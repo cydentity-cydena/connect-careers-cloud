@@ -11,6 +11,7 @@ import Navigation from "@/components/Navigation";
 import SEO from "@/components/SEO";
 import { SpecializationBadges } from "@/components/profiles/SpecializationBadges";
 import { detectSpecializations, type Specialization } from "@/lib/specializations";
+import { HRReadyBadge } from "@/components/hrready/HRReadyBadge";
 
 interface LeaderboardEntry {
   id: string;
@@ -23,6 +24,7 @@ interface LeaderboardEntry {
   community_points: number;
   xp: number;
   rank: number;
+  hr_ready: boolean;
 }
 
 const Leaderboard = () => {
@@ -84,6 +86,17 @@ const Leaderboard = () => {
         .select('candidate_id, skills(name, category)')
         .in('candidate_id', candidateIds);
 
+      // Fetch HR-Ready statuses
+      const { data: verData } = await supabase
+        .from('candidate_verifications')
+        .select('candidate_id, hr_ready')
+        .in('candidate_id', candidateIds);
+      
+      const verMap: Record<string, boolean> = {};
+      verData?.forEach(v => {
+        verMap[v.candidate_id] = v.hr_ready || false;
+      });
+
       // Create lookup maps
       const profileMap = new Map(profileResults.map(p => [p.id, p]));
       const candidateProfileMap = new Map(candidateProfileResults.map(cp => [cp.user_id, cp]));
@@ -126,7 +139,8 @@ const Leaderboard = () => {
           score: Math.min(100, Math.round((entry as any).total_xp / 3)),
           community_points: (entry as any).community_points ?? (entry as any).points_balance ?? 0,
           xp: (entry as any).total_xp ?? 0,
-          rank: index + 1
+          rank: index + 1,
+          hr_ready: verMap[entry.candidate_id] || false
         };
       });
 
@@ -241,7 +255,10 @@ const Leaderboard = () => {
                     </div>
                     <h3 className="font-bold text-base md:text-xl text-gray-900 mb-1">@{topThree[0]?.username}</h3>
                     <p className="text-xs md:text-sm text-gray-700 mb-2 line-clamp-1">{topThree[0]?.title}</p>
-                    <Badge className="bg-yellow-700 text-xs">1st Place</Badge>
+                    <div className="flex items-center justify-center gap-2 mb-2">
+                      <Badge className="bg-yellow-700 text-xs">1st Place</Badge>
+                      <HRReadyBadge isReady={topThree[0]?.hr_ready} size="sm" />
+                    </div>
                     <p className="text-xl md:text-3xl font-bold text-gray-900 mt-2 md:mt-3">{topThree[0]?.score}</p>
                   </CardContent>
                 </Card>
@@ -258,7 +275,10 @@ const Leaderboard = () => {
                     </div>
                     <h3 className="font-bold text-sm md:text-lg text-gray-800 mb-1">@{topThree[1]?.username}</h3>
                     <p className="text-xs md:text-sm text-gray-600 mb-2 line-clamp-1">{topThree[1]?.title}</p>
-                    <Badge className="bg-gray-500 text-xs">2nd Place</Badge>
+                    <div className="flex items-center justify-center gap-2 mb-2">
+                      <Badge className="bg-gray-500 text-xs">2nd Place</Badge>
+                      <HRReadyBadge isReady={topThree[1]?.hr_ready} size="sm" />
+                    </div>
                     <p className="text-lg md:text-2xl font-bold text-gray-800 mt-2 md:mt-3">{topThree[1]?.score}</p>
                   </CardContent>
                 </Card>
@@ -275,7 +295,10 @@ const Leaderboard = () => {
                     </div>
                     <h3 className="font-bold text-sm md:text-lg text-white mb-1">@{topThree[2]?.username}</h3>
                     <p className="text-xs md:text-sm text-orange-100 mb-2 line-clamp-1">{topThree[2]?.title}</p>
-                    <Badge className="bg-orange-800 text-xs">3rd Place</Badge>
+                    <div className="flex items-center justify-center gap-2 mb-2">
+                      <Badge className="bg-orange-800 text-xs">3rd Place</Badge>
+                      <HRReadyBadge isReady={topThree[2]?.hr_ready} size="sm" />
+                    </div>
                     <p className="text-lg md:text-2xl font-bold text-white mt-2 md:mt-3">{topThree[2]?.score}</p>
                   </CardContent>
                 </Card>
@@ -296,6 +319,7 @@ const Leaderboard = () => {
                 <TableRow>
                   <TableHead className="w-12 md:w-16 text-xs md:text-sm">Rank</TableHead>
                   <TableHead className="text-xs md:text-sm">Name</TableHead>
+                  <TableHead className="hidden sm:table-cell text-xs md:text-sm">Status</TableHead>
                   <TableHead className="hidden md:table-cell text-xs md:text-sm">Desired Job Title</TableHead>
                   <TableHead className="hidden xl:table-cell text-xs md:text-sm">Specializations</TableHead>
                   <TableHead className="hidden lg:table-cell text-xs md:text-sm">Certifications</TableHead>
@@ -311,6 +335,9 @@ const Leaderboard = () => {
                       <Link to={`/profiles/${entry.user_id}`} className="hover:underline">
                         @{entry.username}
                       </Link>
+                    </TableCell>
+                    <TableCell className="hidden sm:table-cell">
+                      <HRReadyBadge isReady={entry.hr_ready} size="sm" />
                     </TableCell>
                     <TableCell className="hidden md:table-cell text-xs md:text-sm">{entry.title}</TableCell>
                     <TableCell className="hidden xl:table-cell">
@@ -352,7 +379,10 @@ const Leaderboard = () => {
                         </div>
                         <h3 className="font-bold text-base md:text-xl text-white mb-1">@{communityTopThree[0]?.username}</h3>
                         <p className="text-xs md:text-sm text-purple-100 mb-2 line-clamp-1">{communityTopThree[0]?.title}</p>
-                        <Badge className="bg-purple-700 text-xs">Community Leader</Badge>
+                        <div className="flex items-center justify-center gap-2 mb-2">
+                          <Badge className="bg-purple-700 text-xs">Community Leader</Badge>
+                          <HRReadyBadge isReady={communityTopThree[0]?.hr_ready} size="sm" />
+                        </div>
                         <p className="text-xl md:text-3xl font-bold text-white mt-2 md:mt-3">{communityTopThree[0]?.community_points}</p>
                         <p className="text-xs text-purple-100">community points</p>
                       </CardContent>
@@ -370,7 +400,10 @@ const Leaderboard = () => {
                         </div>
                         <h3 className="font-bold text-sm md:text-lg text-gray-800 mb-1">@{communityTopThree[1]?.username}</h3>
                         <p className="text-xs md:text-sm text-gray-600 mb-2 line-clamp-1">{communityTopThree[1]?.title}</p>
-                        <Badge className="bg-purple-500 text-xs">2nd Place</Badge>
+                        <div className="flex items-center justify-center gap-2 mb-2">
+                          <Badge className="bg-purple-500 text-xs">2nd Place</Badge>
+                          <HRReadyBadge isReady={communityTopThree[1]?.hr_ready} size="sm" />
+                        </div>
                         <p className="text-lg md:text-2xl font-bold text-gray-800 mt-2 md:mt-3">{communityTopThree[1]?.community_points}</p>
                       </CardContent>
                     </Card>
@@ -387,7 +420,10 @@ const Leaderboard = () => {
                         </div>
                         <h3 className="font-bold text-sm md:text-lg text-gray-700 mb-1">@{communityTopThree[2]?.username}</h3>
                         <p className="text-xs md:text-sm text-gray-500 mb-2 line-clamp-1">{communityTopThree[2]?.title}</p>
-                        <Badge className="bg-purple-400 text-xs">3rd Place</Badge>
+                        <div className="flex items-center justify-center gap-2 mb-2">
+                          <Badge className="bg-purple-400 text-xs">3rd Place</Badge>
+                          <HRReadyBadge isReady={communityTopThree[2]?.hr_ready} size="sm" />
+                        </div>
                         <p className="text-lg md:text-2xl font-bold text-gray-700 mt-2 md:mt-3">{communityTopThree[2]?.community_points}</p>
                       </CardContent>
                     </Card>
@@ -408,6 +444,7 @@ const Leaderboard = () => {
                     <TableRow>
                       <TableHead className="w-12 md:w-16 text-xs md:text-sm">Rank</TableHead>
                       <TableHead className="text-xs md:text-sm">Name</TableHead>
+                      <TableHead className="hidden sm:table-cell text-xs md:text-sm">Status</TableHead>
                       <TableHead className="hidden md:table-cell text-xs md:text-sm">Desired Job Title</TableHead>
                       <TableHead className="hidden lg:table-cell text-xs md:text-sm">Impact</TableHead>
                       <TableHead className="text-right text-xs md:text-sm">Community Pts</TableHead>
@@ -423,6 +460,9 @@ const Leaderboard = () => {
                             <Link to={`/profiles/${entry.user_id}`} className="hover:underline">
                               @{entry.username}
                             </Link>
+                          </TableCell>
+                          <TableCell className="hidden sm:table-cell">
+                            <HRReadyBadge isReady={entry.hr_ready} size="sm" />
                           </TableCell>
                           <TableCell className="hidden md:table-cell text-xs md:text-sm">{entry.title}</TableCell>
                           <TableCell className="hidden lg:table-cell">
