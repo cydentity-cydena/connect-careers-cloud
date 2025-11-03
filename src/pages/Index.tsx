@@ -186,36 +186,36 @@ const Index = () => {
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-12 md:mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-3 md:mb-4">
-              Stop Wasting Time on <span className="text-destructive">Admin Overheads</span>
+              The <span className="bg-gradient-cyber bg-clip-text text-transparent">Recruitment Revolution</span>
             </h2>
             <p className="text-base md:text-xl text-muted-foreground max-w-3xl mx-auto px-2">
-              Interview-ready cyber talent with identity, right-to-work, and compliance already verified
+              Validated, curated, and interview-ready cybersecurity professionals
             </p>
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-5xl mx-auto">
             <div className="text-center p-5 md:p-6 rounded-lg border border-primary/20 bg-gradient-card hover:scale-105 transition-transform">
               <div className="bg-primary/10 w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center mx-auto mb-3 md:mb-4">
-                <Clock className="h-7 w-7 md:h-8 md:w-8 text-primary" />
+                <CheckCircle className="h-7 w-7 md:h-8 md:w-8 text-primary" />
               </div>
-              <h3 className="text-xl md:text-2xl font-bold mb-2">70% Faster Hiring</h3>
-              <p className="text-sm md:text-base text-muted-foreground">Start interviews in 48 hours. No 2-week admin delays.</p>
+              <h3 className="text-xl md:text-2xl font-bold mb-2">Validated Candidates</h3>
+              <p className="text-sm md:text-base text-muted-foreground">Pre-verified identity, right-to-work, and certifications checked by our team</p>
             </div>
 
             <div className="text-center p-5 md:p-6 rounded-lg border border-primary/20 bg-gradient-card hover:scale-105 transition-transform" style={{animationDelay: '0.1s'}}>
               <div className="bg-primary/10 w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center mx-auto mb-3 md:mb-4">
-                <DollarSign className="h-7 w-7 md:h-8 md:w-8 text-primary" />
+                <Target className="h-7 w-7 md:h-8 md:w-8 text-primary" />
               </div>
-              <h3 className="text-xl md:text-2xl font-bold mb-2">Reduce Admin Costs</h3>
-              <p className="text-sm md:text-base text-muted-foreground">Zero ID checks, RTW verifications, or compliance fees</p>
+              <h3 className="text-xl md:text-2xl font-bold mb-2">Curated Talent</h3>
+              <p className="text-sm md:text-base text-muted-foreground">Expert screening and skills-match technology to surface the best fit</p>
             </div>
 
             <div className="text-center p-5 md:p-6 rounded-lg border border-primary/20 bg-gradient-card hover:scale-105 transition-transform sm:col-span-2 lg:col-span-1" style={{animationDelay: '0.2s'}}>
               <div className="bg-primary/10 w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center mx-auto mb-3 md:mb-4">
                 <Shield className="h-7 w-7 md:h-8 md:w-8 text-primary" />
               </div>
-              <h3 className="text-xl md:text-2xl font-bold mb-2">Zero Compliance Risk</h3>
-              <p className="text-sm md:text-base text-muted-foreground">Pre-verified identity and right-to-work documentation</p>
+              <h3 className="text-xl md:text-2xl font-bold mb-2">Confidence to Hire</h3>
+              <p className="text-sm md:text-base text-muted-foreground">Zero compliance risk with documented verification and expert guidance</p>
             </div>
           </div>
         </div>
