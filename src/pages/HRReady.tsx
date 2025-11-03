@@ -214,9 +214,9 @@ const HRReady = () => {
           <p className="text-muted-foreground text-lg">Prove identity and right to work to apply for jobs faster and earn badges on your profile.</p>
         </header>
 
-        <div className="grid gap-6 lg:grid-cols-2 items-start">
-          <section className="space-y-6">
-            <Card className="p-6">
+        <div className="grid gap-6 lg:grid-cols-[1fr_1.2fr]">
+          <section>
+            <Card className="p-6 h-full">
               <h2 className="text-xl font-semibold mb-4">Your Current Status</h2>
               {loading ? (
                 <p className="text-sm text-muted-foreground">Loading...</p>
@@ -230,19 +230,19 @@ const HRReady = () => {
             </Card>
           </section>
 
-          <section className="space-y-6">
-            <Card className="p-6">
-              <h3 className="text-xl font-semibold mb-4">Submit Identity</h3>
-              <div className="space-y-4">
-                <div className="space-y-2">
+          <section className="space-y-5">
+            <Card className="p-5">
+              <h3 className="text-lg font-semibold mb-3">Submit Identity</h3>
+              <div className="space-y-3">
+                <div className="space-y-1.5">
                   <Label htmlFor="id-docs">Document(s)</Label>
                   <Input id="id-docs" type="file" multiple onChange={(e) => setIdFiles(e.target.files)} />
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-1.5">
                   <Label htmlFor="id-notes">Notes (optional)</Label>
                   <Textarea 
                     id="id-notes"
-                    rows={3} 
+                    rows={2} 
                     value={idNotes} 
                     onChange={(e) => setIdNotes(e.target.value)} 
                     placeholder="Passport, driving licence, etc." 
@@ -254,18 +254,18 @@ const HRReady = () => {
               </div>
             </Card>
 
-            <Card className="p-6">
-              <h3 className="text-xl font-semibold mb-4">Submit Right to Work</h3>
-              <div className="space-y-4">
-                <div className="space-y-2">
+            <Card className="p-5">
+              <h3 className="text-lg font-semibold mb-3">Submit Right to Work</h3>
+              <div className="space-y-3">
+                <div className="space-y-1.5">
                   <Label htmlFor="rtw-docs">Document(s)</Label>
                   <Input id="rtw-docs" type="file" multiple onChange={(e) => setRtwFiles(e.target.files)} />
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-1.5">
                   <Label htmlFor="rtw-notes">Notes (optional)</Label>
                   <Textarea 
                     id="rtw-notes"
-                    rows={3} 
+                    rows={2} 
                     value={rtwNotes} 
                     onChange={(e) => setRtwNotes(e.target.value)} 
                     placeholder="Visa type, country, permit details" 
@@ -277,20 +277,20 @@ const HRReady = () => {
               </div>
             </Card>
 
-            <Card className="p-6">
-              <h3 className="text-xl font-semibold mb-2">Add Certifications</h3>
-              <p className="text-sm text-muted-foreground mb-4">Add your professional certifications to boost your HR-Ready score</p>
+            <Card className="p-5">
+              <h3 className="text-lg font-semibold mb-1.5">Add Certifications</h3>
+              <p className="text-sm text-muted-foreground mb-3">Add your professional certifications to boost your HR-Ready score</p>
               <Button onClick={() => navigate('/certifications')} className="w-full">
                 Add Certification
               </Button>
             </Card>
 
-            <Card className="p-6">
-              <h3 className="text-xl font-semibold mb-2">Your Logistics Preferences</h3>
-              <p className="text-sm text-muted-foreground mb-6">Help employers understand your availability and requirements</p>
+            <Card className="p-5">
+              <h3 className="text-lg font-semibold mb-1.5">Your Logistics Preferences</h3>
+              <p className="text-sm text-muted-foreground mb-4">Help employers understand your availability and requirements</p>
               
-              <div className="space-y-6">
-                <div className="space-y-2">
+              <div className="space-y-4">
+                <div className="space-y-1.5">
                   <Label htmlFor="work-mode">Work Mode Preference</Label>
                   <Select value={workMode} onValueChange={setWorkMode}>
                     <SelectTrigger id="work-mode">
@@ -304,7 +304,7 @@ const HRReady = () => {
                   </Select>
                 </div>
 
-                <div className="space-y-2">
+                <div className="space-y-1.5">
                   <Label htmlFor="notice-period">Notice Period (days)</Label>
                   <Input 
                     id="notice-period"
@@ -318,7 +318,7 @@ const HRReady = () => {
                   <p className="text-xs text-muted-foreground">How many days notice do you need to give?</p>
                 </div>
 
-                <div className="space-y-2">
+                <div className="space-y-1.5">
                   <Label htmlFor="location">Preferred Location</Label>
                   <Input 
                     id="location"
@@ -329,7 +329,7 @@ const HRReady = () => {
                   />
                 </div>
 
-                <div className="space-y-2">
+                <div className="space-y-1.5">
                   <Label htmlFor="salary">Salary Expectations</Label>
                   <Input 
                     id="salary"
@@ -340,7 +340,7 @@ const HRReady = () => {
                   />
                 </div>
 
-                <div className="space-y-2">
+                <div className="space-y-1.5">
                   <Label htmlFor="commute">Commute Radius (km)</Label>
                   <Input 
                     id="commute"
@@ -366,8 +366,8 @@ const HRReady = () => {
           </section>
         </div>
 
-        <Separator className="my-8" />
-        <div className="text-center text-sm text-muted-foreground max-w-2xl mx-auto">
+        <Separator className="my-6" />
+        <div className="text-center text-sm text-muted-foreground max-w-2xl mx-auto px-4">
           Files are stored securely. Our team validates submissions promptly. Once approved, your profile shows HR-Ready badges and you can apply to jobs.
         </div>
       </main>
