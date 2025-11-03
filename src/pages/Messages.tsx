@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   DropdownMenu,
   DropdownMenuContent,
@@ -24,7 +25,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Send, ArrowLeft, MoreVertical, Pencil, Trash2, Archive } from "lucide-react";
+import { Send, ArrowLeft, MoreVertical, Pencil, Trash2, Archive, ArchiveRestore } from "lucide-react";
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
 
@@ -62,6 +63,7 @@ export default function Messages() {
   const navigate = useNavigate();
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [archivedConversations, setArchivedConversations] = useState<Conversation[]>([]);
   const [selectedConversation, setSelectedConversation] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
@@ -71,6 +73,7 @@ export default function Messages() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [messageToDelete, setMessageToDelete] = useState<string | null>(null);
   const [archiveDialogOpen, setArchiveDialogOpen] = useState(false);
+  const [viewingArchived, setViewingArchived] = useState(false);
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
@@ -157,12 +160,18 @@ export default function Messages() {
 
       const archivedUserIds = new Set(archivedConvs?.map(a => a.other_user_id) || []);
 
-      // Filter out archived conversations
-      const activeConversations = Array.from(conversationMap.values())
+      // Separate active and archived conversations
+      const allConversations = Array.from(conversationMap.values());
+      const activeConversations = allConversations
         .filter(conv => !archivedUserIds.has(conv.user_id))
+        .sort((a, b) => new Date(b.last_message_time).getTime() - new Date(a.last_message_time).getTime());
+      
+      const archived = allConversations
+        .filter(conv => archivedUserIds.has(conv.user_id))
         .sort((a, b) => new Date(b.last_message_time).getTime() - new Date(a.last_message_time).getTime());
 
       setConversations(activeConversations);
+      setArchivedConversations(archived);
     };
 
     fetchConversations();
@@ -346,7 +355,12 @@ export default function Messages() {
 
       if (error) throw error;
 
-      // Remove archived conversation from local state immediately
+      // Move conversation from active to archived
+      const conversationToArchive = conversations.find(c => c.user_id === selectedConversation);
+      if (conversationToArchive) {
+        setArchivedConversations(prev => [conversationToArchive, ...prev]);
+      }
+      
       setConversations(prevConversations => 
         prevConversations.filter(conv => conv.user_id !== selectedConversation)
       );
@@ -357,6 +371,35 @@ export default function Messages() {
     } catch (error) {
       console.error('Error archiving conversation:', error);
       toast.error("Failed to archive conversation");
+    }
+  };
+
+  const unarchiveConversation = async (userId: string) => {
+    if (!currentUserId) return;
+
+    try {
+      const { error } = await supabase
+        .from('conversation_archives')
+        .delete()
+        .eq('user_id', currentUserId)
+        .eq('other_user_id', userId);
+
+      if (error) throw error;
+
+      // Move conversation from archived to active
+      const conversationToUnarchive = archivedConversations.find(c => c.user_id === userId);
+      if (conversationToUnarchive) {
+        setConversations(prev => [conversationToUnarchive, ...prev]);
+      }
+      
+      setArchivedConversations(prev => 
+        prev.filter(conv => conv.user_id !== userId)
+      );
+
+      toast.success("Conversation restored");
+    } catch (error) {
+      console.error('Error unarchiving conversation:', error);
+      toast.error("Failed to restore conversation");
     }
   };
 
@@ -374,39 +417,99 @@ export default function Messages() {
           <h1 className="text-3xl font-bold">Messages</h1>
         </div>
         <Card className="p-6">
-          <h2 className="text-xl font-semibold mb-4">Conversations</h2>
-          {conversations.length === 0 ? (
-            <p className="text-muted-foreground text-center py-8">No conversations yet</p>
-          ) : (
-            <div className="space-y-2">
-              {conversations.map((conv) => (
-                <button
-                  key={conv.user_id}
-                  onClick={() => setSelectedConversation(conv.user_id)}
-                  className="w-full flex items-center gap-3 p-4 hover:bg-accent rounded-lg transition-colors text-left"
-                >
-                  <Avatar>
-                    <AvatarImage src={conv.user_avatar || undefined} />
-                    <AvatarFallback>{conv.user_name[0]}</AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between">
-                      <p className="font-semibold">{conv.user_name}</p>
-                      {conv.unread_count > 0 && (
-                        <Badge variant="destructive" className="ml-2">
-                          {conv.unread_count}
-                        </Badge>
-                      )}
+          <Tabs defaultValue="active" className="w-full">
+            <TabsList className="grid w-full grid-cols-2 mb-4">
+              <TabsTrigger value="active">
+                Active {conversations.length > 0 && `(${conversations.length})`}
+              </TabsTrigger>
+              <TabsTrigger value="archived">
+                Archived {archivedConversations.length > 0 && `(${archivedConversations.length})`}
+              </TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="active">
+              <h2 className="text-xl font-semibold mb-4">Active Conversations</h2>
+              {conversations.length === 0 ? (
+                <p className="text-muted-foreground text-center py-8">No active conversations</p>
+              ) : (
+                <div className="space-y-2">
+                  {conversations.map((conv) => (
+                    <button
+                      key={conv.user_id}
+                      onClick={() => setSelectedConversation(conv.user_id)}
+                      className="w-full flex items-center gap-3 p-4 hover:bg-accent rounded-lg transition-colors text-left"
+                    >
+                      <Avatar>
+                        <AvatarImage src={conv.user_avatar || undefined} />
+                        <AvatarFallback>{conv.user_name[0]}</AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between">
+                          <p className="font-semibold">{conv.user_name}</p>
+                          {conv.unread_count > 0 && (
+                            <Badge variant="destructive" className="ml-2">
+                              {conv.unread_count}
+                            </Badge>
+                          )}
+                        </div>
+                        <p className="text-sm text-muted-foreground truncate">{conv.last_message}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {formatDistanceToNow(new Date(conv.last_message_time), { addSuffix: true })}
+                        </p>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </TabsContent>
+            
+            <TabsContent value="archived">
+              <h2 className="text-xl font-semibold mb-4">Archived Conversations</h2>
+              {archivedConversations.length === 0 ? (
+                <p className="text-muted-foreground text-center py-8">No archived conversations</p>
+              ) : (
+                <div className="space-y-2">
+                  {archivedConversations.map((conv) => (
+                    <div
+                      key={conv.user_id}
+                      className="w-full flex items-center gap-3 p-4 bg-muted/50 rounded-lg"
+                    >
+                      <Avatar>
+                        <AvatarImage src={conv.user_avatar || undefined} />
+                        <AvatarFallback>{conv.user_name[0]}</AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-semibold">{conv.user_name}</p>
+                        <p className="text-sm text-muted-foreground truncate">{conv.last_message}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {formatDistanceToNow(new Date(conv.last_message_time), { addSuffix: true })}
+                        </p>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            unarchiveConversation(conv.user_id);
+                          }}
+                        >
+                          <ArchiveRestore className="h-4 w-4 mr-2" />
+                          Restore
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => setSelectedConversation(conv.user_id)}
+                        >
+                          View
+                        </Button>
+                      </div>
                     </div>
-                    <p className="text-sm text-muted-foreground truncate">{conv.last_message}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {formatDistanceToNow(new Date(conv.last_message_time), { addSuffix: true })}
-                    </p>
-                  </div>
-                </button>
-              ))}
-            </div>
-          )}
+                  ))}
+                </div>
+              )}
+            </TabsContent>
+          </Tabs>
         </Card>
       </div>
     );
