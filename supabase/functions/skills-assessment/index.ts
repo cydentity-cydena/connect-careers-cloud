@@ -36,6 +36,66 @@ const ASSESSMENT_TYPES = {
       "What security controls would you implement for a new cloud-native application?",
       "Describe how you would design and implement a vulnerability management program."
     ]
+  },
+  incident_responder: {
+    title: "Incident Response Specialist Assessment",
+    questions: [
+      "Walk through your process for responding to a suspected ransomware infection on a critical server.",
+      "How do you determine the scope and timeline of a security breach during an active incident?",
+      "Describe your approach to collecting and preserving digital evidence during an incident investigation.",
+      "What's your methodology for containing a compromised system while maintaining business operations?",
+      "Explain how you would coordinate communication between technical teams, management, and legal during a major incident."
+    ]
+  },
+  threat_intel_analyst: {
+    title: "Threat Intelligence Analyst Assessment",
+    questions: [
+      "How do you assess the credibility and relevance of threat intelligence from different sources?",
+      "Describe your process for tracking and attributing an Advanced Persistent Threat (APT) campaign.",
+      "What indicators of compromise (IOCs) would you prioritize when investigating a potential state-sponsored attack?",
+      "Explain how you would create actionable threat intelligence from raw data for different stakeholders.",
+      "How do you use the MITRE ATT&CK framework to improve your organization's defensive posture?"
+    ]
+  },
+  cloud_security: {
+    title: "Cloud Security Engineer Assessment",
+    questions: [
+      "Design a secure multi-account AWS environment using security best practices and services.",
+      "How would you detect and prevent data leakage from misconfigured S3 buckets or Azure Storage accounts?",
+      "Explain your approach to implementing identity and access management in a multi-cloud environment.",
+      "What security controls would you implement for a containerized application running in Kubernetes?",
+      "Describe how you would secure serverless functions and prevent common cloud-native vulnerabilities."
+    ]
+  },
+  grc_analyst: {
+    title: "GRC Analyst Assessment",
+    questions: [
+      "Walk through your process for conducting a risk assessment for a new business initiative.",
+      "How would you prepare an organization for an ISO 27001 or SOC 2 audit?",
+      "Explain how you would develop and maintain security policies that balance compliance with business needs.",
+      "Describe your approach to managing third-party vendor security risks.",
+      "How do you track and report on security metrics and KPIs to executive leadership?"
+    ]
+  },
+  security_architect: {
+    title: "Security Architect Assessment",
+    questions: [
+      "Design a comprehensive security architecture for a financial services company handling sensitive customer data.",
+      "How would you architect a secure remote access solution for a distributed workforce?",
+      "Explain your approach to threat modeling for a new application or system.",
+      "What security design patterns would you implement for a microservices architecture?",
+      "Describe how you would balance security requirements with performance and user experience."
+    ]
+  },
+  appsec_engineer: {
+    title: "Application Security Engineer Assessment",
+    questions: [
+      "How would you implement a secure software development lifecycle (SSDLC) in an agile development environment?",
+      "Explain your approach to identifying and remediating OWASP Top 10 vulnerabilities in code.",
+      "What tools and processes would you use for automated security testing in a CI/CD pipeline?",
+      "Describe how you would conduct a security code review for a critical application feature.",
+      "How do you work with developers to fix security issues without slowing down releases?"
+    ]
   }
 };
 

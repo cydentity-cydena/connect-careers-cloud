@@ -34,7 +34,13 @@ export const AssessmentResults = ({ candidateId }: AssessmentResultsProps) => {
     const titles: Record<string, string> = {
       soc_analyst: "SOC Analyst",
       penetration_tester: "Penetration Tester",
-      security_engineer: "Security Engineer"
+      security_engineer: "Security Engineer",
+      incident_responder: "Incident Responder",
+      threat_intel_analyst: "Threat Intelligence Analyst",
+      cloud_security: "Cloud Security Engineer",
+      grc_analyst: "GRC Analyst",
+      security_architect: "Security Architect",
+      appsec_engineer: "AppSec Engineer"
     };
     return titles[type] || type;
   };

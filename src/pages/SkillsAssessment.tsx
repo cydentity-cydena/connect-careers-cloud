@@ -30,6 +30,42 @@ const ASSESSMENT_TYPES = [
     description: "Infrastructure and application security engineering",
     icon: "⚙️",
   },
+  {
+    id: "incident_responder",
+    title: "Incident Responder",
+    description: "Incident response and digital forensics specialist",
+    icon: "🚨",
+  },
+  {
+    id: "threat_intel_analyst",
+    title: "Threat Intelligence Analyst",
+    description: "Threat hunting and intelligence analysis",
+    icon: "🎯",
+  },
+  {
+    id: "cloud_security",
+    title: "Cloud Security Engineer",
+    description: "AWS, Azure, and multi-cloud security",
+    icon: "☁️",
+  },
+  {
+    id: "grc_analyst",
+    title: "GRC Analyst",
+    description: "Governance, risk, and compliance management",
+    icon: "📋",
+  },
+  {
+    id: "security_architect",
+    title: "Security Architect",
+    description: "Enterprise security architecture and design",
+    icon: "🏗️",
+  },
+  {
+    id: "appsec_engineer",
+    title: "AppSec Engineer",
+    description: "Application security and secure development",
+    icon: "💻",
+  },
 ];
 
 export default function SkillsAssessment() {
@@ -227,7 +263,7 @@ export default function SkillsAssessment() {
             </div>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {ASSESSMENT_TYPES.map((type) => (
               <Card key={type.id} className="hover:border-primary transition-colors cursor-pointer">
                 <CardHeader>
