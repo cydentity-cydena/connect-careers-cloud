@@ -315,6 +315,15 @@ export default function Messages() {
 
       if (error) throw error;
 
+      // Update local state immediately
+      setMessages(prevMessages => 
+        prevMessages.map(msg => 
+          msg.id === messageId 
+            ? { ...msg, deleted_by: currentUserId, deleted_at: new Date().toISOString() }
+            : msg
+        )
+      );
+
       toast.success("Message deleted");
       setDeleteDialogOpen(false);
       setMessageToDelete(null);
@@ -336,6 +345,11 @@ export default function Messages() {
         });
 
       if (error) throw error;
+
+      // Remove archived conversation from local state immediately
+      setConversations(prevConversations => 
+        prevConversations.filter(conv => conv.user_id !== selectedConversation)
+      );
 
       toast.success("Conversation archived");
       setArchiveDialogOpen(false);
