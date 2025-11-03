@@ -249,6 +249,14 @@ const HRReady = () => {
               <Button onClick={() => submitRequest("rtw", rtwFiles, rtwNotes)}>Submit RTW</Button>
             </Card>
 
+            <Card className="p-4 space-y-3">
+              <h3 className="font-medium">Add Certifications</h3>
+              <p className="text-sm text-muted-foreground">Add your professional certifications to boost your HR-Ready score</p>
+              <Button onClick={() => navigate('/certifications')} className="w-full">
+                Add Certification
+              </Button>
+            </Card>
+
             <Card className="p-4 space-y-4">
               <h3 className="font-medium">Your Logistics Preferences</h3>
               <p className="text-sm text-muted-foreground">Help employers understand your availability and requirements</p>
