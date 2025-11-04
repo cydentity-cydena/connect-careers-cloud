@@ -599,10 +599,10 @@ const Auth = () => {
                   <div>
                     <h3 className="font-semibold text-foreground mb-2 flex items-center gap-2">
                       <CheckCircle className="h-4 w-4 text-primary" />
-                      Transparent Pricing Model
+                      Skills-Based Matching
                     </h3>
                     <p className="text-sm leading-relaxed">
-                      Unlike traditional job boards and recruitment agencies that charge 15-30% placement fees, Cydena operates on a transparent subscription model. This means employers can offer more competitive salaries, and candidates access opportunities without recruiter gatekeepers. Our skills-based matching system prioritizes verified certifications (CISSP, CEH, OSCP, Security+, CISM, etc.) and practical experience over traditional credentials.
+                      Our platform prioritizes verified certifications (CISSP, CEH, OSCP, Security+, CISM, etc.) and practical experience over traditional credentials. Connect directly with employers seeking your specific skills and expertise.
                     </p>
                   </div>
 

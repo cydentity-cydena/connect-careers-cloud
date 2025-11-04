@@ -42,10 +42,6 @@ const slides = [
             <p className="text-lg">Manual verification of credentials, right-to-work, and background checks takes weeks</p>
           </div>
           <div className="p-6 bg-destructive/10 rounded-lg">
-            <h3 className="text-2xl font-semibold mb-2">❌ High Cost Per Hire</h3>
-            <p className="text-lg">Traditional recruitment fees are 15-25% of first-year salary plus hidden costs</p>
-          </div>
-          <div className="p-6 bg-destructive/10 rounded-lg">
             <h3 className="text-2xl font-semibold mb-2">❌ Resume Fraud</h3>
             <p className="text-lg">Up to 40% of resumes contain inflated claims or false information</p>
           </div>
@@ -132,13 +128,6 @@ const slides = [
             <div>
               <h3 className="text-xl font-semibold mb-2">Hire with Complete Confidence</h3>
               <p className="text-lg">Every credential verified, identity confirmed, right-to-work checked—zero hiring risk</p>
-            </div>
-          </div>
-          <div className="flex gap-4 items-start p-4 bg-card rounded-lg">
-            <div className="text-3xl">💰</div>
-            <div>
-              <h3 className="text-xl font-semibold mb-2">Lower Cost Per Hire</h3>
-              <p className="text-lg">Pay per profile unlock, not 15-25% of salary—transparent pricing with no hidden fees</p>
             </div>
           </div>
           <div className="flex gap-4 items-start p-4 bg-card rounded-lg">
@@ -282,32 +271,6 @@ const slides = [
               <p className="font-semibold">Practical Experience</p>
               <p className="text-sm text-muted-foreground">Hands-on labs & simulations</p>
             </div>
-          </div>
-        </div>
-      </div>
-    )
-  },
-  {
-    title: "Pricing & Plans",
-    subtitle: "Transparent, Value-Based Recruitment Pricing",
-    content: (
-      <div className="space-y-6 max-w-4xl mx-auto text-left">
-        <div className="space-y-4">
-          <div className="p-6 bg-primary/10 rounded-lg">
-            <h3 className="text-2xl font-semibold mb-3">💳 Pay-Per-Unlock</h3>
-            <p className="text-lg">Unlock candidate profiles individually—only pay for candidates you want to contact</p>
-          </div>
-          <div className="p-6 bg-primary/10 rounded-lg">
-            <h3 className="text-2xl font-semibold mb-3">📦 Bulk Unlock Packages</h3>
-            <p className="text-lg">Volume discounts available—perfect for high-volume hiring or recruitment agencies</p>
-          </div>
-          <div className="p-6 bg-primary/10 rounded-lg">
-            <h3 className="text-2xl font-semibold mb-3">🏢 Enterprise Subscriptions</h3>
-            <p className="text-lg">Unlimited access plans for organizations with ongoing recruitment needs</p>
-          </div>
-          <div className="p-6 bg-primary/10 rounded-lg">
-            <h3 className="text-2xl font-semibold mb-3">🤝 Recruitment Agency Partnerships</h3>
-            <p className="text-lg">Special pricing and features for agencies placing multiple candidates</p>
           </div>
         </div>
       </div>

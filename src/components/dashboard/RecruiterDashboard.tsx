@@ -323,23 +323,23 @@ const RecruiterDashboard = () => {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Award className="h-5 w-5 text-accent" />
-                    Volume Discount Eligible!
+                    Agency Partnership Program
                   </CardTitle>
                   <CardDescription>
-                    You qualify for agency pricing
+                    You qualify for enhanced agency benefits
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
                     <p className="text-sm text-muted-foreground">
-                      With {placementsCount} placements, you're eligible for discounted unlock rates and priority support
+                      With {placementsCount} placements, you're eligible for enhanced features and priority support
                     </p>
                     <Button 
                       variant="outline" 
                       className="w-full border-accent/50 hover:bg-accent/10"
                       onClick={() => navigate('/contact')}
                     >
-                      Contact for Agency Pricing
+                      Contact for Partnership Details
                     </Button>
                   </div>
                 </CardContent>

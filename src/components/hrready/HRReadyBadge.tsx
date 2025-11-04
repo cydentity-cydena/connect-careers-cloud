@@ -48,10 +48,10 @@ export function HRReadyBadge({ isReady, size = "md", showIcon = true, expiryDate
             <p className="font-semibold">Interview-Ready Candidate</p>
             <p className="text-xs">Identity, right-to-work, and logistics verified</p>
             <p className="text-xs text-muted-foreground">
-              • Saves you £500+ in verification costs
+              • Start interviews in 48 hours
             </p>
             <p className="text-xs text-muted-foreground">
-              • Start interviews in 48 hours
+              • Zero verification hassle
             </p>
             {expiryDate && (
               <p className={`text-xs ${isExpiringSoon ? 'text-amber-300 font-medium' : 'text-muted-foreground'}`}>

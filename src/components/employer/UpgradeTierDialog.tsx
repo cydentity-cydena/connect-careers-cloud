@@ -64,10 +64,10 @@ export const UpgradeTierDialog = ({
         <DialogHeader>
           <DialogTitle className="text-2xl flex items-center gap-2">
             <TrendingUp className="h-6 w-6 text-primary" />
-            Upgrade to {comparison.upgrade.tier} for Better Value
+            Upgrade to {comparison.upgrade.tier} for Enhanced Access
           </DialogTitle>
           <DialogDescription>
-            Get more unlocks at a lower cost per unlock with a subscription upgrade
+            Get more unlocks and enhanced features with a subscription upgrade
           </DialogDescription>
         </DialogHeader>
 
