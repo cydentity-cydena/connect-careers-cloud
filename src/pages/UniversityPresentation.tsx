@@ -12,8 +12,8 @@ const slides = [
         <p className="text-2xl">A Revolutionary Platform for Students & Graduates</p>
         <div className="grid grid-cols-3 gap-8 mt-12">
           <div className="space-y-2">
-            <div className="text-5xl font-bold text-primary">70%</div>
-            <p className="text-lg">Faster Hiring</p>
+            <div className="text-5xl font-bold text-primary">100%</div>
+            <p className="text-lg">Hire with Confidence</p>
           </div>
           <div className="space-y-2">
             <div className="text-5xl font-bold text-primary">100%</div>
@@ -221,9 +221,9 @@ const slides = [
       <div className="max-w-5xl mx-auto">
         <div className="grid md:grid-cols-2 gap-8 mb-12">
           <div className="text-center p-8 bg-card rounded-lg">
-            <div className="text-6xl font-bold text-primary mb-4">70%</div>
-            <h3 className="text-2xl font-semibold mb-2">Faster Hiring</h3>
-            <p className="text-lg">Average time-to-hire reduced from weeks to days</p>
+            <div className="text-6xl font-bold text-primary mb-4">100%</div>
+            <h3 className="text-2xl font-semibold mb-2">Hire with Confidence</h3>
+            <p className="text-lg">Fully verified candidates ready to start immediately</p>
           </div>
           <div className="text-center p-8 bg-card rounded-lg">
             <div className="text-6xl font-bold text-primary mb-4">95%</div>
