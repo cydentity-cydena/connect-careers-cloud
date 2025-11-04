@@ -1908,6 +1908,7 @@ export type Database = {
           desired_job_title: string | null
           email: string
           full_name: string | null
+          hackthebox_api_key: string | null
           hackthebox_points: number | null
           hackthebox_rank: string | null
           hackthebox_rank_text: string | null
@@ -1933,6 +1934,7 @@ export type Database = {
           desired_job_title?: string | null
           email: string
           full_name?: string | null
+          hackthebox_api_key?: string | null
           hackthebox_points?: number | null
           hackthebox_rank?: string | null
           hackthebox_rank_text?: string | null
@@ -1958,6 +1960,7 @@ export type Database = {
           desired_job_title?: string | null
           email?: string
           full_name?: string | null
+          hackthebox_api_key?: string | null
           hackthebox_points?: number | null
           hackthebox_rank?: string | null
           hackthebox_rank_text?: string | null

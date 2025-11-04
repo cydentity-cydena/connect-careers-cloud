@@ -2,11 +2,12 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { RefreshCw, CheckCircle2, ExternalLink, Trophy } from "lucide-react";
+import { RefreshCw, CheckCircle2, ExternalLink, Trophy, AlertCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface PlatformProfilesManagerProps {
   userId: string;
@@ -15,9 +16,11 @@ interface PlatformProfilesManagerProps {
 export const PlatformProfilesManager = ({ userId }: PlatformProfilesManagerProps) => {
   const [editMode, setEditMode] = useState(false);
   const [thmUsername, setThmUsername] = useState("");
+  const [thmLevel, setThmLevel] = useState("");
+  const [thmPoints, setThmPoints] = useState("");
+  const [thmBadges, setThmBadges] = useState("");
   const [htbUsername, setHtbUsername] = useState("");
   const [htbApiKey, setHtbApiKey] = useState("");
-  const [showApiKeyInput, setShowApiKeyInput] = useState(false);
   const [saving, setSaving] = useState(false);
   const [syncing, setSyncing] = useState<string | null>(null);
   const { toast } = useToast();
@@ -28,9 +31,9 @@ export const PlatformProfilesManager = ({ userId }: PlatformProfilesManagerProps
     queryFn: async () => {
       const { data, error } = await supabase
         .from('profiles')
-        .select('tryhackme_username, hackthebox_username, tryhackme_rank, hackthebox_rank, tryhackme_level, tryhackme_points, tryhackme_badges, hackthebox_points, hackthebox_rank_text, hackthebox_user_owns, hackthebox_api_key')
+        .select('tryhackme_username, hackthebox_username, tryhackme_rank, hackthebox_rank, tryhackme_level, tryhackme_points, tryhackme_badges, hackthebox_points, hackthebox_rank_text, hackthebox_user_owns')
         .eq('id', userId)
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
       return data;
@@ -40,8 +43,10 @@ export const PlatformProfilesManager = ({ userId }: PlatformProfilesManagerProps
   useEffect(() => {
     if (profileData) {
       setThmUsername(profileData.tryhackme_username || "");
+      setThmLevel(profileData.tryhackme_level?.toString() || "");
+      setThmPoints(profileData.tryhackme_points?.toString() || "");
+      setThmBadges(profileData.tryhackme_badges?.toString() || "");
       setHtbUsername(profileData.hackthebox_username || "");
-      setHtbApiKey(profileData.hackthebox_api_key ? "••••••••" : "");
     }
   }, [profileData]);
 
@@ -50,23 +55,23 @@ export const PlatformProfilesManager = ({ userId }: PlatformProfilesManagerProps
 
     setSyncing(platform);
     try {
-      const { error } = await supabase.functions.invoke('sync-platform-stats', {
+      const { data, error } = await supabase.functions.invoke('sync-platform-stats', {
         body: { platform, username, userId }
       });
 
       if (error) throw error;
 
       toast({
-        title: "Stats synced",
-        description: `${platform === 'tryhackme' ? 'TryHackMe' : 'HackTheBox'} stats updated successfully`,
+        title: "Connection verified",
+        description: `${platform === 'tryhackme' ? 'TryHackMe' : 'HackTheBox'} profile connected successfully`,
       });
 
       refetch();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error syncing stats:', error);
       toast({
         title: "Sync failed",
-        description: "Failed to sync platform stats. Please try again.",
+        description: error.message || "Failed to sync platform profile.",
         variant: "destructive",
       });
     } finally {
@@ -79,13 +84,11 @@ export const PlatformProfilesManager = ({ userId }: PlatformProfilesManagerProps
     try {
       const updateData: any = {
         tryhackme_username: thmUsername || null,
+        tryhackme_level: thmLevel ? parseInt(thmLevel) : null,
+        tryhackme_points: thmPoints ? parseInt(thmPoints) : null,
+        tryhackme_badges: thmBadges ? parseInt(thmBadges) : null,
         hackthebox_username: htbUsername || null,
       };
-
-      // Only update API key if it's been changed (not masked)
-      if (htbApiKey && htbApiKey !== "••••••••") {
-        updateData.hackthebox_api_key = htbApiKey;
-      }
 
       const { error } = await supabase
         .from('profiles')
@@ -94,11 +97,9 @@ export const PlatformProfilesManager = ({ userId }: PlatformProfilesManagerProps
 
       if (error) throw error;
 
-      // Sync stats after saving
+      // Sync platform connections (not stats)
       if (thmUsername) await syncPlatformStats('tryhackme', thmUsername);
-      if (htbUsername && htbApiKey && htbApiKey !== "••••••••") {
-        await syncPlatformStats('hackthebox', htbUsername);
-      }
+      if (htbUsername) await syncPlatformStats('hackthebox', htbUsername);
 
       toast({
         title: "Profiles updated",
@@ -106,7 +107,6 @@ export const PlatformProfilesManager = ({ userId }: PlatformProfilesManagerProps
       });
       
       setEditMode(false);
-      setShowApiKeyInput(false);
       refetch();
     } catch (error) {
       console.error('Error updating profiles:', error);
@@ -123,15 +123,59 @@ export const PlatformProfilesManager = ({ userId }: PlatformProfilesManagerProps
   if (editMode || (!profileData?.tryhackme_username && !profileData?.hackthebox_username)) {
     return (
       <div className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="thm">TryHackMe Username</Label>
-          <Input
-            id="thm"
-            value={thmUsername}
-            onChange={(e) => setThmUsername(e.target.value)}
-            placeholder="Enter username"
-          />
+        <Alert>
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            <strong>TryHackMe:</strong> Enter your stats manually (API unavailable).<br />
+            <strong>HackTheBox:</strong> Stats can be auto-synced with API key (coming soon).
+          </AlertDescription>
+        </Alert>
+
+        <div className="space-y-3 p-4 border rounded-lg">
+          <h3 className="font-semibold">TryHackMe</h3>
+          <div className="space-y-2">
+            <Label htmlFor="thm">Username</Label>
+            <Input
+              id="thm"
+              value={thmUsername}
+              onChange={(e) => setThmUsername(e.target.value)}
+              placeholder="Enter username"
+            />
+          </div>
+          <div className="grid grid-cols-3 gap-2">
+            <div className="space-y-2">
+              <Label htmlFor="thm-level">Level</Label>
+              <Input
+                id="thm-level"
+                type="number"
+                value={thmLevel}
+                onChange={(e) => setThmLevel(e.target.value)}
+                placeholder="Level"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="thm-points">Points</Label>
+              <Input
+                id="thm-points"
+                type="number"
+                value={thmPoints}
+                onChange={(e) => setThmPoints(e.target.value)}
+                placeholder="Points"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="thm-badges">Badges</Label>
+              <Input
+                id="thm-badges"
+                type="number"
+                value={thmBadges}
+                onChange={(e) => setThmBadges(e.target.value)}
+                placeholder="Badges"
+              />
+            </div>
+          </div>
         </div>
+
         <div className="space-y-2">
           <Label htmlFor="htb">HackTheBox Username</Label>
           <Input
@@ -140,7 +184,9 @@ export const PlatformProfilesManager = ({ userId }: PlatformProfilesManagerProps
             onChange={(e) => setHtbUsername(e.target.value)}
             placeholder="Enter username"
           />
+          <p className="text-xs text-muted-foreground">Auto-sync with API key coming soon</p>
         </div>
+
         <div className="flex gap-2">
           <Button onClick={handleSave} disabled={saving}>
             {saving ? "Saving..." : "Save"}
@@ -150,96 +196,6 @@ export const PlatformProfilesManager = ({ userId }: PlatformProfilesManagerProps
               Cancel
             </Button>
           )}
-        </div>
-      </div>
-    );
-  }
-
-  if (editStatsMode) {
-    return (
-      <div className="space-y-4">
-        {profileData?.tryhackme_username && (
-          <div className="space-y-3 p-4 border rounded-lg">
-            <h3 className="font-semibold">TryHackMe Stats</h3>
-            <div className="grid grid-cols-3 gap-3">
-              <div className="space-y-2">
-                <Label htmlFor="thm-level">Level</Label>
-                <Input
-                  id="thm-level"
-                  type="number"
-                  value={stats.thmLevel || ""}
-                  onChange={(e) => setStats({ ...stats, thmLevel: e.target.value ? parseInt(e.target.value) : undefined })}
-                  placeholder="Level"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="thm-points">Points</Label>
-                <Input
-                  id="thm-points"
-                  type="number"
-                  value={stats.thmPoints || ""}
-                  onChange={(e) => setStats({ ...stats, thmPoints: e.target.value ? parseInt(e.target.value) : undefined })}
-                  placeholder="Points"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="thm-badges">Badges</Label>
-                <Input
-                  id="thm-badges"
-                  type="number"
-                  value={stats.thmBadges || ""}
-                  onChange={(e) => setStats({ ...stats, thmBadges: e.target.value ? parseInt(e.target.value) : undefined })}
-                  placeholder="Badges"
-                />
-              </div>
-            </div>
-          </div>
-        )}
-        
-        {profileData?.hackthebox_username && (
-          <div className="space-y-3 p-4 border rounded-lg">
-            <h3 className="font-semibold">HackTheBox Stats</h3>
-            <div className="grid grid-cols-3 gap-3">
-              <div className="space-y-2">
-                <Label htmlFor="htb-rank">Rank</Label>
-                <Input
-                  id="htb-rank"
-                  value={stats.htbRankText || ""}
-                  onChange={(e) => setStats({ ...stats, htbRankText: e.target.value })}
-                  placeholder="e.g., Hacker"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="htb-points">Points</Label>
-                <Input
-                  id="htb-points"
-                  type="number"
-                  value={stats.htbPoints || ""}
-                  onChange={(e) => setStats({ ...stats, htbPoints: e.target.value ? parseInt(e.target.value) : undefined })}
-                  placeholder="Points"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="htb-owns">User Owns</Label>
-                <Input
-                  id="htb-owns"
-                  type="number"
-                  value={stats.htbUserOwns || ""}
-                  onChange={(e) => setStats({ ...stats, htbUserOwns: e.target.value ? parseInt(e.target.value) : undefined })}
-                  placeholder="User Owns"
-                />
-              </div>
-            </div>
-          </div>
-        )}
-        
-        <div className="flex gap-2">
-          <Button onClick={handleSaveStats} disabled={saving}>
-            {saving ? "Saving..." : "Save Stats"}
-          </Button>
-          <Button variant="outline" onClick={() => setEditStatsMode(false)}>
-            Cancel
-          </Button>
         </div>
       </div>
     );
@@ -258,7 +214,7 @@ export const PlatformProfilesManager = ({ userId }: PlatformProfilesManagerProps
               </div>
               <p className="text-sm text-muted-foreground">@{profileData.tryhackme_username}</p>
               <div className="flex flex-wrap gap-1 mt-1">
-                {profileData?.tryhackme_rank === 'Connected' || (!profileData?.tryhackme_level && !profileData?.tryhackme_points && !profileData?.tryhackme_badges) ? (
+                {!profileData?.tryhackme_level && !profileData?.tryhackme_points && !profileData?.tryhackme_badges ? (
                   <Badge variant="outline" className="text-xs">
                     Connected
                   </Badge>
@@ -293,14 +249,6 @@ export const PlatformProfilesManager = ({ userId }: PlatformProfilesManagerProps
             >
               <ExternalLink className="h-4 w-4" />
             </a>
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={() => syncPlatformStats('tryhackme', profileData.tryhackme_username!)}
-              disabled={syncing === 'tryhackme'}
-            >
-              <RefreshCw className={`h-4 w-4 ${syncing === 'tryhackme' ? 'animate-spin' : ''}`} />
-            </Button>
           </div>
         </div>
       )}
@@ -316,20 +264,28 @@ export const PlatformProfilesManager = ({ userId }: PlatformProfilesManagerProps
               </div>
               <p className="text-sm text-muted-foreground">@{profileData.hackthebox_username}</p>
               <div className="flex flex-wrap gap-1 mt-1">
-                {profileData?.hackthebox_rank_text && profileData.hackthebox_rank_text !== 'Connected' && (
-                  <Badge variant="secondary" className="text-xs">
-                    {profileData.hackthebox_rank_text}
-                  </Badge>
-                )}
-                {profileData?.hackthebox_points !== null && profileData?.hackthebox_points !== undefined && (
+                {!profileData?.hackthebox_rank_text && !profileData?.hackthebox_points && !profileData?.hackthebox_user_owns ? (
                   <Badge variant="outline" className="text-xs">
-                    {profileData.hackthebox_points.toLocaleString()} pts
+                    Connected
                   </Badge>
-                )}
-                {profileData?.hackthebox_user_owns !== null && profileData?.hackthebox_user_owns !== undefined && (
-                  <Badge variant="outline" className="text-xs">
-                    {profileData.hackthebox_user_owns} owns
-                  </Badge>
+                ) : (
+                  <>
+                    {profileData?.hackthebox_rank_text && profileData.hackthebox_rank_text !== 'Connected' && (
+                      <Badge variant="secondary" className="text-xs">
+                        {profileData.hackthebox_rank_text}
+                      </Badge>
+                    )}
+                    {profileData?.hackthebox_points !== null && profileData?.hackthebox_points !== undefined && (
+                      <Badge variant="outline" className="text-xs">
+                        {profileData.hackthebox_points.toLocaleString()} pts
+                      </Badge>
+                    )}
+                    {profileData?.hackthebox_user_owns !== null && profileData?.hackthebox_user_owns !== undefined && (
+                      <Badge variant="outline" className="text-xs">
+                        {profileData.hackthebox_user_owns} owns
+                      </Badge>
+                    )}
+                  </>
                 )}
               </div>
             </div>
@@ -343,26 +299,13 @@ export const PlatformProfilesManager = ({ userId }: PlatformProfilesManagerProps
             >
               <ExternalLink className="h-4 w-4" />
             </a>
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={() => syncPlatformStats('hackthebox', profileData.hackthebox_username!)}
-              disabled={syncing === 'hackthebox'}
-            >
-              <RefreshCw className={`h-4 w-4 ${syncing === 'hackthebox' ? 'animate-spin' : ''}`} />
-            </Button>
           </div>
         </div>
       )}
 
-      <div className="flex gap-2">
-        <Button onClick={() => setEditMode(true)} variant="outline" className="flex-1">
-          Edit Usernames
-        </Button>
-        <Button onClick={() => setEditStatsMode(true)} variant="outline" className="flex-1">
-          Edit Stats
-        </Button>
-      </div>
+      <Button onClick={() => setEditMode(true)} variant="outline" className="w-full">
+        Edit Platform Profiles
+      </Button>
     </div>
   );
 };
