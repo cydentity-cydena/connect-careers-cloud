@@ -231,17 +231,17 @@ const slides = [
             </p>
           </div>
 
-          {/* real LMS */}
+          {/* REAL LMS */}
           <div className="p-8 bg-card rounded-xl border-2 border-primary/20 hover:border-primary/40 transition-all">
             <div className="flex items-center justify-center mb-6 h-24">
-              <img src="/logos/real-lms-logo.png" alt="real LMS" className="h-20 object-contain" />
+              <img src="/logos/real-lms-logo.png" alt="REAL LMS" className="h-20 object-contain" />
             </div>
             <div className="mb-4">
               <span className="px-4 py-1 bg-purple-500/20 text-purple-600 rounded-full text-sm font-semibold">
                 Hands-On Labs
               </span>
             </div>
-            <h3 className="text-2xl font-bold mb-3">real LMS</h3>
+            <h3 className="text-2xl font-bold mb-3">REAL LMS</h3>
             <p className="text-lg text-muted-foreground">
               Real-world SOC analyst training platform with hands-on labs and simulations, helping students gain practical blue team experience in a realistic environment.
             </p>
