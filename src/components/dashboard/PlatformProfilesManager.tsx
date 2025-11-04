@@ -12,21 +12,12 @@ interface PlatformProfilesManagerProps {
   userId: string;
 }
 
-interface PlatformStats {
-  thmLevel?: number;
-  thmPoints?: number;
-  thmBadges?: number;
-  htbRankText?: string;
-  htbPoints?: number;
-  htbUserOwns?: number;
-}
-
 export const PlatformProfilesManager = ({ userId }: PlatformProfilesManagerProps) => {
   const [editMode, setEditMode] = useState(false);
-  const [editStatsMode, setEditStatsMode] = useState(false);
   const [thmUsername, setThmUsername] = useState("");
   const [htbUsername, setHtbUsername] = useState("");
-  const [stats, setStats] = useState<PlatformStats>({});
+  const [htbApiKey, setHtbApiKey] = useState("");
+  const [showApiKeyInput, setShowApiKeyInput] = useState(false);
   const [saving, setSaving] = useState(false);
   const [syncing, setSyncing] = useState<string | null>(null);
   const { toast } = useToast();
@@ -37,7 +28,7 @@ export const PlatformProfilesManager = ({ userId }: PlatformProfilesManagerProps
     queryFn: async () => {
       const { data, error } = await supabase
         .from('profiles')
-        .select('tryhackme_username, hackthebox_username, tryhackme_rank, hackthebox_rank, tryhackme_level, tryhackme_points, tryhackme_badges, hackthebox_points, hackthebox_rank_text, hackthebox_user_owns')
+        .select('tryhackme_username, hackthebox_username, tryhackme_rank, hackthebox_rank, tryhackme_level, tryhackme_points, tryhackme_badges, hackthebox_points, hackthebox_rank_text, hackthebox_user_owns, hackthebox_api_key')
         .eq('id', userId)
         .single();
 
@@ -50,14 +41,7 @@ export const PlatformProfilesManager = ({ userId }: PlatformProfilesManagerProps
     if (profileData) {
       setThmUsername(profileData.tryhackme_username || "");
       setHtbUsername(profileData.hackthebox_username || "");
-      setStats({
-        thmLevel: profileData.tryhackme_level || undefined,
-        thmPoints: profileData.tryhackme_points || undefined,
-        thmBadges: profileData.tryhackme_badges || undefined,
-        htbRankText: profileData.hackthebox_rank_text || undefined,
-        htbPoints: profileData.hackthebox_points || undefined,
-        htbUserOwns: profileData.hackthebox_user_owns || undefined,
-      });
+      setHtbApiKey(profileData.hackthebox_api_key ? "••••••••" : "");
     }
   }, [profileData]);
 
@@ -93,68 +77,42 @@ export const PlatformProfilesManager = ({ userId }: PlatformProfilesManagerProps
   const handleSave = async () => {
     setSaving(true);
     try {
+      const updateData: any = {
+        tryhackme_username: thmUsername || null,
+        hackthebox_username: htbUsername || null,
+      };
+
+      // Only update API key if it's been changed (not masked)
+      if (htbApiKey && htbApiKey !== "••••••••") {
+        updateData.hackthebox_api_key = htbApiKey;
+      }
+
       const { error } = await supabase
         .from('profiles')
-        .update({
-          tryhackme_username: thmUsername || null,
-          hackthebox_username: htbUsername || null,
-        })
+        .update(updateData)
         .eq('id', userId);
 
       if (error) throw error;
 
-      // Sync stats after saving usernames
+      // Sync stats after saving
       if (thmUsername) await syncPlatformStats('tryhackme', thmUsername);
-      if (htbUsername) await syncPlatformStats('hackthebox', htbUsername);
+      if (htbUsername && htbApiKey && htbApiKey !== "••••••••") {
+        await syncPlatformStats('hackthebox', htbUsername);
+      }
 
       toast({
         title: "Profiles updated",
-        description: "Your platform profiles have been saved and synced.",
+        description: "Your platform profiles have been saved.",
       });
       
       setEditMode(false);
+      setShowApiKeyInput(false);
       refetch();
     } catch (error) {
       console.error('Error updating profiles:', error);
       toast({
         title: "Update failed",
         description: "Failed to update platform profiles. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const handleSaveStats = async () => {
-    setSaving(true);
-    try {
-      const { error } = await supabase
-        .from('profiles')
-        .update({
-          tryhackme_level: stats.thmLevel || null,
-          tryhackme_points: stats.thmPoints || null,
-          tryhackme_badges: stats.thmBadges || null,
-          hackthebox_rank_text: stats.htbRankText || null,
-          hackthebox_points: stats.htbPoints || null,
-          hackthebox_user_owns: stats.htbUserOwns || null,
-        })
-        .eq('id', userId);
-
-      if (error) throw error;
-
-      toast({
-        title: "Stats updated",
-        description: "Your platform stats have been updated.",
-      });
-      
-      setEditStatsMode(false);
-      refetch();
-    } catch (error) {
-      console.error('Error updating stats:', error);
-      toast({
-        title: "Update failed",
-        description: "Failed to update platform stats. Please try again.",
         variant: "destructive",
       });
     } finally {
