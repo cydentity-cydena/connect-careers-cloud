@@ -6,22 +6,22 @@ import { useNavigate } from 'react-router-dom';
 const slides = [
   {
     title: "Cydena",
-    subtitle: "A Value-Based Recruitment Platform for Cybersecurity Talent",
+    subtitle: "The Modern Recruitment Platform for Cybersecurity Talent",
     content: (
       <div className="text-center space-y-6">
-        <p className="text-2xl">A Revolutionary Platform for Students & Graduates</p>
+        <p className="text-2xl">Hire Verified Cybersecurity Talent in Days, Not Months</p>
         <div className="grid grid-cols-3 gap-8 mt-12">
           <div className="space-y-2">
-            <div className="text-5xl font-bold text-primary">100%</div>
-            <p className="text-lg">Hire with Confidence</p>
+            <div className="text-5xl font-bold text-primary">80%</div>
+            <p className="text-lg">Faster Hiring Process</p>
           </div>
           <div className="space-y-2">
             <div className="text-5xl font-bold text-primary">100%</div>
-            <p className="text-lg">HR-Ready Verified</p>
+            <p className="text-lg">Verified Skills & Credentials</p>
           </div>
           <div className="space-y-2">
             <div className="text-5xl font-bold text-primary">50+</div>
-            <p className="text-lg">Skills Tracked</p>
+            <p className="text-lg">Skills Pre-Verified</p>
           </div>
         </div>
       </div>
@@ -29,25 +29,25 @@ const slides = [
   },
   {
     title: "The Challenge",
-    subtitle: "What Students & Graduates Face Today",
+    subtitle: "What Employers & Recruiters Face Today",
     content: (
       <div className="space-y-6 text-left max-w-4xl mx-auto">
         <div className="space-y-4">
           <div className="p-6 bg-destructive/10 rounded-lg">
-            <h3 className="text-2xl font-semibold mb-2">❌ Skills Gap</h3>
-            <p className="text-lg">Employers can't verify claimed skills and certifications</p>
+            <h3 className="text-2xl font-semibold mb-2">❌ Unverified Claims</h3>
+            <p className="text-lg">Candidates claim certifications and skills without proof—wasting time on unqualified applicants</p>
           </div>
           <div className="p-6 bg-destructive/10 rounded-lg">
-            <h3 className="text-2xl font-semibold mb-2">❌ Slow Hiring Process</h3>
-            <p className="text-lg">Traditional recruitment takes weeks or months</p>
+            <h3 className="text-2xl font-semibold mb-2">❌ Lengthy Screening Process</h3>
+            <p className="text-lg">Manual verification of credentials, right-to-work, and background checks takes weeks</p>
           </div>
           <div className="p-6 bg-destructive/10 rounded-lg">
-            <h3 className="text-2xl font-semibold mb-2">❌ No Visibility</h3>
-            <p className="text-lg">Graduate profiles get lost in generic job boards</p>
+            <h3 className="text-2xl font-semibold mb-2">❌ High Cost Per Hire</h3>
+            <p className="text-lg">Traditional recruitment fees are 15-25% of first-year salary plus hidden costs</p>
           </div>
           <div className="p-6 bg-destructive/10 rounded-lg">
-            <h3 className="text-2xl font-semibold mb-2">❌ Manual Verification</h3>
-            <p className="text-lg">Students spend hours preparing documents for each application</p>
+            <h3 className="text-2xl font-semibold mb-2">❌ Resume Fraud</h3>
+            <p className="text-lg">Up to 40% of resumes contain inflated claims or false information</p>
           </div>
         </div>
       </div>
@@ -55,25 +55,25 @@ const slides = [
   },
   {
     title: "The Cydena Solution",
-    subtitle: "How We're Transforming Graduate Employment",
+    subtitle: "How We're Transforming Cybersecurity Recruitment",
     content: (
       <div className="space-y-6 text-left max-w-4xl mx-auto">
         <div className="grid md:grid-cols-2 gap-6">
           <div className="p-6 bg-primary/10 rounded-lg">
-            <h3 className="text-2xl font-semibold mb-3">✅ HR-Ready Verification</h3>
-            <p className="text-lg">One-time verification of identity, right-to-work, and logistics</p>
+            <h3 className="text-2xl font-semibold mb-3">✅ Pre-Verified Talent Pool</h3>
+            <p className="text-lg">Every candidate's identity, right-to-work, and credentials verified before you see them</p>
           </div>
           <div className="p-6 bg-primary/10 rounded-lg">
-            <h3 className="text-2xl font-semibold mb-3">✅ Verified Skills</h3>
-            <p className="text-lg">Direct integration with TryHackMe, HackTheBox & certification providers</p>
+            <h3 className="text-2xl font-semibold mb-3">✅ Skills You Can Trust</h3>
+            <p className="text-lg">Direct API integration with certification providers—no more fake certificates</p>
           </div>
           <div className="p-6 bg-primary/10 rounded-lg">
-            <h3 className="text-2xl font-semibold mb-3">✅ Fast-Track Hiring</h3>
-            <p className="text-lg">Employers see verified profiles and can hire in days, not weeks</p>
+            <h3 className="text-2xl font-semibold mb-3">✅ Hire in Days</h3>
+            <p className="text-lg">Skip weeks of background checks—candidates are pre-screened and ready to start</p>
           </div>
           <div className="p-6 bg-primary/10 rounded-lg">
-            <h3 className="text-2xl font-semibold mb-3">✅ Career Growth</h3>
-            <p className="text-lg">Gamification, skill pathways, and community support</p>
+            <h3 className="text-2xl font-semibold mb-3">✅ Transparent Pricing</h3>
+            <p className="text-lg">Pay-per-unlock model with no percentage fees—you control your recruitment budget</p>
           </div>
         </div>
       </div>
@@ -122,37 +122,37 @@ const slides = [
     )
   },
   {
-    title: "Benefits for Students",
-    subtitle: "Why Students Love Cydena",
+    title: "Benefits for Employers & Recruiters",
+    subtitle: "Why Companies Choose Cydena",
     content: (
       <div className="space-y-6 max-w-4xl mx-auto text-left">
         <div className="space-y-4">
           <div className="flex gap-4 items-start p-4 bg-card rounded-lg">
-            <div className="text-3xl">💼</div>
-            <div>
-              <h3 className="text-xl font-semibold mb-2">Get Noticed by Top Employers</h3>
-              <p className="text-lg">Your verified profile stands out to cybersecurity companies actively hiring</p>
-            </div>
-          </div>
-          <div className="flex gap-4 items-start p-4 bg-card rounded-lg">
             <div className="text-3xl">⚡</div>
             <div>
-              <h3 className="text-xl font-semibold mb-2">Apply Once, Not Repeatedly</h3>
-              <p className="text-lg">Complete verification once, apply to multiple jobs without re-submitting documents</p>
+              <h3 className="text-xl font-semibold mb-2">Reduce Time-to-Hire by 80%</h3>
+              <p className="text-lg">Skip weeks of background checks—candidates are pre-verified and ready to interview immediately</p>
             </div>
           </div>
           <div className="flex gap-4 items-start p-4 bg-card rounded-lg">
-            <div className="text-3xl">📈</div>
+            <div className="text-3xl">💰</div>
             <div>
-              <h3 className="text-xl font-semibold mb-2">Showcase Real Skills</h3>
-              <p className="text-lg">Integrated verification from TryHackMe, HackTheBox, and certification providers</p>
+              <h3 className="text-xl font-semibold mb-2">Lower Cost Per Hire</h3>
+              <p className="text-lg">Pay per profile unlock, not 15-25% of salary—transparent pricing with no hidden fees</p>
             </div>
           </div>
           <div className="flex gap-4 items-start p-4 bg-card rounded-lg">
-            <div className="text-3xl">🎓</div>
+            <div className="text-3xl">✅</div>
             <div>
-              <h3 className="text-xl font-semibold mb-2">Value-Based Platform for Everyone</h3>
-              <p className="text-lg">Free for candidates, transparent pricing for employers—no hidden fees or surprises</p>
+              <h3 className="text-xl font-semibold mb-2">Zero Resume Fraud</h3>
+              <p className="text-lg">All certifications verified via API—TryHackMe, HackTheBox, Credly, and certification bodies</p>
+            </div>
+          </div>
+          <div className="flex gap-4 items-start p-4 bg-card rounded-lg">
+            <div className="text-3xl">🎯</div>
+            <div>
+              <h3 className="text-xl font-semibold mb-2">Quality Over Quantity</h3>
+              <p className="text-lg">Access a curated pool of verified cybersecurity talent—no more sifting through hundreds of unqualified applicants</p>
             </div>
           </div>
         </div>
@@ -161,7 +161,7 @@ const slides = [
   },
   {
     title: "The Verification Process",
-    subtitle: "Simple 3-Step HR-Ready Verification",
+    subtitle: "Every Candidate Pre-Screened with 3-Step HR-Ready Verification",
     content: (
       <div className="max-w-5xl mx-auto">
         <div className="grid md:grid-cols-3 gap-8">
@@ -182,8 +182,8 @@ const slides = [
           </div>
         </div>
         <div className="mt-12 p-6 bg-primary/10 rounded-lg text-center">
-          <p className="text-2xl font-semibold">Once complete: Get the HR-Ready Badge ✅</p>
-          <p className="text-lg mt-2">Valid for 1 year - shows employers you're ready to start immediately</p>
+          <p className="text-2xl font-semibold">Result: HR-Ready Badge ✅</p>
+          <p className="text-lg mt-2">Candidates you see are pre-verified and can start within days—not weeks of paperwork</p>
         </div>
       </div>
     )
@@ -288,26 +288,26 @@ const slides = [
     )
   },
   {
-    title: "Partnership Opportunities",
-    subtitle: "How Universities Can Partner with Cydena",
+    title: "Pricing & Plans",
+    subtitle: "Transparent, Value-Based Recruitment Pricing",
     content: (
       <div className="space-y-6 max-w-4xl mx-auto text-left">
         <div className="space-y-4">
           <div className="p-6 bg-primary/10 rounded-lg">
-            <h3 className="text-2xl font-semibold mb-3">🎓 Student Access Programs</h3>
-            <p className="text-lg">Provide all students with premium Cydena accounts</p>
+            <h3 className="text-2xl font-semibold mb-3">💳 Pay-Per-Unlock</h3>
+            <p className="text-lg">Unlock candidate profiles individually—only pay for candidates you want to contact</p>
           </div>
           <div className="p-6 bg-primary/10 rounded-lg">
-            <h3 className="text-2xl font-semibold mb-3">📊 Graduate Outcomes Tracking</h3>
-            <p className="text-lg">Track employment rates and career progression of your graduates</p>
+            <h3 className="text-2xl font-semibold mb-3">📦 Bulk Unlock Packages</h3>
+            <p className="text-lg">Volume discounts available—perfect for high-volume hiring or recruitment agencies</p>
           </div>
           <div className="p-6 bg-primary/10 rounded-lg">
-            <h3 className="text-2xl font-semibold mb-3">🤝 Employer Relationships</h3>
-            <p className="text-lg">Direct pipeline between your programs and hiring companies</p>
+            <h3 className="text-2xl font-semibold mb-3">🏢 Enterprise Subscriptions</h3>
+            <p className="text-lg">Unlimited access plans for organizations with ongoing recruitment needs</p>
           </div>
           <div className="p-6 bg-primary/10 rounded-lg">
-            <h3 className="text-2xl font-semibold mb-3">🏆 Co-Branded Programs</h3>
-            <p className="text-lg">Create university-specific skill pathways and certifications</p>
+            <h3 className="text-2xl font-semibold mb-3">🤝 Recruitment Agency Partnerships</h3>
+            <p className="text-lg">Special pricing and features for agencies placing multiple candidates</p>
           </div>
         </div>
       </div>
