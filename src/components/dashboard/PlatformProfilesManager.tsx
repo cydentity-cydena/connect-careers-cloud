@@ -155,20 +155,28 @@ export const PlatformProfilesManager = ({ userId }: PlatformProfilesManagerProps
               </div>
               <p className="text-sm text-muted-foreground">@{profileData.tryhackme_username}</p>
               <div className="flex flex-wrap gap-1 mt-1">
-                {profileData?.tryhackme_level && (
-                  <Badge variant="secondary" className="text-xs">
-                    Level {profileData.tryhackme_level}
-                  </Badge>
-                )}
-                {profileData?.tryhackme_points !== null && profileData?.tryhackme_points !== undefined && (
+                {profileData?.tryhackme_rank === 'Connected' || (!profileData?.tryhackme_level && !profileData?.tryhackme_points && !profileData?.tryhackme_badges) ? (
                   <Badge variant="outline" className="text-xs">
-                    {profileData.tryhackme_points.toLocaleString()} pts
+                    Connected
                   </Badge>
-                )}
-                {profileData?.tryhackme_badges !== null && profileData?.tryhackme_badges !== undefined && (
-                  <Badge variant="outline" className="text-xs">
-                    {profileData.tryhackme_badges} badges
-                  </Badge>
+                ) : (
+                  <>
+                    {profileData?.tryhackme_level && (
+                      <Badge variant="secondary" className="text-xs">
+                        Level {profileData.tryhackme_level}
+                      </Badge>
+                    )}
+                    {profileData?.tryhackme_points !== null && profileData?.tryhackme_points !== undefined && (
+                      <Badge variant="outline" className="text-xs">
+                        {profileData.tryhackme_points.toLocaleString()} pts
+                      </Badge>
+                    )}
+                    {profileData?.tryhackme_badges !== null && profileData?.tryhackme_badges !== undefined && (
+                      <Badge variant="outline" className="text-xs">
+                        {profileData.tryhackme_badges} badges
+                      </Badge>
+                    )}
+                  </>
                 )}
               </div>
             </div>

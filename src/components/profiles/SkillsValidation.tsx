@@ -98,20 +98,28 @@ export const SkillsValidation = ({
                 </div>
                 <p className="text-sm text-muted-foreground mb-2">@{tryHackMeUsername}</p>
                 <div className="flex flex-wrap gap-2">
-                  {tryHackMeLevel && (
-                    <Badge variant="default" className="text-xs">
-                      Level {tryHackMeLevel}
-                    </Badge>
-                  )}
-                  {tryHackMePoints !== null && tryHackMePoints !== undefined && (
-                    <Badge variant="secondary" className="text-xs">
-                      {tryHackMePoints.toLocaleString()} Points
-                    </Badge>
-                  )}
-                  {tryHackMeBadges !== null && tryHackMeBadges !== undefined && (
+                  {tryHackMeRank === 'Connected' || (!tryHackMeLevel && !tryHackMePoints && !tryHackMeBadges) ? (
                     <Badge variant="outline" className="text-xs">
-                      {tryHackMeBadges} Badges
+                      Connected
                     </Badge>
+                  ) : (
+                    <>
+                      {tryHackMeLevel && (
+                        <Badge variant="default" className="text-xs">
+                          Level {tryHackMeLevel}
+                        </Badge>
+                      )}
+                      {tryHackMePoints !== null && tryHackMePoints !== undefined && (
+                        <Badge variant="secondary" className="text-xs">
+                          {tryHackMePoints.toLocaleString()} Points
+                        </Badge>
+                      )}
+                      {tryHackMeBadges !== null && tryHackMeBadges !== undefined && (
+                        <Badge variant="outline" className="text-xs">
+                          {tryHackMeBadges} Badges
+                        </Badge>
+                      )}
+                    </>
                   )}
                 </div>
               </div>
@@ -123,7 +131,7 @@ export const SkillsValidation = ({
                   size="sm"
                   onClick={() => syncPlatformStats('tryhackme', tryHackMeUsername)}
                   disabled={syncing === 'tryhackme'}
-                  title="Refresh stats"
+                  title="Refresh connection"
                 >
                   <RefreshCw className={`h-4 w-4 ${syncing === 'tryhackme' ? 'animate-spin' : ''}`} />
                 </Button>
