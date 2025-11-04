@@ -233,8 +233,8 @@ const slides = [
 
           {/* REAL LMS */}
           <a href="https://real-lms.com" target="_blank" rel="noopener noreferrer" className="p-8 bg-card rounded-xl border-2 border-primary/20 hover:border-primary/40 transition-all cursor-pointer">
-            <div className="flex items-center justify-center mb-6 h-24 bg-gradient-to-br from-slate-900 to-slate-800 rounded-lg p-4">
-              <img src="/logos/real-lms-logo.png" alt="REAL LMS" className="h-16 object-contain" />
+            <div className="flex items-center justify-center mb-6 h-24">
+              <img src="/logos/real-lms-logo.png" alt="REAL LMS" className="h-20 object-contain" />
             </div>
             <div className="mb-4">
               <span className="px-4 py-1 bg-purple-500/20 text-purple-600 rounded-full text-sm font-semibold">

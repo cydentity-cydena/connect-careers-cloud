@@ -601,8 +601,8 @@ const Index = () => {
                 <a href="https://real-lms.com" target="_blank" rel="noopener noreferrer">
                   <Card className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/40 bg-card/80 backdrop-blur cursor-pointer h-full">
                     <CardContent className="p-8">
-                      <div className="flex items-center justify-center mb-6 h-24 bg-gradient-to-br from-slate-900 to-slate-800 rounded-lg p-4">
-                        <img src="/logos/real-lms-logo.png" alt="REAL LMS" className="h-16 object-contain" />
+                      <div className="flex items-center justify-center mb-6 h-24">
+                        <img src="/logos/real-lms-logo.png" alt="REAL LMS" className="h-20 object-contain" />
                       </div>
                       <div className="mb-4">
                         <span className="px-4 py-1 bg-purple-500/20 text-purple-600 rounded-full text-sm font-semibold">
