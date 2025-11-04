@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 const slides = [
   {
     title: "Cydena",
-    subtitle: "Accelerating Graduate Careers in Cybersecurity",
+    subtitle: "A Value-Based Recruitment Platform for Cybersecurity Talent",
     content: (
       <div className="text-center space-y-6">
         <p className="text-2xl">A Revolutionary Platform for Students & Graduates</p>
@@ -151,8 +151,8 @@ const slides = [
           <div className="flex gap-4 items-start p-4 bg-card rounded-lg">
             <div className="text-3xl">🎓</div>
             <div>
-              <h3 className="text-xl font-semibold mb-2">Free for Students & Graduates</h3>
-              <p className="text-lg">No cost to create profile, get verified, and apply to jobs</p>
+              <h3 className="text-xl font-semibold mb-2">Value-Based Platform for Everyone</h3>
+              <p className="text-lg">Free for candidates, transparent pricing for employers—no hidden fees or surprises</p>
             </div>
           </div>
         </div>
@@ -173,7 +173,7 @@ const slides = [
           <div className="text-center space-y-4 p-6 border-2 border-primary rounded-lg">
             <div className="text-6xl font-bold text-primary">2</div>
             <h3 className="text-2xl font-semibold">Right to Work</h3>
-            <p className="text-lg">Upload work authorization documents - verified within 24 hours</p>
+            <p className="text-lg">Upload work authorization documents securely - GDPR compliant storage, verified within 24 hours</p>
           </div>
           <div className="text-center space-y-4 p-6 border-2 border-primary rounded-lg">
             <div className="text-6xl font-bold text-primary">3</div>
