@@ -16,9 +16,6 @@ interface PlatformProfilesManagerProps {
 export const PlatformProfilesManager = ({ userId }: PlatformProfilesManagerProps) => {
   const [editMode, setEditMode] = useState(false);
   const [thmUsername, setThmUsername] = useState("");
-  const [thmLevel, setThmLevel] = useState("");
-  const [thmPoints, setThmPoints] = useState("");
-  const [thmBadges, setThmBadges] = useState("");
   const [htbUsername, setHtbUsername] = useState("");
   const [htbApiKey, setHtbApiKey] = useState("");
   const [saving, setSaving] = useState(false);
@@ -43,9 +40,6 @@ export const PlatformProfilesManager = ({ userId }: PlatformProfilesManagerProps
   useEffect(() => {
     if (profileData) {
       setThmUsername(profileData.tryhackme_username || "");
-      setThmLevel(profileData.tryhackme_level?.toString() || "");
-      setThmPoints(profileData.tryhackme_points?.toString() || "");
-      setThmBadges(profileData.tryhackme_badges?.toString() || "");
       setHtbUsername(profileData.hackthebox_username || "");
     }
   }, [profileData]);
@@ -84,9 +78,6 @@ export const PlatformProfilesManager = ({ userId }: PlatformProfilesManagerProps
     try {
       const updateData: any = {
         tryhackme_username: thmUsername || null,
-        tryhackme_level: thmLevel ? parseInt(thmLevel) : null,
-        tryhackme_points: thmPoints ? parseInt(thmPoints) : null,
-        tryhackme_badges: thmBadges ? parseInt(thmBadges) : null,
         hackthebox_username: htbUsername || null,
       };
 
@@ -97,7 +88,7 @@ export const PlatformProfilesManager = ({ userId }: PlatformProfilesManagerProps
 
       if (error) throw error;
 
-      // Sync platform connections (not stats)
+      // Sync platform connections
       if (thmUsername) await syncPlatformStats('tryhackme', thmUsername);
       if (htbUsername) await syncPlatformStats('hackthebox', htbUsername);
 
@@ -126,54 +117,18 @@ export const PlatformProfilesManager = ({ userId }: PlatformProfilesManagerProps
         <Alert>
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
-            <strong>TryHackMe:</strong> Enter your stats manually (API unavailable).<br />
-            <strong>HackTheBox:</strong> Stats can be auto-synced with API key (coming soon).
+            Connect your platform profiles to automatically sync your stats and achievements.
           </AlertDescription>
         </Alert>
 
-        <div className="space-y-3 p-4 border rounded-lg">
-          <h3 className="font-semibold">TryHackMe</h3>
-          <div className="space-y-2">
-            <Label htmlFor="thm">Username</Label>
-            <Input
-              id="thm"
-              value={thmUsername}
-              onChange={(e) => setThmUsername(e.target.value)}
-              placeholder="Enter username"
-            />
-          </div>
-          <div className="grid grid-cols-3 gap-2">
-            <div className="space-y-2">
-              <Label htmlFor="thm-level">Level</Label>
-              <Input
-                id="thm-level"
-                type="number"
-                value={thmLevel}
-                onChange={(e) => setThmLevel(e.target.value)}
-                placeholder="Level"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="thm-points">Points</Label>
-              <Input
-                id="thm-points"
-                type="number"
-                value={thmPoints}
-                onChange={(e) => setThmPoints(e.target.value)}
-                placeholder="Points"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="thm-badges">Badges</Label>
-              <Input
-                id="thm-badges"
-                type="number"
-                value={thmBadges}
-                onChange={(e) => setThmBadges(e.target.value)}
-                placeholder="Badges"
-              />
-            </div>
-          </div>
+        <div className="space-y-2">
+          <Label htmlFor="thm">TryHackMe Username</Label>
+          <Input
+            id="thm"
+            value={thmUsername}
+            onChange={(e) => setThmUsername(e.target.value)}
+            placeholder="Enter username"
+          />
         </div>
 
         <div className="space-y-2">
@@ -184,7 +139,6 @@ export const PlatformProfilesManager = ({ userId }: PlatformProfilesManagerProps
             onChange={(e) => setHtbUsername(e.target.value)}
             placeholder="Enter username"
           />
-          <p className="text-xs text-muted-foreground">Auto-sync with API key coming soon</p>
         </div>
 
         <div className="flex gap-2">
