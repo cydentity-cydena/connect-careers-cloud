@@ -197,7 +197,7 @@ const slides = [
           {/* TRECCERT */}
           <div className="p-8 bg-card rounded-xl border-2 border-primary/20 hover:border-primary/40 transition-all">
             <div className="flex items-center justify-center mb-6 h-24">
-              <img src="/logos/treccert-logo.svg" alt="TRECCERT" className="h-16 object-contain" />
+              <img src="/logos/treccert-logo-banner.png" alt="TRECCERT" className="h-16 object-contain" />
             </div>
             <div className="mb-4">
               <span className="px-4 py-1 bg-blue-500/20 text-blue-600 rounded-full text-sm font-semibold">
