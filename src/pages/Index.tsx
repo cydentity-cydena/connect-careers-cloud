@@ -538,76 +538,84 @@ const Index = () => {
               </p>
               <div className="grid md:grid-cols-2 gap-8">
                 {/* TRECCERT */}
-                <Card className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/40 bg-card/80 backdrop-blur">
-                  <CardContent className="p-8">
-                    <div className="flex items-center justify-center mb-6 h-24">
-                      <img src="/logos/treccert-logo-banner.png" alt="TRECCERT" className="h-16 object-contain" />
-                    </div>
-                    <div className="mb-4">
-                      <span className="px-4 py-1 bg-blue-500/20 text-blue-600 rounded-full text-sm font-semibold">
-                        Accreditation
-                      </span>
-                    </div>
-                    <h4 className="text-2xl font-bold mb-3">TRECCERT</h4>
-                    <p className="text-muted-foreground">
-                      Certification body providing certifications that attest the competencies of professionals in information security and compliance.
-                    </p>
-                  </CardContent>
-                </Card>
+                <a href="https://treccert.com" target="_blank" rel="noopener noreferrer">
+                  <Card className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/40 bg-card/80 backdrop-blur cursor-pointer h-full">
+                    <CardContent className="p-8">
+                      <div className="flex items-center justify-center mb-6 h-24">
+                        <img src="/logos/treccert-logo-banner.png" alt="TRECCERT" className="h-16 object-contain" />
+                      </div>
+                      <div className="mb-4">
+                        <span className="px-4 py-1 bg-blue-500/20 text-blue-600 rounded-full text-sm font-semibold">
+                          Accreditation
+                        </span>
+                      </div>
+                      <h4 className="text-2xl font-bold mb-3">TRECCERT</h4>
+                      <p className="text-muted-foreground">
+                        Certification body providing certifications that attest the competencies of professionals in information security and compliance.
+                      </p>
+                    </CardContent>
+                  </Card>
+                </a>
 
                 {/* Cydentity */}
-                <Card className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/40 bg-card/80 backdrop-blur">
-                  <CardContent className="p-8">
-                    <div className="flex items-center justify-center mb-6 h-24">
-                      <img src="/logos/cydentity-logo-white.png" alt="Cydentity" className="h-16 object-contain" />
-                    </div>
-                    <div className="mb-4">
-                      <span className="px-4 py-1 bg-primary/20 text-primary rounded-full text-sm font-semibold">
-                        Cybersecurity
-                      </span>
-                    </div>
-                    <h4 className="text-2xl font-bold mb-3">Cydentity</h4>
-                    <p className="text-muted-foreground">
-                      Leading cybersecurity solutions provider, delivering comprehensive security services and training to protect organizations from evolving digital threats.
-                    </p>
-                  </CardContent>
-                </Card>
+                <a href="https://cydentity.com" target="_blank" rel="noopener noreferrer">
+                  <Card className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/40 bg-card/80 backdrop-blur cursor-pointer h-full">
+                    <CardContent className="p-8">
+                      <div className="flex items-center justify-center mb-6 h-24">
+                        <img src="/logos/cydentity-logo-white.png" alt="Cydentity" className="h-16 object-contain" />
+                      </div>
+                      <div className="mb-4">
+                        <span className="px-4 py-1 bg-primary/20 text-primary rounded-full text-sm font-semibold">
+                          Cybersecurity
+                        </span>
+                      </div>
+                      <h4 className="text-2xl font-bold mb-3">Cydentity</h4>
+                      <p className="text-muted-foreground">
+                        Leading cybersecurity solutions provider, delivering comprehensive security services and training to protect organizations from evolving digital threats.
+                      </p>
+                    </CardContent>
+                  </Card>
+                </a>
 
                 {/* Cydentity Academy */}
-                <Card className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/40 bg-card/80 backdrop-blur">
-                  <CardContent className="p-8">
-                    <div className="flex items-center justify-center mb-6 h-24">
-                      <img src="/logos/cydentity-academy-logo-white.png" alt="Cydentity Academy" className="h-16 object-contain" />
-                    </div>
-                    <div className="mb-4">
-                      <span className="px-4 py-1 bg-primary/20 text-primary rounded-full text-sm font-semibold">
-                        Training & Education
-                      </span>
-                    </div>
-                    <h4 className="text-2xl font-bold mb-3">Cydentity Academy</h4>
-                    <p className="text-muted-foreground">
-                      Leading provider of cybersecurity and AI security training, offering comprehensive courses to upskill professionals and students in cutting-edge security practices.
-                    </p>
-                  </CardContent>
-                </Card>
+                <a href="https://cydentityacademy.com" target="_blank" rel="noopener noreferrer">
+                  <Card className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/40 bg-card/80 backdrop-blur cursor-pointer h-full">
+                    <CardContent className="p-8">
+                      <div className="flex items-center justify-center mb-6 h-24">
+                        <img src="/logos/cydentity-academy-logo-white.png" alt="Cydentity Academy" className="h-16 object-contain" />
+                      </div>
+                      <div className="mb-4">
+                        <span className="px-4 py-1 bg-primary/20 text-primary rounded-full text-sm font-semibold">
+                          Training & Education
+                        </span>
+                      </div>
+                      <h4 className="text-2xl font-bold mb-3">Cydentity Academy</h4>
+                      <p className="text-muted-foreground">
+                        Leading provider of cybersecurity and AI security training, offering comprehensive courses to upskill professionals and students in cutting-edge security practices.
+                      </p>
+                    </CardContent>
+                  </Card>
+                </a>
 
                 {/* REAL LMS */}
-                <Card className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/40 bg-card/80 backdrop-blur">
-                  <CardContent className="p-8">
-                    <div className="flex items-center justify-center mb-6 h-24 bg-gradient-to-br from-slate-900 to-slate-800 rounded-lg p-4">
-                      <img src="/logos/real-lms-logo.png" alt="REAL LMS" className="h-16 object-contain" />
-                    </div>
-                    <div className="mb-4">
-                      <span className="px-4 py-1 bg-purple-500/20 text-purple-600 rounded-full text-sm font-semibold">
-                        Training Platform
-                      </span>
-                    </div>
-                    <h4 className="text-2xl font-bold mb-3">REAL LMS</h4>
-                    <p className="text-muted-foreground">
-                      Real-world SOC analyst training platform with hands-on labs and simulations, helping students gain practical blue team experience in a realistic environment.
-                    </p>
-                  </CardContent>
-                </Card>
+                <a href="https://real-lms.com" target="_blank" rel="noopener noreferrer">
+                  <Card className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/40 bg-card/80 backdrop-blur cursor-pointer h-full">
+                    <CardContent className="p-8">
+                      <div className="flex items-center justify-center mb-6 h-24 bg-gradient-to-br from-slate-900 to-slate-800 rounded-lg p-4">
+                        <img src="/logos/real-lms-logo.png" alt="REAL LMS" className="h-16 object-contain" />
+                      </div>
+                      <div className="mb-4">
+                        <span className="px-4 py-1 bg-purple-500/20 text-purple-600 rounded-full text-sm font-semibold">
+                          Training Platform
+                        </span>
+                      </div>
+                      <h4 className="text-2xl font-bold mb-3">REAL LMS</h4>
+                      <p className="text-muted-foreground">
+                        Real-world SOC analyst training platform with hands-on labs and simulations, helping students gain practical blue team experience in a realistic environment.
+                      </p>
+                    </CardContent>
+                  </Card>
+                </a>
               </div>
             </div>
 

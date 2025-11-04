@@ -184,7 +184,7 @@ const slides = [
       <div className="max-w-6xl mx-auto space-y-12">
         <div className="grid md:grid-cols-2 gap-8">
           {/* TRECCERT */}
-          <div className="p-8 bg-card rounded-xl border-2 border-primary/20 hover:border-primary/40 transition-all">
+          <a href="https://treccert.com" target="_blank" rel="noopener noreferrer" className="p-8 bg-card rounded-xl border-2 border-primary/20 hover:border-primary/40 transition-all cursor-pointer">
             <div className="flex items-center justify-center mb-6 h-24">
               <img src="/logos/treccert-logo-banner.png" alt="TRECCERT" className="h-16 object-contain" />
             </div>
@@ -197,10 +197,10 @@ const slides = [
             <p className="text-lg text-muted-foreground">
               Certification body providing certifications that attest the competencies of professionals in information security and compliance.
             </p>
-          </div>
+          </a>
 
           {/* Cydentity */}
-          <div className="p-8 bg-card rounded-xl border-2 border-primary/20 hover:border-primary/40 transition-all">
+          <a href="https://cydentity.com" target="_blank" rel="noopener noreferrer" className="p-8 bg-card rounded-xl border-2 border-primary/20 hover:border-primary/40 transition-all cursor-pointer">
             <div className="flex items-center justify-center mb-6 h-24">
               <img src="/logos/cydentity-logo-white.png" alt="Cydentity" className="h-16 object-contain" />
             </div>
@@ -213,10 +213,10 @@ const slides = [
             <p className="text-lg text-muted-foreground">
               Leading cybersecurity solutions provider, delivering comprehensive security services and training to protect organizations from evolving digital threats.
             </p>
-          </div>
+          </a>
 
           {/* Cydentity Academy */}
-          <div className="p-8 bg-card rounded-xl border-2 border-primary/20 hover:border-primary/40 transition-all">
+          <a href="https://cydentityacademy.com" target="_blank" rel="noopener noreferrer" className="p-8 bg-card rounded-xl border-2 border-primary/20 hover:border-primary/40 transition-all cursor-pointer">
             <div className="flex items-center justify-center mb-6 h-24">
               <img src="/logos/cydentity-academy-logo-white.png" alt="Cydentity Academy" className="h-16 object-contain" />
             </div>
@@ -229,10 +229,10 @@ const slides = [
             <p className="text-lg text-muted-foreground">
               Leading provider of cybersecurity and AI security training, offering comprehensive courses to upskill professionals and students in cutting-edge security practices.
             </p>
-          </div>
+          </a>
 
           {/* REAL LMS */}
-          <div className="p-8 bg-card rounded-xl border-2 border-primary/20 hover:border-primary/40 transition-all">
+          <a href="https://real-lms.com" target="_blank" rel="noopener noreferrer" className="p-8 bg-card rounded-xl border-2 border-primary/20 hover:border-primary/40 transition-all cursor-pointer">
             <div className="flex items-center justify-center mb-6 h-24 bg-gradient-to-br from-slate-900 to-slate-800 rounded-lg p-4">
               <img src="/logos/real-lms-logo.png" alt="REAL LMS" className="h-16 object-contain" />
             </div>
@@ -245,7 +245,7 @@ const slides = [
             <p className="text-lg text-muted-foreground">
               Real-world SOC analyst training platform with hands-on labs and simulations, helping students gain practical blue team experience in a realistic environment.
             </p>
-          </div>
+          </a>
         </div>
 
         {/* Value Proposition */}
