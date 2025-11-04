@@ -45,7 +45,7 @@ import PodManagement from "./pages/admin/PodManagement";
 import VerificationReview from "./pages/admin/VerificationReview";
 import NotFound from "./pages/NotFound";
 import Messages from "./pages/Messages";
-import UniversityPresentation from "./pages/UniversityPresentation";
+import EmployerPitchDeck from "./pages/EmployerPitchDeck";
 
 const queryClient = new QueryClient();
 
@@ -101,7 +101,7 @@ const App = () => (
               <Route path="/admin/verification-review" element={<ProtectedRoute><VerificationReview /></ProtectedRoute>} />
               
               {/* Standalone Presentation */}
-              <Route path="/university-presentation" element={<UniversityPresentation />} />
+              <Route path="/employer-pitch-deck" element={<EmployerPitchDeck />} />
               
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
