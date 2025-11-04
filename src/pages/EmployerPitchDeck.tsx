@@ -12,8 +12,8 @@ const slides = [
         <p className="text-2xl">Hire Verified Cybersecurity Talent in Days, Not Months</p>
         <div className="grid grid-cols-3 gap-8 mt-12">
           <div className="space-y-2">
-            <div className="text-5xl font-bold text-primary">80%</div>
-            <p className="text-lg">Faster Hiring Process</p>
+            <div className="text-5xl font-bold text-primary">100%</div>
+            <p className="text-lg">Hiring Confidence</p>
           </div>
           <div className="space-y-2">
             <div className="text-5xl font-bold text-primary">100%</div>
@@ -68,8 +68,8 @@ const slides = [
             <p className="text-lg">Direct API integration with certification providers—no more fake certificates</p>
           </div>
           <div className="p-6 bg-primary/10 rounded-lg">
-            <h3 className="text-2xl font-semibold mb-3">✅ Hire in Days</h3>
-            <p className="text-lg">Skip weeks of background checks—candidates are pre-screened and ready to start</p>
+            <h3 className="text-2xl font-semibold mb-3">✅ Hire with Confidence</h3>
+            <p className="text-lg">Every candidate pre-screened and verified—eliminate hiring risk and uncertainty</p>
           </div>
           <div className="p-6 bg-primary/10 rounded-lg">
             <h3 className="text-2xl font-semibold mb-3">✅ Transparent Pricing</h3>
@@ -128,10 +128,10 @@ const slides = [
       <div className="space-y-6 max-w-4xl mx-auto text-left">
         <div className="space-y-4">
           <div className="flex gap-4 items-start p-4 bg-card rounded-lg">
-            <div className="text-3xl">⚡</div>
+            <div className="text-3xl">🎯</div>
             <div>
-              <h3 className="text-xl font-semibold mb-2">Reduce Time-to-Hire by 80%</h3>
-              <p className="text-lg">Skip weeks of background checks—candidates are pre-verified and ready to interview immediately</p>
+              <h3 className="text-xl font-semibold mb-2">Hire with Complete Confidence</h3>
+              <p className="text-lg">Every credential verified, identity confirmed, right-to-work checked—zero hiring risk</p>
             </div>
           </div>
           <div className="flex gap-4 items-start p-4 bg-card rounded-lg">
@@ -149,7 +149,7 @@ const slides = [
             </div>
           </div>
           <div className="flex gap-4 items-start p-4 bg-card rounded-lg">
-            <div className="text-3xl">🎯</div>
+            <div className="text-3xl">⚡</div>
             <div>
               <h3 className="text-xl font-semibold mb-2">Quality Over Quantity</h3>
               <p className="text-lg">Access a curated pool of verified cybersecurity talent—no more sifting through hundreds of unqualified applicants</p>
