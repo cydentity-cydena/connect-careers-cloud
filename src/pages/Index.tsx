@@ -468,6 +468,177 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Partners Section */}
+      <section className="py-16 md:py-24 bg-gradient-to-br from-primary/5 via-background to-secondary/5">
+        <div className="container mx-auto px-4">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-12 md:mb-16 animate-fade-in">
+              <div className="inline-block px-4 py-2 bg-primary/10 rounded-full mb-4">
+                <span className="text-sm font-semibold text-primary">PARTNERS</span>
+              </div>
+              <h2 className="text-3xl md:text-5xl font-bold mb-4">
+                Meet Our <span className="bg-gradient-cyber bg-clip-text text-transparent">Partners</span>
+              </h2>
+              <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
+                Connecting you with industry-leading organizations that power our training ecosystem. From certification authorities to cybersecurity experts and recruitment specialists.
+              </p>
+            </div>
+
+            {/* The Power of Partnership */}
+            <div className="mb-16">
+              <h3 className="text-2xl md:text-3xl font-bold text-center mb-8">The Power of Partnership</h3>
+              <p className="text-center text-muted-foreground mb-8 max-w-3xl mx-auto">
+                Our strategic partnerships enable us to deliver exceptional training experiences, globally recognized certifications, and cutting-edge learning technology
+              </p>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <Card className="group hover:shadow-xl transition-all duration-300 bg-card/80 backdrop-blur text-center">
+                  <CardContent className="p-6">
+                    <div className="bg-primary/10 w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                      <Shield className="h-6 w-6 text-primary" />
+                    </div>
+                    <h4 className="font-semibold mb-2">Accredited Excellence</h4>
+                    <p className="text-sm text-muted-foreground">TRECCERT accreditation ensures internationally recognized certifications</p>
+                  </CardContent>
+                </Card>
+                <Card className="group hover:shadow-xl transition-all duration-300 bg-card/80 backdrop-blur text-center">
+                  <CardContent className="p-6">
+                    <div className="bg-secondary/10 w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                      <Users className="h-6 w-6 text-secondary" />
+                    </div>
+                    <h4 className="font-semibold mb-2">Expert Network</h4>
+                    <p className="text-sm text-muted-foreground">Access to industry-leading cybersecurity professionals and thought leaders</p>
+                  </CardContent>
+                </Card>
+                <Card className="group hover:shadow-xl transition-all duration-300 bg-card/80 backdrop-blur text-center">
+                  <CardContent className="p-6">
+                    <div className="bg-accent/10 w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                      <Eye className="h-6 w-6 text-accent" />
+                    </div>
+                    <h4 className="font-semibold mb-2">Global Reach</h4>
+                    <p className="text-sm text-muted-foreground">Training and certification recognized across international markets</p>
+                  </CardContent>
+                </Card>
+                <Card className="group hover:shadow-xl transition-all duration-300 bg-card/80 backdrop-blur text-center">
+                  <CardContent className="p-6">
+                    <div className="bg-primary/10 w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                      <TrendingUp className="h-6 w-6 text-primary" />
+                    </div>
+                    <h4 className="font-semibold mb-2">Career Growth</h4>
+                    <p className="text-sm text-muted-foreground">Direct pathways to cybersecurity careers through Cydena recruitment</p>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+
+            {/* Partner Logos Grid */}
+            <div className="space-y-8">
+              <h3 className="text-2xl md:text-3xl font-bold text-center">Our Partners</h3>
+              <p className="text-center text-muted-foreground mb-8">
+                Collaborating with industry leaders to deliver world-class training and certification
+              </p>
+              <div className="grid md:grid-cols-2 gap-8">
+                {/* TRECCERT */}
+                <Card className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/40 bg-card/80 backdrop-blur">
+                  <CardContent className="p-8">
+                    <div className="flex items-center justify-center mb-6 h-24">
+                      <img src="/logos/treccert-logo-banner.png" alt="TRECCERT" className="h-16 object-contain" />
+                    </div>
+                    <div className="mb-4">
+                      <span className="px-4 py-1 bg-blue-500/20 text-blue-600 rounded-full text-sm font-semibold">
+                        Accreditation
+                      </span>
+                    </div>
+                    <h4 className="text-2xl font-bold mb-3">TRECCERT</h4>
+                    <p className="text-muted-foreground">
+                      Certification body providing certifications that attest the competencies of professionals in information security and compliance.
+                    </p>
+                  </CardContent>
+                </Card>
+
+                {/* Cydentity */}
+                <Card className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/40 bg-card/80 backdrop-blur">
+                  <CardContent className="p-8">
+                    <div className="flex items-center justify-center mb-6 h-24">
+                      <img src="/logos/cydentity-logo-white.png" alt="Cydentity" className="h-16 object-contain" />
+                    </div>
+                    <div className="mb-4">
+                      <span className="px-4 py-1 bg-primary/20 text-primary rounded-full text-sm font-semibold">
+                        Cybersecurity
+                      </span>
+                    </div>
+                    <h4 className="text-2xl font-bold mb-3">Cydentity</h4>
+                    <p className="text-muted-foreground">
+                      Leading cybersecurity solutions provider, delivering comprehensive security services and training to protect organizations from evolving digital threats.
+                    </p>
+                  </CardContent>
+                </Card>
+
+                {/* Cydentity Academy */}
+                <Card className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/40 bg-card/80 backdrop-blur">
+                  <CardContent className="p-8">
+                    <div className="flex items-center justify-center mb-6 h-24">
+                      <img src="/logos/cydentity-academy-logo-white.png" alt="Cydentity Academy" className="h-16 object-contain" />
+                    </div>
+                    <div className="mb-4">
+                      <span className="px-4 py-1 bg-primary/20 text-primary rounded-full text-sm font-semibold">
+                        Training & Education
+                      </span>
+                    </div>
+                    <h4 className="text-2xl font-bold mb-3">Cydentity Academy</h4>
+                    <p className="text-muted-foreground">
+                      Leading provider of cybersecurity and AI security training, offering comprehensive courses to upskill professionals and students in cutting-edge security practices.
+                    </p>
+                  </CardContent>
+                </Card>
+
+                {/* real LMS */}
+                <Card className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/40 bg-card/80 backdrop-blur">
+                  <CardContent className="p-8">
+                    <div className="flex items-center justify-center mb-6 h-24">
+                      <img src="/logos/real-lms-logo.png" alt="real LMS" className="h-20 object-contain" />
+                    </div>
+                    <div className="mb-4">
+                      <span className="px-4 py-1 bg-purple-500/20 text-purple-600 rounded-full text-sm font-semibold">
+                        Hands-On Labs
+                      </span>
+                    </div>
+                    <h4 className="text-2xl font-bold mb-3">real LMS</h4>
+                    <p className="text-muted-foreground">
+                      Real-world SOC analyst training platform with hands-on labs and simulations, helping students gain practical blue team experience in a realistic environment.
+                    </p>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+
+            {/* Partner Value Proposition */}
+            <div className="mt-12 p-8 bg-primary/10 rounded-xl">
+              <h4 className="text-2xl font-semibold mb-4 text-center">The Value of Our Partnerships</h4>
+              <p className="text-lg text-center mb-6 text-muted-foreground">
+                Through our partner network, students gain access to industry-recognized certifications, comprehensive training programs, and real-world labs—ensuring they're job-ready from day one.
+              </p>
+              <div className="grid md:grid-cols-3 gap-6 mt-6">
+                <div className="text-center">
+                  <div className="text-4xl mb-2">🎓</div>
+                  <p className="font-semibold">Industry Certifications</p>
+                  <p className="text-sm text-muted-foreground">TRECCERT accredited programs</p>
+                </div>
+                <div className="text-center">
+                  <div className="text-4xl mb-2">🛡️</div>
+                  <p className="font-semibold">Expert Training</p>
+                  <p className="text-sm text-muted-foreground">Cydentity & Academy courses</p>
+                </div>
+                <div className="text-center">
+                  <div className="text-4xl mb-2">💻</div>
+                  <p className="font-semibold">Practical Experience</p>
+                  <p className="text-sm text-muted-foreground">Hands-on labs & simulations</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="py-24 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-cyber opacity-10" />
