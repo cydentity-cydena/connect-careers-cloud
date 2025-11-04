@@ -35,3 +35,6 @@ verify_jwt = true
 
 [functions.verify-certification-ai]
 verify_jwt = true
+
+[functions.sync-platform-stats]
+verify_jwt = true

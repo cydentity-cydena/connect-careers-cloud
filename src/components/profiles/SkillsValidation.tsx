@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Target, Trophy, ExternalLink } from "lucide-react";
+import { Target, Trophy, ExternalLink, RefreshCw, CheckCircle2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -29,7 +29,41 @@ export const SkillsValidation = ({
   const [thmUsername, setThmUsername] = useState(tryHackMeUsername || "");
   const [htbUsername, setHtbUsername] = useState(hackTheBoxUsername || "");
   const [saving, setSaving] = useState(false);
+  const [syncing, setSyncing] = useState<string | null>(null);
   const { toast } = useToast();
+
+  const syncPlatformStats = async (platform: 'tryhackme' | 'hackthebox', username: string) => {
+    if (!username) return;
+    
+    setSyncing(platform);
+    try {
+      const { data, error } = await supabase.functions.invoke('sync-platform-stats', {
+        body: { 
+          platform, 
+          username,
+          userId: candidateId 
+        }
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Stats Synced",
+        description: `${platform === 'tryhackme' ? 'TryHackMe' : 'HackTheBox'} stats updated successfully`,
+      });
+
+      // Refresh the page to show updated stats
+      window.location.reload();
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Sync Failed",
+        description: error.message || "Failed to sync platform stats",
+      });
+    } finally {
+      setSyncing(null);
+    }
+  };
 
   const handleSave = async () => {
     setSaving(true);
@@ -46,9 +80,18 @@ export const SkillsValidation = ({
 
       toast({
         title: "Success",
-        description: "Skills platform profiles updated",
+        description: "Skills platform profiles updated. Syncing stats...",
       });
+      
       setEditMode(false);
+
+      // Sync stats for both platforms if usernames provided
+      if (thmUsername && thmUsername !== tryHackMeUsername) {
+        await syncPlatformStats('tryhackme', thmUsername);
+      }
+      if (htbUsername && htbUsername !== hackTheBoxUsername) {
+        await syncPlatformStats('hackthebox', htbUsername);
+      }
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -119,13 +162,28 @@ export const SkillsValidation = ({
                 <div className="flex items-center gap-3">
                   <Trophy className="h-5 w-5 text-primary" />
                   <div>
-                    <p className="font-medium">TryHackMe</p>
+                    <p className="font-medium flex items-center gap-2">
+                      TryHackMe
+                      {tryHackMeRank && (
+                        <CheckCircle2 className="h-4 w-4 text-green-500" />
+                      )}
+                    </p>
                     <p className="text-sm text-muted-foreground">@{tryHackMeUsername}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  {tryHackMeRank && (
+                  {tryHackMeRank && tryHackMeRank !== 'Unranked' && (
                     <Badge variant="secondary">{tryHackMeRank}</Badge>
+                  )}
+                  {isOwnProfile && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => syncPlatformStats('tryhackme', tryHackMeUsername)}
+                      disabled={syncing === 'tryhackme'}
+                    >
+                      <RefreshCw className={`h-4 w-4 ${syncing === 'tryhackme' ? 'animate-spin' : ''}`} />
+                    </Button>
                   )}
                   <Button
                     variant="ghost"
@@ -149,13 +207,28 @@ export const SkillsValidation = ({
                 <div className="flex items-center gap-3">
                   <Trophy className="h-5 w-5 text-primary" />
                   <div>
-                    <p className="font-medium">HackTheBox</p>
+                    <p className="font-medium flex items-center gap-2">
+                      HackTheBox
+                      {hackTheBoxRank && (
+                        <CheckCircle2 className="h-4 w-4 text-green-500" />
+                      )}
+                    </p>
                     <p className="text-sm text-muted-foreground">@{hackTheBoxUsername}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  {hackTheBoxRank && (
+                  {hackTheBoxRank && hackTheBoxRank !== 'Connected' && (
                     <Badge variant="secondary">{hackTheBoxRank}</Badge>
+                  )}
+                  {isOwnProfile && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => syncPlatformStats('hackthebox', hackTheBoxUsername)}
+                      disabled={syncing === 'hackthebox'}
+                    >
+                      <RefreshCw className={`h-4 w-4 ${syncing === 'hackthebox' ? 'animate-spin' : ''}`} />
+                    </Button>
                   )}
                   <Button
                     variant="ghost"
