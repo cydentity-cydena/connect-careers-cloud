@@ -100,7 +100,7 @@ export default function ProfileDetail() {
       let profileData: any = null;
       const { data: directProfile } = await supabase
         .from("profiles")
-        .select("id, full_name, username, avatar_url, location, bio, email, desired_job_title")
+        .select("id, full_name, username, avatar_url, location, bio, email, desired_job_title, tryhackme_username, hackthebox_username, tryhackme_rank, hackthebox_rank")
         .eq("id", id)
         .maybeSingle();
 
