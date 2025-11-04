@@ -26,7 +26,7 @@ export const PlatformProfilesManager = ({ userId }: PlatformProfilesManagerProps
     queryFn: async () => {
       const { data, error } = await supabase
         .from('profiles')
-        .select('tryhackme_username, hackthebox_username, tryhackme_rank, hackthebox_rank')
+        .select('tryhackme_username, hackthebox_username, tryhackme_rank, hackthebox_rank, tryhackme_level, tryhackme_points, tryhackme_badges, hackthebox_points, hackthebox_rank_text, hackthebox_user_owns')
         .eq('id', userId)
         .single();
 
@@ -146,19 +146,31 @@ export const PlatformProfilesManager = ({ userId }: PlatformProfilesManagerProps
     <div className="space-y-3">
       {profileData?.tryhackme_username && (
         <div className="flex items-center justify-between p-3 rounded-lg border bg-card">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 flex-1">
             <Trophy className="h-5 w-5 text-primary" />
-            <div>
+            <div className="flex-1">
               <div className="flex items-center gap-2">
                 <p className="font-medium">TryHackMe</p>
                 {profileData?.tryhackme_rank && <CheckCircle2 className="h-4 w-4 text-green-500" />}
               </div>
               <p className="text-sm text-muted-foreground">@{profileData.tryhackme_username}</p>
-              {profileData?.tryhackme_rank && (
-                <Badge variant="secondary" className="mt-1">
-                  {profileData.tryhackme_rank}
-                </Badge>
-              )}
+              <div className="flex flex-wrap gap-1 mt-1">
+                {profileData?.tryhackme_level && (
+                  <Badge variant="secondary" className="text-xs">
+                    Level {profileData.tryhackme_level}
+                  </Badge>
+                )}
+                {profileData?.tryhackme_points !== null && profileData?.tryhackme_points !== undefined && (
+                  <Badge variant="outline" className="text-xs">
+                    {profileData.tryhackme_points.toLocaleString()} pts
+                  </Badge>
+                )}
+                {profileData?.tryhackme_badges !== null && profileData?.tryhackme_badges !== undefined && (
+                  <Badge variant="outline" className="text-xs">
+                    {profileData.tryhackme_badges} badges
+                  </Badge>
+                )}
+              </div>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -184,19 +196,31 @@ export const PlatformProfilesManager = ({ userId }: PlatformProfilesManagerProps
       
       {profileData?.hackthebox_username && (
         <div className="flex items-center justify-between p-3 rounded-lg border bg-card">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 flex-1">
             <Trophy className="h-5 w-5 text-primary" />
-            <div>
+            <div className="flex-1">
               <div className="flex items-center gap-2">
                 <p className="font-medium">HackTheBox</p>
                 {profileData?.hackthebox_rank && <CheckCircle2 className="h-4 w-4 text-green-500" />}
               </div>
               <p className="text-sm text-muted-foreground">@{profileData.hackthebox_username}</p>
-              {profileData?.hackthebox_rank && (
-                <Badge variant="secondary" className="mt-1">
-                  {profileData.hackthebox_rank}
-                </Badge>
-              )}
+              <div className="flex flex-wrap gap-1 mt-1">
+                {profileData?.hackthebox_rank_text && profileData.hackthebox_rank_text !== 'Connected' && (
+                  <Badge variant="secondary" className="text-xs">
+                    {profileData.hackthebox_rank_text}
+                  </Badge>
+                )}
+                {profileData?.hackthebox_points !== null && profileData?.hackthebox_points !== undefined && (
+                  <Badge variant="outline" className="text-xs">
+                    {profileData.hackthebox_points.toLocaleString()} pts
+                  </Badge>
+                )}
+                {profileData?.hackthebox_user_owns !== null && profileData?.hackthebox_user_owns !== undefined && (
+                  <Badge variant="outline" className="text-xs">
+                    {profileData.hackthebox_user_owns} owns
+                  </Badge>
+                )}
+              </div>
             </div>
           </div>
           <div className="flex items-center gap-2">

@@ -100,7 +100,7 @@ export default function ProfileDetail() {
       let profileData: any = null;
       const { data: directProfile } = await supabase
         .from("profiles")
-        .select("id, full_name, username, avatar_url, location, bio, email, desired_job_title, tryhackme_username, hackthebox_username, tryhackme_rank, hackthebox_rank")
+        .select("id, full_name, username, avatar_url, location, bio, email, desired_job_title, tryhackme_username, hackthebox_username, tryhackme_rank, hackthebox_rank, tryhackme_level, tryhackme_points, tryhackme_badges, hackthebox_points, hackthebox_rank_text, hackthebox_user_owns")
         .eq("id", id)
         .maybeSingle();
 
@@ -754,6 +754,12 @@ export default function ProfileDetail() {
                   hackTheBoxUsername={profile?.hackthebox_username}
                   tryHackMeRank={profile?.tryhackme_rank}
                   hackTheBoxRank={profile?.hackthebox_rank}
+                  tryHackMeLevel={profile?.tryhackme_level}
+                  tryHackMePoints={profile?.tryhackme_points}
+                  tryHackMeBadges={profile?.tryhackme_badges}
+                  hackTheBoxPoints={profile?.hackthebox_points}
+                  hackTheBoxRankText={profile?.hackthebox_rank_text}
+                  hackTheBoxUserOwns={profile?.hackthebox_user_owns}
                 />
 
                 {/* AI Skills Assessments */}

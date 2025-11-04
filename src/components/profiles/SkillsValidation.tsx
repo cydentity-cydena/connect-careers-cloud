@@ -13,6 +13,12 @@ interface SkillsValidationProps {
   hackTheBoxUsername?: string | null;
   tryHackMeRank?: string | null;
   hackTheBoxRank?: string | null;
+  tryHackMeLevel?: number | null;
+  tryHackMePoints?: number | null;
+  tryHackMeBadges?: number | null;
+  hackTheBoxPoints?: number | null;
+  hackTheBoxRankText?: string | null;
+  hackTheBoxUserOwns?: number | null;
 }
 
 export const SkillsValidation = ({
@@ -21,7 +27,13 @@ export const SkillsValidation = ({
   tryHackMeUsername,
   hackTheBoxUsername,
   tryHackMeRank,
-  hackTheBoxRank
+  hackTheBoxRank,
+  tryHackMeLevel,
+  tryHackMePoints,
+  tryHackMeBadges,
+  hackTheBoxPoints,
+  hackTheBoxRankText,
+  hackTheBoxUserOwns
 }: SkillsValidationProps) => {
   const [syncing, setSyncing] = useState<string | null>(null);
   const { toast } = useToast();
@@ -76,29 +88,42 @@ export const SkillsValidation = ({
       </CardHeader>
       <CardContent className="space-y-3">
         {tryHackMeUsername && (
-          <div className="flex items-center justify-between p-3 rounded-lg border bg-card">
-            <div className="flex items-center gap-3">
-              <Trophy className="h-5 w-5 text-primary" />
-              <div>
-                <p className="font-medium flex items-center gap-2">
-                  TryHackMe
-                  {tryHackMeRank && (
-                    <CheckCircle2 className="h-4 w-4 text-green-500" />
+          <div className="flex items-center justify-between p-4 rounded-lg border bg-card">
+            <div className="flex items-center gap-3 flex-1">
+              <Trophy className="h-6 w-6 text-primary" />
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-1">
+                  <p className="font-semibold text-base">TryHackMe</p>
+                  {tryHackMeRank && <CheckCircle2 className="h-4 w-4 text-green-500" />}
+                </div>
+                <p className="text-sm text-muted-foreground mb-2">@{tryHackMeUsername}</p>
+                <div className="flex flex-wrap gap-2">
+                  {tryHackMeLevel && (
+                    <Badge variant="default" className="text-xs">
+                      Level {tryHackMeLevel}
+                    </Badge>
                   )}
-                </p>
-                <p className="text-sm text-muted-foreground">@{tryHackMeUsername}</p>
+                  {tryHackMePoints !== null && tryHackMePoints !== undefined && (
+                    <Badge variant="secondary" className="text-xs">
+                      {tryHackMePoints.toLocaleString()} Points
+                    </Badge>
+                  )}
+                  {tryHackMeBadges !== null && tryHackMeBadges !== undefined && (
+                    <Badge variant="outline" className="text-xs">
+                      {tryHackMeBadges} Badges
+                    </Badge>
+                  )}
+                </div>
               </div>
             </div>
             <div className="flex items-center gap-2">
-              {tryHackMeRank && tryHackMeRank !== 'Unranked' && (
-                <Badge variant="secondary">{tryHackMeRank}</Badge>
-              )}
               {isOwnProfile && (
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => syncPlatformStats('tryhackme', tryHackMeUsername)}
                   disabled={syncing === 'tryhackme'}
+                  title="Refresh stats"
                 >
                   <RefreshCw className={`h-4 w-4 ${syncing === 'tryhackme' ? 'animate-spin' : ''}`} />
                 </Button>
@@ -112,6 +137,7 @@ export const SkillsValidation = ({
                   href={`https://tryhackme.com/p/${tryHackMeUsername}`}
                   target="_blank"
                   rel="noopener noreferrer"
+                  title="View on TryHackMe"
                 >
                   <ExternalLink className="h-4 w-4" />
                 </a>
@@ -121,29 +147,47 @@ export const SkillsValidation = ({
         )}
 
         {hackTheBoxUsername && (
-          <div className="flex items-center justify-between p-3 rounded-lg border bg-card">
-            <div className="flex items-center gap-3">
-              <Trophy className="h-5 w-5 text-primary" />
-              <div>
-                <p className="font-medium flex items-center gap-2">
-                  HackTheBox
-                  {hackTheBoxRank && (
-                    <CheckCircle2 className="h-4 w-4 text-green-500" />
+          <div className="flex items-center justify-between p-4 rounded-lg border bg-card">
+            <div className="flex items-center gap-3 flex-1">
+              <Trophy className="h-6 w-6 text-primary" />
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-1">
+                  <p className="font-semibold text-base">HackTheBox</p>
+                  {hackTheBoxRank && <CheckCircle2 className="h-4 w-4 text-green-500" />}
+                </div>
+                <p className="text-sm text-muted-foreground mb-2">@{hackTheBoxUsername}</p>
+                <div className="flex flex-wrap gap-2">
+                  {hackTheBoxRankText && hackTheBoxRankText !== 'Connected' && (
+                    <Badge variant="default" className="text-xs">
+                      {hackTheBoxRankText}
+                    </Badge>
                   )}
-                </p>
-                <p className="text-sm text-muted-foreground">@{hackTheBoxUsername}</p>
+                  {hackTheBoxPoints !== null && hackTheBoxPoints !== undefined && (
+                    <Badge variant="secondary" className="text-xs">
+                      {hackTheBoxPoints.toLocaleString()} Points
+                    </Badge>
+                  )}
+                  {hackTheBoxUserOwns !== null && hackTheBoxUserOwns !== undefined && (
+                    <Badge variant="outline" className="text-xs">
+                      {hackTheBoxUserOwns} User Owns
+                    </Badge>
+                  )}
+                  {hackTheBoxRank === 'Connected' && !hackTheBoxRankText && (
+                    <Badge variant="outline" className="text-xs">
+                      Connected
+                    </Badge>
+                  )}
+                </div>
               </div>
             </div>
             <div className="flex items-center gap-2">
-              {hackTheBoxRank && hackTheBoxRank !== 'Connected' && (
-                <Badge variant="secondary">{hackTheBoxRank}</Badge>
-              )}
               {isOwnProfile && (
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => syncPlatformStats('hackthebox', hackTheBoxUsername)}
                   disabled={syncing === 'hackthebox'}
+                  title="Refresh stats"
                 >
                   <RefreshCw className={`h-4 w-4 ${syncing === 'hackthebox' ? 'animate-spin' : ''}`} />
                 </Button>
@@ -157,6 +201,7 @@ export const SkillsValidation = ({
                   href={`https://app.hackthebox.com/profile/${hackTheBoxUsername}`}
                   target="_blank"
                   rel="noopener noreferrer"
+                  title="View on HackTheBox"
                 >
                   <ExternalLink className="h-4 w-4" />
                 </a>

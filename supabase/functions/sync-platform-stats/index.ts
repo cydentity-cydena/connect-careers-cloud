@@ -87,11 +87,13 @@ serve(async (req) => {
         // TryHackMe API structure may vary, so we handle different formats
         const userRank = thmData.userRank || thmData.rank || thmData.level || 'Member';
         const points = thmData.points || 0;
+        const badges = thmData.badges?.length || 0;
         
         rankData = `Level ${userRank}`;
         statsData = {
           level: userRank,
           points: points,
+          badges: badges,
           username: username
         };
 
@@ -100,6 +102,9 @@ serve(async (req) => {
           .from('profiles')
           .update({
             tryhackme_rank: rankData,
+            tryhackme_level: userRank,
+            tryhackme_points: points,
+            tryhackme_badges: badges
           })
           .eq('id', userId);
 

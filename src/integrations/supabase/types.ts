@@ -1908,11 +1908,17 @@ export type Database = {
           desired_job_title: string | null
           email: string
           full_name: string | null
+          hackthebox_points: number | null
           hackthebox_rank: string | null
+          hackthebox_rank_text: string | null
+          hackthebox_user_owns: number | null
           hackthebox_username: string | null
           id: string
           is_verified: boolean | null
           location: string | null
+          tryhackme_badges: number | null
+          tryhackme_level: number | null
+          tryhackme_points: number | null
           tryhackme_rank: string | null
           tryhackme_username: string | null
           updated_at: string
@@ -1927,11 +1933,17 @@ export type Database = {
           desired_job_title?: string | null
           email: string
           full_name?: string | null
+          hackthebox_points?: number | null
           hackthebox_rank?: string | null
+          hackthebox_rank_text?: string | null
+          hackthebox_user_owns?: number | null
           hackthebox_username?: string | null
           id: string
           is_verified?: boolean | null
           location?: string | null
+          tryhackme_badges?: number | null
+          tryhackme_level?: number | null
+          tryhackme_points?: number | null
           tryhackme_rank?: string | null
           tryhackme_username?: string | null
           updated_at?: string
@@ -1946,11 +1958,17 @@ export type Database = {
           desired_job_title?: string | null
           email?: string
           full_name?: string | null
+          hackthebox_points?: number | null
           hackthebox_rank?: string | null
+          hackthebox_rank_text?: string | null
+          hackthebox_user_owns?: number | null
           hackthebox_username?: string | null
           id?: string
           is_verified?: boolean | null
           location?: string | null
+          tryhackme_badges?: number | null
+          tryhackme_level?: number | null
+          tryhackme_points?: number | null
           tryhackme_rank?: string | null
           tryhackme_username?: string | null
           updated_at?: string
