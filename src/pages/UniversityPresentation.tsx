@@ -215,30 +215,83 @@ const slides = [
     )
   },
   {
-    title: "Platform Capabilities",
-    subtitle: "Built for Modern Cybersecurity Recruitment",
+    title: "What a Verified Profile Looks Like",
+    subtitle: "Professional, Verified, and Ready to Impress Employers",
     content: (
       <div className="max-w-5xl mx-auto">
-        <div className="grid md:grid-cols-2 gap-8">
-          <div className="text-center p-8 bg-card rounded-lg">
-            <div className="text-5xl mb-4">✅</div>
-            <h3 className="text-2xl font-semibold mb-2">Verified Profiles</h3>
-            <p className="text-lg">Complete identity, right-to-work, and logistics verification</p>
+        <div className="border-2 border-primary/20 rounded-xl p-8 bg-card shadow-xl">
+          {/* Profile Header */}
+          <div className="flex items-start gap-6 mb-8 pb-8 border-b">
+            <div className="w-24 h-24 rounded-full bg-primary/20 flex items-center justify-center text-4xl font-bold">
+              JD
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center gap-3 mb-2">
+                <h3 className="text-3xl font-bold">Jane Doe</h3>
+                <div className="flex gap-2">
+                  <span className="px-3 py-1 bg-green-500/20 text-green-600 rounded-full text-sm font-semibold flex items-center gap-1">
+                    ✓ HR-Ready
+                  </span>
+                  <span className="px-3 py-1 bg-blue-500/20 text-blue-600 rounded-full text-sm font-semibold">
+                    Identity Verified
+                  </span>
+                </div>
+              </div>
+              <p className="text-xl text-muted-foreground mb-2">Penetration Testing Specialist</p>
+              <p className="text-lg">📍 London, UK  •  💼 Available Immediately  •  💰 £35k-45k</p>
+            </div>
           </div>
-          <div className="text-center p-8 bg-card rounded-lg">
-            <div className="text-5xl mb-4">🎯</div>
-            <h3 className="text-2xl font-semibold mb-2">Skills Validation</h3>
-            <p className="text-lg">Direct integration with TryHackMe, HackTheBox, and certification providers</p>
+
+          {/* Verified Certifications */}
+          <div className="mb-8">
+            <h4 className="text-xl font-semibold mb-4">🎓 Verified Certifications</h4>
+            <div className="grid grid-cols-3 gap-4">
+              <div className="p-4 bg-primary/5 rounded-lg border border-primary/20">
+                <p className="font-semibold">CompTIA Security+</p>
+                <p className="text-sm text-muted-foreground">✓ Verified via Credly</p>
+              </div>
+              <div className="p-4 bg-primary/5 rounded-lg border border-primary/20">
+                <p className="font-semibold">CEH v12</p>
+                <p className="text-sm text-muted-foreground">✓ Verified via EC-Council</p>
+              </div>
+              <div className="p-4 bg-primary/5 rounded-lg border border-primary/20">
+                <p className="font-semibold">OSCP</p>
+                <p className="text-sm text-muted-foreground">✓ Verified via Offensive Security</p>
+              </div>
+            </div>
           </div>
-          <div className="text-center p-8 bg-card rounded-lg">
-            <div className="text-5xl mb-4">🚀</div>
-            <h3 className="text-2xl font-semibold mb-2">Streamlined Process</h3>
-            <p className="text-lg">Students verify once, apply to multiple positions instantly</p>
+
+          {/* Platform Integrations */}
+          <div className="mb-8">
+            <h4 className="text-xl font-semibold mb-4">🎯 Verified Skills</h4>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="p-4 bg-card border rounded-lg">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="font-semibold">TryHackMe</p>
+                  <span className="text-green-600 text-sm">✓ Connected</span>
+                </div>
+                <p className="text-sm text-muted-foreground">Level 12 • Top 5%</p>
+              </div>
+              <div className="p-4 bg-card border rounded-lg">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="font-semibold">HackTheBox</p>
+                  <span className="text-green-600 text-sm">✓ Connected</span>
+                </div>
+                <p className="text-sm text-muted-foreground">Rank: Hacker • 45 machines pwned</p>
+              </div>
+            </div>
           </div>
-          <div className="text-center p-8 bg-card rounded-lg">
-            <div className="text-5xl mb-4">🤝</div>
-            <h3 className="text-2xl font-semibold mb-2">Direct Connections</h3>
-            <p className="text-lg">Students connect directly with employers seeking cybersecurity talent</p>
+
+          {/* Key Skills */}
+          <div>
+            <h4 className="text-xl font-semibold mb-4">💡 Top Skills</h4>
+            <div className="flex flex-wrap gap-2">
+              {["Penetration Testing", "Network Security", "Python", "Linux", "Web Application Security", "Metasploit", "Burp Suite", "OWASP Top 10"].map((skill) => (
+                <span key={skill} className="px-3 py-1 bg-primary/10 rounded-full text-sm">
+                  {skill}
+                </span>
+              ))}
+            </div>
           </div>
         </div>
       </div>
