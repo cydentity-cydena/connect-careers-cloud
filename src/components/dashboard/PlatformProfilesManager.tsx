@@ -12,10 +12,21 @@ interface PlatformProfilesManagerProps {
   userId: string;
 }
 
+interface PlatformStats {
+  thmLevel?: number;
+  thmPoints?: number;
+  thmBadges?: number;
+  htbRankText?: string;
+  htbPoints?: number;
+  htbUserOwns?: number;
+}
+
 export const PlatformProfilesManager = ({ userId }: PlatformProfilesManagerProps) => {
   const [editMode, setEditMode] = useState(false);
+  const [editStatsMode, setEditStatsMode] = useState(false);
   const [thmUsername, setThmUsername] = useState("");
   const [htbUsername, setHtbUsername] = useState("");
+  const [stats, setStats] = useState<PlatformStats>({});
   const [saving, setSaving] = useState(false);
   const [syncing, setSyncing] = useState<string | null>(null);
   const { toast } = useToast();
@@ -39,6 +50,14 @@ export const PlatformProfilesManager = ({ userId }: PlatformProfilesManagerProps
     if (profileData) {
       setThmUsername(profileData.tryhackme_username || "");
       setHtbUsername(profileData.hackthebox_username || "");
+      setStats({
+        thmLevel: profileData.tryhackme_level || undefined,
+        thmPoints: profileData.tryhackme_points || undefined,
+        thmBadges: profileData.tryhackme_badges || undefined,
+        htbRankText: profileData.hackthebox_rank_text || undefined,
+        htbPoints: profileData.hackthebox_points || undefined,
+        htbUserOwns: profileData.hackthebox_user_owns || undefined,
+      });
     }
   }, [profileData]);
 
@@ -107,6 +126,42 @@ export const PlatformProfilesManager = ({ userId }: PlatformProfilesManagerProps
     }
   };
 
+  const handleSaveStats = async () => {
+    setSaving(true);
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({
+          tryhackme_level: stats.thmLevel || null,
+          tryhackme_points: stats.thmPoints || null,
+          tryhackme_badges: stats.thmBadges || null,
+          hackthebox_rank_text: stats.htbRankText || null,
+          hackthebox_points: stats.htbPoints || null,
+          hackthebox_user_owns: stats.htbUserOwns || null,
+        })
+        .eq('id', userId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Stats updated",
+        description: "Your platform stats have been updated.",
+      });
+      
+      setEditStatsMode(false);
+      refetch();
+    } catch (error) {
+      console.error('Error updating stats:', error);
+      toast({
+        title: "Update failed",
+        description: "Failed to update platform stats. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setSaving(false);
+    }
+  };
+
   if (editMode || (!profileData?.tryhackme_username && !profileData?.hackthebox_username)) {
     return (
       <div className="space-y-4">
@@ -137,6 +192,96 @@ export const PlatformProfilesManager = ({ userId }: PlatformProfilesManagerProps
               Cancel
             </Button>
           )}
+        </div>
+      </div>
+    );
+  }
+
+  if (editStatsMode) {
+    return (
+      <div className="space-y-4">
+        {profileData?.tryhackme_username && (
+          <div className="space-y-3 p-4 border rounded-lg">
+            <h3 className="font-semibold">TryHackMe Stats</h3>
+            <div className="grid grid-cols-3 gap-3">
+              <div className="space-y-2">
+                <Label htmlFor="thm-level">Level</Label>
+                <Input
+                  id="thm-level"
+                  type="number"
+                  value={stats.thmLevel || ""}
+                  onChange={(e) => setStats({ ...stats, thmLevel: e.target.value ? parseInt(e.target.value) : undefined })}
+                  placeholder="Level"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="thm-points">Points</Label>
+                <Input
+                  id="thm-points"
+                  type="number"
+                  value={stats.thmPoints || ""}
+                  onChange={(e) => setStats({ ...stats, thmPoints: e.target.value ? parseInt(e.target.value) : undefined })}
+                  placeholder="Points"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="thm-badges">Badges</Label>
+                <Input
+                  id="thm-badges"
+                  type="number"
+                  value={stats.thmBadges || ""}
+                  onChange={(e) => setStats({ ...stats, thmBadges: e.target.value ? parseInt(e.target.value) : undefined })}
+                  placeholder="Badges"
+                />
+              </div>
+            </div>
+          </div>
+        )}
+        
+        {profileData?.hackthebox_username && (
+          <div className="space-y-3 p-4 border rounded-lg">
+            <h3 className="font-semibold">HackTheBox Stats</h3>
+            <div className="grid grid-cols-3 gap-3">
+              <div className="space-y-2">
+                <Label htmlFor="htb-rank">Rank</Label>
+                <Input
+                  id="htb-rank"
+                  value={stats.htbRankText || ""}
+                  onChange={(e) => setStats({ ...stats, htbRankText: e.target.value })}
+                  placeholder="e.g., Hacker"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="htb-points">Points</Label>
+                <Input
+                  id="htb-points"
+                  type="number"
+                  value={stats.htbPoints || ""}
+                  onChange={(e) => setStats({ ...stats, htbPoints: e.target.value ? parseInt(e.target.value) : undefined })}
+                  placeholder="Points"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="htb-owns">User Owns</Label>
+                <Input
+                  id="htb-owns"
+                  type="number"
+                  value={stats.htbUserOwns || ""}
+                  onChange={(e) => setStats({ ...stats, htbUserOwns: e.target.value ? parseInt(e.target.value) : undefined })}
+                  placeholder="User Owns"
+                />
+              </div>
+            </div>
+          </div>
+        )}
+        
+        <div className="flex gap-2">
+          <Button onClick={handleSaveStats} disabled={saving}>
+            {saving ? "Saving..." : "Save Stats"}
+          </Button>
+          <Button variant="outline" onClick={() => setEditStatsMode(false)}>
+            Cancel
+          </Button>
         </div>
       </div>
     );
@@ -252,9 +397,14 @@ export const PlatformProfilesManager = ({ userId }: PlatformProfilesManagerProps
         </div>
       )}
 
-      <Button onClick={() => setEditMode(true)} variant="outline" className="w-full">
-        Edit
-      </Button>
+      <div className="flex gap-2">
+        <Button onClick={() => setEditMode(true)} variant="outline" className="flex-1">
+          Edit Usernames
+        </Button>
+        <Button onClick={() => setEditStatsMode(true)} variant="outline" className="flex-1">
+          Edit Stats
+        </Button>
+      </div>
     </div>
   );
 };
