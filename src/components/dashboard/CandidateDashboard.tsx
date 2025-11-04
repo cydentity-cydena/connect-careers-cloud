@@ -97,6 +97,55 @@ const CandidateDashboard = () => {
     },
     enabled: !!user?.id,
   });
+
+  // Fetch profile views from this week
+  const { data: profileViewsCount = 0 } = useQuery({
+    queryKey: ['profile-views-week', userId],
+    queryFn: async () => {
+      const oneWeekAgo = new Date();
+      oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+      
+      const { count, error } = await supabase
+        .from('profile_views')
+        .select('*', { count: 'exact', head: true })
+        .eq('candidate_id', userId)
+        .gte('viewed_at', oneWeekAgo.toISOString());
+      
+      if (error) throw error;
+      return count || 0;
+    },
+    enabled: !!userId,
+  });
+
+  // Fetch active applications count
+  const { data: applicationsCount = 0 } = useQuery({
+    queryKey: ['applications-count', userId],
+    queryFn: async () => {
+      const { count, error } = await supabase
+        .from('applications')
+        .select('*', { count: 'exact', head: true })
+        .eq('candidate_id', userId);
+      
+      if (error) throw error;
+      return count || 0;
+    },
+    enabled: !!userId,
+  });
+
+  // Fetch skills count
+  const { data: skillsCount = 0 } = useQuery({
+    queryKey: ['skills-count', userId],
+    queryFn: async () => {
+      const { count, error } = await supabase
+        .from('candidate_skills')
+        .select('*', { count: 'exact', head: true })
+        .eq('candidate_id', userId);
+      
+      if (error) throw error;
+      return count || 0;
+    },
+    enabled: !!userId,
+  });
   return (
     <div className="space-y-8 animate-fade-in">
       {/* Free Access Banner */}
@@ -312,15 +361,15 @@ const CandidateDashboard = () => {
             <CardContent className="space-y-3">
               <div className="flex justify-between items-center">
                 <span className="text-sm text-muted-foreground">Profile Views This Week</span>
-                <span className="text-lg font-bold">0</span>
+                <span className="text-lg font-bold text-primary">{profileViewsCount}</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm text-muted-foreground">Active Applications</span>
-                <span className="text-lg font-bold">0</span>
+                <span className="text-lg font-bold text-secondary">{applicationsCount}</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm text-muted-foreground">Skills Added</span>
-                <span className="text-lg font-bold">0</span>
+                <span className="text-lg font-bold text-accent">{skillsCount}</span>
               </div>
             </CardContent>
           </Card>
