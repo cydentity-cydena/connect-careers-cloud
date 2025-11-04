@@ -213,7 +213,7 @@ const slides = [
           {/* Cydentity */}
           <div className="p-8 bg-card rounded-xl border-2 border-primary/20 hover:border-primary/40 transition-all">
             <div className="flex items-center justify-center mb-6 h-24">
-              <img src="/logos/cydentity-logo.png" alt="Cydentity" className="h-16 object-contain" />
+              <img src="/logos/cydentity-logo-white.png" alt="Cydentity" className="h-16 object-contain" />
             </div>
             <div className="mb-4">
               <span className="px-4 py-1 bg-primary/20 text-primary rounded-full text-sm font-semibold">
@@ -229,7 +229,7 @@ const slides = [
           {/* Cydentity Academy */}
           <div className="p-8 bg-card rounded-xl border-2 border-primary/20 hover:border-primary/40 transition-all">
             <div className="flex items-center justify-center mb-6 h-24">
-              <img src="/logos/cydentity-academy-logo.png" alt="Cydentity Academy" className="h-16 object-contain" />
+              <img src="/logos/cydentity-academy-logo-white.png" alt="Cydentity Academy" className="h-16 object-contain" />
             </div>
             <div className="mb-4">
               <span className="px-4 py-1 bg-primary/20 text-primary rounded-full text-sm font-semibold">
