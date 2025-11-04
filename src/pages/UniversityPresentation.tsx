@@ -189,6 +189,105 @@ const slides = [
     )
   },
   {
+    title: "Our Partners",
+    subtitle: "Collaborating with Industry Leaders to Deliver World-Class Training and Certification",
+    content: (
+      <div className="max-w-6xl mx-auto space-y-12">
+        <div className="grid md:grid-cols-2 gap-8">
+          {/* TRECCERT */}
+          <div className="p-8 bg-card rounded-xl border-2 border-primary/20 hover:border-primary/40 transition-all">
+            <div className="flex items-center justify-center mb-6 h-24">
+              <img src="/logos/treccert-logo.svg" alt="TRECCERT" className="h-16 object-contain" />
+            </div>
+            <div className="mb-4">
+              <span className="px-4 py-1 bg-blue-500/20 text-blue-600 rounded-full text-sm font-semibold">
+                Accreditation
+              </span>
+            </div>
+            <h3 className="text-2xl font-bold mb-3">TRECCERT</h3>
+            <p className="text-lg text-muted-foreground">
+              Certification body providing certifications that attest the competencies of professionals in information security and compliance.
+            </p>
+          </div>
+
+          {/* Cydentity */}
+          <div className="p-8 bg-card rounded-xl border-2 border-primary/20 hover:border-primary/40 transition-all">
+            <div className="flex items-center justify-center mb-6 h-24">
+              <img src="/logos/cydentity-logo.png" alt="Cydentity" className="h-16 object-contain" />
+            </div>
+            <div className="mb-4">
+              <span className="px-4 py-1 bg-primary/20 text-primary rounded-full text-sm font-semibold">
+                Cybersecurity
+              </span>
+            </div>
+            <h3 className="text-2xl font-bold mb-3">Cydentity</h3>
+            <p className="text-lg text-muted-foreground">
+              Leading cybersecurity solutions provider, delivering comprehensive security services and training to protect organizations from evolving digital threats.
+            </p>
+          </div>
+
+          {/* Cydentity Academy */}
+          <div className="p-8 bg-card rounded-xl border-2 border-primary/20 hover:border-primary/40 transition-all">
+            <div className="flex items-center justify-center mb-6 h-24">
+              <img src="/logos/cydentity-academy-logo.png" alt="Cydentity Academy" className="h-16 object-contain" />
+            </div>
+            <div className="mb-4">
+              <span className="px-4 py-1 bg-primary/20 text-primary rounded-full text-sm font-semibold">
+                Training & Education
+              </span>
+            </div>
+            <h3 className="text-2xl font-bold mb-3">Cydentity Academy</h3>
+            <p className="text-lg text-muted-foreground">
+              Leading provider of cybersecurity and AI security training, offering comprehensive courses to upskill professionals and students in cutting-edge security practices.
+            </p>
+          </div>
+
+          {/* LetsDefend */}
+          <div className="p-8 bg-card rounded-xl border-2 border-primary/20 hover:border-primary/40 transition-all">
+            <div className="flex items-center justify-center mb-6 h-24">
+              <img src="/logos/letsdefend-logo.jpg" alt="LetsDefend" className="h-16 object-contain" />
+            </div>
+            <div className="mb-4">
+              <span className="px-4 py-1 bg-purple-500/20 text-purple-600 rounded-full text-sm font-semibold">
+                Hands-On Labs
+              </span>
+            </div>
+            <h3 className="text-2xl font-bold mb-3">LetsDefend</h3>
+            <p className="text-lg text-muted-foreground">
+              Real-world SOC analyst training platform with hands-on labs and simulations, helping students gain practical blue team experience in a realistic environment.
+            </p>
+          </div>
+        </div>
+
+        {/* Value Proposition */}
+        <div className="mt-12 p-8 bg-primary/10 rounded-xl">
+          <h3 className="text-2xl font-semibold mb-4 text-center">The Value of Our Partnerships</h3>
+          <p className="text-lg text-center mb-6">
+            Through our partner network, students gain access to industry-recognized certifications, 
+            comprehensive training programs, and real-world labs—ensuring they're job-ready from day one.
+          </p>
+          <div className="grid md:grid-cols-3 gap-6 mt-6">
+            <div className="text-center">
+              <div className="text-4xl mb-2">🎓</div>
+              <p className="font-semibold">Industry Certifications</p>
+              <p className="text-sm text-muted-foreground">TRECCERT accredited programs</p>
+            </div>
+            <div className="text-center">
+              <div className="text-4xl mb-2">🛡️</div>
+              <p className="font-semibold">Expert Training</p>
+              <p className="text-sm text-muted-foreground">Cydentity & Academy courses</p>
+            </div>
+            <div className="text-center">
+              <div className="text-4xl mb-2">💻</div>
+              <p className="font-semibold">Practical Experience</p>
+              <p className="text-sm text-muted-foreground">Hands-on labs & simulations</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  },
+  {
     title: "Partnership Opportunities",
     subtitle: "How Universities Can Partner with Cydena",
     content: (
