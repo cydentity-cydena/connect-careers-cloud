@@ -44,30 +44,55 @@ serve(async (req) => {
     let statsData = null;
 
     if (platform === 'tryhackme') {
-      // Fetch TryHackMe stats
+      // Fetch TryHackMe stats using the correct API endpoint
       try {
-        const thmResponse = await fetch(`https://tryhackme.com/api/v2/user/public-profile?username=${username}`);
+        // TryHackMe's public API endpoint
+        const thmResponse = await fetch(`https://tryhackme.com/api/user/public-profile/${username}`, {
+          headers: {
+            'User-Agent': 'Cydena Platform'
+          }
+        });
+        
+        console.log('TryHackMe API response status:', thmResponse.status);
         
         if (!thmResponse.ok) {
-          console.error('TryHackMe API error:', thmResponse.status);
+          const responseText = await thmResponse.text();
+          console.error('TryHackMe API error response:', responseText.substring(0, 200));
+          
           return new Response(
             JSON.stringify({ 
-              error: 'Failed to fetch TryHackMe profile. Please check the username is correct.' 
+              error: 'Failed to fetch TryHackMe profile. Please verify the username is correct and try again.' 
+            }),
+            { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          );
+        }
+
+        const contentType = thmResponse.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          const responseText = await thmResponse.text();
+          console.error('TryHackMe returned non-JSON response:', responseText.substring(0, 200));
+          
+          return new Response(
+            JSON.stringify({ 
+              error: 'TryHackMe API returned an invalid response. The username may not exist.' 
             }),
             { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
           );
         }
 
         const thmData = await thmResponse.json();
-        console.log('TryHackMe data received:', JSON.stringify(thmData).substring(0, 200));
+        console.log('TryHackMe data received:', JSON.stringify(thmData).substring(0, 500));
 
-        // Extract rank and level information
-        rankData = thmData.rank || 'Unranked';
+        // Extract rank and level information from the response
+        // TryHackMe API structure may vary, so we handle different formats
+        const userRank = thmData.userRank || thmData.rank || thmData.level || 'Member';
+        const points = thmData.points || 0;
+        
+        rankData = `Level ${userRank}`;
         statsData = {
-          level: thmData.userRank || 0,
-          points: thmData.points || 0,
-          badges: thmData.badges?.length || 0,
-          rooms_completed: thmData.rooms?.length || 0
+          level: userRank,
+          points: points,
+          username: username
         };
 
         // Update the profile with the fetched data
@@ -83,26 +108,38 @@ serve(async (req) => {
           throw updateError;
         }
 
+        console.log(`Successfully synced TryHackMe stats for ${username}`);
+
       } catch (error) {
         console.error('Error fetching TryHackMe stats:', error);
+        
+        // If it's a parsing error, provide more details
+        if (error instanceof SyntaxError) {
+          return new Response(
+            JSON.stringify({ 
+              error: 'TryHackMe API returned an invalid response format. Please verify the username exists on TryHackMe.' 
+            }),
+            { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          );
+        }
+        
         return new Response(
           JSON.stringify({ 
-            error: 'Could not fetch TryHackMe profile. The username may not exist or the API is unavailable.' 
+            error: 'Could not fetch TryHackMe profile. The username may not exist or the API is temporarily unavailable.' 
           }),
           { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
     } else if (platform === 'hackthebox') {
       // For HackTheBox, we'll store basic info since their API requires authentication
-      // In production, you would need HackTheBox API credentials
       try {
-        // HackTheBox public profile scraping or API call would go here
-        // For now, we'll mark it as "Connected" since we can't easily verify without API keys
+        // HackTheBox API endpoint - requires authentication
+        // For now, we'll mark it as "Connected" and suggest manual verification
         rankData = 'Connected';
         statsData = {
           username: username,
-          verified: false, // Would be true if we successfully fetched from API
-          note: 'HackTheBox stats require API authentication'
+          verified: false,
+          note: 'HackTheBox stats require API authentication. Please verify your profile manually.'
         };
 
         const { error: updateError } = await supabase
@@ -117,6 +154,8 @@ serve(async (req) => {
           throw updateError;
         }
 
+        console.log(`Successfully synced hackthebox stats for user ${userId}`);
+
       } catch (error) {
         console.error('Error processing HackTheBox stats:', error);
         return new Response(
@@ -127,8 +166,6 @@ serve(async (req) => {
         );
       }
     }
-
-    console.log(`Successfully synced ${platform} stats for user ${userId}`);
 
     return new Response(
       JSON.stringify({ 
@@ -143,7 +180,7 @@ serve(async (req) => {
   } catch (error: any) {
     console.error('Error in sync-platform-stats function:', error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: error.message || 'An unexpected error occurred' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
