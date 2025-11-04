@@ -215,34 +215,30 @@ const slides = [
     )
   },
   {
-    title: "Success Metrics",
-    subtitle: "The Impact We're Making",
+    title: "Platform Capabilities",
+    subtitle: "Built for Modern Cybersecurity Recruitment",
     content: (
       <div className="max-w-5xl mx-auto">
-        <div className="grid md:grid-cols-2 gap-8 mb-12">
+        <div className="grid md:grid-cols-2 gap-8">
           <div className="text-center p-8 bg-card rounded-lg">
-            <div className="text-6xl font-bold text-primary mb-4">100%</div>
-            <h3 className="text-2xl font-semibold mb-2">Hire with Confidence</h3>
-            <p className="text-lg">Fully verified candidates ready to start immediately</p>
+            <div className="text-5xl mb-4">✅</div>
+            <h3 className="text-2xl font-semibold mb-2">Verified Profiles</h3>
+            <p className="text-lg">Complete identity, right-to-work, and logistics verification</p>
           </div>
           <div className="text-center p-8 bg-card rounded-lg">
-            <div className="text-6xl font-bold text-primary mb-4">95%</div>
-            <h3 className="text-2xl font-semibold mb-2">Profile Completion</h3>
-            <p className="text-lg">Students complete full verification process</p>
+            <div className="text-5xl mb-4">🎯</div>
+            <h3 className="text-2xl font-semibold mb-2">Skills Validation</h3>
+            <p className="text-lg">Direct integration with TryHackMe, HackTheBox, and certification providers</p>
           </div>
-        </div>
-        <div className="grid md:grid-cols-3 gap-6">
-          <div className="text-center p-6 bg-card rounded-lg">
-            <div className="text-4xl font-bold text-primary mb-2">100+</div>
-            <p className="text-lg">Active Employers</p>
+          <div className="text-center p-8 bg-card rounded-lg">
+            <div className="text-5xl mb-4">🚀</div>
+            <h3 className="text-2xl font-semibold mb-2">Streamlined Process</h3>
+            <p className="text-lg">Students verify once, apply to multiple positions instantly</p>
           </div>
-          <div className="text-center p-6 bg-card rounded-lg">
-            <div className="text-4xl font-bold text-primary mb-2">500+</div>
-            <p className="text-lg">Student Profiles</p>
-          </div>
-          <div className="text-center p-6 bg-card rounded-lg">
-            <div className="text-4xl font-bold text-primary mb-2">50+</div>
-            <p className="text-lg">Successful Placements</p>
+          <div className="text-center p-8 bg-card rounded-lg">
+            <div className="text-5xl mb-4">🤝</div>
+            <h3 className="text-2xl font-semibold mb-2">Direct Connections</h3>
+            <p className="text-lg">Students connect directly with employers seeking cybersecurity talent</p>
           </div>
         </div>
       </div>
