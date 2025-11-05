@@ -150,7 +150,7 @@ serve(async (req) => {
     if (adminUsers && adminUsers.length > 0) {
       const notifications = adminUsers.map(admin => ({
         user_id: admin.user_id,
-        type: 'info',
+        type: 'system',
         title: 'New Founding 20 Application',
         message: `${formData.fullName} has applied for the Founding 20 program`,
         link: '/staff/funnel',
