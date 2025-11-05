@@ -150,9 +150,12 @@ export default function Founding20() {
               <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary via-primary-glow to-primary bg-clip-text text-transparent">
                 Join the Founding 20
               </h1>
-              <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-8">
+              <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-4">
                 Become part of an elite group of verified cybersecurity professionals with exclusive access to top-tier opportunities
               </p>
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/20 rounded-lg">
+                <span className="text-sm font-medium text-primary">🇬🇧 UK Candidates Only</span>
+              </div>
             </div>
 
             {/* Benefits Grid */}
@@ -181,7 +184,7 @@ export default function Founding20() {
               <CardHeader className="text-center">
                 <CardTitle className="text-3xl mb-2">Apply Now</CardTitle>
                 <CardDescription className="text-base">
-                  Complete the form below to be considered for the Founding 20 program
+                  Complete the form below to be considered for the Founding 20 program (UK candidates only)
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -219,13 +222,13 @@ export default function Founding20() {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="phone">Phone Number</Label>
+                      <Label htmlFor="phone">Phone Number (UK)</Label>
                       <Input
                         id="phone"
                         type="tel"
                         value={formData.phone}
                         onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                        placeholder="+1 (555) 000-0000"
+                        placeholder="+44 7XXX XXXXXX"
                       />
                     </div>
                   </div>
@@ -308,13 +311,13 @@ export default function Founding20() {
                       </div>
                       
                       <div className="space-y-2">
-                        <Label htmlFor="salaryExpectations">Salary Expectations *</Label>
+                        <Label htmlFor="salaryExpectations">Salary Expectations (GBP) *</Label>
                         <Input
                           id="salaryExpectations"
                           required
                           value={formData.salaryExpectations}
                           onChange={(e) => setFormData({...formData, salaryExpectations: e.target.value})}
-                          placeholder="$80,000 - $100,000"
+                          placeholder="£50,000 - £70,000"
                         />
                       </div>
                     </div>
