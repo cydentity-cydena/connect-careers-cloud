@@ -44,6 +44,12 @@ const Footer = () => {
                   Training
                 </Link>
               </li>
+              <li>
+                <Link to="/founding-20" className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-1">
+                  <Shield className="h-3 w-3" />
+                  Founding 20
+                </Link>
+              </li>
             </ul>
           </div>
 
