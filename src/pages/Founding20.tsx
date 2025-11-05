@@ -413,7 +413,7 @@ export default function Founding20() {
                         htmlFor="consentContact"
                         className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                       >
-                        I agree to be contacted by the TRECCERT team and partnered employers regarding opportunities. *
+                        I agree to be contacted by the Cydena team and partnered employers regarding opportunities. *
                       </label>
                     </div>
                   </div>
