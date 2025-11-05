@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Award, Target, Zap, TrendingUp, Users, Briefcase, Shield, CheckCircle2 } from "lucide-react";
@@ -301,24 +302,44 @@ export default function Founding20() {
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label htmlFor="availability">Availability *</Label>
-                        <Input
-                          id="availability"
+                        <Select
                           required
                           value={formData.availability}
-                          onChange={(e) => setFormData({...formData, availability: e.target.value})}
-                          placeholder="Immediate / 2 weeks / 1 month"
-                        />
+                          onValueChange={(value) => setFormData({...formData, availability: value})}
+                        >
+                          <SelectTrigger className="bg-background">
+                            <SelectValue placeholder="Select availability" />
+                          </SelectTrigger>
+                          <SelectContent className="bg-background z-50">
+                            <SelectItem value="Immediate">Immediate</SelectItem>
+                            <SelectItem value="2 weeks">2 weeks</SelectItem>
+                            <SelectItem value="1 month">1 month</SelectItem>
+                            <SelectItem value="2 months">2 months</SelectItem>
+                            <SelectItem value="3+ months">3+ months</SelectItem>
+                          </SelectContent>
+                        </Select>
                       </div>
                       
                       <div className="space-y-2">
                         <Label htmlFor="salaryExpectations">Salary Expectations (GBP) *</Label>
-                        <Input
-                          id="salaryExpectations"
+                        <Select
                           required
                           value={formData.salaryExpectations}
-                          onChange={(e) => setFormData({...formData, salaryExpectations: e.target.value})}
-                          placeholder="£50,000 - £70,000"
-                        />
+                          onValueChange={(value) => setFormData({...formData, salaryExpectations: value})}
+                        >
+                          <SelectTrigger className="bg-background">
+                            <SelectValue placeholder="Select salary range" />
+                          </SelectTrigger>
+                          <SelectContent className="bg-background z-50">
+                            <SelectItem value="£30,000 - £40,000">£30,000 - £40,000</SelectItem>
+                            <SelectItem value="£40,000 - £50,000">£40,000 - £50,000</SelectItem>
+                            <SelectItem value="£50,000 - £60,000">£50,000 - £60,000</SelectItem>
+                            <SelectItem value="£60,000 - £70,000">£60,000 - £70,000</SelectItem>
+                            <SelectItem value="£70,000 - £80,000">£70,000 - £80,000</SelectItem>
+                            <SelectItem value="£80,000 - £100,000">£80,000 - £100,000</SelectItem>
+                            <SelectItem value="£100,000+">£100,000+</SelectItem>
+                          </SelectContent>
+                        </Select>
                       </div>
                     </div>
                   </div>
