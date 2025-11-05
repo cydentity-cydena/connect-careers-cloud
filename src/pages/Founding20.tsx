@@ -17,6 +17,7 @@ export default function Founding20() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [resumeFile, setResumeFile] = useState<File | null>(null);
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -83,9 +84,34 @@ export default function Founding20() {
     setIsSubmitting(true);
 
     try {
+      let cvUrl = null;
+
+      // Upload resume if provided
+      if (resumeFile) {
+        const fileExt = resumeFile.name.split('.').pop();
+        const fileName = `${crypto.randomUUID()}.${fileExt}`;
+        const filePath = `founding-20/${fileName}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from('resumes')
+          .upload(filePath, resumeFile);
+
+        if (uploadError) throw uploadError;
+
+        // Get public URL
+        const { data: { publicUrl } } = supabase.storage
+          .from('resumes')
+          .getPublicUrl(filePath);
+        
+        cvUrl = publicUrl;
+      }
+
       // Call edge function to handle the submission
       const { data, error } = await supabase.functions.invoke('founding-20-application', {
-        body: formData
+        body: {
+          ...formData,
+          cvUrl
+        }
       });
 
       if (error) throw error;
@@ -113,6 +139,7 @@ export default function Founding20() {
         consentVerification: false,
         consentContact: false,
       });
+      setResumeFile(null);
 
       // Scroll to top
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -289,6 +316,21 @@ export default function Founding20() {
                         placeholder="e.g., Penetration Testing, SIEM, Cloud Security, Python..."
                         rows={4}
                       />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="resume">CV/Resume *</Label>
+                      <Input
+                        id="resume"
+                        type="file"
+                        required
+                        accept=".pdf,.doc,.docx"
+                        onChange={(e) => setResumeFile(e.target.files?.[0] || null)}
+                        className="cursor-pointer"
+                      />
+                      <p className="text-xs text-muted-foreground">
+                        Accepted formats: PDF, DOC, DOCX (Max 10MB)
+                      </p>
                     </div>
                   </div>
 

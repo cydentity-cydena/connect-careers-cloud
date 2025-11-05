@@ -128,6 +128,7 @@ serve(async (req) => {
         github_url: formData.githubUrl || null,
         portfolio_url: formData.portfolioUrl || null,
         why_top_twenty: formData.whyTopTwenty,
+        cv_url: formData.cvUrl || null,
         stage: 'new_application',
         is_founding_20: true,
         application_source: 'founding_20_page',
