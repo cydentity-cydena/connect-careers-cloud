@@ -1556,6 +1556,95 @@ export type Database = {
         }
         Relationships: []
       }
+      pipeline_candidates: {
+        Row: {
+          application_source: string | null
+          availability: string
+          created_at: string | null
+          current_title: string
+          cv_url: string | null
+          email: string
+          full_name: string
+          github_url: string | null
+          id: string
+          is_founding_20: boolean | null
+          is_priority: boolean | null
+          key_skills: string
+          linkedin_url: string | null
+          notes: string | null
+          phone: string | null
+          portfolio_url: string | null
+          profile_id: string | null
+          salary_expectations: string
+          stage: string
+          submitted_at: string | null
+          top_certifications: string
+          updated_at: string | null
+          why_top_twenty: string
+          years_experience: number
+        }
+        Insert: {
+          application_source?: string | null
+          availability: string
+          created_at?: string | null
+          current_title: string
+          cv_url?: string | null
+          email: string
+          full_name: string
+          github_url?: string | null
+          id?: string
+          is_founding_20?: boolean | null
+          is_priority?: boolean | null
+          key_skills: string
+          linkedin_url?: string | null
+          notes?: string | null
+          phone?: string | null
+          portfolio_url?: string | null
+          profile_id?: string | null
+          salary_expectations: string
+          stage?: string
+          submitted_at?: string | null
+          top_certifications: string
+          updated_at?: string | null
+          why_top_twenty: string
+          years_experience: number
+        }
+        Update: {
+          application_source?: string | null
+          availability?: string
+          created_at?: string | null
+          current_title?: string
+          cv_url?: string | null
+          email?: string
+          full_name?: string
+          github_url?: string | null
+          id?: string
+          is_founding_20?: boolean | null
+          is_priority?: boolean | null
+          key_skills?: string
+          linkedin_url?: string | null
+          notes?: string | null
+          phone?: string | null
+          portfolio_url?: string | null
+          profile_id?: string | null
+          salary_expectations?: string
+          stage?: string
+          submitted_at?: string | null
+          top_certifications?: string
+          updated_at?: string | null
+          why_top_twenty?: string
+          years_experience?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pipeline_candidates_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pipeline_stage_history: {
         Row: {
           created_at: string | null
