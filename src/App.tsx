@@ -46,6 +46,7 @@ import VerificationReview from "./pages/admin/VerificationReview";
 import NotFound from "./pages/NotFound";
 import Messages from "./pages/Messages";
 import EmployerPitchDeck from "./pages/EmployerPitchDeck";
+import Founding20 from "./pages/Founding20";
 
 const queryClient = new QueryClient();
 
@@ -102,6 +103,9 @@ const App = () => (
               
               {/* Standalone Presentation */}
               <Route path="/employer-pitch-deck" element={<EmployerPitchDeck />} />
+              
+              {/* Lead Generation */}
+              <Route path="/founding-20" element={<Founding20 />} />
               
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
