@@ -129,7 +129,7 @@ serve(async (req) => {
         portfolio_url: formData.portfolioUrl || null,
         why_top_twenty: formData.whyTopTwenty,
         cv_url: formData.cvUrl || null,
-        stage: 'new_application',
+        stage: 'applied',
         is_founding_20: true,
         application_source: 'founding_20_page',
         submitted_at: new Date().toISOString(),

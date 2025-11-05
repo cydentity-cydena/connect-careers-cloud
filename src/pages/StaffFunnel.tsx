@@ -87,7 +87,8 @@ export default function StaffFunnel() {
 
   const fetchCandidates = async () => {
     try {
-      const { data, error } = await supabase
+      // Fetch from candidate_pipeline (existing candidates with profiles)
+      const { data: pipelineData, error: pipelineError } = await supabase
         .from("candidate_pipeline")
         .select(`
           *,
@@ -99,11 +100,50 @@ export default function StaffFunnel() {
         `)
         .order("moved_to_stage_at", { ascending: false });
 
-      if (error) throw error;
+      if (pipelineError) throw pipelineError;
+
+      // Fetch from pipeline_candidates (Founding 20 applications without profiles)
+      const { data: applicationsData, error: applicationsError } = await supabase
+        .from("pipeline_candidates")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (applicationsError) throw applicationsError;
+
+      // Transform pipeline_candidates to match the structure
+      const transformedApplications = (applicationsData || []).map(app => ({
+        id: app.id,
+        candidate_id: app.profile_id || app.id, // Use profile_id if exists, otherwise use id
+        stage: app.stage,
+        source: app.application_source,
+        desired_role: app.current_title,
+        sla_due_at: null,
+        is_priority: app.is_priority || false,
+        is_founding_20: app.is_founding_20 || false,
+        staff_notes: app.notes,
+        moved_to_stage_at: app.updated_at || app.created_at,
+        cv_url: app.cv_url,
+        compliance_score: null,
+        source_table: 'pipeline_candidates', // Track which table this came from
+        profiles: {
+          full_name: app.full_name,
+          email: app.email,
+          avatar_url: null
+        }
+      }));
+
+      // Add source_table to existing pipeline data
+      const pipelineWithSource = (pipelineData || []).map(item => ({
+        ...item,
+        source_table: 'candidate_pipeline'
+      }));
+
+      // Merge both datasets
+      const allCandidates = [...pipelineWithSource, ...transformedApplications];
 
       // Fetch verification data for each candidate
       const candidatesWithVerification = await Promise.all(
-        (data || []).map(async (candidate) => {
+        allCandidates.map(async (candidate) => {
           const { data: verification } = await supabase
             .from("candidate_verifications")
             .select("*")
@@ -140,9 +180,13 @@ export default function StaffFunnel() {
 
       if (uploadError) throw uploadError;
 
+      // Find which table this candidate is from
+      const candidate = candidates.find(c => c.id === uploadingCandidateId);
+      const tableName = (candidate as any)?.source_table || 'candidate_pipeline';
+
       // Store the file path (not public URL) in the database
       const { error: updateError } = await supabase
-        .from('candidate_pipeline')
+        .from(tableName)
         .update({ cv_url: filePath })
         .eq('id', uploadingCandidateId);
 
@@ -210,8 +254,11 @@ export default function StaffFunnel() {
 
   const toggleChosen = async (candidateId: string, currentValue: boolean) => {
     try {
+      const candidate = candidates.find(c => c.id === candidateId);
+      const tableName = (candidate as any)?.source_table || 'candidate_pipeline';
+      
       const { error } = await supabase
-        .from('candidate_pipeline')
+        .from(tableName)
         .update({ is_founding_20: !currentValue })
         .eq('id', candidateId);
 
@@ -234,8 +281,11 @@ export default function StaffFunnel() {
 
   const togglePriority = async (candidateId: string, currentValue: boolean) => {
     try {
+      const candidate = candidates.find(c => c.id === candidateId);
+      const tableName = (candidate as any)?.source_table || 'candidate_pipeline';
+      
       const { error } = await supabase
-        .from('candidate_pipeline')
+        .from(tableName)
         .update({ is_priority: !currentValue })
         .eq('id', candidateId);
 
@@ -270,23 +320,31 @@ export default function StaffFunnel() {
     );
 
     try {
+      // Update the correct table based on source
+      const tableName = (candidateToMove as any).source_table || 'candidate_pipeline';
+      
       const { error } = await supabase
-        .from("candidate_pipeline")
+        .from(tableName)
         .update({
           stage: newStage,
-          moved_to_stage_at: new Date().toISOString(),
+          ...(tableName === 'candidate_pipeline' 
+            ? { moved_to_stage_at: new Date().toISOString() }
+            : { updated_at: new Date().toISOString() }
+          )
         })
         .eq("id", candidateId);
 
       if (error) throw error;
 
-      // Insert stage history
-      await supabase.from("pipeline_stage_history").insert({
-        pipeline_id: candidateId,
-        from_stage: candidateToMove.stage,
-        to_stage: newStage,
-        moved_by: (await supabase.auth.getUser()).data.user?.id,
-      });
+      // Insert stage history only for candidate_pipeline
+      if (tableName === 'candidate_pipeline') {
+        await supabase.from("pipeline_stage_history").insert({
+          pipeline_id: candidateId,
+          from_stage: candidateToMove.stage,
+          to_stage: newStage,
+          moved_by: (await supabase.auth.getUser()).data.user?.id,
+        });
+      }
 
       toast({
         title: "Application Updated",
@@ -315,8 +373,11 @@ export default function StaffFunnel() {
 
   const handleDeleteCandidate = async (candidateId: string) => {
     try {
+      const candidateToDelete = candidates.find(c => c.id === candidateId);
+      const tableName = (candidateToDelete as any)?.source_table || 'candidate_pipeline';
+      
       const { error } = await supabase
-        .from("candidate_pipeline")
+        .from(tableName)
         .delete()
         .eq("id", candidateId);
 
