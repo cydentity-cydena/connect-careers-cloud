@@ -117,14 +117,47 @@ const Placements = () => {
     
     setClients(clientsData || []);
 
-    // Load candidates for dropdown (from profiles)
-    const { data: candidatesData } = await supabase
-      .from('profiles')
-      .select('id, full_name')
-      .not('full_name', 'is', null)
-      .order('full_name');
+    // Load candidates for dropdown - only those recruiter has access to
+    // Get candidates who applied to recruiter's client jobs
+    const { data: applicantCandidates } = await supabase
+      .from('applications')
+      .select(`
+        candidate_id,
+        profiles!applications_candidate_id_fkey(id, full_name),
+        jobs!inner(
+          client_id,
+          clients!inner(recruiter_id)
+        )
+      `)
+      .eq('jobs.clients.recruiter_id', uid);
+
+    // Get candidates from unlocked profiles (if recruiter also acts as employer)
+    const { data: unlockedCandidates } = await supabase
+      .from('profile_unlocks')
+      .select('candidate_id, profiles!profile_unlocks_candidate_id_fkey(id, full_name)')
+      .eq('employer_id', uid);
+
+    // Combine and deduplicate candidates
+    const candidateMap = new Map<string, Candidate>();
     
-    setCandidates(candidatesData || []);
+    applicantCandidates?.forEach(item => {
+      const profile = (item.profiles as any);
+      if (profile?.id && profile?.full_name) {
+        candidateMap.set(profile.id, { id: profile.id, full_name: profile.full_name });
+      }
+    });
+
+    unlockedCandidates?.forEach(item => {
+      const profile = (item.profiles as any);
+      if (profile?.id && profile?.full_name) {
+        candidateMap.set(profile.id, { id: profile.id, full_name: profile.full_name });
+      }
+    });
+
+    const uniqueCandidates = Array.from(candidateMap.values())
+      .sort((a, b) => a.full_name.localeCompare(b.full_name));
+    
+    setCandidates(uniqueCandidates);
 
     setLoading(false);
   };
