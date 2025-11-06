@@ -197,6 +197,18 @@ const Auth = () => {
       // Username is required for candidates, optional for employers and recruiters
       if (userRole === "candidate") {
         usernameSchema.parse(username);
+        
+        // Check if username contains parts of the user's name
+        const nameParts = fullName.trim().toLowerCase().split(/\s+/);
+        const usernameToCheck = username.trim().toLowerCase();
+        
+        for (const part of nameParts) {
+          // Check name parts that are at least 3 characters long
+          if (part.length >= 3 && usernameToCheck.includes(part)) {
+            toast.error("Username cannot contain parts of your name");
+            return;
+          }
+        }
       } else if (username.trim()) {
         // If employer/recruiter provides username, validate it
         usernameSchema.parse(username);
