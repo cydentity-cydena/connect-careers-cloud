@@ -1,15 +1,18 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Bell, CheckCheck } from "lucide-react";
+import { Bell, CheckCheck, ChevronDown } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export const AdminNotifications = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [isOpen, setIsOpen] = useState(false);
 
   const { data: notifications, refetch } = useQuery({
     queryKey: ["admin-notifications"],
@@ -83,72 +86,88 @@ export const AdminNotifications = () => {
 
   const unreadCount = notifications?.filter((n) => !n.is_read).length || 0;
 
+  // Mark notifications as read when opened
+  useEffect(() => {
+    if (isOpen && unreadCount > 0) {
+      markAllAsReadMutation.mutate();
+    }
+  }, [isOpen]);
+
   return (
     <Card>
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Bell className="h-5 w-5" />
-            <div>
-              <CardTitle>Recent Activity</CardTitle>
-              <CardDescription>
-                {unreadCount > 0 && `${unreadCount} unread notification${unreadCount > 1 ? "s" : ""}`}
-              </CardDescription>
-            </div>
-          </div>
-          {unreadCount > 0 && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => markAllAsReadMutation.mutate()}
-            >
-              <CheckCheck className="h-4 w-4 mr-2" />
-              Mark all as read
-            </Button>
-          )}
-        </div>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-3">
-          {notifications?.length === 0 ? (
-            <p className="text-muted-foreground text-sm">No notifications yet</p>
-          ) : (
-            notifications?.map((notification) => (
-              <div
-                key={notification.id}
-                className={`p-3 rounded-lg border ${
-                  notification.is_read
-                    ? "bg-background"
-                    : "bg-primary/5 border-primary/20"
-                }`}
-              >
-                <div className="flex items-start justify-between gap-2">
-                  <div className="flex-1">
-                    <p className="font-medium text-sm">{notification.title}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {notification.message}
-                    </p>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {formatDistanceToNow(new Date(notification.created_at), {
-                        addSuffix: true,
-                      })}
-                    </p>
-                  </div>
-                  {!notification.is_read && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => markAsReadMutation.mutate(notification.id)}
-                    >
-                      Mark read
-                    </Button>
-                  )}
-                </div>
+      <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <CollapsibleTrigger className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+              <Bell className="h-5 w-5" />
+              <div className="text-left">
+                <CardTitle className="flex items-center gap-2">
+                  Recent Activity
+                  <ChevronDown className={`h-4 w-4 transition-transform ${isOpen ? "rotate-180" : ""}`} />
+                </CardTitle>
+                <CardDescription>
+                  {unreadCount > 0 && `${unreadCount} unread notification${unreadCount > 1 ? "s" : ""}`}
+                </CardDescription>
               </div>
-            ))
-          )}
-        </div>
-      </CardContent>
+            </CollapsibleTrigger>
+            {unreadCount > 0 && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => markAllAsReadMutation.mutate()}
+              >
+                <CheckCheck className="h-4 w-4 mr-2" />
+                Mark all as read
+              </Button>
+            )}
+          </div>
+        </CardHeader>
+        <CollapsibleContent>
+          <CardContent>
+            <ScrollArea className="h-[400px] pr-4">
+              <div className="space-y-3">
+                {notifications?.length === 0 ? (
+                  <p className="text-muted-foreground text-sm">No notifications yet</p>
+                ) : (
+                  notifications?.map((notification) => (
+                    <div
+                      key={notification.id}
+                      className={`p-3 rounded-lg border ${
+                        notification.is_read
+                          ? "bg-background"
+                          : "bg-primary/5 border-primary/20"
+                      }`}
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex-1">
+                          <p className="font-medium text-sm">{notification.title}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {notification.message}
+                          </p>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            {formatDistanceToNow(new Date(notification.created_at), {
+                              addSuffix: true,
+                            })}
+                          </p>
+                        </div>
+                        {!notification.is_read && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => markAsReadMutation.mutate(notification.id)}
+                          >
+                            Mark read
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </ScrollArea>
+          </CardContent>
+        </CollapsibleContent>
+      </Collapsible>
     </Card>
   );
 };
