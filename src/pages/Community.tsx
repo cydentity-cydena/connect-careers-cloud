@@ -4,7 +4,6 @@ import { ActivityFeed } from '@/components/community/ActivityFeed';
 import { SkillPathways } from '@/components/community/SkillPathways';
 import { CreatePostDialog } from '@/components/community/CreatePostDialog';
 import { GenerateContentButton } from '@/components/community/GenerateContentButton';
-import Navigation from '@/components/Navigation';
 import SEO from '@/components/SEO';
 import { TrendingUp, Map, Users } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
@@ -62,8 +61,6 @@ const Community = () => {
         description="Join the Cydena community of cybersecurity professionals. Share knowledge, track skill pathways, earn achievements, and connect with peers in infosec."
         keywords="cybersecurity community, infosec networking, security professionals forum, cyber skills tracking"
       />
-      
-      <Navigation />
       
       <div className="container mx-auto px-4 py-8">
         <header className="mb-8 flex flex-wrap justify-between items-start gap-4">
