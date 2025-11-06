@@ -634,7 +634,7 @@ export default function Messages() {
                           </>
                         )}
                       </div>
-                      {isSent && !isEditing && (
+                      {!isEditing && (
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                             <Button variant="ghost" size="icon" className="h-6 w-6">
@@ -642,15 +642,17 @@ export default function Messages() {
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align={isSent ? "end" : "start"}>
-                            <DropdownMenuItem
-                              onClick={() => {
-                                setEditingMessageId(message.id);
-                                setEditingContent(message.content);
-                              }}
-                            >
-                              <Pencil className="h-4 w-4 mr-2" />
-                              Edit
-                            </DropdownMenuItem>
+                            {isSent && (
+                              <DropdownMenuItem
+                                onClick={() => {
+                                  setEditingMessageId(message.id);
+                                  setEditingContent(message.content);
+                                }}
+                              >
+                                <Pencil className="h-4 w-4 mr-2" />
+                                Edit
+                              </DropdownMenuItem>
+                            )}
                             <DropdownMenuItem
                               onClick={() => {
                                 setMessageToDelete(message.id);
