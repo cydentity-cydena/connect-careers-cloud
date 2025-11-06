@@ -88,51 +88,53 @@ const RecruiterDashboard = () => {
         </p>
       </div>
 
-      <Card className="border-border shadow-card">
-        <CardHeader>
-          <CardTitle>Getting Started as a Recruiter</CardTitle>
-          <CardDescription>
-            Build your client base and place top talent
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <div className="flex items-start gap-4">
-              <div className="bg-primary/10 rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
-                <span className="text-primary font-semibold">1</span>
+      {(clientsCount === 0 || activeJobsCount === 0 || placementsCount === 0) && (
+        <Card className="border-border shadow-card">
+          <CardHeader>
+            <CardTitle>Getting Started as a Recruiter</CardTitle>
+            <CardDescription>
+              Build your client base and place top talent
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="flex items-start gap-4">
+                <div className="bg-primary/10 rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
+                  <span className="text-primary font-semibold">1</span>
+                </div>
+                <div>
+                  <h3 className="font-semibold mb-1">Add Client Companies</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Build your portfolio of companies you recruit for
+                  </p>
+                </div>
               </div>
-              <div>
-                <h3 className="font-semibold mb-1">Add Client Companies</h3>
-                <p className="text-sm text-muted-foreground">
-                  Build your portfolio of companies you recruit for
-                </p>
+              <div className="flex items-start gap-4">
+                <div className="bg-primary/10 rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
+                  <span className="text-primary font-semibold">2</span>
+                </div>
+                <div>
+                  <h3 className="font-semibold mb-1">Post Jobs for Clients</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Create job listings on behalf of your client companies
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start gap-4">
+                <div className="bg-primary/10 rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
+                  <span className="text-primary font-semibold">3</span>
+                </div>
+                <div>
+                  <h3 className="font-semibold mb-1">Source & Place Candidates</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Find qualified candidates and track your placements
+                  </p>
+                </div>
               </div>
             </div>
-            <div className="flex items-start gap-4">
-              <div className="bg-primary/10 rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
-                <span className="text-primary font-semibold">2</span>
-              </div>
-              <div>
-                <h3 className="font-semibold mb-1">Post Jobs for Clients</h3>
-                <p className="text-sm text-muted-foreground">
-                  Create job listings on behalf of your client companies
-                </p>
-              </div>
-            </div>
-            <div className="flex items-start gap-4">
-              <div className="bg-primary/10 rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
-                <span className="text-primary font-semibold">3</span>
-              </div>
-              <div>
-                <h3 className="font-semibold mb-1">Source & Place Candidates</h3>
-                <p className="text-sm text-muted-foreground">
-                  Find qualified candidates and track your placements
-                </p>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      )}
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full max-w-4xl grid-cols-5">
