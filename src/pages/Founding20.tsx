@@ -127,7 +127,7 @@ export default function Founding20() {
 
       toast({
         title: "Application Submitted! 🎉",
-        description: "We'll review your application and contact you within 48 hours.",
+        description: (data as any)?.message || "We'll review your application and contact you within 48 hours.",
       });
 
       // Reset form

@@ -144,8 +144,11 @@ serve(async (req) => {
       }
     }
 
-    // Create a pipeline candidate entry
-    const { data: pipelineEntry, error: pipelineError } = await supabase
+    // Create or update a pipeline candidate entry (handle duplicate emails)
+    let pipelineEntry: any = null;
+    let isUpdate = false;
+
+    const insertResult = await supabase
       .from('pipeline_candidates')
       .insert({
         full_name: formData.fullName,
@@ -170,27 +173,68 @@ serve(async (req) => {
       .select()
       .single();
 
-    if (pipelineError) {
-      console.error('Error creating pipeline entry:', pipelineError);
-      throw pipelineError;
+    if (insertResult.error) {
+      const err: any = insertResult.error;
+      if (err.code === '23505') {
+        // Duplicate email - update existing record instead
+        const { data: updated, error: updateErr } = await supabase
+          .from('pipeline_candidates')
+          .update({
+            full_name: formData.fullName,
+            phone: formData.phone || null,
+            current_title: formData.currentTitle,
+            years_experience: parseInt(formData.yearsExperience),
+            top_certifications: formData.topCertifications,
+            key_skills: formData.keySkills,
+            availability: formData.availability,
+            salary_expectations: formData.salaryExpectations,
+            linkedin_url: formData.linkedinUrl || null,
+            github_url: formData.githubUrl || null,
+            portfolio_url: formData.portfolioUrl || null,
+            why_top_twenty: formData.whyTopTwenty,
+            cv_url: cvFilePath,
+            is_founding_20: true,
+            application_source: 'founding_20_page',
+            submitted_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+            stage: 'applied',
+          })
+          .eq('email', formData.email)
+          .select()
+          .single();
+
+        if (updateErr) {
+          console.error('Error updating existing pipeline entry:', updateErr);
+          throw updateErr;
+        }
+        isUpdate = true;
+        pipelineEntry = updated;
+      } else {
+        console.error('Error creating pipeline entry:', insertResult.error);
+        throw insertResult.error;
+      }
+    } else {
+      pipelineEntry = insertResult.data;
     }
 
-    // Notify admins about the new application
-    const { data: adminUsers } = await supabase
-      .from('user_roles')
-      .select('user_id')
-      .in('role', ['admin', 'staff']);
+    // Notify admins about the new application (only on first submission)
+    if (!isUpdate) {
+      const { data: adminUsers } = await supabase
+        .from('user_roles')
+        .select('user_id')
+        .in('role', ['admin', 'staff']);
 
-    if (adminUsers && adminUsers.length > 0) {
-      const notifications = adminUsers.map(admin => ({
-        user_id: admin.user_id,
-        type: 'system',
-        title: 'New Founding 20 Application',
-        message: `${formData.fullName} has applied for the Founding 20 program`,
-        link: '/staff/funnel',
-      }));
+      if (adminUsers && adminUsers.length > 0) {
+        const notifications = adminUsers.map(admin => ({
+          user_id: admin.user_id,
+          type: 'system',
+          title: 'New Founding 20 Application',
+          message: `${formData.fullName} has applied for the Founding 20 program`,
+          link: '/staff/funnel',
+        }));
 
-      await supabase.from('notifications').insert(notifications);
+        await supabase.from('notifications').insert(notifications);
+      }
     }
 
     // Send email notification to contact@cydena.com
@@ -199,7 +243,7 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({ 
         success: true, 
-        message: 'Application submitted successfully',
+        message: isUpdate ? 'Application updated successfully' : 'Application submitted successfully',
         pipelineId: pipelineEntry.id 
       }),
       { 
