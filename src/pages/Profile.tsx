@@ -199,6 +199,28 @@ const Profile = () => {
         }
       }
 
+      // Reload data to get updated IDs
+      const { data: workData } = await supabase
+        .from('work_history')
+        .select('*')
+        .eq('candidate_id', userId)
+        .order('start_date', { ascending: false });
+      if (workData) setWorkHistory(workData);
+
+      const { data: projectsData } = await supabase
+        .from('projects')
+        .select('*')
+        .eq('candidate_id', userId)
+        .order('start_date', { ascending: false });
+      if (projectsData) setProjects(projectsData);
+
+      const { data: educationData } = await supabase
+        .from('education')
+        .select('*')
+        .eq('candidate_id', userId)
+        .order('start_date', { ascending: false });
+      if (educationData) setEducation(educationData);
+
       toast.success('Profile updated');
     } catch (e: any) {
       toast.error(e.message ?? 'Failed to save profile');
