@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Shield, Loader2, CheckCircle, ChevronDown } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { FunctionsHttpError } from "@supabase/supabase-js";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -130,9 +131,15 @@ const Auth = () => {
       });
 
       if (error) {
-        const inviteMessage = (data as any)?.error;
-        console.error('Secure signup error:', error, inviteMessage);
-        throw new Error(inviteMessage || error.message);
+        let msg = error.message;
+        try {
+          if (error instanceof FunctionsHttpError) {
+            const err = await error.context.json();
+            msg = err?.error || err?.message || msg;
+          }
+        } catch {}
+        console.error('Secure signup error:', error, msg);
+        throw new Error(msg);
       }
 
       if (!data.success) {
@@ -219,7 +226,14 @@ const Auth = () => {
       });
 
       if (functionError) {
-        throw new Error((data as any)?.error || functionError.message);
+        let msg = functionError.message;
+        try {
+          if (functionError instanceof FunctionsHttpError) {
+            const err = await functionError.context.json();
+            msg = err?.error || err?.message || msg;
+          }
+        } catch {}
+        throw new Error(msg);
       }
       if (!data.success) throw new Error(data.error || 'Signup failed');
 
