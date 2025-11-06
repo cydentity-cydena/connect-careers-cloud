@@ -94,7 +94,7 @@ const AdminDashboard = () => {
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
         <Card 
           className="border-border shadow-card hover:scale-105 hover:shadow-xl transition-all cursor-pointer"
-          onClick={() => navigate('/admin/user-management')}
+          onClick={() => navigate('/admin/users')}
         >
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-lg">
@@ -110,7 +110,7 @@ const AdminDashboard = () => {
 
         <Card 
           className="border-border shadow-card hover:scale-105 hover:shadow-xl transition-all cursor-pointer"
-          onClick={() => navigate('/admin/job-moderation')}
+          onClick={() => navigate('/admin/jobs')}
         >
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-lg">
