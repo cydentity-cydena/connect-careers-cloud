@@ -443,7 +443,7 @@ export default function Founding20() {
                         required
                         value={formData.whyTopTwenty}
                         onChange={(e) => setFormData({...formData, whyTopTwenty: e.target.value})}
-                        placeholder="Tell us what makes you exceptional and why you deserve to be in the top 20..."
+                        placeholder="Tell us about your background and why you're interested in joining."
                         rows={6}
                       />
                     </div>
