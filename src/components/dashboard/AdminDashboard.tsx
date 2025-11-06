@@ -92,7 +92,10 @@ const AdminDashboard = () => {
       <AdminNotifications />
 
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card className="border-border shadow-card hover:scale-105 transition-transform">
+        <Card 
+          className="border-border shadow-card hover:scale-105 hover:shadow-xl transition-all cursor-pointer"
+          onClick={() => navigate('/admin/user-management')}
+        >
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-lg">
               <Users className="h-5 w-5 text-primary" />
@@ -105,7 +108,10 @@ const AdminDashboard = () => {
           </CardContent>
         </Card>
 
-        <Card className="border-border shadow-card hover:scale-105 transition-transform">
+        <Card 
+          className="border-border shadow-card hover:scale-105 hover:shadow-xl transition-all cursor-pointer"
+          onClick={() => navigate('/admin/job-moderation')}
+        >
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-lg">
               <Briefcase className="h-5 w-5 text-secondary" />
@@ -118,7 +124,10 @@ const AdminDashboard = () => {
           </CardContent>
         </Card>
 
-        <Card className="border-border shadow-card hover:scale-105 transition-transform">
+        <Card 
+          className="border-border shadow-card hover:scale-105 hover:shadow-xl transition-all cursor-pointer"
+          onClick={() => navigate('/jobs')}
+        >
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-lg">
               <Shield className="h-5 w-5 text-accent" />
@@ -131,7 +140,10 @@ const AdminDashboard = () => {
           </CardContent>
         </Card>
 
-        <Card className="border-border shadow-card hover:scale-105 transition-transform">
+        <Card 
+          className="border-border shadow-card hover:scale-105 hover:shadow-xl transition-all cursor-pointer"
+          onClick={() => navigate('/profiles')}
+        >
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-lg">
               <AlertCircle className="h-5 w-5 text-orange-500" />
