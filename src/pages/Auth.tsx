@@ -416,40 +416,11 @@ const Auth = () => {
                     )}
                   </Button>
 
-                  <div className="relative my-4">
-                    <div className="absolute inset-0 flex items-center">
-                      <span className="w-full border-t" />
-                    </div>
-                    <div className="relative flex justify-center text-xs uppercase">
-                      <span className="bg-background px-2 text-muted-foreground">
-                        Or for Candidates
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="space-y-3">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      className="w-full"
-                      onClick={async () => {
-                        try {
-                          const { error } = await supabase.auth.signInWithOAuth({
-                            provider: 'google',
-                            options: {
-                              redirectTo: `${window.location.origin}/auth`
-                            }
-                          });
-                          if (error) toast.error(error.message);
-                        } catch (error: any) {
-                          toast.error(error.message);
-                        }
-                      }}
-                    >
-                      Continue with Google
-                    </Button>
+                  {/* Google OAuth temporarily disabled during invite-only period */}
+                  <div className="mt-4 p-3 bg-muted/50 rounded-lg border border-border">
                     <p className="text-xs text-center text-muted-foreground">
-                      Candidates only. Employers & recruiters must use email/password with company domain.
+                      <span className="font-medium">Google Sign-In temporarily unavailable.</span><br />
+                      Signups are invite-only. If you're on the approved list, please use email/password above.
                     </p>
                   </div>
                 </form>
@@ -566,30 +537,11 @@ const Auth = () => {
                     )}
                   </Button>
 
-                  <div className="relative my-4">
-                    <div className="absolute inset-0 flex items-center">
-                      <span className="w-full border-t" />
-                    </div>
-                    <div className="relative flex justify-center text-xs uppercase">
-                      <span className="bg-background px-2 text-muted-foreground">
-                        Or for Candidates
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="space-y-3">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      className="w-full"
-                      onClick={() => handleOAuthSignIn('google')}
-                      disabled={isLoading}
-                    >
-                      Continue with Google
-                    </Button>
+                  {/* Google OAuth temporarily disabled during invite-only period */}
+                  <div className="mt-4 p-3 bg-muted/50 rounded-lg border border-border">
                     <p className="text-xs text-center text-muted-foreground">
-                      Quick signup for candidates only. Username auto-generated (changeable once).<br />
-                      <span className="font-medium">Employers & recruiters: Use email/password above with company domain.</span>
+                      <span className="font-medium">Google Sign-In temporarily unavailable.</span><br />
+                      Signups are invite-only. If you're on the approved list, please use email/password above.
                     </p>
                   </div>
                 </form>
