@@ -683,8 +683,11 @@ export default function StaffFunnel() {
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2">
                               <h4 className="font-semibold truncate">
-                                {(candidate.profiles as any).username ? `@${(candidate.profiles as any).username}` : candidate.profiles.full_name}
+                                {candidate.profiles.full_name}
                               </h4>
+                              {(candidate.profiles as any).username && (
+                                <div className="text-xs text-muted-foreground truncate">@{(candidate.profiles as any).username}</div>
+                              )}
                               {candidate.is_founding_20 && <Star className="h-4 w-4 text-yellow-500 fill-yellow-500 flex-shrink-0" />}
                             </div>
                             {candidate.desired_role && (
@@ -805,8 +808,11 @@ export default function StaffFunnel() {
                             </Button>
                             <div className="flex-1 min-w-0">
                               <div className="font-semibold text-sm truncate">
-                                {candidate.profiles?.username ? `@${candidate.profiles.username}` : (candidate.profiles?.full_name || "Unknown")}
+                                {candidate.profiles?.full_name || "Unknown"}
                               </div>
+                              {candidate.profiles?.username && (
+                                <div className="text-xs text-muted-foreground truncate">@{candidate.profiles.username}</div>
+                              )}
                             </div>
                           </div>
                           <Button
