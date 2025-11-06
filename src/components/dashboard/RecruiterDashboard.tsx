@@ -18,6 +18,7 @@ const RecruiterDashboard = () => {
   const [activeJobsCount, setActiveJobsCount] = useState(0);
   const [userName, setUserName] = useState<string>("");
   const [totalCommissions, setTotalCommissions] = useState(0);
+  const [activeTab, setActiveTab] = useState("overview");
 
   useEffect(() => {
     getCurrentUser();
@@ -183,7 +184,7 @@ const RecruiterDashboard = () => {
         </CardContent>
       </Card>
 
-      <Tabs defaultValue="overview" className="w-full">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full max-w-4xl grid-cols-5">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="pipeline">Pipeline</TabsTrigger>
@@ -194,7 +195,10 @@ const RecruiterDashboard = () => {
 
         <TabsContent value="overview" className="space-y-8 mt-6">
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card className="border-primary border-2 shadow-lg hover:scale-105 transition-transform">
+            <Card 
+              className="border-primary border-2 shadow-lg hover:scale-105 transition-transform cursor-pointer"
+              onClick={() => setActiveTab("clients")}
+            >
               <CardHeader className="pb-3">
                 <CardTitle className="flex items-center gap-2 text-lg">
                   <Building2 className="h-5 w-5 text-primary" />
@@ -207,7 +211,10 @@ const RecruiterDashboard = () => {
               </CardContent>
             </Card>
 
-            <Card className="border-border shadow-card hover:scale-105 transition-transform">
+            <Card 
+              className="border-border shadow-card hover:scale-105 transition-transform cursor-pointer"
+              onClick={() => setActiveTab("jobs")}
+            >
               <CardHeader className="pb-3">
                 <CardTitle className="flex items-center gap-2 text-lg">
                   <Briefcase className="h-5 w-5 text-secondary" />
@@ -220,7 +227,10 @@ const RecruiterDashboard = () => {
               </CardContent>
             </Card>
 
-            <Card className="border-border shadow-card hover:scale-105 transition-transform">
+            <Card 
+              className="border-border shadow-card hover:scale-105 transition-transform cursor-pointer"
+              onClick={() => setActiveTab("placements")}
+            >
               <CardHeader className="pb-3">
                 <CardTitle className="flex items-center gap-2 text-lg">
                   <UserPlus className="h-5 w-5 text-accent" />
@@ -233,7 +243,10 @@ const RecruiterDashboard = () => {
               </CardContent>
             </Card>
 
-            <Card className="border-border shadow-card hover:scale-105 transition-transform">
+            <Card 
+              className="border-border shadow-card hover:scale-105 transition-transform cursor-pointer"
+              onClick={() => setActiveTab("placements")}
+            >
               <CardHeader className="pb-3">
                 <CardTitle className="flex items-center gap-2 text-lg">
                   <PoundSterling className="h-5 w-5 text-green-500" />
