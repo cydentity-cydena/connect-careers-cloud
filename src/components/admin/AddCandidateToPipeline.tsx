@@ -230,19 +230,19 @@ export default function AddCandidateToPipeline({ onSuccess }: AddCandidateToPipe
           Add Candidate
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-2xl max-h-[90vh] flex flex-col">
+      <DialogContent className="max-w-2xl max-h-[90vh] flex flex-col overflow-hidden">
         <DialogHeader>
           <DialogTitle>Add Candidate to Pipeline</DialogTitle>
         </DialogHeader>
         
-        <Tabs defaultValue="existing" className="w-full flex-1 flex flex-col overflow-hidden">
+        <Tabs defaultValue="existing" className="w-full flex-1 flex flex-col overflow-hidden min-h-0">
           <TabsList className="grid w-full grid-cols-2 flex-shrink-0">
             <TabsTrigger value="existing">From Platform</TabsTrigger>
             <TabsTrigger value="new">Create New</TabsTrigger>
           </TabsList>
 
           {/* Existing Candidates Tab */}
-          <TabsContent value="existing" className="flex-1 overflow-hidden">
+          <TabsContent value="existing" className="flex-1 min-h-0 overflow-hidden">
             <ScrollArea className="h-full pr-4">
               <div className="space-y-4 pb-4">
             <div className="space-y-2">
@@ -418,7 +418,7 @@ export default function AddCandidateToPipeline({ onSuccess }: AddCandidateToPipe
           </TabsContent>
 
           {/* New Candidate Tab */}
-          <TabsContent value="new" className="flex-1 overflow-hidden">
+          <TabsContent value="new" className="flex-1 min-h-0 overflow-hidden">
             <ScrollArea className="h-full pr-4">
               <div className="pb-4">
                 <form onSubmit={handleSubmit} className="space-y-4">
