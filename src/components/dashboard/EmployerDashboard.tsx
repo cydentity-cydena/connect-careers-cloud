@@ -196,56 +196,6 @@ const EmployerDashboard = () => {
         </Card>
       )}
 
-      <Card className="border-border shadow-card bg-primary/5">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Workflow className="h-5 w-5 text-primary" />
-            ATS Integrations
-          </CardTitle>
-          <CardDescription>
-            Push verified candidates to your ATS
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-muted-foreground mb-4">
-            Connect to Workday, Greenhouse, or use webhooks to automatically sync candidates.
-          </p>
-          <Button 
-            variant="default" 
-            className="w-full gap-2"
-            onClick={() => navigate('/integrations')}
-          >
-            <Workflow className="h-4 w-4" />
-            Manage Integrations
-          </Button>
-        </CardContent>
-      </Card>
-
-      <Card className="border-border shadow-card">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Bug className="h-5 w-5 text-primary" />
-            Report a Bug
-          </CardTitle>
-          <CardDescription>
-            Help us improve your experience
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-muted-foreground mb-4">
-            Found an issue? Let us know so we can fix it quickly.
-          </p>
-          <Button 
-            variant="outline" 
-            className="w-full gap-2"
-            onClick={() => navigate('/bug-report')}
-          >
-            <Bug className="h-4 w-4" />
-            Report Bug
-          </Button>
-        </CardContent>
-      </Card>
-
       <Tabs defaultValue="overview" className="w-full">
         <TabsList className="grid w-full max-w-2xl grid-cols-3">
           <TabsTrigger value="overview">Overview</TabsTrigger>
@@ -376,6 +326,56 @@ const EmployerDashboard = () => {
           <ApplicationPipeline />
         </TabsContent>
       </Tabs>
+
+      <Card className="border-border shadow-card bg-primary/5">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Workflow className="h-5 w-5 text-primary" />
+            ATS Integrations
+          </CardTitle>
+          <CardDescription>
+            Push verified candidates to your ATS
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-muted-foreground mb-4">
+            Connect to Workday, Greenhouse, or use webhooks to automatically sync candidates.
+          </p>
+          <Button 
+            variant="default" 
+            className="w-full gap-2"
+            onClick={() => navigate('/integrations')}
+          >
+            <Workflow className="h-4 w-4" />
+            Manage Integrations
+          </Button>
+        </CardContent>
+      </Card>
+
+      <Card className="border-border shadow-card">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Bug className="h-5 w-5 text-primary" />
+            Report a Bug
+          </CardTitle>
+          <CardDescription>
+            Help us improve your experience
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-muted-foreground mb-4">
+            Found an issue? Let us know so we can fix it quickly.
+          </p>
+          <Button 
+            variant="outline" 
+            className="w-full gap-2"
+            onClick={() => navigate('/bug-report')}
+          >
+            <Bug className="h-4 w-4" />
+            Report Bug
+          </Button>
+        </CardContent>
+      </Card>
     </div>
   );
 };
