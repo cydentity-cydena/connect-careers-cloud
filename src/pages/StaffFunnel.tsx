@@ -690,7 +690,6 @@ export default function StaffFunnel() {
                               </h4>
                               {candidate.is_founding_20 && <Star className="h-4 w-4 text-yellow-500 fill-yellow-500 flex-shrink-0" />}
                             </div>
-                            <p className="text-xs text-muted-foreground truncate">{candidate.profiles.email}</p>
                             {candidate.desired_role && (
                               <p className="text-xs font-medium text-primary mt-1">{candidate.desired_role}</p>
                             )}
