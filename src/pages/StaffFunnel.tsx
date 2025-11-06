@@ -32,6 +32,7 @@ interface PipelineCandidate {
   compliance_score: number | null;
   profiles: {
     full_name: string;
+    username?: string;
     email: string;
     avatar_url: string | null;
   };
@@ -94,6 +95,7 @@ export default function StaffFunnel() {
           *,
           profiles!candidate_pipeline_candidate_id_fkey (
             full_name,
+            username,
             email,
             avatar_url
           )
@@ -127,6 +129,7 @@ export default function StaffFunnel() {
         source_table: 'pipeline_candidates', // Track which table this came from
         profiles: {
           full_name: app.full_name,
+          username: null, // Pipeline candidates don't have usernames yet
           email: app.email,
           avatar_url: null
         }
@@ -422,9 +425,10 @@ export default function StaffFunnel() {
 
   const exportToCSV = () => {
     const csvContent = [
-      ["Name", "Email", "Stage", "Role", "Source", "Priority", "Chosen", "SLA Due"],
+      ["Name", "Username", "Email", "Stage", "Role", "Source", "Priority", "Chosen", "SLA Due"],
       ...filteredCandidates.map((c) => [
         c.profiles?.full_name || "",
+        c.profiles?.username || "",
         c.profiles?.email || "",
         c.stage,
         c.desired_role || "",
@@ -672,21 +676,26 @@ export default function StaffFunnel() {
 
                   return (
                     <Card key={candidate.id} className="p-4 hover:shadow-lg transition-shadow border-green-500/20">
-                      <div className="flex items-start gap-3 mb-3">
-                        <div className="h-12 w-12 rounded-full bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center text-white font-semibold flex-shrink-0">
-                          {candidate.profiles.full_name.split(' ').map(n => n[0]).join('')}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2">
-                            <h4 className="font-semibold truncate">{candidate.profiles.full_name}</h4>
-                            {candidate.is_founding_20 && <Star className="h-4 w-4 text-yellow-500 fill-yellow-500 flex-shrink-0" />}
+                        <div className="flex items-start gap-3 mb-3">
+                          <div className="h-12 w-12 rounded-full bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center text-white font-semibold flex-shrink-0">
+                            {candidate.profiles.full_name.split(' ').map(n => n[0]).join('')}
                           </div>
-                          <p className="text-xs text-muted-foreground truncate">{candidate.profiles.email}</p>
-                          {candidate.desired_role && (
-                            <p className="text-xs font-medium text-primary mt-1">{candidate.desired_role}</p>
-                          )}
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2">
+                              <h4 className="font-semibold truncate">
+                                {candidate.profiles.full_name}
+                                {(candidate.profiles as any).username && (
+                                  <span className="text-muted-foreground font-normal text-sm"> (@{(candidate.profiles as any).username})</span>
+                                )}
+                              </h4>
+                              {candidate.is_founding_20 && <Star className="h-4 w-4 text-yellow-500 fill-yellow-500 flex-shrink-0" />}
+                            </div>
+                            <p className="text-xs text-muted-foreground truncate">{candidate.profiles.email}</p>
+                            {candidate.desired_role && (
+                              <p className="text-xs font-medium text-primary mt-1">{candidate.desired_role}</p>
+                            )}
+                          </div>
                         </div>
-                      </div>
                       <div className="mb-3">
                         <BadgesRow items={badgeItems} showHrReady />
                       </div>
@@ -801,6 +810,9 @@ export default function StaffFunnel() {
                             <div className="flex-1 min-w-0">
                               <div className="font-semibold text-sm truncate">
                                 {candidate.profiles?.full_name || "Unknown"}
+                                {candidate.profiles?.username && (
+                                  <span className="text-muted-foreground font-normal"> (@{candidate.profiles.username})</span>
+                                )}
                               </div>
                               {candidate.profiles?.email && (
                                 <div className="text-xs text-muted-foreground truncate">{candidate.profiles.email}</div>

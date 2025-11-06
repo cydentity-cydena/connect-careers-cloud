@@ -993,6 +993,9 @@ export const ApplicationPipeline = () => {
                           <div className="flex-1 min-w-0 pr-6">
                             <h4 className="font-bold text-base leading-tight mb-1.5 text-foreground">
                               {candidate.profile.full_name}
+                              {candidate.profile.username && (
+                                <span className="text-muted-foreground font-normal text-sm"> (@{candidate.profile.username})</span>
+                              )}
                             </h4>
                             <p className="text-sm text-muted-foreground line-clamp-2 leading-snug">
                               {candidate.candidate_profile?.title || "No title"}
