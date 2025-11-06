@@ -69,6 +69,21 @@ export default function Founding20() {
     }
   ];
 
+  // Convert a File to base64 (without data URL prefix)
+  const fileToBase64 = async (file: File) => {
+    return await new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const result = reader.result as string;
+        const base64 = result.includes(',') ? result.split(',')[1] : result;
+        resolve(base64);
+      };
+      reader.onerror = (e) => reject(e);
+      reader.readAsDataURL(file);
+    });
+  };
+
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -85,28 +100,26 @@ export default function Founding20() {
 
     try {
       let cvUrl = null;
+      let cvBase64: string | null = null;
+      let cvFileName: string | null = null;
+      let cvContentType: string | null = null;
 
-      // Upload resume if provided
+      // Prepare resume for backend upload if provided
       if (resumeFile) {
-        const fileExt = resumeFile.name.split('.').pop();
-        const fileName = `${crypto.randomUUID()}.${fileExt}`;
-        const filePath = `founding-20/${fileName}`;
-
-        const { error: uploadError } = await supabase.storage
-          .from('resumes')
-          .upload(filePath, resumeFile);
-
-        if (uploadError) throw uploadError;
-
-        // Store just the file path (not the full URL) for signed URL generation
-        cvUrl = filePath;
+        cvBase64 = await fileToBase64(resumeFile);
+        cvFileName = resumeFile.name;
+        cvContentType = resumeFile.type || 'application/octet-stream';
       }
+
 
       // Call edge function to handle the submission
       const { data, error } = await supabase.functions.invoke('founding-20-application', {
         body: {
           ...formData,
-          cvUrl
+          cvUrl, // kept for backward compatibility (may be null)
+          cvBase64,
+          cvFileName,
+          cvContentType,
         }
       });
 

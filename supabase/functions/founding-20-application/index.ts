@@ -106,6 +106,29 @@ serve(async (req) => {
 
     const formData = await req.json();
 
+    // Optional CV upload via service role
+    let cvFilePath = formData.cvUrl || null;
+    if (formData.cvBase64 && formData.cvFileName) {
+      try {
+        const base64Str = String(formData.cvBase64);
+        const cleanBase64 = base64Str.includes(',') ? base64Str.split(',')[1] : base64Str;
+        const binary = atob(cleanBase64);
+        const bytes = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+        const ext = String(formData.cvFileName).split('.').pop() || 'bin';
+        const path = `founding-20/${crypto.randomUUID()}.${ext}`;
+        const contentType = formData.cvContentType || 'application/octet-stream';
+        const { error: uploadErr } = await supabase.storage.from('resumes').upload(path, bytes, { contentType });
+        if (uploadErr) {
+          console.error('Resume upload failed:', uploadErr);
+        } else {
+          cvFilePath = path;
+        }
+      } catch (e) {
+        console.error('Error processing CV upload:', e);
+      }
+    }
+
     // Validate required fields
     const requiredFields = [
       'fullName', 'email', 'yearsExperience', 'currentTitle',
@@ -138,7 +161,7 @@ serve(async (req) => {
         github_url: formData.githubUrl || null,
         portfolio_url: formData.portfolioUrl || null,
         why_top_twenty: formData.whyTopTwenty,
-        cv_url: formData.cvUrl || null,
+        cv_url: cvFilePath,
         stage: 'applied',
         is_founding_20: true,
         application_source: 'founding_20_page',
