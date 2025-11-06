@@ -131,19 +131,16 @@ const AdminDashboard = () => {
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-lg">
               <Shield className="h-5 w-5 text-accent" />
-              Applications
+              Live Jobs
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold text-accent">{applicationsCount}</p>
-            <p className="text-sm text-muted-foreground mt-1">Total</p>
+            <p className="text-3xl font-bold text-accent">{activeJobsCount}</p>
+            <p className="text-sm text-muted-foreground mt-1">Posted</p>
           </CardContent>
         </Card>
 
-        <Card 
-          className="border-border shadow-card hover:scale-105 hover:shadow-xl transition-all cursor-pointer"
-          onClick={() => navigate('/profiles')}
-        >
+        <Card className="border-border shadow-card">
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-lg">
               <AlertCircle className="h-5 w-5 text-orange-500" />
