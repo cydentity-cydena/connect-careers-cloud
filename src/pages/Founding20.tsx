@@ -98,12 +98,8 @@ export default function Founding20() {
 
         if (uploadError) throw uploadError;
 
-        // Get public URL
-        const { data: { publicUrl } } = supabase.storage
-          .from('resumes')
-          .getPublicUrl(filePath);
-        
-        cvUrl = publicUrl;
+        // Store just the file path (not the full URL) for signed URL generation
+        cvUrl = filePath;
       }
 
       // Call edge function to handle the submission
