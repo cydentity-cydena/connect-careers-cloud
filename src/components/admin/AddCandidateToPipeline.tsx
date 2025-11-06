@@ -230,19 +230,21 @@ export default function AddCandidateToPipeline({ onSuccess }: AddCandidateToPipe
           Add Candidate
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-2xl max-h-[90vh]">
+      <DialogContent className="max-w-2xl max-h-[90vh] flex flex-col">
         <DialogHeader>
           <DialogTitle>Add Candidate to Pipeline</DialogTitle>
         </DialogHeader>
         
-        <Tabs defaultValue="existing" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
+        <Tabs defaultValue="existing" className="w-full flex-1 flex flex-col overflow-hidden">
+          <TabsList className="grid w-full grid-cols-2 flex-shrink-0">
             <TabsTrigger value="existing">From Platform</TabsTrigger>
             <TabsTrigger value="new">Create New</TabsTrigger>
           </TabsList>
 
           {/* Existing Candidates Tab */}
-          <TabsContent value="existing" className="space-y-4">
+          <TabsContent value="existing" className="flex-1 overflow-hidden">
+            <ScrollArea className="h-full pr-4">
+              <div className="space-y-4 pb-4">
             <div className="space-y-2">
               <Label htmlFor="search">Search Candidates</Label>
               <div className="relative">
@@ -411,120 +413,126 @@ export default function AddCandidateToPipeline({ onSuccess }: AddCandidateToPipe
                 </div>
               </>
             )}
+              </div>
+            </ScrollArea>
           </TabsContent>
 
           {/* New Candidate Tab */}
-          <TabsContent value="new">
-            <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="email">Email *</Label>
-            <Input
-              id="email"
-              type="email"
-              required
-              value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              placeholder="candidate@example.com"
-            />
-          </div>
+          <TabsContent value="new" className="flex-1 overflow-hidden">
+            <ScrollArea className="h-full pr-4">
+              <div className="pb-4">
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email *</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      required
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      placeholder="candidate@example.com"
+                    />
+                  </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="fullName">Full Name *</Label>
-            <Input
-              id="fullName"
-              required
-              value={formData.fullName}
-              onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-              placeholder="John Doe"
-            />
-          </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="fullName">Full Name *</Label>
+                    <Input
+                      id="fullName"
+                      required
+                      value={formData.fullName}
+                      onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                      placeholder="John Doe"
+                    />
+                  </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="stage">Initial Stage</Label>
-            <Select value={formData.stage} onValueChange={(value) => setFormData({ ...formData, stage: value })}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="invited">Invited</SelectItem>
-                <SelectItem value="applied">Applied</SelectItem>
-                <SelectItem value="verified">Verified</SelectItem>
-                <SelectItem value="published">Published</SelectItem>
-                <SelectItem value="needs_info">Needs Info</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="stage">Initial Stage</Label>
+                    <Select value={formData.stage} onValueChange={(value) => setFormData({ ...formData, stage: value })}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="invited">Invited</SelectItem>
+                        <SelectItem value="applied">Applied</SelectItem>
+                        <SelectItem value="verified">Verified</SelectItem>
+                        <SelectItem value="published">Published</SelectItem>
+                        <SelectItem value="needs_info">Needs Info</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="source">Source</Label>
-            <Select value={formData.source} onValueChange={(value) => setFormData({ ...formData, source: value })}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select source" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="LinkedIn">LinkedIn</SelectItem>
-                <SelectItem value="Referral">Referral</SelectItem>
-                <SelectItem value="Community">Community</SelectItem>
-                <SelectItem value="Academy">Academy</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="source">Source</Label>
+                    <Select value={formData.source} onValueChange={(value) => setFormData({ ...formData, source: value })}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select source" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="LinkedIn">LinkedIn</SelectItem>
+                        <SelectItem value="Referral">Referral</SelectItem>
+                        <SelectItem value="Community">Community</SelectItem>
+                        <SelectItem value="Academy">Academy</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="desiredRole">Desired Role</Label>
-            <Select value={formData.desiredRole} onValueChange={(value) => setFormData({ ...formData, desiredRole: value })}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select role" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="SOC / DFIR">SOC / DFIR</SelectItem>
-                <SelectItem value="GRC / ISO">GRC / ISO</SelectItem>
-                <SelectItem value="Cloud Sec">Cloud Sec</SelectItem>
-                <SelectItem value="AppSec">AppSec</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="desiredRole">Desired Role</Label>
+                    <Select value={formData.desiredRole} onValueChange={(value) => setFormData({ ...formData, desiredRole: value })}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select role" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="SOC / DFIR">SOC / DFIR</SelectItem>
+                        <SelectItem value="GRC / ISO">GRC / ISO</SelectItem>
+                        <SelectItem value="Cloud Sec">Cloud Sec</SelectItem>
+                        <SelectItem value="AppSec">AppSec</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="staffNotes">Staff Notes</Label>
-            <Textarea
-              id="staffNotes"
-              value={formData.staffNotes}
-              onChange={(e) => setFormData({ ...formData, staffNotes: e.target.value })}
-              placeholder="Internal notes about this candidate..."
-              rows={3}
-            />
-          </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="staffNotes">Staff Notes</Label>
+                    <Textarea
+                      id="staffNotes"
+                      value={formData.staffNotes}
+                      onChange={(e) => setFormData({ ...formData, staffNotes: e.target.value })}
+                      placeholder="Internal notes about this candidate..."
+                      rows={3}
+                    />
+                  </div>
 
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="isPriority"
-                checked={formData.isPriority}
-                onCheckedChange={(checked) => setFormData({ ...formData, isPriority: checked as boolean })}
-              />
-              <Label htmlFor="isPriority" className="cursor-pointer">Priority</Label>
-            </div>
+                  <div className="flex items-center space-x-4">
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="isPriority"
+                        checked={formData.isPriority}
+                        onCheckedChange={(checked) => setFormData({ ...formData, isPriority: checked as boolean })}
+                      />
+                      <Label htmlFor="isPriority" className="cursor-pointer">Priority</Label>
+                    </div>
 
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="isFounding20"
-                checked={formData.isFounding20}
-                onCheckedChange={(checked) => setFormData({ ...formData, isFounding20: checked as boolean })}
-              />
-              <Label htmlFor="isFounding20" className="cursor-pointer">Chosen</Label>
-            </div>
-          </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="isFounding20"
+                        checked={formData.isFounding20}
+                        onCheckedChange={(checked) => setFormData({ ...formData, isFounding20: checked as boolean })}
+                      />
+                      <Label htmlFor="isFounding20" className="cursor-pointer">Chosen</Label>
+                    </div>
+                  </div>
 
-              <div className="flex gap-3">
-                <Button type="button" variant="outline" onClick={() => setOpen(false)} className="flex-1">
-                  Cancel
-                </Button>
-                <Button type="submit" disabled={loading} className="flex-1">
-                  {loading ? "Adding..." : "Create & Add"}
-                </Button>
+                  <div className="flex gap-3">
+                    <Button type="button" variant="outline" onClick={() => setOpen(false)} className="flex-1">
+                      Cancel
+                    </Button>
+                    <Button type="submit" disabled={loading} className="flex-1">
+                      {loading ? "Adding..." : "Create & Add"}
+                    </Button>
+                  </div>
+                </form>
               </div>
-            </form>
+            </ScrollArea>
           </TabsContent>
         </Tabs>
       </DialogContent>
