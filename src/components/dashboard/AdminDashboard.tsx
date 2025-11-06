@@ -115,7 +115,7 @@ const AdminDashboard = () => {
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-lg">
               <Briefcase className="h-5 w-5 text-secondary" />
-              Active Jobs
+              Moderate Jobs
             </CardTitle>
           </CardHeader>
           <CardContent>
