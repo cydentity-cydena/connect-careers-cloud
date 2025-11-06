@@ -230,7 +230,7 @@ export default function AddCandidateToPipeline({ onSuccess }: AddCandidateToPipe
           Add Candidate
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-2xl max-h-[90vh] flex flex-col overflow-hidden">
+      <DialogContent className="max-w-2xl h-[90vh] flex flex-col overflow-hidden">
         <DialogHeader>
           <DialogTitle>Add Candidate to Pipeline</DialogTitle>
         </DialogHeader>
