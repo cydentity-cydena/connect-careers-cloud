@@ -130,8 +130,9 @@ const Auth = () => {
       });
 
       if (error) {
-        console.error('Secure signup error:', error);
-        throw error;
+        const inviteMessage = (data as any)?.error;
+        console.error('Secure signup error:', error, inviteMessage);
+        throw new Error(inviteMessage || error.message);
       }
 
       if (!data.success) {
@@ -217,7 +218,9 @@ const Auth = () => {
         },
       });
 
-      if (functionError) throw functionError;
+      if (functionError) {
+        throw new Error((data as any)?.error || functionError.message);
+      }
       if (!data.success) throw new Error(data.error || 'Signup failed');
 
       console.log('Signup successful, now signing in...');
@@ -237,7 +240,9 @@ const Auth = () => {
       
       const errorMessage = error.message || '';
       
-      if (errorMessage.includes('already registered') || errorMessage.includes('already taken') || errorMessage.includes('email_exists')) {
+      if (errorMessage.includes('invite-only') || errorMessage.includes('request access')) {
+        toast.error("Signups are invite-only right now. If you're on the Founding 20 or early access list, use your approved email or contact us.");
+      } else if (errorMessage.includes('already registered') || errorMessage.includes('already taken') || errorMessage.includes('email_exists')) {
         toast.error("This email is already registered. Please sign in or use a different email.");
       } else if (errorMessage.includes('Username already taken')) {
         toast.error("Username already taken. Please choose another.");
