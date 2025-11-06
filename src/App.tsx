@@ -43,6 +43,7 @@ import RoleManagement from "./pages/admin/RoleManagement";
 import JobModeration from "./pages/admin/JobModeration";
 import PodManagement from "./pages/admin/PodManagement";
 import VerificationReview from "./pages/admin/VerificationReview";
+import AllowedSignups from "./pages/admin/AllowedSignups";
 import NotFound from "./pages/NotFound";
 import Messages from "./pages/Messages";
 import EmployerPitchDeck from "./pages/EmployerPitchDeck";
@@ -100,6 +101,7 @@ const App = () => (
               <Route path="/admin/jobs" element={<ProtectedRoute><JobModeration /></ProtectedRoute>} />
               <Route path="/admin/pods" element={<ProtectedRoute><PodManagement /></ProtectedRoute>} />
               <Route path="/admin/verification-review" element={<ProtectedRoute><VerificationReview /></ProtectedRoute>} />
+              <Route path="/admin/allowed-signups" element={<ProtectedRoute><AllowedSignups /></ProtectedRoute>} />
               
               {/* Standalone Presentation */}
               <Route path="/employer-pitch-deck" element={<EmployerPitchDeck />} />

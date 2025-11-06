@@ -88,6 +88,33 @@ export type Database = {
           },
         ]
       }
+      allowed_signups: {
+        Row: {
+          allowed_role: Database["public"]["Enums"]["app_role"] | null
+          created_at: string | null
+          email: string
+          id: string
+          notes: string | null
+          used_at: string | null
+        }
+        Insert: {
+          allowed_role?: Database["public"]["Enums"]["app_role"] | null
+          created_at?: string | null
+          email: string
+          id?: string
+          notes?: string | null
+          used_at?: string | null
+        }
+        Update: {
+          allowed_role?: Database["public"]["Enums"]["app_role"] | null
+          created_at?: string | null
+          email?: string
+          id?: string
+          notes?: string | null
+          used_at?: string | null
+        }
+        Relationships: []
+      }
       applications: {
         Row: {
           applied_at: string

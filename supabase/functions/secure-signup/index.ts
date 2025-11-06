@@ -54,6 +54,29 @@ serve(async (req) => {
 
     console.log('Starting secure signup for:', email, 'with role:', role);
 
+    // Check if email is on the allowlist (private beta restriction)
+    const { data: allowedEmail, error: allowlistError } = await supabaseAdmin
+      .from('allowed_signups')
+      .select('*')
+      .eq('email', email.toLowerCase())
+      .maybeSingle();
+
+    if (allowlistError) {
+      console.error('Error checking allowlist:', allowlistError);
+      throw new Error('Failed to verify signup eligibility');
+    }
+
+    if (!allowedEmail) {
+      throw new Error('Signups are currently invite-only. Please contact us to request access.');
+    }
+
+    // If allowlist has a specific role requirement, enforce it
+    if (allowedEmail.allowed_role && allowedEmail.allowed_role !== role) {
+      throw new Error(`This email is registered for ${allowedEmail.allowed_role} access only.`);
+    }
+
+    console.log('Email verified on allowlist:', email);
+
     // Validate professional email for employers and recruiters
     const publicEmailDomains = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'aol.com', 'icloud.com', 'mail.com', 'protonmail.com', 'live.com', 'msn.com'];
     if (role === 'employer' || role === 'recruiter') {
@@ -271,6 +294,15 @@ serve(async (req) => {
       } else {
         console.log('Employer credits already exist, skipping');
       }
+    }
+
+    // Mark the allowed email as used
+    if (!isOAuthCompletion) {
+      await supabaseAdmin
+        .from('allowed_signups')
+        .update({ used_at: new Date().toISOString() })
+        .eq('email', email.toLowerCase());
+      console.log('Marked allowlist entry as used');
     }
 
     return new Response(
