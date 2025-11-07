@@ -109,8 +109,7 @@ const Profiles = () => {
       const { data: xpData, error: xpError } = await supabase
         .from('candidate_xp')
         .select('candidate_id, total_xp')
-        .order('total_xp', { ascending: false })
-        .limit(20);
+        .order('total_xp', { ascending: false });
 
       if (xpError) throw xpError;
       if (!xpData || xpData.length === 0) {
