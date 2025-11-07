@@ -2,12 +2,14 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, Loader2, CheckCircle, XCircle } from "lucide-react";
+import { Users, Loader2, CheckCircle, XCircle, UserPlus } from "lucide-react";
 import { toast } from "sonner";
 
 export const SeedDemoCandidates = () => {
   const [isSeeding, setIsSeeding] = useState(false);
   const [results, setResults] = useState<any>(null);
+  const [isCreatingTestAccounts, setIsCreatingTestAccounts] = useState(false);
+  const [testAccountsResults, setTestAccountsResults] = useState<any>(null);
 
   const handleSeed = async () => {
     setIsSeeding(true);
@@ -25,6 +27,25 @@ export const SeedDemoCandidates = () => {
       toast.error(error.message || "Failed to seed demo candidates");
     } finally {
       setIsSeeding(false);
+    }
+  };
+
+  const handleCreateTestAccounts = async () => {
+    setIsCreatingTestAccounts(true);
+    setTestAccountsResults(null);
+
+    try {
+      const { data, error } = await supabase.functions.invoke('create-demo-test-accounts');
+
+      if (error) throw error;
+
+      setTestAccountsResults(data);
+      toast.success(data.message || "Test accounts created successfully!");
+    } catch (error: any) {
+      console.error('Create test accounts error:', error);
+      toast.error(error.message || "Failed to create test accounts");
+    } finally {
+      setIsCreatingTestAccounts(false);
     }
   };
 
@@ -93,6 +114,59 @@ export const SeedDemoCandidates = () => {
           <p>Candidates: firstname.lastname.#@cydena.demo</p>
           <p>Employers: firstname.lastname.employer#@cydena.demo</p>
           <p>Recruiters: firstname.lastname.recruiter#@cydena.demo</p>
+        </div>
+
+        {/* Quick Create Test Accounts */}
+        <div className="mt-6 pt-6 border-t">
+          <h3 className="text-sm font-semibold mb-2">Quick Test Accounts</h3>
+          <p className="text-xs text-muted-foreground mb-4">
+            Create/restore the two main test accounts for employer and recruiter testing
+          </p>
+          
+          <Button 
+            onClick={handleCreateTestAccounts} 
+            disabled={isCreatingTestAccounts}
+            variant="outline"
+            className="w-full"
+          >
+            {isCreatingTestAccounts ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Creating test accounts...
+              </>
+            ) : (
+              <>
+                <UserPlus className="mr-2 h-4 w-4" />
+                Create Test Accounts
+              </>
+            )}
+          </Button>
+
+          {testAccountsResults && (
+            <div className="mt-4 space-y-2 text-xs">
+              <p className="font-semibold text-green-600">
+                {testAccountsResults.message}
+              </p>
+              {testAccountsResults.results?.employer && (
+                <div className="p-2 bg-muted rounded">
+                  <p className="font-medium">Employer Account:</p>
+                  <p>{testAccountsResults.results.employer.email}</p>
+                  <p className="text-muted-foreground">
+                    {testAccountsResults.results.employer.success ? '✓ Created' : '✗ Failed'}
+                  </p>
+                </div>
+              )}
+              {testAccountsResults.results?.recruiter && (
+                <div className="p-2 bg-muted rounded">
+                  <p className="font-medium">Recruiter Account:</p>
+                  <p>{testAccountsResults.results.recruiter.email}</p>
+                  <p className="text-muted-foreground">
+                    {testAccountsResults.results.recruiter.success ? '✓ Created' : '✗ Failed'}
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>

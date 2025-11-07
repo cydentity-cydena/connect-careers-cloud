@@ -6,6 +6,9 @@ verify_jwt = false
 [functions.seed-demo-candidates]
 verify_jwt = true
 
+[functions.create-demo-test-accounts]
+verify_jwt = true
+
 [functions.generate-daily-content]
 verify_jwt = true
 
