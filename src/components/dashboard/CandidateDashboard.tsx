@@ -189,20 +189,6 @@ const CandidateDashboard = () => {
                 Permanent progression score
               </div>
             </div>
-            <div className="bg-accent/10 px-4 py-2 rounded-lg group relative">
-              <span className="text-sm text-muted-foreground">Points </span>
-              <span className="text-xl font-bold text-accent">{xpData.points_balance || 0}</span>
-              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-popover text-popover-foreground text-xs rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-10 border">
-                Spendable currency for courses
-              </div>
-            </div>
-            <div className="bg-muted/50 px-4 py-2 rounded-lg group relative">
-              <span className="text-sm text-muted-foreground">Profile </span>
-              <span className="text-xl font-bold text-foreground">{xpData.profile_completion_percent}%</span>
-              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-popover text-popover-foreground text-xs rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-10 border">
-                Profile completion percentage
-              </div>
-            </div>
           </div>
         )}
       </div>
