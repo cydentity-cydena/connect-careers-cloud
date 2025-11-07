@@ -5,8 +5,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Shield, Users, Briefcase, AlertCircle, UserCog, CheckCircle, Bug, Settings, FolderKanban, FileCheck } from "lucide-react";
 import { SeedDemoCandidates } from "@/components/admin/SeedDemoCandidates";
-import { VerificationReviewPanel } from "@/components/admin/VerificationReviewPanel";
-import { CertificationVerificationReview } from "@/components/admin/CertificationVerificationReview";
 import { AdminNotifications } from "@/components/admin/AdminNotifications";
 import { toast } from "sonner";
 
@@ -214,14 +212,6 @@ const AdminDashboard = () => {
             </Button>
           </CardContent>
         </Card>
-      </div>
-
-      {/* Verification Review Panel */}
-      <VerificationReviewPanel />
-
-      {/* Certification Verification Review */}
-      <div className="mt-8">
-        <CertificationVerificationReview />
       </div>
 
       {/* Admin Management Tools */}
