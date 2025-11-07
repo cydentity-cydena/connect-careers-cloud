@@ -104,6 +104,32 @@ export function CertificationVerificationReview() {
     return data.publicUrl;
   };
 
+  const getVerificationUrl = (issuer: string, credentialId: string | null) => {
+    if (!credentialId) return null;
+    
+    const issuerLower = issuer.toLowerCase();
+    
+    // Map common issuers to their verification URLs
+    if (issuerLower.includes('credly')) {
+      return `https://www.credly.com/badges/${credentialId}`;
+    } else if (issuerLower.includes('linkedin')) {
+      return `https://www.linkedin.com/learning/certificates/${credentialId}`;
+    } else if (issuerLower.includes('coursera')) {
+      return `https://www.coursera.org/verify/${credentialId}`;
+    } else if (issuerLower.includes('comptia')) {
+      return `https://www.certmetrics.com/comptia/public/verification.aspx?code=${credentialId}`;
+    } else if (issuerLower.includes('cisco')) {
+      return `https://www.cisco.com/c/en/us/training-events/training-certifications/certifications/verify.html`;
+    } else if (issuerLower.includes('(isc)²') || issuerLower.includes('isc2')) {
+      return `https://www.isc2.org/MemberVerification`;
+    } else if (issuerLower.includes('offensive security') || issuerLower.includes('offsec')) {
+      return `https://www.offensive-security.com/offsec/certification-verification/`;
+    }
+    
+    // Return null if no known verification URL
+    return null;
+  };
+
   const filteredRequests = requests.filter(r => (r.verification_status ?? 'pending') === activeTab);
 
   if (loading) {
@@ -136,21 +162,22 @@ export function CertificationVerificationReview() {
               <Card key={request.id} className="p-6">
                 <div className="space-y-4">
                   <div className="flex items-start justify-between">
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2">
-                        <h3 className="text-lg font-semibold">
+                    <div className="space-y-2 flex-1">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <h3 className="text-xl font-bold">
                           {request.name}
                         </h3>
                         <Badge variant={request.verification_status === 'pending' ? 'secondary' : request.verification_status === 'verified' ? 'default' : 'destructive'}>
                           {request.verification_status}
                         </Badge>
                       </div>
-                      <p className="text-sm text-muted-foreground">
-                        Issuer: {request.issuer}
-                      </p>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium">Vendor:</span>
+                        <span className="text-sm bg-secondary px-2 py-1 rounded">{request.issuer}</span>
+                      </div>
                     </div>
                     <div className="text-right text-sm text-muted-foreground">
-                      Submitted {new Date(request.created_at).toLocaleDateString()}
+                      Issued: {request.issue_date ? new Date(request.issue_date).toLocaleDateString() : 'N/A'}
                     </div>
                   </div>
 
@@ -171,25 +198,45 @@ export function CertificationVerificationReview() {
                     )}
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div className="space-y-3">
                     {request.credential_id && (
-                      <div>
-                        <span className="text-muted-foreground">Credential ID:</span>{' '}
-                        <span className="font-mono text-xs">{request.credential_id}</span>
+                      <div className="flex items-center gap-3 p-3 bg-secondary/50 rounded-lg">
+                        <div className="flex-1">
+                          <p className="text-sm text-muted-foreground mb-1">Credential ID</p>
+                          <p className="font-mono text-sm font-medium">{request.credential_id}</p>
+                        </div>
+                        {getVerificationUrl(request.issuer, request.credential_id) && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            asChild
+                            className="gap-2"
+                          >
+                            <a
+                              href={getVerificationUrl(request.issuer, request.credential_id)!}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              <ExternalLink className="h-4 w-4" />
+                              Verify with {request.issuer}
+                            </a>
+                          </Button>
+                        )}
                       </div>
                     )}
-                    {request.issue_date && (
+                    
+                    <div className="grid grid-cols-2 gap-4 text-sm">
+                      {request.expiry_date && (
+                        <div>
+                          <span className="text-muted-foreground">Expires:</span>{' '}
+                          <span className="font-medium">{new Date(request.expiry_date).toLocaleDateString()}</span>
+                        </div>
+                      )}
                       <div>
-                        <span className="text-muted-foreground">Issued:</span>{' '}
-                        {new Date(request.issue_date).toLocaleDateString()}
+                        <span className="text-muted-foreground">Submitted:</span>{' '}
+                        <span className="font-medium">{new Date(request.created_at).toLocaleDateString()}</span>
                       </div>
-                    )}
-                    {request.expiry_date && (
-                      <div>
-                        <span className="text-muted-foreground">Expires:</span>{' '}
-                        {new Date(request.expiry_date).toLocaleDateString()}
-                      </div>
-                    )}
+                    </div>
                   </div>
 
                   {request.proof_document_urls && Array.isArray(request.proof_document_urls) && request.proof_document_urls.length > 0 && (
