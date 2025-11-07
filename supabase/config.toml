@@ -21,6 +21,7 @@ verify_jwt = true
 [functions.send-contact-email]
 verify_jwt = false
 
+# Keep this entry for compatibility if present previously
 [functions.generate-daily-content]
 verify_jwt = false
 
@@ -37,4 +38,7 @@ verify_jwt = true
 verify_jwt = true
 
 [functions.sync-platform-stats]
+verify_jwt = true
+
+[functions.certifications-review-list]
 verify_jwt = true

@@ -41,41 +41,13 @@ export function CertificationVerificationReview() {
   const loadRequests = async () => {
     setLoading(true);
     try {
-      // 1) Load manual certifications without joins (avoid FK/view issues)
-      const { data: certs, error } = await supabase
-        .from('certifications')
-        .select('*')
-        .eq('source', 'manual')
-        .order('created_at', { ascending: false });
-
+      const { data, error } = await supabase.functions.invoke('certifications-review-list');
       if (error) throw error;
-
-      const items = (certs as any[]) || [];
-
-      // 2) Enrich with profile data in a separate query if available
-      const candidateIds = Array.from(new Set(items.map((c) => c.candidate_id).filter(Boolean)));
-      if (candidateIds.length > 0) {
-        const { data: profilesData, error: profilesError } = await supabase
-          .from('profiles')
-          .select('id, full_name, username, email')
-          .in('id', candidateIds);
-
-        if (!profilesError && profilesData) {
-          const profilesById = Object.fromEntries(profilesData.map((p: any) => [p.id, p]));
-          const enriched = items.map((c: any) => ({
-            ...c,
-            profiles: profilesById[c.candidate_id] ?? null,
-          }));
-          setRequests(enriched);
-        } else {
-          setRequests(items as any);
-        }
-      } else {
-        setRequests(items as any);
-      }
+      const items = (data?.items as any[]) || [];
+      setRequests(items);
     } catch (err) {
       console.error('Failed to load certifications', err);
-      toast.error('Failed to load certifications');
+      toast.error(`Failed to load certifications`);
     } finally {
       setLoading(false);
     }
