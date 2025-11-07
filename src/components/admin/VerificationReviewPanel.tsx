@@ -22,7 +22,9 @@ export function VerificationReviewPanel() {
   const queryClient = useQueryClient();
   const [selectedRequest, setSelectedRequest] = useState<any>(null);
   const [rejectionReason, setRejectionReason] = useState("");
+  const [approvalComment, setApprovalComment] = useState("");
   const [processing, setProcessing] = useState(false);
+  const [showApprovalDialog, setShowApprovalDialog] = useState(false);
 
   const { data: pendingRequests, isLoading } = useQuery({
     queryKey: ['pending-verification-requests'],
@@ -31,6 +33,7 @@ export function VerificationReviewPanel() {
         .from('verification_requests')
         .select('*')
         .eq('status', 'pending')
+        .not('company_name', 'is', null)  // Only business verifications
         .order('created_at', { ascending: true });
 
       if (error) throw error;
@@ -40,7 +43,7 @@ export function VerificationReviewPanel() {
         const userIds = data.map(r => r.user_id || r.candidate_id);
         const { data: profiles } = await supabase
           .from('profiles')
-          .select('id, full_name, email')
+          .select('id, full_name, email, username')
           .in('id', userIds);
         
         // Merge profile data
@@ -68,6 +71,7 @@ export function VerificationReviewPanel() {
           status: 'approved',
           reviewed_by: (await supabase.auth.getUser()).data.user?.id,
           reviewed_at: new Date().toISOString(),
+          admin_comment: approvalComment || null,
         })
         .eq('id', requestId);
 
@@ -91,6 +95,8 @@ export function VerificationReviewPanel() {
 
       queryClient.invalidateQueries({ queryKey: ['pending-verification-requests'] });
       setSelectedRequest(null);
+      setShowApprovalDialog(false);
+      setApprovalComment("");
     } catch (error: any) {
       toast({
         title: "Error",
@@ -172,9 +178,15 @@ export function VerificationReviewPanel() {
                 <Card key={request.id} className="border-2">
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between">
-                      <div>
+                      <div className="space-y-1">
                         <CardTitle className="text-lg">{request.company_name}</CardTitle>
-                        <CardDescription className="mt-1">
+                        {request.profile?.full_name && (
+                          <p className="text-sm font-medium">{request.profile.full_name}</p>
+                        )}
+                        {request.profile?.username && (
+                          <p className="text-xs text-muted-foreground">@{request.profile.username}</p>
+                        )}
+                        <CardDescription>
                           {request.profile?.email || 'No email'}
                         </CardDescription>
                       </div>
@@ -212,7 +224,10 @@ export function VerificationReviewPanel() {
                       <Button
                         size="sm"
                         variant="default"
-                        onClick={() => handleApprove(request.id, request.user_id || request.candidate_id)}
+                        onClick={() => {
+                          setSelectedRequest(request);
+                          setShowApprovalDialog(true);
+                        }}
                         disabled={processing}
                       >
                         <CheckCircle className="h-4 w-4 mr-2" />
@@ -236,7 +251,56 @@ export function VerificationReviewPanel() {
         </CardContent>
       </Card>
 
-      <Dialog open={!!selectedRequest} onOpenChange={() => setSelectedRequest(null)}>
+      {/* Approval Dialog */}
+      <Dialog open={showApprovalDialog} onOpenChange={(open) => {
+        setShowApprovalDialog(open);
+        if (!open) {
+          setSelectedRequest(null);
+          setApprovalComment("");
+        }
+      }}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Approve Verification Request</DialogTitle>
+            <DialogDescription>
+              Approve {selectedRequest?.company_name}'s verification request. You can optionally add a comment.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="approval-comment">Comment (Optional)</Label>
+              <Textarea
+                id="approval-comment"
+                value={approvalComment}
+                onChange={(e) => setApprovalComment(e.target.value)}
+                placeholder="e.g., Verified via Companies House, all information matches..."
+                rows={3}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => {
+              setShowApprovalDialog(false);
+              setSelectedRequest(null);
+              setApprovalComment("");
+            }}>
+              Cancel
+            </Button>
+            <Button
+              onClick={() => handleApprove(selectedRequest?.id, selectedRequest?.user_id || selectedRequest?.candidate_id)}
+              disabled={processing}
+            >
+              <CheckCircle className="h-4 w-4 mr-2" />
+              Confirm Approval
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Rejection Dialog */}
+      <Dialog open={!!selectedRequest && !showApprovalDialog} onOpenChange={(open) => {
+        if (!open) setSelectedRequest(null);
+      }}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Reject Verification Request</DialogTitle>

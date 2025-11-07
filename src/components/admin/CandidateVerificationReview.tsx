@@ -17,16 +17,19 @@ export function CandidateVerificationReview() {
   const queryClient = useQueryClient();
   const [selectedRequest, setSelectedRequest] = useState<any>(null);
   const [rejectionReason, setRejectionReason] = useState("");
+  const [approvalComment, setApprovalComment] = useState("");
   const [processing, setProcessing] = useState(false);
   const [viewingDocuments, setViewingDocuments] = useState<{ urls: string[]; name: string } | null>(null);
+  const [showApprovalDialog, setShowApprovalDialog] = useState(false);
 
   const { data: pendingRequests, isLoading } = useQuery({
     queryKey: ['pending-candidate-verifications'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('verification_requests')
-        .select('*, profiles:candidate_id(full_name, email)')
+        .select('*, profiles:candidate_id(full_name, email, username)')
         .in('verification_type', ['identity', 'rtw'])
+        .is('company_name', null)  // Exclude business verifications
         .eq('status', 'pending')
         .order('created_at', { ascending: true });
 
@@ -76,6 +79,7 @@ export function CandidateVerificationReview() {
           status: 'approved',
           reviewed_by: user?.id,
           reviewed_at: new Date().toISOString(),
+          admin_comment: approvalComment || null,
         })
         .eq('id', request.id);
 
@@ -148,6 +152,8 @@ export function CandidateVerificationReview() {
 
       queryClient.invalidateQueries({ queryKey: ['pending-candidate-verifications'] });
       setSelectedRequest(null);
+      setShowApprovalDialog(false);
+      setApprovalComment("");
     } catch (error: any) {
       toast({
         title: "Error",
@@ -244,9 +250,12 @@ export function CandidateVerificationReview() {
                   <Card key={request.id} className="border-2">
                     <CardHeader className="pb-3">
                       <div className="flex items-start justify-between">
-                        <div>
+                        <div className="space-y-1">
                           <CardTitle className="text-lg">{request.profiles?.full_name}</CardTitle>
-                          <CardDescription className="mt-1">
+                          {request.profiles?.username && (
+                            <p className="text-xs text-muted-foreground">@{request.profiles.username}</p>
+                          )}
+                          <CardDescription>
                             {request.profiles?.email}
                           </CardDescription>
                         </div>
@@ -283,7 +292,10 @@ export function CandidateVerificationReview() {
                         <Button
                           size="sm"
                           variant="default"
-                          onClick={() => handleApprove(request)}
+                          onClick={() => {
+                            setSelectedRequest(request);
+                            setShowApprovalDialog(true);
+                          }}
                           disabled={processing}
                         >
                           <CheckCircle className="h-4 w-4 mr-2" />
@@ -315,9 +327,12 @@ export function CandidateVerificationReview() {
                   <Card key={request.id} className="border-2">
                     <CardHeader className="pb-3">
                       <div className="flex items-start justify-between">
-                        <div>
+                        <div className="space-y-1">
                           <CardTitle className="text-lg">{request.profiles?.full_name}</CardTitle>
-                          <CardDescription className="mt-1">
+                          {request.profiles?.username && (
+                            <p className="text-xs text-muted-foreground">@{request.profiles.username}</p>
+                          )}
+                          <CardDescription>
                             {request.profiles?.email}
                           </CardDescription>
                         </div>
@@ -354,7 +369,10 @@ export function CandidateVerificationReview() {
                         <Button
                           size="sm"
                           variant="default"
-                          onClick={() => handleApprove(request)}
+                          onClick={() => {
+                            setSelectedRequest(request);
+                            setShowApprovalDialog(true);
+                          }}
                           disabled={processing}
                         >
                           <CheckCircle className="h-4 w-4 mr-2" />
@@ -411,8 +429,56 @@ export function CandidateVerificationReview() {
         </DialogContent>
       </Dialog>
 
+      {/* Approval Dialog */}
+      <Dialog open={showApprovalDialog} onOpenChange={(open) => {
+        setShowApprovalDialog(open);
+        if (!open) {
+          setSelectedRequest(null);
+          setApprovalComment("");
+        }
+      }}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Approve Verification Request</DialogTitle>
+            <DialogDescription>
+              Approve {selectedRequest?.profiles?.full_name}'s {selectedRequest?.verification_type} verification. You can optionally add a comment.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="approval-comment">Comment (Optional)</Label>
+              <Textarea
+                id="approval-comment"
+                value={approvalComment}
+                onChange={(e) => setApprovalComment(e.target.value)}
+                placeholder="e.g., Documents verified, all information matches..."
+                rows={3}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => {
+              setShowApprovalDialog(false);
+              setSelectedRequest(null);
+              setApprovalComment("");
+            }}>
+              Cancel
+            </Button>
+            <Button
+              onClick={() => selectedRequest && handleApprove(selectedRequest)}
+              disabled={processing}
+            >
+              <CheckCircle className="h-4 w-4 mr-2" />
+              Confirm Approval
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       {/* Rejection Dialog */}
-      <Dialog open={!!selectedRequest} onOpenChange={() => setSelectedRequest(null)}>
+      <Dialog open={!!selectedRequest && !showApprovalDialog} onOpenChange={(open) => {
+        if (!open) setSelectedRequest(null);
+      }}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Reject Verification Request</DialogTitle>
