@@ -32,7 +32,7 @@ const commentSchema = z.object({
 export const PostComments = ({ postId }: { postId: string }) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState('');
-  const [mentionedUserIds, setMentionedUserIds] = useState<string[]>([]);
+  const [mentionedUsers, setMentionedUsers] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [showComments, setShowComments] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
@@ -198,7 +198,7 @@ export const PostComments = ({ postId }: { postId: string }) => {
       setComments(prev => [...prev, optimisticComment]);
       setCommentCount(prev => prev + 1);
       setNewComment('');
-      setMentionedUserIds([]);
+      setMentionedUsers([]);
 
       // Insert to database - real-time subscription will update with actual data
       const { error } = await supabase
@@ -207,7 +207,7 @@ export const PostComments = ({ postId }: { postId: string }) => {
           post_id: postId,
           user_id: user.id,
           content: validated.content,
-          mentioned_users: mentionedUserIds.length > 0 ? mentionedUserIds : null
+          mentioned_users: mentionedUsers.length > 0 ? mentionedUsers : null
         });
 
       if (error) {
@@ -309,15 +309,7 @@ export const PostComments = ({ postId }: { postId: string }) => {
                       {formatDistanceToNow(new Date(comment.created_at), { addSuffix: true })}
                     </span>
                   </div>
-                   <p className="text-sm break-words">
-                     {comment.content.split(/(@\w+)/g).map((part, i) => 
-                       part.startsWith('@') ? (
-                         <span key={i} className="text-primary font-medium">{part}</span>
-                       ) : (
-                         part
-                       )
-                     )}
-                   </p>
+                  <p className="text-sm break-words">{comment.content}</p>
                 </div>
                 {currentUserId === comment.user_id && (
                   <Button
@@ -340,15 +332,17 @@ export const PostComments = ({ postId }: { postId: string }) => {
             <div className="space-y-1">
               <MentionTextarea
                 value={newComment}
-                onChange={setNewComment}
-                onMentionsChange={setMentionedUserIds}
+                onChange={(text, mentions) => {
+                  setNewComment(text);
+                  setMentionedUsers(mentions);
+                }}
                 onKeyDown={(e) => {
                   if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
                     e.preventDefault();
                     handleSubmit(e as any);
                   }
                 }}
-                placeholder="Write a comment... (Type @ to mention) (Ctrl+Enter to submit)"
+                placeholder="Write a comment... Type @ to mention (Ctrl+Enter to submit)"
                 className="min-h-[60px] resize-none"
                 maxLength={500}
               />

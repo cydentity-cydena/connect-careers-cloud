@@ -1,9 +1,10 @@
-import { useState, useRef, useEffect } from 'react';
-import { Textarea } from '@/components/ui/textarea';
+import { useState, useRef, useEffect, KeyboardEvent } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { Textarea } from '@/components/ui/textarea';
 import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from '@/components/ui/command';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
-type User = {
+type Mention = {
   id: string;
   username: string;
   full_name: string | null;
@@ -12,143 +13,142 @@ type User = {
 
 type MentionTextareaProps = {
   value: string;
-  onChange: (value: string) => void;
-  onMentionsChange: (mentionedUserIds: string[]) => void;
+  onChange: (value: string, mentionedUsers: string[]) => void;
+  onKeyDown?: (e: KeyboardEvent<HTMLTextAreaElement>) => void;
   placeholder?: string;
-  maxLength?: number;
   className?: string;
-  onKeyDown?: (e: React.KeyboardEvent<HTMLTextAreaElement>) => void;
+  maxLength?: number;
 };
 
 export const MentionTextarea = ({
   value,
   onChange,
-  onMentionsChange,
+  onKeyDown,
   placeholder,
-  maxLength,
   className,
-  onKeyDown
+  maxLength
 }: MentionTextareaProps) => {
-  const [showSuggestions, setShowSuggestions] = useState(false);
-  const [suggestions, setSuggestions] = useState<User[]>([]);
+  const [showMentions, setShowMentions] = useState(false);
+  const [mentionSearch, setMentionSearch] = useState('');
+  const [candidates, setCandidates] = useState<Mention[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const [cursorPosition, setCursorPosition] = useState<{ top: number; left: number } | null>(null);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [mentionedUsers, setMentionedUsers] = useState<Map<string, string>>(new Map());
+  const [mentionedUsers, setMentionedUsers] = useState<string[]>([]);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [cursorPosition, setCursorPosition] = useState(0);
 
   useEffect(() => {
-    if (searchQuery && showSuggestions) {
-      fetchUsers(searchQuery);
+    if (mentionSearch) {
+      searchCandidates(mentionSearch);
     }
-  }, [searchQuery, showSuggestions]);
+  }, [mentionSearch]);
 
-  const fetchUsers = async (query: string) => {
+  const searchCandidates = async (search: string) => {
     const { data } = await supabase
       .from('profiles')
       .select('id, username, full_name, avatar_url')
-      .or(`username.ilike.%${query}%,full_name.ilike.%${query}%`)
+      .or(`username.ilike.%${search}%,full_name.ilike.%${search}%`)
+      .not('username', 'is', null)
       .limit(5);
 
-    if (data) {
-      setSuggestions(data.filter(u => u.username));
-    }
+    setCandidates(data || []);
   };
 
-  const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const newValue = e.target.value;
-    const cursorPos = e.target.selectionStart;
-    
-    onChange(newValue);
-    
-    // Check if @ was just typed
-    const textBeforeCursor = newValue.substring(0, cursorPos);
+  const handleTextChange = (text: string) => {
+    const cursorPos = textareaRef.current?.selectionStart || 0;
+    setCursorPosition(cursorPos);
+
+    // Check if we're typing a mention
+    const textBeforeCursor = text.substring(0, cursorPos);
     const lastAtIndex = textBeforeCursor.lastIndexOf('@');
     
     if (lastAtIndex !== -1) {
       const textAfterAt = textBeforeCursor.substring(lastAtIndex + 1);
       
-      // Check if there's a space after @ (which would end the mention)
-      if (!textAfterAt.includes(' ') && !textAfterAt.includes('\n')) {
-        setSearchQuery(textAfterAt);
-        setShowSuggestions(true);
+      // Only show mentions if there's no space after @
+      if (!textAfterAt.includes(' ')) {
+        setMentionSearch(textAfterAt);
+        setShowMentions(true);
         setSelectedIndex(0);
-        
-        // Calculate cursor position for dropdown
-        const lines = textBeforeCursor.split('\n');
-        const currentLine = lines.length;
-        const lineHeight = 20; // approximate
-        
-        setCursorPosition({
-          top: currentLine * lineHeight,
-          left: 0
-        });
       } else {
-        setShowSuggestions(false);
+        setShowMentions(false);
       }
     } else {
-      setShowSuggestions(false);
+      setShowMentions(false);
     }
+
+    // Extract mentioned usernames from text
+    const mentionPattern = /@(\w+)/g;
+    const matches = [...text.matchAll(mentionPattern)];
+    const usernames = matches.map(m => m[1]);
+    
+    // Find user IDs for mentioned usernames
+    const mentioned = candidates
+      .filter(c => usernames.includes(c.username || ''))
+      .map(c => c.id);
+    
+    setMentionedUsers(mentioned);
+    onChange(text, mentioned);
   };
 
-  const insertMention = (user: User) => {
+  const insertMention = (candidate: Mention) => {
     if (!textareaRef.current) return;
-    
-    const cursorPos = textareaRef.current.selectionStart;
-    const textBeforeCursor = value.substring(0, cursorPos);
-    const textAfterCursor = value.substring(cursorPos);
+
+    const textBeforeCursor = value.substring(0, cursorPosition);
+    const textAfterCursor = value.substring(cursorPosition);
     const lastAtIndex = textBeforeCursor.lastIndexOf('@');
-    
-    const username = `@${user.username}`;
-    const newValue = 
-      textBeforeCursor.substring(0, lastAtIndex) + 
-      username + ' ' +
+
+    const newText = 
+      value.substring(0, lastAtIndex) + 
+      `@${candidate.username} ` + 
       textAfterCursor;
+
+    setShowMentions(false);
+    setMentionSearch('');
     
-    onChange(newValue);
-    
-    // Track mentioned user
-    const newMentionedUsers = new Map(mentionedUsers);
-    newMentionedUsers.set(user.username, user.id);
-    setMentionedUsers(newMentionedUsers);
-    onMentionsChange(Array.from(newMentionedUsers.values()));
-    
-    setShowSuggestions(false);
-    
-    // Set cursor position after the mention
+    // Add to mentioned users
+    const updatedMentioned = [...new Set([...mentionedUsers, candidate.id])];
+    setMentionedUsers(updatedMentioned);
+    onChange(newText, updatedMentioned);
+
+    // Focus back on textarea
     setTimeout(() => {
-      if (textareaRef.current) {
-        const newCursorPos = lastAtIndex + username.length + 1;
-        textareaRef.current.setSelectionRange(newCursorPos, newCursorPos);
-        textareaRef.current.focus();
-      }
+      textareaRef.current?.focus();
+      const newCursorPos = lastAtIndex + candidate.username!.length + 2;
+      textareaRef.current?.setSelectionRange(newCursorPos, newCursorPos);
     }, 0);
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (showSuggestions && suggestions.length > 0) {
+  const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (showMentions && candidates.length > 0) {
       if (e.key === 'ArrowDown') {
         e.preventDefault();
-        setSelectedIndex(prev => (prev + 1) % suggestions.length);
+        setSelectedIndex(prev => 
+          prev < candidates.length - 1 ? prev + 1 : 0
+        );
         return;
       }
+      
       if (e.key === 'ArrowUp') {
         e.preventDefault();
-        setSelectedIndex(prev => (prev - 1 + suggestions.length) % suggestions.length);
+        setSelectedIndex(prev => 
+          prev > 0 ? prev - 1 : candidates.length - 1
+        );
         return;
       }
-      if (e.key === 'Enter') {
+      
+      if (e.key === 'Enter' && !e.shiftKey && !e.ctrlKey && !e.metaKey) {
         e.preventDefault();
-        insertMention(suggestions[selectedIndex]);
+        insertMention(candidates[selectedIndex]);
         return;
       }
+      
       if (e.key === 'Escape') {
         e.preventDefault();
-        setShowSuggestions(false);
+        setShowMentions(false);
         return;
       }
     }
-    
+
     onKeyDown?.(e);
   };
 
@@ -157,38 +157,38 @@ export const MentionTextarea = ({
       <Textarea
         ref={textareaRef}
         value={value}
-        onChange={handleTextChange}
+        onChange={(e) => handleTextChange(e.target.value)}
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
         className={className}
         maxLength={maxLength}
       />
       
-      {showSuggestions && suggestions.length > 0 && (
-        <div className="absolute z-50 w-64 bg-popover border rounded-md shadow-md mt-1">
-          <Command>
+      {showMentions && candidates.length > 0 && (
+        <div className="absolute bottom-full left-0 right-0 mb-2 z-50">
+          <Command className="rounded-lg border shadow-md">
             <CommandList>
-              <CommandGroup>
-                {suggestions.map((user, index) => (
+              <CommandEmpty>No candidates found.</CommandEmpty>
+              <CommandGroup heading="Mention candidate">
+                {candidates.map((candidate, index) => (
                   <CommandItem
-                    key={user.id}
-                    onSelect={() => insertMention(user)}
+                    key={candidate.id}
+                    onSelect={() => insertMention(candidate)}
                     className={index === selectedIndex ? 'bg-accent' : ''}
                   >
-                    <div className="flex items-center gap-2">
-                      {user.avatar_url && (
-                        <img 
-                          src={user.avatar_url} 
-                          alt={user.username} 
-                          className="w-6 h-6 rounded-full"
-                        />
+                    <Avatar className="h-6 w-6 mr-2">
+                      <AvatarImage src={candidate.avatar_url || undefined} />
+                      <AvatarFallback>
+                        {candidate.username?.[0]?.toUpperCase() || 'U'}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <div className="font-medium">@{candidate.username}</div>
+                      {candidate.full_name && (
+                        <div className="text-xs text-muted-foreground">
+                          {candidate.full_name}
+                        </div>
                       )}
-                      <div className="flex flex-col">
-                        <span className="text-sm font-medium">@{user.username}</span>
-                        {user.full_name && (
-                          <span className="text-xs text-muted-foreground">{user.full_name}</span>
-                        )}
-                      </div>
                     </div>
                   </CommandItem>
                 ))}
