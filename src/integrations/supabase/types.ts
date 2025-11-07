@@ -2648,6 +2648,7 @@ export type Database = {
         Args: { p_candidate_id: string; p_code: string; p_meta?: Json }
         Returns: Json
       }
+      calculate_level_from_xp: { Args: { xp_amount: number }; Returns: number }
       calculate_profile_completion: {
         Args: { user_id: string }
         Returns: number
