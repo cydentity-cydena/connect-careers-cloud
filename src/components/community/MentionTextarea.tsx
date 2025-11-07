@@ -53,7 +53,7 @@ export const MentionTextarea = ({
     setCandidates(data || []);
   };
 
-  const handleTextChange = (text: string) => {
+  const handleTextChange = async (text: string) => {
     const cursorPos = textareaRef.current?.selectionStart || 0;
     setCursorPosition(cursorPos);
 
@@ -81,13 +81,20 @@ export const MentionTextarea = ({
     const matches = [...text.matchAll(mentionPattern)];
     const usernames = matches.map(m => m[1]);
     
-    // Find user IDs for mentioned usernames
-    const mentioned = candidates
-      .filter(c => usernames.includes(c.username || ''))
-      .map(c => c.id);
-    
-    setMentionedUsers(mentioned);
-    onChange(text, mentioned);
+    if (usernames.length > 0) {
+      // Look up user IDs from database for all mentioned usernames
+      const { data } = await supabase
+        .from('profiles')
+        .select('id, username')
+        .in('username', usernames);
+      
+      const mentioned = data?.map(u => u.id) || [];
+      setMentionedUsers(mentioned);
+      onChange(text, mentioned);
+    } else {
+      setMentionedUsers([]);
+      onChange(text, []);
+    }
   };
 
   const insertMention = (candidate: Mention) => {
