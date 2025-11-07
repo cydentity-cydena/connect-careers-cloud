@@ -85,8 +85,10 @@ export function CandidateVerificationReview() {
 
       if (requestError) throw requestError;
 
-      // Update or create candidate_verifications record
-      const updateData: any = {};
+      // Prepare update data for candidate_verifications
+      const updateData: any = {
+        updated_at: new Date().toISOString(),
+      };
       
       if (request.verification_type === 'identity') {
         updateData.identity_status = 'green';
@@ -101,48 +103,37 @@ export function CandidateVerificationReview() {
         updateData.rtw_verifier = user?.email || 'staff';
       }
 
-      // Check if verification record exists
-      const { data: existingVerification } = await supabase
+      // Upsert verification record (will create if doesn't exist, update if exists)
+      const { error: verifyError } = await supabase
         .from('candidate_verifications')
-        .select('*')
-        .eq('candidate_id', request.candidate_id)
-        .maybeSingle();
+        .upsert({
+          candidate_id: request.candidate_id,
+          ...updateData,
+        }, {
+          onConflict: 'candidate_id',
+          ignoreDuplicates: false,
+        });
 
-      if (existingVerification) {
-        // Update existing record
-        const { error: verifyError } = await supabase
-          .from('candidate_verifications')
-          .update({
-            ...updateData,
-            updated_at: new Date().toISOString(),
-          })
-          .eq('candidate_id', request.candidate_id);
+      if (verifyError) throw verifyError;
 
-        if (verifyError) throw verifyError;
-      } else {
-        // Create new record
-        const { error: verifyError } = await supabase
-          .from('candidate_verifications')
-          .insert({
-            candidate_id: request.candidate_id,
-            ...updateData,
-          });
-
-        if (verifyError) throw verifyError;
-      }
-
-      // Check if both identity and RTW are now green to set hr_ready
+      // Fetch updated verification to check if HR-Ready
       const { data: updatedVerification } = await supabase
         .from('candidate_verifications')
         .select('*')
         .eq('candidate_id', request.candidate_id)
         .single();
 
+      // Update HR-Ready status if both identity and RTW are green
       if (updatedVerification?.identity_status === 'green' && updatedVerification?.rtw_status === 'green') {
-        await supabase
+        const { error: hrReadyError } = await supabase
           .from('candidate_verifications')
-          .update({ hr_ready: true })
+          .update({ 
+            hr_ready: true,
+            updated_at: new Date().toISOString(),
+          })
           .eq('candidate_id', request.candidate_id);
+
+        if (hrReadyError) throw hrReadyError;
       }
 
       toast({
