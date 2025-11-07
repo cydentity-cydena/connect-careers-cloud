@@ -4,7 +4,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Shield, Users, Briefcase, AlertCircle, UserCog, CheckCircle, Bug, Settings, FolderKanban, FileCheck } from "lucide-react";
-import { SeedDemoCandidates } from "@/components/admin/SeedDemoCandidates";
 import { AdminNotifications } from "@/components/admin/AdminNotifications";
 import { toast } from "sonner";
 
@@ -153,8 +152,6 @@ const AdminDashboard = () => {
       </div>
 
       <div className="grid md:grid-cols-2 gap-6">
-        <SeedDemoCandidates />
-        
         <Card className="border-border shadow-card">
           <CardHeader>
             <CardTitle>Platform Analytics</CardTitle>
