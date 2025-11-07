@@ -275,9 +275,9 @@ const Profiles = () => {
         ) : (
           <>
             <div className="mb-8">
-              <h1 className="text-4xl font-bold mb-2">Interview-Ready Cybersecurity Talent</h1>
+              <h1 className="text-4xl font-bold mb-2">Verified Cybersecurity Professionals</h1>
               <p className="text-muted-foreground mb-4">
-                Pre-verified professionals ready to start immediately
+                Browse pre-screened security talent
               </p>
               
               {/* HR-Ready Filter */}
