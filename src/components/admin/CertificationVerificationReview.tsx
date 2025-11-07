@@ -45,7 +45,7 @@ export function CertificationVerificationReview() {
       .from('certifications')
       .select(`
         *,
-        profiles:candidate_id (full_name, username, email)
+        profiles!certifications_candidate_id_fkey (full_name, username, email)
       `)
       .eq('source', 'manual')
       .order('created_at', { ascending: false });
