@@ -74,13 +74,11 @@ const Navigation = () => {
     { to: "/", label: "Home" },
     { to: "/leaderboard", label: "Leaderboard" },
     { to: "/profiles", label: "Profiles" },
-    { to: "/community", label: "Community", hideForRoles: ["employer", "recruiter"] },
     { to: "/jobs", label: "Jobs" },
     { to: "/career-assistant", label: "AI Assistant", showForRoles: ["candidate"] },
     { to: "/training", label: "Training" },
     { to: "/certifications-catalog", label: "Certifications" },
-    // { to: "/pricing", label: "Pricing", hideForRoles: ["candidate"] },
-    // { to: "/roi-calculator", label: "ROI Calculator", hideForRoles: ["candidate"] },
+    { to: "/community", label: "Community" },
     { to: "/contact", label: "Contact" },
   ];
 
@@ -92,6 +90,14 @@ const Navigation = () => {
       showForRoles: link.showForRoles,
       userRoles 
     });
+    
+    // Special handling: Community is visible to candidates, staff, and admin only
+    if (link.to === "/community") {
+      const allowedRoles = ["candidate", "staff", "admin"];
+      const hasAllowedRole = userRoles.some(role => allowedRoles.includes(role));
+      console.log(`Community access check:`, { userRoles, hasAllowedRole });
+      return hasAllowedRole;
+    }
     
     // Hide if hideForRoles includes any of the user's roles
     if (link.hideForRoles && userRoles.some(role => link.hideForRoles?.includes(role))) {
