@@ -1,5 +1,7 @@
 import { CandidateVerificationReview } from "@/components/admin/CandidateVerificationReview";
+import { CertificationVerificationReview } from "@/components/admin/CertificationVerificationReview";
 import Navigation from "@/components/Navigation";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function VerificationReview() {
   return (
@@ -9,10 +11,24 @@ export default function VerificationReview() {
         <div className="mb-6">
           <h1 className="text-4xl font-bold mb-2">Verification Review</h1>
           <p className="text-muted-foreground">
-            Review and verify candidate identity documents and right to work submissions
+            Review and verify candidate submissions
           </p>
         </div>
-        <CandidateVerificationReview />
+        
+        <Tabs defaultValue="documents" className="space-y-6">
+          <TabsList>
+            <TabsTrigger value="documents">Identity & RTW Documents</TabsTrigger>
+            <TabsTrigger value="certifications">Certifications</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="documents">
+            <CandidateVerificationReview />
+          </TabsContent>
+          
+          <TabsContent value="certifications">
+            <CertificationVerificationReview />
+          </TabsContent>
+        </Tabs>
       </div>
     </>
   );
