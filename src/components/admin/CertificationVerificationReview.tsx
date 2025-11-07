@@ -20,11 +20,12 @@ interface CertVerificationRequest {
   proof_document_urls: string[];
   source: string;
   created_at: string;
-  profiles: {
-    full_name: string;
-    username: string;
-    email: string;
-  };
+  profiles?: {
+    id?: string;
+    full_name?: string | null;
+    username?: string | null;
+    email?: string | null;
+  } | null;
 }
 
 export function CertificationVerificationReview() {
@@ -39,28 +40,46 @@ export function CertificationVerificationReview() {
 
   const loadRequests = async () => {
     setLoading(true);
-    
-    // Query certifications directly - only show manual ones that need review
-    const { data, error } = await supabase
-      .from('certifications')
-      .select(`
-        *,
-        profiles!certifications_candidate_id_fkey (full_name, username, email)
-      `)
-      .eq('source', 'manual')
-      .order('created_at', { ascending: false });
+    try {
+      // 1) Load manual certifications without joins (avoid FK/view issues)
+      const { data: certs, error } = await supabase
+        .from('certifications')
+        .select('*')
+        .eq('source', 'manual')
+        .order('created_at', { ascending: false });
 
-    if (error) {
+      if (error) throw error;
+
+      const items = (certs as any[]) || [];
+
+      // 2) Enrich with profile data in a separate query if available
+      const candidateIds = Array.from(new Set(items.map((c) => c.candidate_id).filter(Boolean)));
+      if (candidateIds.length > 0) {
+        const { data: profilesData, error: profilesError } = await supabase
+          .from('profiles')
+          .select('id, full_name, username, email')
+          .in('id', candidateIds);
+
+        if (!profilesError && profilesData) {
+          const profilesById = Object.fromEntries(profilesData.map((p: any) => [p.id, p]));
+          const enriched = items.map((c: any) => ({
+            ...c,
+            profiles: profilesById[c.candidate_id] ?? null,
+          }));
+          setRequests(enriched);
+        } else {
+          setRequests(items as any);
+        }
+      } else {
+        setRequests(items as any);
+      }
+    } catch (err) {
+      console.error('Failed to load certifications', err);
       toast.error('Failed to load certifications');
-      console.error(error);
+    } finally {
       setLoading(false);
-      return;
     }
-
-    setRequests(data as any || []);
-    setLoading(false);
   };
-
   const handleApprove = async (certId: string, candidateId: string) => {
     const { error: updateCertError } = await supabase
       .from('certifications')
@@ -113,7 +132,7 @@ export function CertificationVerificationReview() {
     return data.publicUrl;
   };
 
-  const filteredRequests = requests.filter(r => r.verification_status === activeTab);
+  const filteredRequests = requests.filter(r => (r.verification_status ?? 'pending') === activeTab);
 
   if (loading) {
     return <div className="text-center py-8">Loading verification requests...</div>;
@@ -129,7 +148,7 @@ export function CertificationVerificationReview() {
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList>
           <TabsTrigger value="pending">
-            Pending ({requests.filter(r => r.verification_status === 'pending').length})
+            Pending ({requests.filter(r => (r.verification_status ?? 'pending') === 'pending').length})
           </TabsTrigger>
           <TabsTrigger value="verified">Verified</TabsTrigger>
           <TabsTrigger value="rejected">Rejected</TabsTrigger>
@@ -165,11 +184,19 @@ export function CertificationVerificationReview() {
 
                   <div className="flex items-center gap-2 text-sm">
                     <User className="h-4 w-4" />
-                    <span className="font-medium">{request.profiles.full_name}</span>
-                    {request.profiles.username && (
-                      <span className="text-muted-foreground">@{request.profiles.username}</span>
+                    {request.profiles?.full_name ? (
+                      <>
+                        <span className="font-medium">{request.profiles.full_name}</span>
+                        {request.profiles?.username && (
+                          <span className="text-muted-foreground">@{request.profiles.username}</span>
+                        )}
+                        {request.profiles?.email && (
+                          <span className="text-muted-foreground">({request.profiles.email})</span>
+                        )}
+                      </>
+                    ) : (
+                      <span className="text-muted-foreground">Candidate: {request.candidate_id}</span>
                     )}
-                    <span className="text-muted-foreground">({request.profiles.email})</span>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4 text-sm">
