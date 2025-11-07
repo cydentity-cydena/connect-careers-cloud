@@ -29,22 +29,11 @@ export function UsernameChangeDialog({ currentUsername, usernameChanges, userId 
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const isFreeChangeUsed = usernameChanges >= 1;
-
   const handleChange = async () => {
     if (newUsername.length < 3 || newUsername.length > 20) {
       toast({
         title: "Invalid username",
         description: "Username must be between 3-20 characters",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (isFreeChangeUsed) {
-      toast({
-        title: "Payment Required",
-        description: "You've used your free username change. Contact support to change your username.",
         variant: "destructive",
       });
       return;
@@ -94,13 +83,7 @@ export function UsernameChangeDialog({ currentUsername, usernameChanges, userId 
         <DialogHeader>
           <DialogTitle>Change Username</DialogTitle>
           <DialogDescription>
-            {isFreeChangeUsed ? (
-              <span className="text-destructive">
-                You've already used your one free username change. Further changes require payment.
-              </span>
-            ) : (
-              `You have one free username change. Use it wisely!`
-            )}
+            Choose a new username for your profile. You can change this anytime.
           </DialogDescription>
         </DialogHeader>
         
@@ -117,7 +100,6 @@ export function UsernameChangeDialog({ currentUsername, usernameChanges, userId 
               value={newUsername}
               onChange={(e) => setNewUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
               placeholder="new_username"
-              disabled={isFreeChangeUsed}
               minLength={3}
               maxLength={20}
             />
@@ -133,7 +115,7 @@ export function UsernameChangeDialog({ currentUsername, usernameChanges, userId 
           </Button>
           <Button 
             onClick={handleChange} 
-            disabled={loading || !newUsername || isFreeChangeUsed}
+            disabled={loading || !newUsername}
           >
             {loading ? "Updating..." : "Change Username"}
           </Button>
