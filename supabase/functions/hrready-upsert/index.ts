@@ -110,20 +110,21 @@ serve(async (req) => {
     const logOk = ['green', 'amber'].includes(verification.logistics_status || 'grey');
     const hrReady = idOk && certOk && rtwOk && logOk;
 
-    // Calculate compliance score (identity 5, certs 7, rtw 5, logistics 3)
+    // Calculate compliance score out of 100
+    // Identity: 25 points, Certifications: 35 points, Right to Work: 25 points, Logistics: 15 points
     let complianceScore = 0;
-    if (verification.identity_status === 'green') complianceScore += 5;
-    else if (verification.identity_status === 'amber') complianceScore += 3;
+    if (verification.identity_status === 'green') complianceScore += 25;
+    else if (verification.identity_status === 'amber') complianceScore += 15;
 
-    // Calculate certification score from live data
+    // Calculate certification score from live data (up to 35 points)
     const greenCerts = formattedCerts.filter((c: any) => c.status === 'green').length;
-    complianceScore += Math.min(greenCerts * 2, 7); // Up to 7 points for certs
+    complianceScore += Math.min(greenCerts * 10, 35); // Up to 35 points for certs
 
-    if (verification.rtw_status === 'green') complianceScore += 5;
-    else if (verification.rtw_status === 'amber') complianceScore += 3;
+    if (verification.rtw_status === 'green') complianceScore += 25;
+    else if (verification.rtw_status === 'amber') complianceScore += 15;
 
-    if (verification.logistics_status === 'green') complianceScore += 3;
-    else if (verification.logistics_status === 'amber') complianceScore += 2;
+    if (verification.logistics_status === 'green') complianceScore += 15;
+    else if (verification.logistics_status === 'amber') complianceScore += 10;
 
     // Update with computed values and store cert snapshot
     const { data: updated, error: updateError } = await supabase
