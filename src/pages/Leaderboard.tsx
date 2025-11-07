@@ -136,7 +136,7 @@ const Leaderboard = () => {
           title: displayTitle,
           certifications: certs.map(c => c.name),
           specializations,
-          score: Math.min(100, Math.round((entry as any).total_xp / 3)),
+          score: (entry as any).total_xp ?? 0,
           community_points: (entry as any).community_points ?? (entry as any).points_balance ?? 0,
           xp: (entry as any).total_xp ?? 0,
           rank: index + 1,
@@ -259,7 +259,8 @@ const Leaderboard = () => {
                       <Badge className="bg-yellow-700 text-xs">1st Place</Badge>
                       <HRReadyBadge isReady={topThree[0]?.hr_ready} size="sm" />
                     </div>
-                    <p className="text-xl md:text-3xl font-bold text-gray-900 mt-2 md:mt-3">{topThree[0]?.score}</p>
+                    <p className="text-xl md:text-3xl font-bold text-gray-900 mt-2 md:mt-3">{topThree[0]?.xp.toLocaleString()}</p>
+                    <p className="text-xs text-gray-700">XP</p>
                   </CardContent>
                 </Card>
               </Link>
@@ -279,7 +280,8 @@ const Leaderboard = () => {
                       <Badge className="bg-gray-500 text-xs">2nd Place</Badge>
                       <HRReadyBadge isReady={topThree[1]?.hr_ready} size="sm" />
                     </div>
-                    <p className="text-lg md:text-2xl font-bold text-gray-800 mt-2 md:mt-3">{topThree[1]?.score}</p>
+                    <p className="text-lg md:text-2xl font-bold text-gray-800 mt-2 md:mt-3">{topThree[1]?.xp.toLocaleString()}</p>
+                    <p className="text-xs text-gray-600">XP</p>
                   </CardContent>
                 </Card>
               </Link>
@@ -299,7 +301,8 @@ const Leaderboard = () => {
                       <Badge className="bg-orange-800 text-xs">3rd Place</Badge>
                       <HRReadyBadge isReady={topThree[2]?.hr_ready} size="sm" />
                     </div>
-                    <p className="text-lg md:text-2xl font-bold text-white mt-2 md:mt-3">{topThree[2]?.score}</p>
+                    <p className="text-lg md:text-2xl font-bold text-white mt-2 md:mt-3">{topThree[2]?.xp.toLocaleString()}</p>
+                    <p className="text-xs text-orange-100">XP</p>
                   </CardContent>
                 </Card>
               </Link>
@@ -323,8 +326,7 @@ const Leaderboard = () => {
                   <TableHead className="hidden md:table-cell text-xs md:text-sm">Desired Job Title</TableHead>
                   <TableHead className="hidden xl:table-cell text-xs md:text-sm">Specializations</TableHead>
                   <TableHead className="hidden lg:table-cell text-xs md:text-sm">Certifications</TableHead>
-                  <TableHead className="text-right text-xs md:text-sm">Score</TableHead>
-                  <TableHead className="hidden sm:table-cell text-right text-xs md:text-sm">XP</TableHead>
+                  <TableHead className="text-right text-xs md:text-sm">XP</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -355,8 +357,7 @@ const Leaderboard = () => {
                         )}
                       </div>
                     </TableCell>
-                    <TableCell className="text-right font-bold text-primary text-xs md:text-sm">{entry.score}</TableCell>
-                    <TableCell className="hidden sm:table-cell text-right font-semibold text-secondary text-xs md:text-sm">{entry.xp.toLocaleString()}</TableCell>
+                    <TableCell className="text-right font-bold text-primary text-xs md:text-sm">{entry.xp.toLocaleString()}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

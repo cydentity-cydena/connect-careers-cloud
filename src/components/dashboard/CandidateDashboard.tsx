@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { User, Briefcase, FileText, TrendingUp, CheckCircle, ArrowRight, Eye, Bug, Target } from "lucide-react";
 import { ProfileStrengthMeter } from "@/components/gamification/ProfileStrengthMeter";
 import { AchievementBadges } from "@/components/gamification/AchievementBadges";
+import { XPSystemInfo } from "@/components/gamification/XPSystemInfo";
 import { RecentPointsFeed } from "@/components/rewards/RecentPointsFeed";
 import { ProfileViewsNotification } from "./ProfileViewsNotification";
 import { MultipleResumesManager } from "./MultipleResumesManager";
@@ -165,23 +166,42 @@ const CandidateDashboard = () => {
       </div>
 
       <div>
-        <h1 className="text-4xl font-bold mb-2">Welcome back, {userName}! 👋</h1>
+        <div className="flex items-center justify-between mb-2">
+          <h1 className="text-4xl font-bold">Welcome back, {userName}! 👋</h1>
+          <XPSystemInfo />
+        </div>
         <p className="text-muted-foreground">
           Manage your profile and track your applications
         </p>
         {xpData && (
-          <div className="flex items-center gap-4 mt-4">
-            <div className="bg-primary/10 px-4 py-2 rounded-lg">
+          <div className="flex flex-wrap items-center gap-4 mt-4">
+            <div className="bg-primary/10 px-4 py-2 rounded-lg group relative">
               <span className="text-sm text-muted-foreground">Level </span>
               <span className="text-xl font-bold text-primary">{xpData.level}</span>
+              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-popover text-popover-foreground text-xs rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-10 border">
+                Next level at {xpData.level === 1 ? 100 : xpData.level === 2 ? 250 : xpData.level === 3 ? 500 : xpData.level === 4 ? 1000 : xpData.level === 5 ? 2000 : xpData.level === 6 ? 4000 : xpData.level === 7 ? 8000 : xpData.level === 8 ? 16000 : xpData.level === 9 ? 32000 : '∞'} XP
+              </div>
             </div>
-            <div className="bg-secondary/10 px-4 py-2 rounded-lg">
+            <div className="bg-secondary/10 px-4 py-2 rounded-lg group relative">
               <span className="text-sm text-muted-foreground">Total XP </span>
               <span className="text-xl font-bold text-secondary">{xpData.total_xp}</span>
+              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-popover text-popover-foreground text-xs rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-10 border">
+                Permanent progression score
+              </div>
             </div>
-            <div className="bg-accent/10 px-4 py-2 rounded-lg">
+            <div className="bg-accent/10 px-4 py-2 rounded-lg group relative">
               <span className="text-sm text-muted-foreground">Points </span>
               <span className="text-xl font-bold text-accent">{xpData.points_balance || 0}</span>
+              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-popover text-popover-foreground text-xs rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-10 border">
+                Spendable currency for courses
+              </div>
+            </div>
+            <div className="bg-muted/50 px-4 py-2 rounded-lg group relative">
+              <span className="text-sm text-muted-foreground">Profile </span>
+              <span className="text-xl font-bold text-foreground">{xpData.profile_completion_percent}%</span>
+              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-popover text-popover-foreground text-xs rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-10 border">
+                Profile completion percentage
+              </div>
             </div>
           </div>
         )}
