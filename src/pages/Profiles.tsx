@@ -409,16 +409,19 @@ const Profiles = () => {
                     </div>
                   )}
 
-                  <div>
-                    <p className="text-sm font-semibold mb-1">Certifications:</p>
-                    <div className="flex flex-wrap gap-1">
-                      {candidate.certifications.map((cert, idx) => (
-                        <Badge key={idx} variant="outline" className="text-xs">
-                          {cert}
-                        </Badge>
-                      ))}
+                  {/* Certifications */}
+                  {candidate.certifications.length > 0 && (
+                    <div>
+                      <p className="text-sm font-semibold mb-1">Certifications:</p>
+                      <div className="flex flex-wrap gap-1">
+                        {candidate.certifications.map((cert, idx) => (
+                          <Badge key={idx} variant="outline" className="text-xs">
+                            {cert}
+                          </Badge>
+                        ))}
+                      </div>
                     </div>
-                  </div>
+                  )}
 
                   <div>
                     <p className="text-sm">
