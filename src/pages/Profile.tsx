@@ -172,21 +172,71 @@ const Profile = () => {
         .eq('user_id', userId);
       if (cErr) throw cErr;
 
+      // Normalize and validate work history before saving
+      const normalizedWorkHistory = workHistory.map((w, i) => {
+        const isCurrent = !!w.is_current;
+        const startDate = w.start_date ? String(w.start_date) : '';
+        const endDate = isCurrent ? null : (w.end_date ? String(w.end_date) : null);
+        return {
+          id: w.id,
+          company: (w.company ?? '').trim(),
+          role: (w.role ?? '').trim(),
+          location: (w.location ?? '')?.trim() || null,
+          start_date: startDate,
+          end_date: endDate,
+          is_current: isCurrent,
+          description: (w.description ?? '')?.trim() || null,
+        };
+      });
+
+      // Validate required fields (company, role, start_date)
+      for (let i = 0; i < normalizedWorkHistory.length; i++) {
+        const w = normalizedWorkHistory[i];
+        const isNewRow = !w.id;
+        const hasAnyData = !!(w.company || w.role || w.start_date || w.description || w.location);
+
+        if (!hasAnyData) continue; // skip fully empty rows
+
+        if (!w.company || !w.role || !w.start_date) {
+          throw new Error(`Work history #${i + 1}: company, role, and start date are required`);
+        }
+      }
+
       // Save work history
-      for (const work of workHistory) {
-        if (work.id) {
+      for (const w of normalizedWorkHistory) {
+        const hasAnyData = !!(w.company || w.role || w.start_date || w.description || w.location);
+        if (!hasAnyData) continue; // skip empty rows
+
+        if (w.id) {
           const { error: workUpdateError } = await supabase
             .from('work_history')
-            .update(work)
-            .eq('id', work.id);
+            .update({
+              company: w.company,
+              role: w.role,
+              location: w.location,
+              start_date: w.start_date,
+              end_date: w.end_date,
+              is_current: w.is_current,
+              description: w.description,
+            })
+            .eq('id', w.id);
           if (workUpdateError) {
             console.error('Error updating work history:', workUpdateError);
             throw new Error(`Failed to update work history: ${workUpdateError.message}`);
           }
-        } else if (work.company && work.role) {
+        } else if (w.company && w.role && w.start_date) {
           const { error: workInsertError } = await supabase
             .from('work_history')
-            .insert({ ...work, candidate_id: userId });
+            .insert({
+              company: w.company,
+              role: w.role,
+              location: w.location,
+              start_date: w.start_date,
+              end_date: w.end_date,
+              is_current: w.is_current,
+              description: w.description,
+              candidate_id: userId,
+            });
           if (workInsertError) {
             console.error('Error inserting work history:', workInsertError);
             throw new Error(`Failed to add work history: ${workInsertError.message}`);
