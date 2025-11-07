@@ -1891,6 +1891,7 @@ export type Database = {
           content: string
           created_at: string
           id: string
+          mentioned_users: string[] | null
           post_id: string
           user_id: string
         }
@@ -1898,6 +1899,7 @@ export type Database = {
           content: string
           created_at?: string
           id?: string
+          mentioned_users?: string[] | null
           post_id: string
           user_id: string
         }
@@ -1905,6 +1907,7 @@ export type Database = {
           content?: string
           created_at?: string
           id?: string
+          mentioned_users?: string[] | null
           post_id?: string
           user_id?: string
         }

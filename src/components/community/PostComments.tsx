@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { MessageCircle, Send, Trash2 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { useToast } from '@/hooks/use-toast';
 import { z } from 'zod';
 import { CommentReactions } from './CommentReactions';
+import { MentionTextarea } from './MentionTextarea';
 
 type Comment = {
   id: string;
@@ -32,6 +32,7 @@ const commentSchema = z.object({
 export const PostComments = ({ postId }: { postId: string }) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState('');
+  const [mentionedUserIds, setMentionedUserIds] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [showComments, setShowComments] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
@@ -197,6 +198,7 @@ export const PostComments = ({ postId }: { postId: string }) => {
       setComments(prev => [...prev, optimisticComment]);
       setCommentCount(prev => prev + 1);
       setNewComment('');
+      setMentionedUserIds([]);
 
       // Insert to database - real-time subscription will update with actual data
       const { error } = await supabase
@@ -204,7 +206,8 @@ export const PostComments = ({ postId }: { postId: string }) => {
         .insert({
           post_id: postId,
           user_id: user.id,
-          content: validated.content
+          content: validated.content,
+          mentioned_users: mentionedUserIds.length > 0 ? mentionedUserIds : null
         });
 
       if (error) {
@@ -306,7 +309,15 @@ export const PostComments = ({ postId }: { postId: string }) => {
                       {formatDistanceToNow(new Date(comment.created_at), { addSuffix: true })}
                     </span>
                   </div>
-                  <p className="text-sm break-words">{comment.content}</p>
+                   <p className="text-sm break-words">
+                     {comment.content.split(/(@\w+)/g).map((part, i) => 
+                       part.startsWith('@') ? (
+                         <span key={i} className="text-primary font-medium">{part}</span>
+                       ) : (
+                         part
+                       )
+                     )}
+                   </p>
                 </div>
                 {currentUserId === comment.user_id && (
                   <Button
@@ -327,16 +338,17 @@ export const PostComments = ({ postId }: { postId: string }) => {
           {/* New comment form */}
           <form onSubmit={handleSubmit} className="space-y-2">
             <div className="space-y-1">
-              <Textarea
+              <MentionTextarea
                 value={newComment}
-                onChange={(e) => setNewComment(e.target.value)}
+                onChange={setNewComment}
+                onMentionsChange={setMentionedUserIds}
                 onKeyDown={(e) => {
                   if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
                     e.preventDefault();
                     handleSubmit(e as any);
                   }
                 }}
-                placeholder="Write a comment... (Ctrl+Enter to submit)"
+                placeholder="Write a comment... (Type @ to mention) (Ctrl+Enter to submit)"
                 className="min-h-[60px] resize-none"
                 maxLength={500}
               />
