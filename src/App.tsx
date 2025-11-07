@@ -23,6 +23,7 @@ import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 import Profile from "./pages/Profile";
 import Skills from "./pages/Skills";
+import Specializations from "./pages/Specializations";
 import Certifications from "./pages/Certifications";
 import CompanyCreate from "./pages/CompanyCreate";
 import ClientCreate from "./pages/ClientCreate";
@@ -79,6 +80,7 @@ const App = () => (
               <Route path="/faq" element={<ProtectedRoute><FAQ /></ProtectedRoute>} />
               <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
               <Route path="/skills" element={<ProtectedRoute><Skills /></ProtectedRoute>} />
+              <Route path="/specializations" element={<ProtectedRoute><Specializations /></ProtectedRoute>} />
               <Route path="/certifications" element={<ProtectedRoute><Certifications /></ProtectedRoute>} />
               <Route path="/skills-assessment" element={<ProtectedRoute><SkillsAssessment /></ProtectedRoute>} />
               <Route path="/company/create" element={<ProtectedRoute><CompanyCreate /></ProtectedRoute>} />

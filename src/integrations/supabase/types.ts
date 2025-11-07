@@ -360,6 +360,7 @@ export type Database = {
           professional_statement: string | null
           resume_url: string | null
           security_clearance: string | null
+          specializations: string[] | null
           title: string | null
           updated_at: string
           user_id: string
@@ -376,6 +377,7 @@ export type Database = {
           professional_statement?: string | null
           resume_url?: string | null
           security_clearance?: string | null
+          specializations?: string[] | null
           title?: string | null
           updated_at?: string
           user_id: string
@@ -392,6 +394,7 @@ export type Database = {
           professional_statement?: string | null
           resume_url?: string | null
           security_clearance?: string | null
+          specializations?: string[] | null
           title?: string | null
           updated_at?: string
           user_id?: string

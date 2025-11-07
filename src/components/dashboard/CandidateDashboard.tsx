@@ -350,6 +350,9 @@ const CandidateDashboard = () => {
               <Button variant="cyber" className="w-full" size="sm" onClick={() => navigate('/skills')}>
                 Add Skills
               </Button>
+              <Button variant="outline" className="w-full" size="sm" onClick={() => navigate('/specializations')}>
+                Manage Specializations
+              </Button>
               <Button variant="outline" className="w-full" size="sm" onClick={() => navigate('/certifications')}>
                 Add Other Certification
               </Button>
