@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { CheckCircle, XCircle, Download, Clock, FileText, Shield } from "lucide-react";
+import { CheckCircle, XCircle, Download, Clock, FileText, Shield, RefreshCw } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { format } from "date-fns";
@@ -22,7 +22,7 @@ export function CandidateVerificationReview() {
   const [viewingDocuments, setViewingDocuments] = useState<{ urls: string[]; name: string } | null>(null);
   const [showApprovalDialog, setShowApprovalDialog] = useState(false);
 
-  const { data: pendingRequests, isLoading } = useQuery({
+  const { data: pendingRequests, isLoading, refetch } = useQuery({
     queryKey: ['pending-candidate-verifications'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -37,6 +37,37 @@ export function CandidateVerificationReview() {
       return data || [];
     },
   });
+
+  // Real-time subscription for new verification requests
+  useEffect(() => {
+    const channel = supabase
+      .channel('verification-requests-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'verification_requests',
+          filter: 'company_name=is.null'
+        },
+        (payload) => {
+          console.log('Verification request changed:', payload);
+          queryClient.invalidateQueries({ queryKey: ['pending-candidate-verifications'] });
+          
+          if (payload.eventType === 'INSERT') {
+            toast({
+              title: "New verification request",
+              description: "A candidate has submitted documents for review",
+            });
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [queryClient, toast]);
 
   const getSignedUrls = async (paths: string[]) => {
     const urls = await Promise.all(
@@ -212,13 +243,26 @@ export function CandidateVerificationReview() {
     <>
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Shield className="h-5 w-5" />
-            Candidate Verification Requests
-          </CardTitle>
-          <CardDescription>
-            Review identity and right-to-work document submissions
-          </CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="flex items-center gap-2">
+                <Shield className="h-5 w-5" />
+                Candidate Verification Requests
+              </CardTitle>
+              <CardDescription>
+                Review identity and right-to-work document submissions
+              </CardDescription>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => refetch()}
+              disabled={isLoading}
+            >
+              <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
+              Refresh
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="identity">
