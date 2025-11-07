@@ -242,18 +242,33 @@ export const PostComments = ({ postId }: { postId: string }) => {
   };
 
   const handleDelete = async (commentId: string) => {
-    // Optimistic update - remove immediately from UI
-    const deletedComment = comments.find(c => c.id === commentId);
-    setComments(prev => prev.filter(c => c.id !== commentId));
-    setCommentCount(prev => prev - 1);
-
     try {
+      // Verify user is authenticated
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast({
+          title: "Authentication required",
+          description: "Please sign in to delete comments",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // Optimistic update - remove immediately from UI
+      const deletedComment = comments.find(c => c.id === commentId);
+      setComments(prev => prev.filter(c => c.id !== commentId));
+      setCommentCount(prev => prev - 1);
+
       const { error } = await supabase
         .from('post_comments')
         .delete()
-        .eq('id', commentId);
+        .eq('id', commentId)
+        .eq('user_id', user.id); // Explicitly check user_id to help with RLS
 
-      if (error) throw error;
+      if (error) {
+        console.error('Delete error:', error);
+        throw error;
+      }
 
       toast({
         title: "Comment deleted",
@@ -261,6 +276,7 @@ export const PostComments = ({ postId }: { postId: string }) => {
       });
     } catch (error) {
       // Restore comment on error
+      const deletedComment = comments.find(c => c.id === commentId);
       if (deletedComment) {
         setComments(prev => [...prev, deletedComment].sort((a, b) => 
           new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
