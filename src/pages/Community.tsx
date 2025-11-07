@@ -13,10 +13,48 @@ const Community = () => {
   const [activeTab, setActiveTab] = useState('feed');
   const [isAdmin, setIsAdmin] = useState(false);
   const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null);
+  const [stats, setStats] = useState({
+    activeMembers: 0,
+    certsEarned: 0,
+    projectsShared: 0
+  });
 
   useEffect(() => {
-    checkAccessAndRedirect();
+    const init = async () => {
+      await checkAccessAndRedirect();
+      await fetchStats();
+    };
+    init();
   }, []);
+
+  const fetchStats = async () => {
+    try {
+      // Count active members (users with candidate role)
+      const membersQuery = await supabase
+        .from('user_roles')
+        .select('id')
+        .eq('role', 'candidate');
+
+      // Count certifications earned
+      const certsQuery = await supabase
+        .from('certifications')
+        .select('id');
+
+      // Count projects shared (posts with type 'project')
+      const projectsQuery = await supabase
+        .from('activity_feed' as any)
+        .select('id')
+        .eq('type', 'project');
+
+      setStats({
+        activeMembers: membersQuery.data?.length ?? 0,
+        certsEarned: certsQuery.data?.length ?? 0,
+        projectsShared: projectsQuery.data?.length ?? 0
+      });
+    } catch (error) {
+      console.error('Error fetching stats:', error);
+    }
+  };
 
   const checkAccessAndRedirect = async () => {
     const { data: { user } } = await supabase.auth.getUser();
@@ -105,15 +143,15 @@ const Community = () => {
                   <div className="space-y-3">
                     <div className="flex justify-between items-center">
                       <span className="text-sm text-muted-foreground">Active Members</span>
-                      <span className="font-semibold">2,847</span>
+                      <span className="font-semibold">{stats.activeMembers.toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-sm text-muted-foreground">Certs Earned</span>
-                      <span className="font-semibold">1,203</span>
+                      <span className="font-semibold">{stats.certsEarned.toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-sm text-muted-foreground">Projects Shared</span>
-                      <span className="font-semibold">589</span>
+                      <span className="font-semibold">{stats.projectsShared.toLocaleString()}</span>
                     </div>
                   </div>
                 </div>
