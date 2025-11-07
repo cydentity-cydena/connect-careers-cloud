@@ -22,6 +22,7 @@ const Profile = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [bio, setBio] = useState('');
+  const [location, setLocation] = useState('');
   const [avatarUrl, setAvatarUrl] = useState('');
   const [desiredJobTitle, setDesiredJobTitle] = useState('');
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
@@ -57,7 +58,7 @@ const Profile = () => {
       // Load profile
       const { data: profile } = await supabase
         .from('profiles')
-        .select('full_name, username, bio, avatar_url, desired_job_title, email')
+        .select('full_name, username, bio, location, avatar_url, desired_job_title, email')
         .eq('id', session.user.id)
         .maybeSingle();
 
@@ -66,6 +67,7 @@ const Profile = () => {
         setUsername(profile.username ?? '');
         setEmail(profile.email ?? '');
         setBio(profile.bio ?? '');
+        setLocation(profile.location ?? '');
         setAvatarUrl(profile.avatar_url ?? '');
         setDesiredJobTitle(profile.desired_job_title ?? '');
       }
@@ -146,7 +148,7 @@ const Profile = () => {
     try {
       const { error: pErr } = await supabase
         .from('profiles')
-        .update({ full_name: fullName, username, bio, avatar_url: avatarUrl, desired_job_title: desiredJobTitle })
+        .update({ full_name: fullName, username, bio, location, avatar_url: avatarUrl, desired_job_title: desiredJobTitle })
         .eq('id', userId);
       if (pErr) {
         if (pErr.message?.includes('profiles_username_unique')) {
@@ -529,6 +531,14 @@ const Profile = () => {
                   ⚠️ Username is required to appear in public profiles
                   </p>
                 )}
+
+                <Label htmlFor="location">Location (public)</Label>
+                <Input 
+                  id="location" 
+                  value={location} 
+                  onChange={(e) => setLocation(e.target.value)}
+                  placeholder="City, County/Country"
+                />
                 
                 <div className="space-y-4">
                   <Label className="flex items-center gap-2 text-base">
