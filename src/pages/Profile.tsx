@@ -175,27 +175,66 @@ const Profile = () => {
       // Save work history
       for (const work of workHistory) {
         if (work.id) {
-          await supabase.from('work_history').update(work).eq('id', work.id);
+          const { error: workUpdateError } = await supabase
+            .from('work_history')
+            .update(work)
+            .eq('id', work.id);
+          if (workUpdateError) {
+            console.error('Error updating work history:', workUpdateError);
+            throw new Error(`Failed to update work history: ${workUpdateError.message}`);
+          }
         } else if (work.company && work.role) {
-          await supabase.from('work_history').insert({ ...work, candidate_id: userId });
+          const { error: workInsertError } = await supabase
+            .from('work_history')
+            .insert({ ...work, candidate_id: userId });
+          if (workInsertError) {
+            console.error('Error inserting work history:', workInsertError);
+            throw new Error(`Failed to add work history: ${workInsertError.message}`);
+          }
         }
       }
 
       // Save projects
       for (const project of projects) {
         if (project.id) {
-          await supabase.from('projects').update(project).eq('id', project.id);
+          const { error: projectUpdateError } = await supabase
+            .from('projects')
+            .update(project)
+            .eq('id', project.id);
+          if (projectUpdateError) {
+            console.error('Error updating project:', projectUpdateError);
+            throw new Error(`Failed to update project: ${projectUpdateError.message}`);
+          }
         } else if (project.name) {
-          await supabase.from('projects').insert({ ...project, candidate_id: userId });
+          const { error: projectInsertError } = await supabase
+            .from('projects')
+            .insert({ ...project, candidate_id: userId });
+          if (projectInsertError) {
+            console.error('Error inserting project:', projectInsertError);
+            throw new Error(`Failed to add project: ${projectInsertError.message}`);
+          }
         }
       }
 
       // Save education
       for (const edu of education) {
         if (edu.id) {
-          await supabase.from('education').update(edu).eq('id', edu.id);
+          const { error: eduUpdateError } = await supabase
+            .from('education')
+            .update(edu)
+            .eq('id', edu.id);
+          if (eduUpdateError) {
+            console.error('Error updating education:', eduUpdateError);
+            throw new Error(`Failed to update education: ${eduUpdateError.message}`);
+          }
         } else if (edu.institution && edu.degree) {
-          await supabase.from('education').insert({ ...edu, candidate_id: userId });
+          const { error: eduInsertError } = await supabase
+            .from('education')
+            .insert({ ...edu, candidate_id: userId });
+          if (eduInsertError) {
+            console.error('Error inserting education:', eduInsertError);
+            throw new Error(`Failed to add education: ${eduInsertError.message}`);
+          }
         }
       }
 
