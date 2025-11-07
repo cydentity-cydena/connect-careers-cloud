@@ -44,6 +44,9 @@ interface PipelineCandidate {
     certifications: any;
     compliance_score: number;
   };
+  candidate_profile?: {
+    resume_url: string | null;
+  };
 }
 
 interface Stage {
@@ -144,6 +147,17 @@ export default function StaffFunnel() {
       // Merge both datasets
       const allCandidates = [...pipelineWithSource, ...transformedApplications];
 
+      // Fetch candidate_profiles for primary CV (resume_url)
+      const candidateIds = allCandidates.map(c => c.candidate_id).filter(Boolean);
+      const { data: candidateProfiles } = await supabase
+        .from("candidate_profiles")
+        .select("user_id, resume_url")
+        .in("user_id", candidateIds);
+
+      const profilesMap = new Map(
+        (candidateProfiles || []).map(cp => [cp.user_id, cp])
+      );
+
       // Fetch verification data for each candidate
       const candidatesWithVerification = await Promise.all(
         allCandidates.map(async (candidate) => {
@@ -153,7 +167,11 @@ export default function StaffFunnel() {
             .eq("candidate_id", candidate.candidate_id)
             .maybeSingle();
           
-          return { ...candidate, verification };
+          return { 
+            ...candidate, 
+            verification,
+            candidate_profile: profilesMap.get(candidate.candidate_id) || null
+          };
         })
       );
 
@@ -876,6 +894,16 @@ export default function StaffFunnel() {
                             >
                               <FileText className="h-3 w-3 mr-1" />
                               View CV
+                            </Button>
+                          ) : candidate.candidate_profile?.resume_url ? (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="h-8 text-xs w-full"
+                              onClick={() => handleViewCV(candidate.candidate_profile!.resume_url!, candidate.profiles?.full_name || "Unknown")}
+                            >
+                              <Download className="h-3 w-3 mr-1" />
+                              Download Primary CV
                             </Button>
                           ) : (
                             <Button

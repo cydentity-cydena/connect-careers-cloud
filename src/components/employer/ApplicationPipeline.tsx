@@ -38,6 +38,7 @@ interface Application {
   candidate_profile: {
     title: string;
     years_experience: number;
+    resume_url?: string | null;
   };
   profile: {
     full_name: string;
@@ -71,6 +72,7 @@ interface UnlockedCandidate {
   candidate_profile: {
     title: string;
     years_experience: number;
+    resume_url?: string | null;
   };
   candidate_verifications?: {
     hr_ready: boolean;
@@ -351,7 +353,7 @@ export const ApplicationPipeline = () => {
           .in('id', candidateIds),
         supabase
           .from('candidate_profiles')
-          .select('user_id, title, years_experience')
+          .select('user_id, title, years_experience, resume_url')
           .in('user_id', candidateIds),
         supabase
           .from('candidate_verifications')
@@ -482,7 +484,7 @@ export const ApplicationPipeline = () => {
 
       const [profilesRes, candProfilesRes, jobsRes, verRes] = await Promise.all([
         supabase.from('profiles').select('id, full_name, avatar_url').in('id', candidateIds),
-        supabase.from('candidate_profiles').select('user_id, title, years_experience').in('user_id', candidateIds),
+        supabase.from('candidate_profiles').select('user_id, title, years_experience, resume_url').in('user_id', candidateIds),
         supabase.from('jobs').select('id, title').in('id', appJobIds),
         supabase.from('candidate_verifications').select('*').in('candidate_id', candidateIds),
       ]);
@@ -1078,6 +1080,23 @@ export const ApplicationPipeline = () => {
                         </div>
 
                         <div className="flex gap-2 pt-2 min-w-0">
+                          {candidate.candidate_profile?.resume_url && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="flex-1 h-10 text-xs font-medium px-2"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                const { data } = supabase.storage
+                                  .from('resumes')
+                                  .getPublicUrl(candidate.candidate_profile!.resume_url!);
+                                window.open(data.publicUrl, '_blank');
+                              }}
+                            >
+                              <Download className="h-4 w-4 mr-1.5" />
+                              <span className="truncate">CV</span>
+                            </Button>
+                          )}
                           <Button
                             variant="outline"
                             size="sm"

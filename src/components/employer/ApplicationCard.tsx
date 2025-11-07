@@ -17,7 +17,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { MessageSquare, MoreVertical, Calendar, Briefcase, Eye, MapPin, Star, StickyNote, Shield } from "lucide-react";
+import { MessageSquare, MoreVertical, Calendar, Briefcase, Eye, MapPin, Star, StickyNote, Shield, Download } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { HireConfirmationDialog } from "./HireConfirmationDialog";
 import { SendMessageDialog } from "@/components/messaging/SendMessageDialog";
@@ -38,6 +38,7 @@ interface ApplicationCardProps {
     candidate_profile: {
       title: string;
       years_experience: number;
+      resume_url?: string | null;
     };
     profile: {
       full_name: string;
@@ -275,6 +276,28 @@ export const ApplicationCard = ({ application, onStageChange, onToggleStar, onAd
           </div>
 
           <div className="flex gap-2 pt-2 min-w-0">
+            {application.candidate_profile?.resume_url && (
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex-1 h-10 text-xs font-medium px-2"
+                onClick={async (e) => {
+                  e.stopPropagation();
+                  const { createClient } = await import('@supabase/supabase-js');
+                  const supabase = createClient(
+                    import.meta.env.VITE_SUPABASE_URL,
+                    import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY
+                  );
+                  const { data } = supabase.storage
+                    .from('resumes')
+                    .getPublicUrl(application.candidate_profile!.resume_url!);
+                  window.open(data.publicUrl, '_blank');
+                }}
+              >
+                <Download className="h-4 w-4 mr-1.5" />
+                <span className="truncate">CV</span>
+              </Button>
+            )}
             <Button
               variant="outline"
               size="sm"
