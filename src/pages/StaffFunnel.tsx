@@ -731,7 +731,7 @@ export default function StaffFunnel() {
                         </div>
                       )}
                       <div className="grid grid-cols-2 gap-2 pt-2 border-t">
-                        {candidate.cv_url && (
+                        {candidate.cv_url ? (
                           <Button
                             size="sm"
                             variant="outline"
@@ -741,7 +741,17 @@ export default function StaffFunnel() {
                             <FileText className="h-3 w-3 mr-1" />
                             View CV
                           </Button>
-                        )}
+                        ) : candidate.candidate_profile?.resume_url ? (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="flex-1"
+                            onClick={() => handleViewCV(candidate.candidate_profile!.resume_url!, candidate.profiles.full_name)}
+                          >
+                            <Download className="h-3 w-3 mr-1" />
+                            Primary CV
+                          </Button>
+                        ) : null}
                         <Button
                           size="sm"
                           variant="outline"
