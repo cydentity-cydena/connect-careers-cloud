@@ -131,61 +131,75 @@ export const UserManagement = () => {
           ) : (
             <>
               <div className="border rounded-lg">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Email</TableHead>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Roles</TableHead>
-                      <TableHead>Business Verified</TableHead>
-                      <TableHead>Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {paginatedUsers?.map((user) => (
-                    <TableRow key={user.id}>
-                      <TableCell className="font-medium">{user.email}</TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          {user.full_name || "N/A"}
-                          {user.is_verified && <VerifiedBadge />}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex gap-1 flex-wrap">
-                          {user.user_roles?.map((role: any, idx: number) => (
-                            <Badge key={idx} variant="secondary">
-                              {role.role}
-                            </Badge>
-                          ))}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant={user.is_verified ? "default" : "secondary"}>
-                          {user.is_verified ? "Yes" : "No"}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex gap-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() =>
-                              toggleVerificationMutation.mutate({
-                                userId: user.id,
-                                currentStatus: user.is_verified,
-                              })
-                            }
-                          >
-                            <Shield className="h-4 w-4 mr-1" />
-                            {user.is_verified ? "Unverify Business" : "Verify Business"}
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Email</TableHead>
+                        <TableHead>Name</TableHead>
+                        <TableHead>Roles</TableHead>
+                        <TableHead>Business Verified</TableHead>
+                        <TableHead>Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {paginatedUsers?.map((user) => {
+                        const hasBusinessRole = user.user_roles?.some((r: any) => 
+                          r.role === 'employer' || r.role === 'recruiter'
+                        );
+                        
+                        return (
+                          <TableRow key={user.id}>
+                            <TableCell className="font-medium">{user.email}</TableCell>
+                            <TableCell>
+                              <div className="flex items-center gap-2">
+                                {user.full_name || "N/A"}
+                                {user.is_verified && <VerifiedBadge />}
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex gap-1 flex-wrap">
+                                {user.user_roles?.map((role: any, idx: number) => (
+                                  <Badge key={idx} variant="secondary">
+                                    {role.role}
+                                  </Badge>
+                                ))}
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              {hasBusinessRole ? (
+                                <Badge variant={user.is_verified ? "default" : "secondary"}>
+                                  {user.is_verified ? "Yes" : "No"}
+                                </Badge>
+                              ) : (
+                                <span className="text-muted-foreground text-sm">N/A</span>
+                              )}
+                            </TableCell>
+                            <TableCell>
+                              {hasBusinessRole ? (
+                                <div className="flex gap-2">
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() =>
+                                      toggleVerificationMutation.mutate({
+                                        userId: user.id,
+                                        currentStatus: user.is_verified,
+                                      })
+                                    }
+                                  >
+                                    <Shield className="h-4 w-4 mr-1" />
+                                    {user.is_verified ? "Unverify Business" : "Verify Business"}
+                                  </Button>
+                                </div>
+                              ) : (
+                                <span className="text-muted-foreground text-sm">-</span>
+                              )}
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
               </div>
 
               {/* Pagination */}
