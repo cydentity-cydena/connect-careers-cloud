@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Shield, Users, Briefcase, AlertCircle, UserCog, CheckCircle, Bug, Settings, FolderKanban, FileCheck } from "lucide-react";
 import { AdminNotifications } from "@/components/admin/AdminNotifications";
+import { SeedDemoCandidates } from "@/components/admin/SeedDemoCandidates";
 import { toast } from "sonner";
 
 const AdminDashboard = () => {
@@ -87,6 +88,9 @@ const AdminDashboard = () => {
 
       {/* Notifications Section */}
       <AdminNotifications />
+
+      {/* Seed Demo Data Section */}
+      <SeedDemoCandidates />
 
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
         <Card 
