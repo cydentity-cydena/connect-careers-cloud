@@ -302,6 +302,11 @@ function BadgeCard({
       return `Connect and sync ${criteria.platform} account`;
     }
 
+    // HR Ready verification badge
+    if (criteria.type === 'hr_ready') {
+      return 'Complete identity, right-to-work, and logistics verification';
+    }
+
     return badge.description || 'Complete specific achievements to unlock';
   };
 
