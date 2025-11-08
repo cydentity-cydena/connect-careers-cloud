@@ -29,7 +29,8 @@ export function BadgeSelector() {
 
   // Fetch user's unlocked badges
   const { data: userBadges, error: userBadgesError, isLoading: userBadgesLoading } = useQuery({
-    queryKey: ['user-badges'],
+    queryKey: ['user-badges', open],
+    enabled: open,
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return [];
@@ -54,7 +55,8 @@ export function BadgeSelector() {
 
   // Fetch all available badges
   const { data: allBadges, error: allBadgesError, isLoading: allBadgesLoading } = useQuery({
-    queryKey: ['badge-types'],
+    queryKey: ['badge-types', open],
+    enabled: open,
     queryFn: async () => {
       const { data, error } = await supabase
         .from('badge_types')
