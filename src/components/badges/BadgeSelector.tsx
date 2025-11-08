@@ -167,6 +167,14 @@ export function BadgeSelector() {
           </DialogDescription>
         </DialogHeader>
 
+        <div className="p-4 bg-muted/50 border rounded">
+          <p>Debug Info:</p>
+          <p>Loading: {isLoading ? 'Yes' : 'No'}</p>
+          <p>Has Error: {hasError ? 'Yes' : 'No'}</p>
+          <p>All Badges Count: {allBadges?.length ?? 'undefined'}</p>
+          <p>User Badges Count: {userBadges?.length ?? 'undefined'}</p>
+        </div>
+
         {isLoading && (
           <div className="flex items-center justify-center py-12">
             <div className="text-center space-y-2">
@@ -179,6 +187,9 @@ export function BadgeSelector() {
         {hasError && (
           <div className="text-center py-12">
             <p className="text-destructive">Failed to load badges. Please try again.</p>
+            {userBadgesError && <p className="text-xs mt-2">{String(userBadgesError)}</p>}
+            {allBadgesError && <p className="text-xs mt-2">{String(allBadgesError)}</p>}
+            {profileError && <p className="text-xs mt-2">{String(profileError)}</p>}
           </div>
         )}
 
