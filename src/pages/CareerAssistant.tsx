@@ -431,7 +431,7 @@ const CareerAssistant = () => {
         </Card>
 
         <p className="text-xs text-center text-muted-foreground">
-          Powered by Lovable AI • Responses are AI-generated and should be verified
+          Responses are AI-generated and should be verified
         </p>
       </main>
     </div>
