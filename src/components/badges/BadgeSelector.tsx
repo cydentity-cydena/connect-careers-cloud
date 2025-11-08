@@ -28,51 +28,78 @@ export function BadgeSelector() {
   const queryClient = useQueryClient();
 
   // Fetch user's unlocked badges
-  const { data: userBadges } = useQuery({
+  const { data: userBadges, error: userBadgesError, isLoading: userBadgesLoading } = useQuery({
     queryKey: ['user-badges'],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return [];
       
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from('user_badges')
         .select('badge_id, unlocked_at')
         .eq('user_id', user.id);
+      
+      if (error) {
+        console.error('Error fetching user badges:', error);
+        throw error;
+      }
       
       return data || [];
     },
   });
 
+  if (userBadgesError) {
+    console.error('User badges query error:', userBadgesError);
+  }
+
   // Fetch all available badges
-  const { data: allBadges } = useQuery({
+  const { data: allBadges, error: allBadgesError, isLoading: allBadgesLoading } = useQuery({
     queryKey: ['badge-types'],
     queryFn: async () => {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from('badge_types')
         .select('*')
         .eq('is_active', true)
         .order('display_order');
       
+      if (error) {
+        console.error('Error fetching badge types:', error);
+        throw error;
+      }
+      
       return data || [];
     },
   });
 
+  if (allBadgesError) {
+    console.error('Badge types query error:', allBadgesError);
+  }
+
   // Fetch current profile
-  const { data: profile } = useQuery({
+  const { data: profile, error: profileError, isLoading: profileLoading } = useQuery({
     queryKey: ['profile-badge'],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return null;
       
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from('profiles')
         .select('selected_badge_id, selected_avatar_frame')
         .eq('id', user.id)
         .single();
       
+      if (error) {
+        console.error('Error fetching profile:', error);
+        throw error;
+      }
+      
       return data;
     },
   });
+
+  if (profileError) {
+    console.error('Profile query error:', profileError);
+  }
 
   const selectBadgeMutation = useMutation({
     mutationFn: async (badgeId: string | null) => {
@@ -99,6 +126,9 @@ export function BadgeSelector() {
   const unlockedBadgeIds = userBadges?.map(ub => ub.badge_id) || [];
   const unlockedBadges = allBadges?.filter(b => unlockedBadgeIds.includes(b.id)) || [];
   const lockedBadges = allBadges?.filter(b => !unlockedBadgeIds.includes(b.id)) || [];
+
+  const isLoading = userBadgesLoading || allBadgesLoading || profileLoading;
+  const hasError = userBadgesError || allBadgesError || profileError;
 
   const getRarityColor = (rarity: string) => {
     switch (rarity) {
@@ -137,7 +167,23 @@ export function BadgeSelector() {
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-6">
+        {isLoading && (
+          <div className="flex items-center justify-center py-12">
+            <div className="text-center space-y-2">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto" />
+              <p className="text-sm text-muted-foreground">Loading your badges...</p>
+            </div>
+          </div>
+        )}
+
+        {hasError && (
+          <div className="text-center py-12">
+            <p className="text-destructive">Failed to load badges. Please try again.</p>
+          </div>
+        )}
+
+        {!isLoading && !hasError && (
+          <div className="space-y-6">
           {/* Currently Selected */}
           {profile?.selected_badge_id && (
             <div className="space-y-2">
@@ -212,8 +258,9 @@ export function BadgeSelector() {
                 />
               ))}
             </div>
+            </div>
           </div>
-        </div>
+        )}
       </DialogContent>
     </Dialog>
   );
