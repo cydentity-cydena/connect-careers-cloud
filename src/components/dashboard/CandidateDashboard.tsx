@@ -25,7 +25,8 @@ const CandidateDashboard = () => {
   const [xpData, setXpData] = useState<any>(null);
   const [userName, setUserName] = useState<string>("");
   const [userCreatedAt, setUserCreatedAt] = useState<Date | null>(null);
-  const [showGettingStarted, setShowGettingStarted] = useState(true);
+  const [showGettingStarted, setShowGettingStarted] = useState(false);
+  const [isLoadingProfile, setIsLoadingProfile] = useState(true);
 
   useEffect(() => {
     getCurrentUser();
@@ -64,6 +65,8 @@ const CandidateDashboard = () => {
       const daysSinceCreation = Math.floor((Date.now() - createdDate.getTime()) / (1000 * 60 * 60 * 24));
       setShowGettingStarted(daysSinceCreation < 7);
     }
+    
+    setIsLoadingProfile(false);
   };
 
   const loadXpData = async (uid: string) => {
@@ -200,7 +203,7 @@ const CandidateDashboard = () => {
       {/* HR-Ready CTA Banner */}
       {userId && <HRReadyCTA userId={userId} />}
 
-      {showGettingStarted && (
+      {!isLoadingProfile && showGettingStarted && (
         <Card className="border-border shadow-card">
           <CardHeader>
             <CardTitle>Getting Started</CardTitle>
