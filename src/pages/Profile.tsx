@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
 import SEO from '@/components/SEO';
 import { ArrowLeft, Plus, Trash2, Upload, Image as ImageIcon, User, ChevronDown, ChevronRight } from 'lucide-react';
@@ -533,12 +534,42 @@ const Profile = () => {
                 )}
 
                 <Label htmlFor="location">Location (public)</Label>
-                <Input 
-                  id="location" 
-                  value={location} 
-                  onChange={(e) => setLocation(e.target.value)}
-                  placeholder="City, County/Country"
-                />
+                <Select
+                  value={location}
+                  onValueChange={(value) => setLocation(value)}
+                >
+                  <SelectTrigger className="bg-background">
+                    <SelectValue placeholder="Select your location" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-background z-50 max-h-[300px]">
+                    <SelectItem value="United States">🇺🇸 United States</SelectItem>
+                    <SelectItem value="United Kingdom">🇬🇧 United Kingdom</SelectItem>
+                    <SelectItem value="Canada">🇨🇦 Canada</SelectItem>
+                    <SelectItem value="Australia">🇦🇺 Australia</SelectItem>
+                    <SelectItem value="Germany">🇩🇪 Germany</SelectItem>
+                    <SelectItem value="France">🇫🇷 France</SelectItem>
+                    <SelectItem value="Netherlands">🇳🇱 Netherlands</SelectItem>
+                    <SelectItem value="India">🇮🇳 India</SelectItem>
+                    <SelectItem value="Singapore">🇸🇬 Singapore</SelectItem>
+                    <SelectItem value="United Arab Emirates">🇦🇪 United Arab Emirates</SelectItem>
+                    <SelectItem value="South Africa">🇿🇦 South Africa</SelectItem>
+                    <SelectItem value="Brazil">🇧🇷 Brazil</SelectItem>
+                    <SelectItem value="Mexico">🇲🇽 Mexico</SelectItem>
+                    <SelectItem value="Japan">🇯🇵 Japan</SelectItem>
+                    <SelectItem value="Spain">🇪🇸 Spain</SelectItem>
+                    <SelectItem value="Italy">🇮🇹 Italy</SelectItem>
+                    <SelectItem value="Poland">🇵🇱 Poland</SelectItem>
+                    <SelectItem value="Sweden">🇸🇪 Sweden</SelectItem>
+                    <SelectItem value="Norway">🇳🇴 Norway</SelectItem>
+                    <SelectItem value="Denmark">🇩🇰 Denmark</SelectItem>
+                    <SelectItem value="Switzerland">🇨🇭 Switzerland</SelectItem>
+                    <SelectItem value="Belgium">🇧🇪 Belgium</SelectItem>
+                    <SelectItem value="Austria">🇦🇹 Austria</SelectItem>
+                    <SelectItem value="Ireland">🇮🇪 Ireland</SelectItem>
+                    <SelectItem value="New Zealand">🇳🇿 New Zealand</SelectItem>
+                    <SelectItem value="Other">🌍 Other</SelectItem>
+                  </SelectContent>
+                </Select>
                 
                 <div className="space-y-4">
                   <Label className="flex items-center gap-2 text-base">
