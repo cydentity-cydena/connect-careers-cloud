@@ -21,7 +21,9 @@ export default function Founding20() {
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
+    countryCode: "+1",
     phone: "",
+    location: "",
     yearsExperience: "",
     currentTitle: "",
     topCertifications: "",
@@ -134,7 +136,9 @@ export default function Founding20() {
       setFormData({
         fullName: "",
         email: "",
+        countryCode: "+1",
         phone: "",
+        location: "",
         yearsExperience: "",
         currentTitle: "",
         topCertifications: "",
@@ -259,14 +263,70 @@ export default function Founding20() {
                     </div>
 
                     <div className="space-y-2">
+                      <Label htmlFor="location">Country/Location *</Label>
+                      <Select
+                        required
+                        value={formData.location}
+                        onValueChange={(value) => setFormData({...formData, location: value})}
+                      >
+                        <SelectTrigger className="bg-background">
+                          <SelectValue placeholder="Select your country" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-background z-50 max-h-[300px]">
+                          <SelectItem value="United States">🇺🇸 United States</SelectItem>
+                          <SelectItem value="United Kingdom">🇬🇧 United Kingdom</SelectItem>
+                          <SelectItem value="Canada">🇨🇦 Canada</SelectItem>
+                          <SelectItem value="Australia">🇦🇺 Australia</SelectItem>
+                          <SelectItem value="Germany">🇩🇪 Germany</SelectItem>
+                          <SelectItem value="France">🇫🇷 France</SelectItem>
+                          <SelectItem value="Netherlands">🇳🇱 Netherlands</SelectItem>
+                          <SelectItem value="India">🇮🇳 India</SelectItem>
+                          <SelectItem value="Singapore">🇸🇬 Singapore</SelectItem>
+                          <SelectItem value="United Arab Emirates">🇦🇪 United Arab Emirates</SelectItem>
+                          <SelectItem value="South Africa">🇿🇦 South Africa</SelectItem>
+                          <SelectItem value="Brazil">🇧🇷 Brazil</SelectItem>
+                          <SelectItem value="Mexico">🇲🇽 Mexico</SelectItem>
+                          <SelectItem value="Japan">🇯🇵 Japan</SelectItem>
+                          <SelectItem value="Other">🌍 Other</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="space-y-2">
                       <Label htmlFor="phone">Phone Number</Label>
-                      <Input
-                        id="phone"
-                        type="tel"
-                        value={formData.phone}
-                        onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                        placeholder="+1 XXX XXX XXXX"
-                      />
+                      <div className="flex gap-2">
+                        <Select
+                          value={formData.countryCode}
+                          onValueChange={(value) => setFormData({...formData, countryCode: value})}
+                        >
+                          <SelectTrigger className="bg-background w-[140px]">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent className="bg-background z-50 max-h-[300px]">
+                            <SelectItem value="+1">🇺🇸 +1</SelectItem>
+                            <SelectItem value="+44">🇬🇧 +44</SelectItem>
+                            <SelectItem value="+61">🇦🇺 +61</SelectItem>
+                            <SelectItem value="+49">🇩🇪 +49</SelectItem>
+                            <SelectItem value="+33">🇫🇷 +33</SelectItem>
+                            <SelectItem value="+31">🇳🇱 +31</SelectItem>
+                            <SelectItem value="+91">🇮🇳 +91</SelectItem>
+                            <SelectItem value="+65">🇸🇬 +65</SelectItem>
+                            <SelectItem value="+971">🇦🇪 +971</SelectItem>
+                            <SelectItem value="+27">🇿🇦 +27</SelectItem>
+                            <SelectItem value="+55">🇧🇷 +55</SelectItem>
+                            <SelectItem value="+52">🇲🇽 +52</SelectItem>
+                            <SelectItem value="+81">🇯🇵 +81</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <Input
+                          id="phone"
+                          type="tel"
+                          className="flex-1"
+                          value={formData.phone}
+                          onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                          placeholder="XXX XXX XXXX"
+                        />
+                      </div>
                     </div>
                   </div>
 
