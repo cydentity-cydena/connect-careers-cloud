@@ -672,7 +672,9 @@ const Profile = () => {
                       <Upload className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
                       <p className="text-xs text-muted-foreground leading-relaxed">
                         Upload JPG, PNG, or WEBP (max 5MB). Square images work best for profile pictures. 
-                        <span className="block mt-1 text-primary font-medium">🎉 Earn +50 points for your first upload!</span>
+                        {!avatarUrl && (
+                          <span className="block mt-1 text-primary font-medium">🎉 Earn +50 points for your first upload!</span>
+                        )}
                       </p>
                     </div>
                   </div>
