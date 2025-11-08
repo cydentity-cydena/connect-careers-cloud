@@ -65,17 +65,24 @@ const Skills = () => {
       return;
     }
 
-    // Award points for each skill added
+    // Award points for each skill added (capped at 20 skills to prevent abuse)
+    const SKILL_POINTS_CAP = 20;
     const pointsPerSkill = 50;
-    const totalPoints = newSkillIds.length * pointsPerSkill;
+    const currentSkillCount = existing.size;
+    
+    // Calculate how many of the new skills should earn points
+    const skillsEligibleForPoints = Math.max(0, SKILL_POINTS_CAP - currentSkillCount);
+    const skillsToReward = Math.min(newSkillIds.length, skillsEligibleForPoints);
+    const totalPoints = skillsToReward * pointsPerSkill;
     
     try {
-      for (const skillId of newSkillIds) {
+      // Only award points for skills up to the cap
+      for (let i = 0; i < skillsToReward; i++) {
         await supabase.functions.invoke('award-points-helper', {
           body: {
             candidateId: userId,
             code: 'SKILL_ADDED',
-            meta: { skillId }
+            meta: { skillId: newSkillIds[i] }
           }
         });
       }
@@ -88,7 +95,14 @@ const Skills = () => {
         p_current_count: totalSkills
       });
       
-      toast.success(`✅ ${newSkillIds.length} skill(s) added — +${totalPoints} points!`);
+      if (skillsToReward > 0) {
+        const message = skillsToReward < newSkillIds.length 
+          ? `✅ ${newSkillIds.length} skill(s) added — +${totalPoints} points (${newSkillIds.length - skillsToReward} skill(s) added without points - 20 skill cap reached)`
+          : `✅ ${newSkillIds.length} skill(s) added — +${totalPoints} points!`;
+        toast.success(message);
+      } else {
+        toast.success(`✅ ${newSkillIds.length} skill(s) added (no points awarded - 20 skill cap reached)`);
+      }
     } catch (e) {
       toast.success('Skills added');
     }
