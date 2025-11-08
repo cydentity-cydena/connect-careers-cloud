@@ -15,6 +15,7 @@ interface BadgeType {
   icon_url: string | null;
   category: string;
   rarity: string;
+  unlock_criteria: any;
 }
 
 interface UserBadge {
@@ -231,15 +232,36 @@ function BadgeCard({
   getRarityColor: (rarity: string) => string;
   getRarityBorder: (rarity: string) => string;
 }) {
+  const getUnlockHint = () => {
+    if (!badge.unlock_criteria) return badge.description;
+    
+    const criteria = badge.unlock_criteria as any;
+    
+    if (criteria.certification) {
+      return `Verify ${criteria.certification} certification`;
+    }
+    if (criteria.level) {
+      return `Reach Level ${criteria.level}`;
+    }
+    if (criteria.certifications?.includes) {
+      return `Verify any certification from: ${criteria.certifications.includes.join(', ')}`;
+    }
+    if (criteria.platform_integration) {
+      return `Connect and sync ${criteria.platform_integration} account`;
+    }
+    
+    return badge.description || 'Complete specific achievements to unlock';
+  };
+
   return (
     <Card 
       className={`relative transition-all ${
         isUnlocked 
           ? `hover:scale-105 cursor-pointer ${getRarityBorder(badge.rarity)} ${isSelected ? 'ring-2 ring-primary' : ''}`
-          : 'opacity-50 grayscale'
+          : 'opacity-60'
       }`}
     >
-      <CardContent className="p-3">
+      <CardContent className="p-4">
         {!isUnlocked && (
           <div className="absolute top-2 right-2">
             <Lock className="h-4 w-4 text-muted-foreground" />
@@ -250,15 +272,31 @@ function BadgeCard({
             <Check className="h-4 w-4 text-primary" />
           </div>
         )}
-        <div className="space-y-2">
-          <div className={`h-12 w-12 rounded-full bg-gradient-to-br ${getRarityColor(badge.rarity)} flex items-center justify-center mx-auto`}>
-            <Award className="h-6 w-6 text-white" />
+        <div className="space-y-3">
+          <div className={`h-16 w-16 rounded-full bg-gradient-to-br ${getRarityColor(badge.rarity)} flex items-center justify-center mx-auto ${!isUnlocked ? 'opacity-40' : ''}`}>
+            <Award className="h-8 w-8 text-white" />
           </div>
-          <div className="text-center space-y-1">
-            <p className="font-semibold text-sm line-clamp-1">{badge.name}</p>
+          <div className="text-center space-y-2">
+            <p className="font-semibold text-sm">{badge.name}</p>
             <Badge variant="secondary" className="text-xs capitalize">
               {badge.rarity}
             </Badge>
+            {badge.description && (
+              <p className="text-xs text-muted-foreground line-clamp-2 mt-2">
+                {badge.description}
+              </p>
+            )}
+            {!isUnlocked && (
+              <div className="mt-3 pt-3 border-t border-border/50">
+                <p className="text-xs font-medium text-primary flex items-center gap-1 justify-center">
+                  <Lock className="h-3 w-3" />
+                  How to unlock
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {getUnlockHint()}
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </CardContent>
