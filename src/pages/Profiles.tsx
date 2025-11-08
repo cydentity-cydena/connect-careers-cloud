@@ -13,6 +13,7 @@ import { SpecializationBadges } from "@/components/profiles/SpecializationBadges
 import { detectSpecializations, SPECIALIZATIONS, type Specialization } from "@/lib/specializations";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { HRReadyBadge } from "@/components/hrready/HRReadyBadge";
+import { ProfileBadgeDisplay } from "@/components/badges/ProfileBadgeDisplay";
 
 interface CandidateProfile {
   id: string;
@@ -364,6 +365,10 @@ const Profiles = () => {
                         <Shield className="h-4 w-4 text-primary fill-primary/20" />
                       </div>
                     )}
+                    {/* Achievement Badge Display */}
+                    <div className="absolute -top-1 -right-1">
+                      <ProfileBadgeDisplay userId={candidate.id} size="sm" />
+                    </div>
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1 flex-wrap">

@@ -26,6 +26,7 @@ import { HRReadyBadge } from "@/components/hrready/HRReadyBadge";
 import { CandidateAvatar } from "@/components/profiles/CandidateAvatar";
 import { SkillsValidation } from "@/components/profiles/SkillsValidation";
 import { AssessmentResults } from "@/components/profiles/AssessmentResults";
+import { ProfileBadgeDisplay } from "@/components/badges/ProfileBadgeDisplay";
 
 export default function ProfileDetail() {
   const { id } = useParams();
@@ -434,15 +435,21 @@ export default function ProfileDetail() {
             <Card>
               <CardContent className="pt-6">
                 <div className="flex flex-col items-center text-center mb-6">
-                  <CandidateAvatar
-                    avatarUrl={profile.avatar_url}
-                    username={profile.username}
-                    fullName={isUnlocked ? profile.full_name : undefined}
-                    isHrReady={verification?.hr_ready}
-                    size="xl"
-                    showGradientRing
-                    className="mb-4"
-                  />
+                  <div className="relative mb-4">
+                    <CandidateAvatar
+                      avatarUrl={profile.avatar_url}
+                      username={profile.username}
+                      fullName={isUnlocked ? profile.full_name : undefined}
+                      isHrReady={verification?.hr_ready}
+                      size="xl"
+                      showGradientRing
+                      className=""
+                    />
+                    {/* Achievement Badge Display */}
+                    <div className="absolute -bottom-2 -right-2">
+                      <ProfileBadgeDisplay userId={id!} size="lg" />
+                    </div>
+                  </div>
                   <div className="w-full">
                     {!isUnlocked && (
                       <div className="bg-muted/50 rounded-lg p-3 mb-3 text-xs text-muted-foreground">

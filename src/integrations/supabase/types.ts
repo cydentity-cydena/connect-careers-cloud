@@ -205,6 +205,45 @@ export type Database = {
         }
         Relationships: []
       }
+      badge_types: {
+        Row: {
+          category: string
+          created_at: string
+          description: string | null
+          display_order: number | null
+          icon_url: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          rarity: string
+          unlock_criteria: Json
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          description?: string | null
+          display_order?: number | null
+          icon_url?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          rarity?: string
+          unlock_criteria: Json
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          display_order?: number | null
+          icon_url?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          rarity?: string
+          unlock_criteria?: Json
+        }
+        Relationships: []
+      }
       candidate_notes: {
         Row: {
           content: string
@@ -2039,6 +2078,8 @@ export type Database = {
           id: string
           is_verified: boolean | null
           location: string | null
+          selected_avatar_frame: string | null
+          selected_badge_id: string | null
           tryhackme_badges: number | null
           tryhackme_level: number | null
           tryhackme_points: number | null
@@ -2065,6 +2106,8 @@ export type Database = {
           id: string
           is_verified?: boolean | null
           location?: string | null
+          selected_avatar_frame?: string | null
+          selected_badge_id?: string | null
           tryhackme_badges?: number | null
           tryhackme_level?: number | null
           tryhackme_points?: number | null
@@ -2091,6 +2134,8 @@ export type Database = {
           id?: string
           is_verified?: boolean | null
           location?: string | null
+          selected_avatar_frame?: string | null
+          selected_badge_id?: string | null
           tryhackme_badges?: number | null
           tryhackme_level?: number | null
           tryhackme_points?: number | null
@@ -2101,7 +2146,15 @@ export type Database = {
           username_changes?: number | null
           verified_at?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_selected_badge_id_fkey"
+            columns: ["selected_badge_id"]
+            isOneToOne: false
+            referencedRelation: "badge_types"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       projects: {
         Row: {
@@ -2370,6 +2423,38 @@ export type Database = {
             columns: ["achievement_id"]
             isOneToOne: false
             referencedRelation: "achievements"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_badges: {
+        Row: {
+          badge_id: string
+          id: string
+          source_id: string | null
+          unlocked_at: string
+          user_id: string
+        }
+        Insert: {
+          badge_id: string
+          id?: string
+          source_id?: string | null
+          unlocked_at?: string
+          user_id: string
+        }
+        Update: {
+          badge_id?: string
+          id?: string
+          source_id?: string | null
+          unlocked_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_badges_badge_id_fkey"
+            columns: ["badge_id"]
+            isOneToOne: false
+            referencedRelation: "badge_types"
             referencedColumns: ["id"]
           },
         ]
@@ -2659,6 +2744,10 @@ export type Database = {
       check_and_award_achievements: {
         Args: { p_category: string; p_current_count: number; p_user_id: string }
         Returns: undefined
+      }
+      check_badge_unlock: {
+        Args: { p_badge_id: string; p_user_id: string }
+        Returns: boolean
       }
       get_public_candidate_profile: {
         Args: { profile_user_id: string }

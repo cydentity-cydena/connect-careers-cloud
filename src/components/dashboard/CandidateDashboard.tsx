@@ -16,6 +16,7 @@ import { UsernameChangeDialog } from "./UsernameChangeDialog";
 import { ApplicationTracker } from "./ApplicationTracker";
 import { HRReadyCTA } from "./HRReadyCTA";
 import { PlatformProfilesManager } from "./PlatformProfilesManager";
+import { BadgeSelector } from "@/components/badges/BadgeSelector";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 
@@ -168,7 +169,10 @@ const CandidateDashboard = () => {
       <div>
         <div className="flex items-center justify-between mb-2">
           <h1 className="text-4xl font-bold">Welcome back, {userName}! 👋</h1>
-          <XPSystemInfo />
+          <div className="flex items-center gap-2">
+            <BadgeSelector />
+            <XPSystemInfo />
+          </div>
         </div>
         <p className="text-muted-foreground">
           Manage your profile and track your applications
