@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useUnreadMessages } from "@/hooks/useUnreadMessages";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface NavLink {
   to: string;
@@ -126,66 +127,82 @@ const Navigation = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center gap-4 xl:gap-6">
-            {!isLoading && navLinks.map((link) => (
-              <Link
-                key={link.to}
-                to={link.to}
-                className={`text-sm font-medium transition-colors whitespace-nowrap ${
-                  location.pathname === link.to 
-                    ? "text-accent hover:text-accent/80 font-semibold" 
-                    : "hover:text-primary"
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
+          <TooltipProvider>
+            <div className="hidden lg:flex items-center gap-4 xl:gap-6">
+              {!isLoading && navLinks.map((link) => (
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  className={`text-sm font-medium transition-colors whitespace-nowrap ${
+                    location.pathname === link.to 
+                      ? "text-accent hover:text-accent/80 font-semibold" 
+                      : "hover:text-primary"
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              ))}
 
-            {user ? (
-              <>
-                {(userRoles.includes('staff') || userRoles.includes('admin')) && (
-                  <Link to="/staff/funnel">
+              {user ? (
+                <>
+                  {(userRoles.includes('staff') || userRoles.includes('admin')) && (
+                    <Link to="/staff/funnel">
+                      <Button variant="hero" size="sm" className="font-semibold">
+                        Staff Funnel
+                      </Button>
+                    </Link>
+                  )}
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Link to="/messages" className="relative">
+                        <Button variant="ghost" size="sm">
+                          <Mail className="h-4 w-4" />
+                          {unreadCount > 0 && (
+                            <Badge 
+                              variant="destructive" 
+                              className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center text-xs"
+                            >
+                              {unreadCount}
+                            </Badge>
+                          )}
+                        </Button>
+                      </Link>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Messages{unreadCount > 0 ? ` (${unreadCount} unread)` : ''}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                  <Link to="/dashboard">
                     <Button variant="hero" size="sm" className="font-semibold">
-                      Staff Funnel
+                      Dashboard
                     </Button>
                   </Link>
-                )}
-                <Link to="/messages" className="relative">
-                  <Button variant="ghost" size="sm">
-                    <Mail className="h-4 w-4" />
-                    {unreadCount > 0 && (
-                      <Badge 
-                        variant="destructive" 
-                        className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center text-xs"
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        onClick={handleSignOut}
+                        className="flex flex-col items-center gap-0.5 h-auto py-1.5 px-3"
                       >
-                        {unreadCount}
-                      </Badge>
-                    )}
+                        <LogOut className="h-4 w-4" />
+                        <span className="text-xs">Sign Out</span>
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Sign out of your account</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </>
+              ) : (
+                <Link to="/auth">
+                  <Button variant="hero" size="sm">
+                    Sign In
                   </Button>
                 </Link>
-                <Link to="/dashboard">
-                  <Button variant="hero" size="sm" className="font-semibold">
-                    Dashboard
-                  </Button>
-                </Link>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  onClick={handleSignOut}
-                  className="flex flex-col items-center gap-0.5 h-auto py-1.5 px-3"
-                >
-                  <LogOut className="h-4 w-4" />
-                  <span className="text-xs">Sign Out</span>
-                </Button>
-              </>
-            ) : (
-              <Link to="/auth">
-                <Button variant="hero" size="sm">
-                  Sign In
-                </Button>
-              </Link>
-            )}
-          </div>
+              )}
+            </div>
+          </TooltipProvider>
 
           {/* Mobile Menu */}
           <div className="lg:hidden flex items-center gap-2 flex-shrink-0">
