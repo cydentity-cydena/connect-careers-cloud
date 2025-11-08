@@ -29,8 +29,7 @@ export function BadgeSelector() {
 
   // Fetch user's unlocked badges
   const { data: userBadges, error: userBadgesError, isLoading: userBadgesLoading } = useQuery({
-    queryKey: ['user-badges', open],
-    enabled: open,
+    queryKey: ['user-badges'],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return [];
@@ -42,7 +41,7 @@ export function BadgeSelector() {
       
       if (error) {
         console.error('Error fetching user badges:', error);
-        throw error;
+        return [];
       }
       
       return data || [];
@@ -55,8 +54,7 @@ export function BadgeSelector() {
 
   // Fetch all available badges
   const { data: allBadges, error: allBadgesError, isLoading: allBadgesLoading } = useQuery({
-    queryKey: ['badge-types', open],
-    enabled: open,
+    queryKey: ['badge-types'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('badge_types')
@@ -66,7 +64,7 @@ export function BadgeSelector() {
       
       if (error) {
         console.error('Error fetching badge types:', error);
-        throw error;
+        return [];
       }
       
       return data || [];
@@ -92,7 +90,7 @@ export function BadgeSelector() {
       
       if (error) {
         console.error('Error fetching profile:', error);
-        throw error;
+        return null;
       }
       
       return data;
@@ -294,22 +292,24 @@ function BadgeCard({
 }) {
   const getUnlockHint = () => {
     if (!badge.unlock_criteria) return badge.description;
-    
     const criteria = badge.unlock_criteria as any;
-    
-    if (criteria.certification) {
-      return `Verify ${criteria.certification} certification`;
+
+    // Certification-based badges
+    if (criteria.type === 'certification' && Array.isArray(criteria.certifications)) {
+      return `Verify any of: ${criteria.certifications.join(', ')}`;
     }
-    if (criteria.level) {
-      return `Reach Level ${criteria.level}`;
+
+    // Level-based badges
+    const levelMin = criteria.level_min ?? criteria.level;
+    if (criteria.type === 'level' && levelMin) {
+      return `Reach Level ${levelMin}`;
     }
-    if (criteria.certifications?.includes) {
-      return `Verify any certification from: ${criteria.certifications.includes.join(', ')}`;
+
+    // Platform integrations (e.g., TryHackMe, HackTheBox)
+    if (criteria.type === 'platform' && criteria.platform) {
+      return `Connect and sync ${criteria.platform} account`;
     }
-    if (criteria.platform_integration) {
-      return `Connect and sync ${criteria.platform_integration} account`;
-    }
-    
+
     return badge.description || 'Complete specific achievements to unlock';
   };
 
