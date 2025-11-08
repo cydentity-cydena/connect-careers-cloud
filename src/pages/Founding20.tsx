@@ -29,6 +29,7 @@ export default function Founding20() {
     topCertifications: "",
     keySkills: "",
     availability: "",
+    salaryCurrency: "USD",
     salaryExpectations: "",
     linkedinUrl: "",
     githubUrl: "",
@@ -144,6 +145,7 @@ export default function Founding20() {
         topCertifications: "",
         keySkills: "",
         availability: "",
+        salaryCurrency: "USD",
         salaryExpectations: "",
         linkedinUrl: "",
         githubUrl: "",
@@ -432,26 +434,130 @@ export default function Founding20() {
                       </div>
                       
                       <div className="space-y-2">
-                        <Label htmlFor="salaryExpectations">Salary Expectations (USD) *</Label>
+                        <Label htmlFor="salaryCurrency">Salary Currency *</Label>
                         <Select
                           required
-                          value={formData.salaryExpectations}
-                          onValueChange={(value) => setFormData({...formData, salaryExpectations: value})}
+                          value={formData.salaryCurrency}
+                          onValueChange={(value) => setFormData({...formData, salaryCurrency: value, salaryExpectations: ""})}
                         >
                           <SelectTrigger className="bg-background">
-                            <SelectValue placeholder="Select salary range" />
+                            <SelectValue placeholder="Select currency" />
                           </SelectTrigger>
                           <SelectContent className="bg-background z-50">
-                            <SelectItem value="$40,000 - $60,000">$40,000 - $60,000</SelectItem>
-                            <SelectItem value="$60,000 - $80,000">$60,000 - $80,000</SelectItem>
-                            <SelectItem value="$80,000 - $100,000">$80,000 - $100,000</SelectItem>
-                            <SelectItem value="$100,000 - $120,000">$100,000 - $120,000</SelectItem>
-                            <SelectItem value="$120,000 - $150,000">$120,000 - $150,000</SelectItem>
-                            <SelectItem value="$150,000 - $200,000">$150,000 - $200,000</SelectItem>
-                            <SelectItem value="$200,000+">$200,000+</SelectItem>
+                            <SelectItem value="USD">🇺🇸 USD (US Dollar)</SelectItem>
+                            <SelectItem value="GBP">🇬🇧 GBP (British Pound)</SelectItem>
+                            <SelectItem value="EUR">🇪🇺 EUR (Euro)</SelectItem>
+                            <SelectItem value="CAD">🇨🇦 CAD (Canadian Dollar)</SelectItem>
+                            <SelectItem value="AUD">🇦🇺 AUD (Australian Dollar)</SelectItem>
+                            <SelectItem value="INR">🇮🇳 INR (Indian Rupee)</SelectItem>
+                            <SelectItem value="SGD">🇸🇬 SGD (Singapore Dollar)</SelectItem>
+                            <SelectItem value="AED">🇦🇪 AED (UAE Dirham)</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="salaryExpectations">Salary Expectations ({formData.salaryCurrency}) *</Label>
+                      <Select
+                        required
+                        value={formData.salaryExpectations}
+                        onValueChange={(value) => setFormData({...formData, salaryExpectations: value})}
+                      >
+                        <SelectTrigger className="bg-background">
+                          <SelectValue placeholder="Select salary range" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-background z-50">
+                          {formData.salaryCurrency === 'USD' && (
+                            <>
+                              <SelectItem value="$40,000 - $60,000">$40,000 - $60,000</SelectItem>
+                              <SelectItem value="$60,000 - $80,000">$60,000 - $80,000</SelectItem>
+                              <SelectItem value="$80,000 - $100,000">$80,000 - $100,000</SelectItem>
+                              <SelectItem value="$100,000 - $120,000">$100,000 - $120,000</SelectItem>
+                              <SelectItem value="$120,000 - $150,000">$120,000 - $150,000</SelectItem>
+                              <SelectItem value="$150,000 - $200,000">$150,000 - $200,000</SelectItem>
+                              <SelectItem value="$200,000+">$200,000+</SelectItem>
+                            </>
+                          )}
+                          {formData.salaryCurrency === 'GBP' && (
+                            <>
+                              <SelectItem value="£30,000 - £40,000">£30,000 - £40,000</SelectItem>
+                              <SelectItem value="£40,000 - £50,000">£40,000 - £50,000</SelectItem>
+                              <SelectItem value="£50,000 - £60,000">£50,000 - £60,000</SelectItem>
+                              <SelectItem value="£60,000 - £80,000">£60,000 - £80,000</SelectItem>
+                              <SelectItem value="£80,000 - £100,000">£80,000 - £100,000</SelectItem>
+                              <SelectItem value="£100,000 - £150,000">£100,000 - £150,000</SelectItem>
+                              <SelectItem value="£150,000+">£150,000+</SelectItem>
+                            </>
+                          )}
+                          {formData.salaryCurrency === 'EUR' && (
+                            <>
+                              <SelectItem value="€30,000 - €45,000">€30,000 - €45,000</SelectItem>
+                              <SelectItem value="€45,000 - €60,000">€45,000 - €60,000</SelectItem>
+                              <SelectItem value="€60,000 - €75,000">€60,000 - €75,000</SelectItem>
+                              <SelectItem value="€75,000 - €90,000">€75,000 - €90,000</SelectItem>
+                              <SelectItem value="€90,000 - €120,000">€90,000 - €120,000</SelectItem>
+                              <SelectItem value="€120,000 - €150,000">€120,000 - €150,000</SelectItem>
+                              <SelectItem value="€150,000+">€150,000+</SelectItem>
+                            </>
+                          )}
+                          {formData.salaryCurrency === 'CAD' && (
+                            <>
+                              <SelectItem value="C$50,000 - C$70,000">C$50,000 - C$70,000</SelectItem>
+                              <SelectItem value="C$70,000 - C$90,000">C$70,000 - C$90,000</SelectItem>
+                              <SelectItem value="C$90,000 - C$110,000">C$90,000 - C$110,000</SelectItem>
+                              <SelectItem value="C$110,000 - C$130,000">C$110,000 - C$130,000</SelectItem>
+                              <SelectItem value="C$130,000 - C$160,000">C$130,000 - C$160,000</SelectItem>
+                              <SelectItem value="C$160,000 - C$200,000">C$160,000 - C$200,000</SelectItem>
+                              <SelectItem value="C$200,000+">C$200,000+</SelectItem>
+                            </>
+                          )}
+                          {formData.salaryCurrency === 'AUD' && (
+                            <>
+                              <SelectItem value="A$60,000 - A$80,000">A$60,000 - A$80,000</SelectItem>
+                              <SelectItem value="A$80,000 - A$100,000">A$80,000 - A$100,000</SelectItem>
+                              <SelectItem value="A$100,000 - A$120,000">A$100,000 - A$120,000</SelectItem>
+                              <SelectItem value="A$120,000 - A$150,000">A$120,000 - A$150,000</SelectItem>
+                              <SelectItem value="A$150,000 - A$180,000">A$150,000 - A$180,000</SelectItem>
+                              <SelectItem value="A$180,000 - A$220,000">A$180,000 - A$220,000</SelectItem>
+                              <SelectItem value="A$220,000+">A$220,000+</SelectItem>
+                            </>
+                          )}
+                          {formData.salaryCurrency === 'INR' && (
+                            <>
+                              <SelectItem value="₹5,00,000 - ₹8,00,000">₹5,00,000 - ₹8,00,000</SelectItem>
+                              <SelectItem value="₹8,00,000 - ₹12,00,000">₹8,00,000 - ₹12,00,000</SelectItem>
+                              <SelectItem value="₹12,00,000 - ₹18,00,000">₹12,00,000 - ₹18,00,000</SelectItem>
+                              <SelectItem value="₹18,00,000 - ₹25,00,000">₹18,00,000 - ₹25,00,000</SelectItem>
+                              <SelectItem value="₹25,00,000 - ₹35,00,000">₹25,00,000 - ₹35,00,000</SelectItem>
+                              <SelectItem value="₹35,00,000 - ₹50,00,000">₹35,00,000 - ₹50,00,000</SelectItem>
+                              <SelectItem value="₹50,00,000+">₹50,00,000+</SelectItem>
+                            </>
+                          )}
+                          {formData.salaryCurrency === 'SGD' && (
+                            <>
+                              <SelectItem value="S$50,000 - S$70,000">S$50,000 - S$70,000</SelectItem>
+                              <SelectItem value="S$70,000 - S$90,000">S$70,000 - S$90,000</SelectItem>
+                              <SelectItem value="S$90,000 - S$110,000">S$90,000 - S$110,000</SelectItem>
+                              <SelectItem value="S$110,000 - S$140,000">S$110,000 - S$140,000</SelectItem>
+                              <SelectItem value="S$140,000 - S$180,000">S$140,000 - S$180,000</SelectItem>
+                              <SelectItem value="S$180,000 - S$220,000">S$180,000 - S$220,000</SelectItem>
+                              <SelectItem value="S$220,000+">S$220,000+</SelectItem>
+                            </>
+                          )}
+                          {formData.salaryCurrency === 'AED' && (
+                            <>
+                              <SelectItem value="AED 150,000 - AED 220,000">AED 150,000 - AED 220,000</SelectItem>
+                              <SelectItem value="AED 220,000 - AED 290,000">AED 220,000 - AED 290,000</SelectItem>
+                              <SelectItem value="AED 290,000 - AED 370,000">AED 290,000 - AED 370,000</SelectItem>
+                              <SelectItem value="AED 370,000 - AED 440,000">AED 370,000 - AED 440,000</SelectItem>
+                              <SelectItem value="AED 440,000 - AED 550,000">AED 440,000 - AED 550,000</SelectItem>
+                              <SelectItem value="AED 550,000 - AED 730,000">AED 550,000 - AED 730,000</SelectItem>
+                              <SelectItem value="AED 730,000+">AED 730,000+</SelectItem>
+                            </>
+                          )}
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
 
