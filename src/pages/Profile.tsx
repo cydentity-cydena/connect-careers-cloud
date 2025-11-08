@@ -30,6 +30,7 @@ const Profile = () => {
 
   const [title, setTitle] = useState('');
   const [yearsExperience, setYearsExperience] = useState<string>('');
+  const [countryCode, setCountryCode] = useState('+44');
   const [phone, setPhone] = useState('');
   const [linkedinUrl, setLinkedinUrl] = useState('');
   const [githubUrl, setGithubUrl] = useState('');
@@ -83,7 +84,20 @@ const Profile = () => {
       if (candidate) {
         setTitle(candidate.title ?? '');
         setYearsExperience(candidate.years_experience ? candidate.years_experience.toString() : '');
-        setPhone(candidate.phone ?? '');
+        
+        // Parse phone number to extract country code
+        const phoneValue = candidate.phone ?? '';
+        if (phoneValue) {
+          // Try to extract country code from the phone number
+          const match = phoneValue.match(/^(\+\d{1,4})\s*/);
+          if (match) {
+            setCountryCode(match[1]);
+            setPhone(phoneValue.substring(match[0].length).trim());
+          } else {
+            setPhone(phoneValue);
+          }
+        }
+        
         setLinkedinUrl(candidate.linkedin_url ?? '');
         setGithubUrl(candidate.github_url ?? '');
         setPortfolioUrl(candidate.portfolio_url ?? '');
@@ -165,7 +179,7 @@ const Profile = () => {
         .update({ 
           title, 
           years_experience: parseInt(yearsExperience) || 0,
-          phone,
+          phone: phone ? `${countryCode} ${phone}` : '',
           linkedin_url: linkedinUrl, 
           github_url: githubUrl, 
           portfolio_url: portfolioUrl, 
@@ -508,13 +522,39 @@ const Profile = () => {
                 />
 
                 <Label htmlFor="phone">Phone number (private until unlocked)</Label>
-                <Input 
-                  id="phone" 
-                  type="tel"
-                  value={phone} 
-                  onChange={(e) => setPhone(e.target.value)}
-                  placeholder="+44 7700 900123"
-                />
+                <div className="flex gap-2">
+                  <Select
+                    value={countryCode}
+                    onValueChange={(value) => setCountryCode(value)}
+                  >
+                    <SelectTrigger className="bg-background w-[140px]">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-background z-50 max-h-[300px]">
+                      <SelectItem value="+1">🇺🇸 +1</SelectItem>
+                      <SelectItem value="+44">🇬🇧 +44</SelectItem>
+                      <SelectItem value="+61">🇦🇺 +61</SelectItem>
+                      <SelectItem value="+49">🇩🇪 +49</SelectItem>
+                      <SelectItem value="+33">🇫🇷 +33</SelectItem>
+                      <SelectItem value="+31">🇳🇱 +31</SelectItem>
+                      <SelectItem value="+91">🇮🇳 +91</SelectItem>
+                      <SelectItem value="+65">🇸🇬 +65</SelectItem>
+                      <SelectItem value="+971">🇦🇪 +971</SelectItem>
+                      <SelectItem value="+27">🇿🇦 +27</SelectItem>
+                      <SelectItem value="+55">🇧🇷 +55</SelectItem>
+                      <SelectItem value="+52">🇲🇽 +52</SelectItem>
+                      <SelectItem value="+81">🇯🇵 +81</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Input 
+                    id="phone" 
+                    type="tel"
+                    className="flex-1"
+                    value={phone} 
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder="7700 900123"
+                  />
+                </div>
                 
                 <Label htmlFor="username">
                   Username (public, 3-20 chars) <span className="text-destructive">*</span>
