@@ -191,7 +191,7 @@ export default function Founding20() {
                 Become part of an elite group of verified cybersecurity professionals with exclusive access to top-tier opportunities
               </p>
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/20 rounded-lg">
-                <span className="text-sm font-medium text-primary">🇬🇧 UK Candidates Only</span>
+                <span className="text-sm font-medium text-primary">🌍 Now Open Globally</span>
               </div>
             </div>
 
@@ -221,7 +221,7 @@ export default function Founding20() {
               <CardHeader className="text-center">
                 <CardTitle className="text-3xl mb-2">Apply Now</CardTitle>
                 <CardDescription className="text-base">
-                  Complete the form below to be considered for the Founding 20 program (UK candidates only)
+                  Complete the form below to be considered for the Founding 20 program - open to cybersecurity professionals worldwide
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -259,13 +259,13 @@ export default function Founding20() {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="phone">Phone Number (UK)</Label>
+                      <Label htmlFor="phone">Phone Number</Label>
                       <Input
                         id="phone"
                         type="tel"
                         value={formData.phone}
                         onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                        placeholder="+44 7XXX XXXXXX"
+                        placeholder="+1 XXX XXX XXXX"
                       />
                     </div>
                   </div>
@@ -372,7 +372,7 @@ export default function Founding20() {
                       </div>
                       
                       <div className="space-y-2">
-                        <Label htmlFor="salaryExpectations">Salary Expectations (GBP) *</Label>
+                        <Label htmlFor="salaryExpectations">Salary Expectations (USD) *</Label>
                         <Select
                           required
                           value={formData.salaryExpectations}
@@ -382,13 +382,13 @@ export default function Founding20() {
                             <SelectValue placeholder="Select salary range" />
                           </SelectTrigger>
                           <SelectContent className="bg-background z-50">
-                            <SelectItem value="£30,000 - £40,000">£30,000 - £40,000</SelectItem>
-                            <SelectItem value="£40,000 - £50,000">£40,000 - £50,000</SelectItem>
-                            <SelectItem value="£50,000 - £60,000">£50,000 - £60,000</SelectItem>
-                            <SelectItem value="£60,000 - £70,000">£60,000 - £70,000</SelectItem>
-                            <SelectItem value="£70,000 - £80,000">£70,000 - £80,000</SelectItem>
-                            <SelectItem value="£80,000 - £100,000">£80,000 - £100,000</SelectItem>
-                            <SelectItem value="£100,000+">£100,000+</SelectItem>
+                            <SelectItem value="$40,000 - $60,000">$40,000 - $60,000</SelectItem>
+                            <SelectItem value="$60,000 - $80,000">$60,000 - $80,000</SelectItem>
+                            <SelectItem value="$80,000 - $100,000">$80,000 - $100,000</SelectItem>
+                            <SelectItem value="$100,000 - $120,000">$100,000 - $120,000</SelectItem>
+                            <SelectItem value="$120,000 - $150,000">$120,000 - $150,000</SelectItem>
+                            <SelectItem value="$150,000 - $200,000">$150,000 - $200,000</SelectItem>
+                            <SelectItem value="$200,000+">$200,000+</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
