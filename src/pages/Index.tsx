@@ -39,7 +39,7 @@ const Index = () => {
               Hire with Confidence, Not Risk
             </p>
             <p className="text-base md:text-lg text-muted-foreground mb-6 md:mb-8 max-w-2xl mx-auto px-2">
-              Join the platform with pre-verified cybersecurity professionals. Interview-ready candidates who can start in days, not weeks.
+              Join the platform with pre-verified cybersecurity professionals. Validated credentials and verified identities - hire with confidence, not risk.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center px-4">
               <Link to="/profiles" className="w-full sm:w-auto">
