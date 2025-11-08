@@ -6,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { Brain, ArrowRight, CheckCircle2, Loader2, X, Save, ArrowLeft } from "lucide-react";
+import { Brain, ArrowRight, CheckCircle2, Loader2, X, Save, ArrowLeft, Award } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import SEO from "@/components/SEO";
@@ -213,13 +213,13 @@ export default function SkillsAssessment() {
       // Show integrity warning if detected
       if (data.feedback?.integrityScore < 60) {
         toast({
-          title: "Assessment Complete",
+          title: "Assessment Complete - 50 XP Earned!",
           description: `Score: ${data.score}%. Note: Some answers flagged for review by employers.`,
           variant: "destructive"
         });
       } else {
         toast({
-          title: "Assessment Complete!",
+          title: "Assessment Complete - 50 XP Earned!",
           description: `You scored ${data.score}%. Results saved to your profile.`,
         });
       }
@@ -262,6 +262,17 @@ export default function SkillsAssessment() {
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-4">
               Validate your expertise with professional technical assessments. Get instant feedback and add results to your profile.
             </p>
+            
+            <div className="max-w-2xl mx-auto bg-gradient-to-r from-primary/10 to-primary/5 border border-primary/30 rounded-lg p-4 mb-4">
+              <div className="flex items-center justify-center gap-2 text-primary font-semibold mb-1">
+                <Award className="h-5 w-5" />
+                <span>Earn 50 XP for Each Completed Assessment!</span>
+              </div>
+              <p className="text-sm text-center text-muted-foreground">
+                Complete assessments to level up and unlock exclusive badges
+              </p>
+            </div>
+
             <div className="max-w-2xl mx-auto bg-muted/50 border border-primary/20 rounded-lg p-4 text-sm text-left">
               <p className="font-semibold mb-2">⚠️ Academic Integrity Notice</p>
               <ul className="space-y-1 text-muted-foreground">
@@ -296,9 +307,15 @@ export default function SkillsAssessment() {
                       </>
                     )}
                   </Button>
-                  <p className="text-xs text-muted-foreground mt-2 text-center">
-                    5 questions • ~20 minutes
-                  </p>
+                  <div className="mt-3 space-y-1">
+                    <p className="text-xs text-muted-foreground text-center">
+                      5 questions • ~20 minutes
+                    </p>
+                    <div className="flex items-center justify-center gap-1 text-xs text-primary font-medium">
+                      <Award className="h-3 w-3" />
+                      <span>+50 XP</span>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
             ))}
