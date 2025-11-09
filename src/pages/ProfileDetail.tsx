@@ -63,20 +63,34 @@ export default function ProfileDetail() {
       setCurrentUserId(user?.id ?? null);
 
       // Get viewer's role
+      let viewerRoleValue = null;
       if (user) {
         const { data: roleData } = await supabase
           .from('user_roles')
           .select('role')
-          .eq('user_id', user.id)
-          .maybeSingle();
-        setViewerRole(roleData?.role || null);
+          .eq('user_id', user.id);
+        
+        if (roleData && roleData.length > 0) {
+          const roles = roleData.map(r => r.role);
+          // Check if admin first, then staff, then other roles
+          viewerRoleValue = roles.find(role => ['admin', 'staff'].includes(role)) || roles[0];
+        }
+        setViewerRole(viewerRoleValue);
       }
 
       // Determine unlock status and credits if logged in
       let unlocked = false;
       const isOwnProfile = user?.id === id;
+      const isAdmin = viewerRoleValue === 'admin' || viewerRoleValue === 'staff';
       
-      if (user && !isOwnProfile) {
+      if (isOwnProfile) {
+        // Always show full profile to the owner
+        unlocked = true;
+      } else if (isAdmin) {
+        // Admins have full access to all profiles without unlocking
+        unlocked = true;
+      } else if (user) {
+        // For employers/recruiters, check unlock status
         const { data: unlockData } = await supabase
           .from("profile_unlocks")
           .select("id")
@@ -91,9 +105,6 @@ export default function ProfileDetail() {
           .eq("employer_id", user.id)
           .maybeSingle();
         setCredits(creditData?.credits || 0);
-      } else if (isOwnProfile) {
-        // Always show full profile to the owner
-        unlocked = true;
       }
       setIsUnlocked(unlocked);
 
@@ -488,6 +499,7 @@ export default function ProfileDetail() {
                       isUnlocked={isUnlocked}
                       onUnlock={handleUnlockSuccess}
                       remainingCredits={credits}
+                      viewerRole={viewerRole}
                     />
                   )}
                   {isUnlocked && currentUserId && !isCandidateViewingCandidate && (
@@ -645,6 +657,7 @@ export default function ProfileDetail() {
                     isUnlocked={isUnlocked}
                     onUnlock={handleUnlockSuccess}
                     remainingCredits={credits}
+                    viewerRole={viewerRole}
                   />
                 </CardContent>
               </Card>

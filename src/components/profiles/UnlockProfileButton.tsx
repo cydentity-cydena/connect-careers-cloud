@@ -19,6 +19,7 @@ interface UnlockProfileButtonProps {
   isUnlocked: boolean;
   onUnlock: () => void;
   remainingCredits: number;
+  viewerRole?: string | null;
 }
 
 export const UnlockProfileButton = ({
@@ -26,6 +27,7 @@ export const UnlockProfileButton = ({
   isUnlocked,
   onUnlock,
   remainingCredits,
+  viewerRole,
 }: UnlockProfileButtonProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -64,6 +66,11 @@ export const UnlockProfileButton = ({
       setShowConfirm(false);
     }
   };
+
+  // Don't show unlock button for admins - they have automatic access
+  if (viewerRole === 'admin' || viewerRole === 'staff') {
+    return null;
+  }
 
   if (isUnlocked) {
     return (
