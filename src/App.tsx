@@ -65,6 +65,7 @@ const App = () => (
               <Route path="/auth" element={<Auth />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/privacy" element={<Privacy />} />
+              <Route path="/contact" element={<Contact />} />
               
               {/* Protected Routes - Require Authentication */}
               <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
@@ -75,7 +76,6 @@ const App = () => (
               <Route path="/jobs/:id" element={<ProtectedRoute><JobDetail /></ProtectedRoute>} />
               <Route path="/training" element={<ProtectedRoute><Training /></ProtectedRoute>} />
               <Route path="/certifications-catalog" element={<ProtectedRoute><CertificationCatalog /></ProtectedRoute>} />
-              <Route path="/contact" element={<ProtectedRoute><Contact /></ProtectedRoute>} />
               {/* <Route path="/pricing" element={<Pricing />} /> */}
               <Route path="/faq" element={<ProtectedRoute><FAQ /></ProtectedRoute>} />
               <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
