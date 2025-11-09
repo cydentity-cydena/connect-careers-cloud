@@ -505,7 +505,7 @@ export function CandidateVerificationReview() {
                 </div>
                 <iframe
                   src={url}
-                  className="w-full h-[500px]"
+                  className="w-full h-[350px]"
                   title={`Document ${index + 1}`}
                 />
               </div>
