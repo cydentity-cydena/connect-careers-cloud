@@ -10,6 +10,8 @@ import { Label } from "@/components/ui/label";
 import { CheckCircle, XCircle, Download, Clock, FileText, Shield, RefreshCw } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { format } from "date-fns";
 
 export function CandidateVerificationReview() {
@@ -21,24 +23,30 @@ export function CandidateVerificationReview() {
   const [processing, setProcessing] = useState(false);
   const [viewingDocuments, setViewingDocuments] = useState<{ urls: string[]; name: string } | null>(null);
   const [showApprovalDialog, setShowApprovalDialog] = useState(false);
+  const [activeTab, setActiveTab] = useState("pending");
+  const [pageSize, setPageSize] = useState(12);
+  const [currentPage, setCurrentPage] = useState(0);
 
-  const { data: pendingRequests, isLoading, refetch } = useQuery({
-    queryKey: ['pending-candidate-verifications'],
+  const { data: allRequests, isLoading, refetch } = useQuery({
+    queryKey: ['all-candidate-verifications'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('verification_requests')
         .select('*, profiles:candidate_id(full_name, email, username)')
         .in('verification_type', ['identity', 'rtw'])
-        .is('company_name', null)  // Exclude business verifications
-        .eq('status', 'pending')
-        .order('created_at', { ascending: true });
+        .is('company_name', null)
+        .order('created_at', { ascending: false });
 
       if (error) throw error;
       return data || [];
     },
   });
 
-  // Real-time subscription for new verification requests
+  useEffect(() => {
+    setCurrentPage(0);
+  }, [activeTab, pageSize]);
+
+  // Real-time subscription
   useEffect(() => {
     const channel = supabase
       .channel('verification-requests-changes')
@@ -52,7 +60,7 @@ export function CandidateVerificationReview() {
         },
         (payload) => {
           console.log('Verification request changed:', payload);
-          queryClient.invalidateQueries({ queryKey: ['pending-candidate-verifications'] });
+          queryClient.invalidateQueries({ queryKey: ['all-candidate-verifications'] });
           
           if (payload.eventType === 'INSERT') {
             toast({
@@ -103,7 +111,6 @@ export function CandidateVerificationReview() {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       
-      // Update verification request status
       const { error: requestError } = await supabase
         .from('verification_requests')
         .update({
@@ -116,7 +123,6 @@ export function CandidateVerificationReview() {
 
       if (requestError) throw requestError;
 
-      // Prepare update data for candidate_verifications
       const updateData: any = {
         updated_at: new Date().toISOString(),
       };
@@ -124,17 +130,16 @@ export function CandidateVerificationReview() {
       if (request.verification_type === 'identity') {
         updateData.identity_status = 'green';
         updateData.identity_checked_at = new Date().toISOString();
-        updateData.identity_expires_at = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(); // 1 year
+        updateData.identity_expires_at = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString();
         updateData.identity_method = 'document_upload';
         updateData.identity_verifier = user?.email || 'staff';
       } else if (request.verification_type === 'rtw') {
         updateData.rtw_status = 'green';
         updateData.rtw_checked_at = new Date().toISOString();
-        updateData.rtw_expires_at = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(); // 1 year
+        updateData.rtw_expires_at = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString();
         updateData.rtw_verifier = user?.email || 'staff';
       }
 
-      // Upsert verification record (will create if doesn't exist, update if exists)
       const { error: verifyError } = await supabase
         .from('candidate_verifications')
         .upsert({
@@ -147,14 +152,12 @@ export function CandidateVerificationReview() {
 
       if (verifyError) throw verifyError;
 
-      // Fetch updated verification to check if HR-Ready
       const { data: updatedVerification } = await supabase
         .from('candidate_verifications')
         .select('*')
         .eq('candidate_id', request.candidate_id)
         .single();
 
-      // Update HR-Ready status if both identity and RTW are green
       if (updatedVerification?.identity_status === 'green' && updatedVerification?.rtw_status === 'green') {
         const { error: hrReadyError } = await supabase
           .from('candidate_verifications')
@@ -172,7 +175,7 @@ export function CandidateVerificationReview() {
         description: `${request.verification_type.toUpperCase()} verification approved for ${request.profiles?.full_name}`,
       });
 
-      queryClient.invalidateQueries({ queryKey: ['pending-candidate-verifications'] });
+      queryClient.invalidateQueries({ queryKey: ['all-candidate-verifications'] });
       setSelectedRequest(null);
       setShowApprovalDialog(false);
       setApprovalComment("");
@@ -218,7 +221,7 @@ export function CandidateVerificationReview() {
         description: `${request.verification_type.toUpperCase()} verification rejected`,
       });
 
-      queryClient.invalidateQueries({ queryKey: ['pending-candidate-verifications'] });
+      queryClient.invalidateQueries({ queryKey: ['all-candidate-verifications'] });
       setSelectedRequest(null);
       setRejectionReason("");
     } catch (error: any) {
@@ -236,35 +239,232 @@ export function CandidateVerificationReview() {
     return <div>Loading verification requests...</div>;
   }
 
-  const identityRequests = pendingRequests?.filter(r => r.verification_type === 'identity') || [];
-  const rtwRequests = pendingRequests?.filter(r => r.verification_type === 'rtw') || [];
+  const filteredRequests = allRequests?.filter(r => r.status === activeTab) || [];
+  const identityRequests = filteredRequests.filter(r => r.verification_type === 'identity');
+  const rtwRequests = filteredRequests.filter(r => r.verification_type === 'rtw');
+
+  const handlePageChange = (newPage: number, totalPages: number) => {
+    setCurrentPage(Math.max(0, Math.min(newPage, totalPages - 1)));
+  };
+
+  const renderRequestCard = (request: any) => (
+    <Card key={request.id} className="border-2">
+      <CardHeader className="pb-3">
+        <div className="flex items-start justify-between">
+          <div className="space-y-1">
+            <CardTitle className="text-lg">{request.profiles?.full_name}</CardTitle>
+            {request.profiles?.username && (
+              <p className="text-xs text-muted-foreground">@{request.profiles.username}</p>
+            )}
+            <CardDescription>
+              {request.profiles?.email}
+            </CardDescription>
+          </div>
+          <Badge 
+            variant={request.status === 'pending' ? 'secondary' : request.status === 'approved' ? 'default' : 'destructive'}
+            className="flex items-center gap-1"
+          >
+            {request.status === 'pending' && <Clock className="h-3 w-3" />}
+            {request.status === 'pending' ? 'Pending' : request.status === 'approved' ? 'Approved' : 'Rejected'}
+          </Badge>
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        <div className="text-sm">
+          <p className="font-medium text-muted-foreground">Submitted</p>
+          <p>{format(new Date(request.created_at), "MMM dd, yyyy 'at' HH:mm")}</p>
+        </div>
+        {request.reviewed_at && (
+          <div className="text-sm">
+            <p className="font-medium text-muted-foreground">Reviewed</p>
+            <p>{format(new Date(request.reviewed_at), "MMM dd, yyyy 'at' HH:mm")}</p>
+          </div>
+        )}
+        {request.notes && (
+          <div className="text-sm">
+            <p className="font-medium text-muted-foreground">Notes</p>
+            <p className="text-sm mt-1">{request.notes}</p>
+          </div>
+        )}
+        {request.rejection_reason && (
+          <div className="text-sm p-2 bg-destructive/10 rounded">
+            <p className="font-medium text-destructive mb-1">Rejection Reason</p>
+            <p className="text-sm">{request.rejection_reason}</p>
+          </div>
+        )}
+        {request.admin_comment && (
+          <div className="text-sm p-2 bg-secondary/50 rounded">
+            <p className="font-medium mb-1">Admin Comment</p>
+            <p className="text-sm">{request.admin_comment}</p>
+          </div>
+        )}
+        <div className="text-sm">
+          <p className="font-medium text-muted-foreground">Documents</p>
+          <p className="text-sm">{request.document_urls?.length || 0} file(s) attached</p>
+        </div>
+        <div className="flex gap-2 pt-2">
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => handleViewDocuments(request)}
+          >
+            <FileText className="h-4 w-4 mr-2" />
+            View Documents
+          </Button>
+          {request.status === 'pending' && (
+            <>
+              <Button
+                size="sm"
+                variant="default"
+                onClick={() => {
+                  setSelectedRequest(request);
+                  setShowApprovalDialog(true);
+                }}
+                disabled={processing}
+              >
+                <CheckCircle className="h-4 w-4 mr-2" />
+                Approve
+              </Button>
+              <Button
+                size="sm"
+                variant="destructive"
+                onClick={() => setSelectedRequest(request)}
+                disabled={processing}
+              >
+                <XCircle className="h-4 w-4 mr-2" />
+                Reject
+              </Button>
+            </>
+          )}
+        </div>
+      </CardContent>
+    </Card>
+  );
+
+  const renderVerificationTypeTab = (requests: any[], type: 'identity' | 'rtw') => {
+    const totalPages = Math.ceil(requests.length / pageSize);
+    const startIndex = currentPage * pageSize;
+    const endIndex = startIndex + pageSize;
+    const paginatedRequests = requests.slice(startIndex, endIndex);
+
+    return (
+      <>
+        {requests.length === 0 ? (
+          <Card className="p-8 text-center text-muted-foreground">
+            No {activeTab} {type === 'identity' ? 'identity' : 'right-to-work'} requests
+          </Card>
+        ) : (
+          <>
+            <ScrollArea className="h-[calc(100vh-24rem)] pr-4">
+              <div className="space-y-4">
+                {paginatedRequests.map(renderRequestCard)}
+              </div>
+            </ScrollArea>
+
+            {totalPages > 1 && (
+              <div className="flex items-center justify-between pt-4 border-t mt-4">
+                <div className="text-sm text-muted-foreground">
+                  Showing {startIndex + 1}-{Math.min(endIndex, requests.length)} of {requests.length}
+                </div>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handlePageChange(currentPage - 1, totalPages)}
+                    disabled={currentPage === 0}
+                  >
+                    Previous
+                  </Button>
+                  <div className="flex items-center gap-1">
+                    {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                      let pageNum;
+                      if (totalPages <= 5) {
+                        pageNum = i;
+                      } else if (currentPage < 3) {
+                        pageNum = i;
+                      } else if (currentPage > totalPages - 3) {
+                        pageNum = totalPages - 5 + i;
+                      } else {
+                        pageNum = currentPage - 2 + i;
+                      }
+                      return (
+                        <Button
+                          key={pageNum}
+                          variant={currentPage === pageNum ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => handlePageChange(pageNum, totalPages)}
+                          className="w-8 h-8 p-0"
+                        >
+                          {pageNum + 1}
+                        </Button>
+                      );
+                    })}
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handlePageChange(currentPage + 1, totalPages)}
+                    disabled={currentPage >= totalPages - 1}
+                  >
+                    Next
+                  </Button>
+                </div>
+              </div>
+            )}
+          </>
+        )}
+      </>
+    );
+  };
 
   return (
-    <>
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle className="flex items-center gap-2">
-                <Shield className="h-5 w-5" />
-                Candidate Verification Requests
-              </CardTitle>
-              <CardDescription>
-                Review identity and right-to-work document submissions
-              </CardDescription>
-            </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => refetch()}
-              disabled={isLoading}
-            >
-              <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
-              Refresh
-            </Button>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-bold flex items-center gap-2">
+            <Shield className="h-6 w-6" />
+            Identity & RTW Verification Requests
+          </h2>
+          <p className="text-muted-foreground">Review candidate document submissions</p>
+        </div>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => refetch()}
+          disabled={isLoading}
+        >
+          <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
+          Refresh
+        </Button>
+      </div>
+
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <div className="flex items-center justify-between mb-4">
+          <TabsList>
+            <TabsTrigger value="pending">
+              Pending ({allRequests?.filter(r => r.status === 'pending').length || 0})
+            </TabsTrigger>
+            <TabsTrigger value="approved">Approved</TabsTrigger>
+            <TabsTrigger value="rejected">Rejected</TabsTrigger>
+          </TabsList>
+
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-muted-foreground">Show:</span>
+            <Select value={pageSize.toString()} onValueChange={(v) => setPageSize(Number(v))}>
+              <SelectTrigger className="w-24">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="12">12</SelectItem>
+                <SelectItem value="20">20</SelectItem>
+                <SelectItem value="50">50</SelectItem>
+                <SelectItem value="100">100</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
-        </CardHeader>
-        <CardContent>
+        </div>
+
+        <TabsContent value={activeTab} className="space-y-4 mt-6">
           <Tabs defaultValue="identity">
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="identity">
@@ -276,161 +476,15 @@ export function CandidateVerificationReview() {
             </TabsList>
 
             <TabsContent value="identity" className="space-y-4 mt-4">
-              {identityRequests.length === 0 ? (
-                <p className="text-sm text-muted-foreground text-center py-8">
-                  No pending identity verifications
-                </p>
-              ) : (
-                identityRequests.map((request: any) => (
-                  <Card key={request.id} className="border-2">
-                    <CardHeader className="pb-3">
-                      <div className="flex items-start justify-between">
-                        <div className="space-y-1">
-                          <CardTitle className="text-lg">{request.profiles?.full_name}</CardTitle>
-                          {request.profiles?.username && (
-                            <p className="text-xs text-muted-foreground">@{request.profiles.username}</p>
-                          )}
-                          <CardDescription>
-                            {request.profiles?.email}
-                          </CardDescription>
-                        </div>
-                        <Badge variant="outline" className="flex items-center gap-1">
-                          <Clock className="h-3 w-3" />
-                          Pending
-                        </Badge>
-                      </div>
-                    </CardHeader>
-                    <CardContent className="space-y-3">
-                      <div className="text-sm">
-                        <p className="font-medium text-muted-foreground">Submitted</p>
-                        <p>{format(new Date(request.created_at), "MMM dd, yyyy 'at' HH:mm")}</p>
-                      </div>
-                      {request.notes && (
-                        <div className="text-sm">
-                          <p className="font-medium text-muted-foreground">Notes</p>
-                          <p className="text-sm mt-1">{request.notes}</p>
-                        </div>
-                      )}
-                      <div className="text-sm">
-                        <p className="font-medium text-muted-foreground">Documents</p>
-                        <p className="text-sm">{request.document_urls?.length || 0} file(s) attached</p>
-                      </div>
-                      <div className="flex gap-2 pt-2">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => handleViewDocuments(request)}
-                        >
-                          <FileText className="h-4 w-4 mr-2" />
-                          View Documents
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="default"
-                          onClick={() => {
-                            setSelectedRequest(request);
-                            setShowApprovalDialog(true);
-                          }}
-                          disabled={processing}
-                        >
-                          <CheckCircle className="h-4 w-4 mr-2" />
-                          Approve
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="destructive"
-                          onClick={() => setSelectedRequest(request)}
-                          disabled={processing}
-                        >
-                          <XCircle className="h-4 w-4 mr-2" />
-                          Reject
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))
-              )}
+              {renderVerificationTypeTab(identityRequests, 'identity')}
             </TabsContent>
 
             <TabsContent value="rtw" className="space-y-4 mt-4">
-              {rtwRequests.length === 0 ? (
-                <p className="text-sm text-muted-foreground text-center py-8">
-                  No pending right-to-work verifications
-                </p>
-              ) : (
-                rtwRequests.map((request: any) => (
-                  <Card key={request.id} className="border-2">
-                    <CardHeader className="pb-3">
-                      <div className="flex items-start justify-between">
-                        <div className="space-y-1">
-                          <CardTitle className="text-lg">{request.profiles?.full_name}</CardTitle>
-                          {request.profiles?.username && (
-                            <p className="text-xs text-muted-foreground">@{request.profiles.username}</p>
-                          )}
-                          <CardDescription>
-                            {request.profiles?.email}
-                          </CardDescription>
-                        </div>
-                        <Badge variant="outline" className="flex items-center gap-1">
-                          <Clock className="h-3 w-3" />
-                          Pending
-                        </Badge>
-                      </div>
-                    </CardHeader>
-                    <CardContent className="space-y-3">
-                      <div className="text-sm">
-                        <p className="font-medium text-muted-foreground">Submitted</p>
-                        <p>{format(new Date(request.created_at), "MMM dd, yyyy 'at' HH:mm")}</p>
-                      </div>
-                      {request.notes && (
-                        <div className="text-sm">
-                          <p className="font-medium text-muted-foreground">Notes</p>
-                          <p className="text-sm mt-1">{request.notes}</p>
-                        </div>
-                      )}
-                      <div className="text-sm">
-                        <p className="font-medium text-muted-foreground">Documents</p>
-                        <p className="text-sm">{request.document_urls?.length || 0} file(s) attached</p>
-                      </div>
-                      <div className="flex gap-2 pt-2">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => handleViewDocuments(request)}
-                        >
-                          <FileText className="h-4 w-4 mr-2" />
-                          View Documents
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="default"
-                          onClick={() => {
-                            setSelectedRequest(request);
-                            setShowApprovalDialog(true);
-                          }}
-                          disabled={processing}
-                        >
-                          <CheckCircle className="h-4 w-4 mr-2" />
-                          Approve
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="destructive"
-                          onClick={() => setSelectedRequest(request)}
-                          disabled={processing}
-                        >
-                          <XCircle className="h-4 w-4 mr-2" />
-                          Reject
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))
-              )}
+              {renderVerificationTypeTab(rtwRequests, 'rtw')}
             </TabsContent>
           </Tabs>
-        </CardContent>
-      </Card>
+        </TabsContent>
+      </Tabs>
 
       {/* Document Viewer Dialog */}
       <Dialog open={!!viewingDocuments} onOpenChange={() => setViewingDocuments(null)}>
@@ -547,6 +601,6 @@ export function CandidateVerificationReview() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </>
+    </div>
   );
 }
