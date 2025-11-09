@@ -231,9 +231,10 @@ export const PostComments = ({ postId }: { postId: string }) => {
         });
       } else {
         console.error('Error posting comment:', error);
+        const message = (error as any)?.message || 'Failed to post comment';
         toast({
           title: "Error",
-          description: "Failed to post comment",
+          description: message,
           variant: "destructive"
         });
       }
