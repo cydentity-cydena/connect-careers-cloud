@@ -55,7 +55,7 @@ export function HRReadyCTA({ userId }: HRReadyCTAProps) {
                 <h3 className="font-bold text-lg">You are HR-Ready! ✓</h3>
               </div>
               <p className="text-sm text-muted-foreground mb-4">
-                Your profile shows priority HR-Ready badges. Employers see you are interview-ready and can start in days, not weeks.
+                Your profile shows priority HR-Ready badges. Employers can hire you with confidence, knowing you're verified and ready.
               </p>
               <VerificationPanel 
                 verification={verificationStatus} 
