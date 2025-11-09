@@ -53,27 +53,37 @@ export function CertificationVerificationReview() {
     }
   };
   const handleApprove = async (certId: string, candidateId: string) => {
-    const { error: updateCertError } = await supabase
-      .from('certifications')
-      .update({ verification_status: 'verified' })
-      .eq('id', certId);
-
-    if (updateCertError) {
-      toast.error('Failed to verify certification');
-      return;
-    }
-
-    // Trigger recalculation of HR-Ready status via edge function
     try {
-      await supabase.functions.invoke(`hrready-upsert/${candidateId}`, {
-        body: {}
-      });
-    } catch (e) {
-      console.error('Failed to update HR-Ready status:', e);
-    }
+      const { error: updateCertError } = await supabase
+        .from('certifications')
+        .update({ verification_status: 'verified' })
+        .eq('id', certId);
 
-    toast.success('Certification approved!');
-    loadRequests();
+      if (updateCertError) {
+        console.error('Failed to verify certification:', updateCertError);
+        toast.error(`Failed to verify certification: ${updateCertError.message}`);
+        return;
+      }
+
+      // Trigger recalculation of HR-Ready status via edge function
+      try {
+        await supabase.functions.invoke(`hrready-upsert/${candidateId}`, {
+          body: {}
+        });
+      } catch (e) {
+        console.error('Failed to update HR-Ready status:', e);
+      }
+
+      toast.success('Certification approved!');
+      
+      // Small delay to ensure database transaction is committed
+      setTimeout(() => {
+        loadRequests();
+      }, 500);
+    } catch (error) {
+      console.error('Error approving certification:', error);
+      toast.error('Failed to approve certification');
+    }
   };
 
   const handleReject = async (certId: string) => {
@@ -83,18 +93,31 @@ export function CertificationVerificationReview() {
       return;
     }
 
-    const { error } = await supabase
-      .from('certifications')
-      .update({ verification_status: 'rejected' })
-      .eq('id', certId);
+    try {
+      const { error } = await supabase
+        .from('certifications')
+        .update({ 
+          verification_status: 'rejected',
+          // You could store the rejection reason if there's a column for it
+        })
+        .eq('id', certId);
 
-    if (error) {
+      if (error) {
+        console.error('Failed to reject certification:', error);
+        toast.error(`Failed to reject certification: ${error.message}`);
+        return;
+      }
+
+      toast.success('Certification rejected');
+      
+      // Small delay to ensure database transaction is committed
+      setTimeout(() => {
+        loadRequests();
+      }, 500);
+    } catch (error) {
+      console.error('Error rejecting certification:', error);
       toast.error('Failed to reject certification');
-      return;
     }
-
-    toast.success('Certification rejected');
-    loadRequests();
   };
 
   const getDocumentUrl = (path: string) => {
