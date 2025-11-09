@@ -220,11 +220,13 @@ const Profile = () => {
       }
 
       // Save work history
+      console.log('Saving work history entries:', normalizedWorkHistory.length);
       for (const w of normalizedWorkHistory) {
         const hasAnyData = !!(w.company || w.role || w.start_date || w.description || w.location);
         if (!hasAnyData) continue; // skip empty rows
 
         if (w.id) {
+          console.log('Updating work history:', w.id);
           const { error: workUpdateError } = await supabase
             .from('work_history')
             .update({
@@ -242,6 +244,7 @@ const Profile = () => {
             throw new Error(`Failed to update work history: ${workUpdateError.message}`);
           }
         } else if (w.company && w.role && w.start_date) {
+          console.log('Inserting new work history entry');
           const { error: workInsertError } = await supabase
             .from('work_history')
             .insert({
@@ -306,12 +309,18 @@ const Profile = () => {
       }
 
       // Reload data to get updated IDs
-      const { data: workData } = await supabase
+      const { data: workData, error: workDataError } = await supabase
         .from('work_history')
         .select('*')
         .eq('candidate_id', userId)
         .order('start_date', { ascending: false });
-      if (workData) setWorkHistory(workData);
+      
+      if (workDataError) {
+        console.error('Error reloading work history:', workDataError);
+      } else {
+        console.log('Reloaded work history entries:', workData?.length || 0);
+        if (workData) setWorkHistory(workData);
+      }
 
       const { data: projectsData } = await supabase
         .from('projects')
@@ -336,13 +345,19 @@ const Profile = () => {
   };
 
   const addWorkHistory = () => {
+    console.log('Adding work history. Current count:', workHistory.length);
     setWorkHistory([...workHistory, { company: '', role: '', start_date: '', end_date: '', description: '', location: '', is_current: false }]);
   };
 
   const removeWorkHistory = async (index: number) => {
     const item = workHistory[index];
     if (item.id) {
-      await supabase.from('work_history').delete().eq('id', item.id);
+      const { error } = await supabase.from('work_history').delete().eq('id', item.id);
+      if (error) {
+        console.error('Error deleting work history:', error);
+        toast.error('Failed to delete work history entry');
+        return;
+      }
     }
     setWorkHistory(workHistory.filter((_, i) => i !== index));
   };
