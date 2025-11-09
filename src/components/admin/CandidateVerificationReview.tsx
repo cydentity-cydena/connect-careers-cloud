@@ -28,17 +28,13 @@ export function CandidateVerificationReview() {
   const [currentPage, setCurrentPage] = useState(0);
 
   const { data: allRequests, isLoading, refetch } = useQuery({
-    queryKey: ['all-candidate-verifications'],
+    queryKey: ['verification-requests', activeTab],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('verification_requests')
-        .select('*, profiles:candidate_id(full_name, email, username)')
-        .in('verification_type', ['identity', 'rtw'])
-        .is('company_name', null)
-        .order('created_at', { ascending: false });
-
+      const { data, error } = await supabase.functions.invoke('verification-requests-list', {
+        body: { status: activeTab }
+      });
       if (error) throw error;
-      return data || [];
+      return (data?.items as any[]) || [];
     },
   });
 
@@ -60,7 +56,7 @@ export function CandidateVerificationReview() {
         },
         (payload) => {
           console.log('Verification request changed:', payload);
-          queryClient.invalidateQueries({ queryKey: ['all-candidate-verifications'] });
+          queryClient.invalidateQueries({ queryKey: ['verification-requests'] });
           
           if (payload.eventType === 'INSERT') {
             toast({
@@ -175,7 +171,7 @@ export function CandidateVerificationReview() {
         description: `${request.verification_type.toUpperCase()} verification approved for ${request.profiles?.full_name}`,
       });
 
-      queryClient.invalidateQueries({ queryKey: ['all-candidate-verifications'] });
+      queryClient.invalidateQueries({ queryKey: ['verification-requests'] });
       setSelectedRequest(null);
       setShowApprovalDialog(false);
       setApprovalComment("");
@@ -221,7 +217,7 @@ export function CandidateVerificationReview() {
         description: `${request.verification_type.toUpperCase()} verification rejected`,
       });
 
-      queryClient.invalidateQueries({ queryKey: ['all-candidate-verifications'] });
+      queryClient.invalidateQueries({ queryKey: ['verification-requests'] });
       setSelectedRequest(null);
       setRejectionReason("");
     } catch (error: any) {
