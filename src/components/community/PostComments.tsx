@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { MessageCircle, Send, Trash2 } from 'lucide-react';
+import { MessageCircle, Send, Trash2, Edit2, X } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { useToast } from '@/hooks/use-toast';
 import { z } from 'zod';
@@ -37,6 +37,8 @@ export const PostComments = ({ postId }: { postId: string }) => {
   const [showComments, setShowComments] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [commentCount, setCommentCount] = useState(0);
+  const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
+  const [editContent, setEditContent] = useState('');
   const { toast } = useToast();
 
   useEffect(() => {
@@ -294,6 +296,63 @@ export const PostComments = ({ postId }: { postId: string }) => {
     }
   };
 
+  const handleEditClick = (comment: Comment) => {
+    setEditingCommentId(comment.id);
+    setEditContent(comment.content);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingCommentId(null);
+    setEditContent('');
+  };
+
+  const handleUpdateComment = async (commentId: string) => {
+    try {
+      const validated = commentSchema.parse({ content: editContent });
+
+      // Optimistic update
+      const oldComment = comments.find(c => c.id === commentId);
+      setComments(prev => prev.map(c => 
+        c.id === commentId ? { ...c, content: validated.content } : c
+      ));
+      setEditingCommentId(null);
+
+      const { error } = await supabase
+        .from('post_comments')
+        .update({ content: validated.content })
+        .eq('id', commentId);
+
+      if (error) {
+        console.error('Update error:', error);
+        throw error;
+      }
+
+      toast({
+        title: "Comment updated",
+        description: "Your changes have been saved"
+      });
+    } catch (error) {
+      // Revert on error
+      if (error instanceof z.ZodError) {
+        toast({
+          title: "Validation error",
+          description: error.errors[0].message,
+          variant: "destructive"
+        });
+      } else {
+        console.error('Error updating comment:', error);
+        toast({
+          title: "Error",
+          description: "Failed to update comment",
+          variant: "destructive"
+        });
+      }
+      // Restore original content
+      loadComments();
+      setEditingCommentId(null);
+    }
+  };
+
   return (
     <div className="mt-3 border-t pt-3">
       <Button
@@ -318,29 +377,75 @@ export const PostComments = ({ postId }: { postId: string }) => {
                 </AvatarFallback>
               </Avatar>
               <div className="flex-1 min-w-0">
-                <div className="bg-muted rounded-lg px-3 py-2">
-                  <div className="flex items-center justify-between gap-2 mb-1">
-                    <span className="font-semibold text-xs">
-                      @{comment.profiles?.username || 'Anonymous'}
-                    </span>
-                    <span className="text-xs text-muted-foreground">
-                      {formatDistanceToNow(new Date(comment.created_at), { addSuffix: true })}
-                    </span>
+                {editingCommentId === comment.id ? (
+                  <div className="space-y-2">
+                    <MentionTextarea
+                      value={editContent}
+                      onChange={(text) => setEditContent(text)}
+                      placeholder="Edit your comment..."
+                      className="min-h-[60px] resize-none"
+                      maxLength={500}
+                    />
+                    <div className="flex items-center gap-2">
+                      <Button
+                        size="sm"
+                        onClick={() => handleUpdateComment(comment.id)}
+                        disabled={!editContent.trim()}
+                      >
+                        <Send className="h-3 w-3 mr-1" />
+                        Save
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={handleCancelEdit}
+                      >
+                        <X className="h-3 w-3 mr-1" />
+                        Cancel
+                      </Button>
+                      <span className={`text-xs ml-auto ${editContent.length > 450 ? 'text-destructive' : 'text-muted-foreground'}`}>
+                        {editContent.length}/500
+                      </span>
+                    </div>
                   </div>
-                  <p className="text-sm break-words">{comment.content}</p>
-                </div>
-                {currentUserId === comment.user_id && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleDelete(comment.id)}
-                    className="mt-1 h-6 text-xs text-muted-foreground hover:text-destructive"
-                  >
-                    <Trash2 className="h-3 w-3 mr-1" />
-                    Delete
-                  </Button>
+                ) : (
+                  <>
+                    <div className="bg-muted rounded-lg px-3 py-2">
+                      <div className="flex items-center justify-between gap-2 mb-1">
+                        <span className="font-semibold text-xs">
+                          @{comment.profiles?.username || 'Anonymous'}
+                        </span>
+                        <span className="text-xs text-muted-foreground">
+                          {formatDistanceToNow(new Date(comment.created_at), { addSuffix: true })}
+                        </span>
+                      </div>
+                      <p className="text-sm break-words">{comment.content}</p>
+                    </div>
+                    {currentUserId === comment.user_id && (
+                      <div className="flex gap-1 mt-1">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleEditClick(comment)}
+                          className="h-6 text-xs text-muted-foreground hover:text-foreground"
+                        >
+                          <Edit2 className="h-3 w-3 mr-1" />
+                          Edit
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleDelete(comment.id)}
+                          className="h-6 text-xs text-muted-foreground hover:text-destructive"
+                        >
+                          <Trash2 className="h-3 w-3 mr-1" />
+                          Delete
+                        </Button>
+                      </div>
+                    )}
+                    <CommentReactions commentId={comment.id} />
+                  </>
                 )}
-                <CommentReactions commentId={comment.id} />
               </div>
             </div>
           ))}
