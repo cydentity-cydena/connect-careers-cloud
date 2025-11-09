@@ -695,17 +695,36 @@ export default function StaffFunnel() {
                             {candidate.profiles.full_name.split(' ').map(n => n[0]).join('')}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2">
-                              <h4 className="font-semibold truncate">
-                                {candidate.profiles.full_name}
-                              </h4>
-                              {(candidate.profiles as any).username && (
-                                <div className="text-xs text-muted-foreground truncate">@{(candidate.profiles as any).username}</div>
-                              )}
-                              {candidate.is_founding_20 && <Star className="h-4 w-4 text-yellow-500 fill-yellow-500 flex-shrink-0" />}
-                            </div>
-                            {candidate.desired_role && (
-                              <p className="text-xs font-medium text-primary mt-1">{candidate.desired_role}</p>
+                            {(candidate.profiles as any).username ? (
+                              <a 
+                                href={`/profile/${candidate.candidate_id}`}
+                                className="block hover:opacity-80 transition-opacity"
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                <div className="flex items-center gap-2">
+                                  <h4 className="font-semibold truncate hover:text-primary">
+                                    {candidate.profiles.full_name}
+                                  </h4>
+                                  {candidate.is_founding_20 && <Star className="h-4 w-4 text-yellow-500 fill-yellow-500 flex-shrink-0" />}
+                                </div>
+                                <div className="text-xs text-primary truncate">@{(candidate.profiles as any).username}</div>
+                                {candidate.desired_role && (
+                                  <p className="text-xs font-medium text-muted-foreground mt-1">{candidate.desired_role}</p>
+                                )}
+                              </a>
+                            ) : (
+                              <>
+                                <div className="flex items-center gap-2">
+                                  <h4 className="font-semibold truncate">
+                                    {candidate.profiles.full_name}
+                                  </h4>
+                                  {candidate.is_founding_20 && <Star className="h-4 w-4 text-yellow-500 fill-yellow-500 flex-shrink-0" />}
+                                </div>
+                                <div className="text-xs text-muted-foreground truncate">No profile yet</div>
+                                {candidate.desired_role && (
+                                  <p className="text-xs font-medium text-primary mt-1">{candidate.desired_role}</p>
+                                )}
+                              </>
                             )}
                           </div>
                         </div>
@@ -831,11 +850,24 @@ export default function StaffFunnel() {
                               <Star className={`h-3.5 w-3.5 ${candidate.is_founding_20 ? 'fill-current' : ''}`} />
                             </Button>
                             <div className="flex-1 min-w-0">
-                              <div className="font-semibold text-sm truncate">
-                                {candidate.profiles?.full_name || "Unknown"}
-                              </div>
-                              {candidate.profiles?.username && (
-                                <div className="text-xs text-muted-foreground truncate">@{candidate.profiles.username}</div>
+                              {candidate.profiles?.username ? (
+                                <a 
+                                  href={`/profile/${candidate.candidate_id}`}
+                                  className="block hover:opacity-80 transition-opacity"
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  <div className="font-semibold text-sm truncate hover:text-primary">
+                                    {candidate.profiles?.full_name || "Unknown"}
+                                  </div>
+                                  <div className="text-xs text-primary truncate">@{candidate.profiles.username}</div>
+                                </a>
+                              ) : (
+                                <>
+                                  <div className="font-semibold text-sm truncate">
+                                    {candidate.profiles?.full_name || "Unknown"}
+                                  </div>
+                                  <div className="text-xs text-muted-foreground truncate">No profile yet</div>
+                                </>
                               )}
                             </div>
                           </div>
