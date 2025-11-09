@@ -113,7 +113,7 @@ export function CandidateVerificationReview() {
           status: 'approved',
           reviewed_by: user?.id,
           reviewed_at: new Date().toISOString(),
-          admin_comment: approvalComment || null,
+          notes: approvalComment || null,
         })
         .eq('id', request.id);
 
@@ -276,7 +276,7 @@ export function CandidateVerificationReview() {
             <p>{format(new Date(request.reviewed_at), "MMM dd, yyyy 'at' HH:mm")}</p>
           </div>
         )}
-        {request.notes && (
+        {request.notes && request.status === 'pending' && (
           <div className="text-sm">
             <p className="font-medium text-muted-foreground">Notes</p>
             <p className="text-sm mt-1">{request.notes}</p>
@@ -288,10 +288,10 @@ export function CandidateVerificationReview() {
             <p className="text-sm">{request.rejection_reason}</p>
           </div>
         )}
-        {request.admin_comment && (
+        {request.notes && request.status !== 'pending' && (
           <div className="text-sm p-2 bg-secondary/50 rounded">
-            <p className="font-medium mb-1">Admin Comment</p>
-            <p className="text-sm">{request.admin_comment}</p>
+            <p className="font-medium mb-1">Review Comment</p>
+            <p className="text-sm">{request.notes}</p>
           </div>
         )}
         <div className="text-sm">
