@@ -51,8 +51,8 @@ const Certifications = () => {
   const handleAdd = async () => {
     if (!userId) return;
     if (!name) { toast.error('Certification name is required'); return; }
-    if (!proofFiles || proofFiles.length === 0) {
-      toast.error('Please upload proof documents (certificate, badge screenshot, etc.)');
+    if ((!proofFiles || proofFiles.length === 0) && !credentialUrl.trim()) {
+      toast.error('Please provide either a Credly badge URL or upload proof documents');
       return;
     }
     setLoading(true);
@@ -229,7 +229,7 @@ const Certifications = () => {
             </div>
           </div>
           <div className="space-y-2 border-t pt-4">
-            <Label htmlFor="proofDocs">Proof Documents (Required)</Label>
+            <Label htmlFor="proofDocs">Proof Documents (Optional)</Label>
             <Input 
               id="proofDocs" 
               type="file" 
@@ -238,7 +238,10 @@ const Certifications = () => {
               onChange={(e) => setProofFiles(e.target.files)} 
             />
             <p className="text-xs text-muted-foreground">
-              Upload certificate, badge screenshot, or verification email. Staff will review within 48 hours.
+              {credentialUrl.trim() 
+                ? "Optional: Already have Credly link above. You can also upload additional proof if desired."
+                : "Upload certificate, badge screenshot, or verification email. Staff will review within 48 hours."
+              }
             </p>
           </div>
           <div className="flex justify-end gap-3">
