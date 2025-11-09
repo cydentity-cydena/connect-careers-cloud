@@ -207,13 +207,14 @@ export const PostComments = ({ postId }: { postId: string }) => {
           post_id: postId,
           user_id: user.id,
           content: validated.content,
-          mentioned_users: mentionedUsers.length > 0 ? mentionedUsers : null
+          mentioned_users: mentionedUsers // Always pass array (empty or with IDs)
         });
 
       if (error) {
         // Remove optimistic comment on error
         setComments(prev => prev.filter(c => c.id !== optimisticComment.id));
         setCommentCount(prev => prev - 1);
+        console.error('Database insert error:', error);
         throw error;
       }
 
