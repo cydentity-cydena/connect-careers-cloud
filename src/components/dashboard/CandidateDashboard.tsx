@@ -17,6 +17,7 @@ import { ApplicationTracker } from "./ApplicationTracker";
 import { HRReadyCTA } from "./HRReadyCTA";
 import { PlatformProfilesManager } from "./PlatformProfilesManager";
 import { BadgeSelector } from "@/components/badges/BadgeSelector";
+import { CertificationManager } from "@/components/certifications/CertificationManager";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 
@@ -262,6 +263,31 @@ const CandidateDashboard = () => {
       {/* Multiple Resumes - Full Width */}
       {userId && <MultipleResumesManager />}
 
+      {/* Certification Management - Full Width */}
+      {userId && (
+        <Card className="border-border shadow-card">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="flex items-center gap-2">
+                  <FileText className="h-5 w-5 text-accent" />
+                  Your Certifications
+                </CardTitle>
+                <CardDescription>
+                  Manage your certifications - edit pending or delete anytime
+                </CardDescription>
+              </div>
+              <Button onClick={() => navigate('/certifications')}>
+                Add Certification
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <CertificationManager />
+          </CardContent>
+        </Card>
+      )}
+
       {userId && (
         <div className="grid md:grid-cols-2 gap-6">
           <Card className="border-border shadow-card hover:scale-105 transition-transform">
@@ -327,27 +353,11 @@ const CandidateDashboard = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
-              <Button 
-                variant="outline" 
-                className="w-full border-orange-500/50 bg-orange-500/10 hover:bg-orange-500/20 text-foreground" 
-                size="sm" 
-                onClick={() => navigate('/certifications')}
-              >
-                <img 
-                  src="/logos/credly-logo.png" 
-                  alt="Credly" 
-                  className="h-4 w-auto mr-2"
-                />
-                Import from Credly
-              </Button>
               <Button variant="cyber" className="w-full" size="sm" onClick={() => navigate('/skills')}>
                 Add Skills
               </Button>
               <Button variant="outline" className="w-full" size="sm" onClick={() => navigate('/specializations')}>
                 Manage Specializations
-              </Button>
-              <Button variant="outline" className="w-full" size="sm" onClick={() => navigate('/certifications')}>
-                Add Other Certification
               </Button>
             </CardContent>
           </Card>
