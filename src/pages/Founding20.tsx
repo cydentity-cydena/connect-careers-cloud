@@ -47,8 +47,8 @@ export default function Founding20() {
     },
     {
       icon: Zap,
-      title: "Fast-Track Hiring",
-      description: "Priority placement and direct introductions to hiring managers - skip the queue"
+      title: "Enhanced Visibility",
+      description: "Priority placement in searches and increased visibility with hiring teams and recruiters"
     },
     {
       icon: Award,
@@ -175,7 +175,7 @@ export default function Founding20() {
     <>
       <SEO 
         title="Founding 20 - Elite Cybersecurity Talent Program"
-        description="Join the exclusive Founding 20 program and get fast-tracked to top cybersecurity opportunities. Elite recognition, priority placement, and direct access to hiring managers."
+        description="Join the exclusive Founding 20 program for enhanced visibility with top cybersecurity employers and recruiters. Elite recognition, verified credentials, and access to quality opportunities."
         keywords="cybersecurity jobs, elite talent, founding 20, verified professionals, priority hiring, cyber security careers"
       />
       <Navigation />
