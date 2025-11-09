@@ -484,33 +484,37 @@ export function CandidateVerificationReview() {
 
       {/* Document Viewer Dialog */}
       <Dialog open={!!viewingDocuments} onOpenChange={() => setViewingDocuments(null)}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-3xl max-h-[85vh]">
           <DialogHeader>
             <DialogTitle>{viewingDocuments?.name}</DialogTitle>
             <DialogDescription>
               Review the submitted documents below
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-4">
-            {viewingDocuments?.urls.map((url, index) => (
-              <div key={index} className="border rounded-lg overflow-hidden">
-                <div className="p-2 bg-muted flex items-center justify-between">
-                  <span className="text-sm font-medium">Document {index + 1}</span>
-                  <Button size="sm" variant="outline" asChild>
-                    <a href={url} target="_blank" rel="noopener noreferrer">
-                      <Download className="h-3 w-3 mr-2" />
-                      Download
-                    </a>
-                  </Button>
+          <ScrollArea className="max-h-[calc(85vh-8rem)] pr-4">
+            <div className="space-y-4">
+              {viewingDocuments?.urls.map((url, index) => (
+                <div key={index} className="border rounded-lg overflow-hidden">
+                  <div className="p-2 bg-muted flex items-center justify-between">
+                    <span className="text-sm font-medium">Document {index + 1}</span>
+                    <Button size="sm" variant="outline" asChild>
+                      <a href={url} target="_blank" rel="noopener noreferrer">
+                        <Download className="h-3 w-3 mr-2" />
+                        Download
+                      </a>
+                    </Button>
+                  </div>
+                  <div className="bg-muted/30 p-4 flex items-center justify-center">
+                    <img
+                      src={url}
+                      alt={`Document ${index + 1}`}
+                      className="max-w-full h-auto max-h-[50vh] object-contain rounded"
+                    />
+                  </div>
                 </div>
-                <iframe
-                  src={url}
-                  className="w-full h-[350px]"
-                  title={`Document ${index + 1}`}
-                />
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          </ScrollArea>
         </DialogContent>
       </Dialog>
 
