@@ -483,7 +483,7 @@ export const ApplicationPipeline = () => {
       const appJobIds = applications.map((app: any) => app.job_id);
 
       const [profilesRes, candProfilesRes, jobsRes, verRes] = await Promise.all([
-        supabase.from('profiles').select('id, full_name, avatar_url').in('id', candidateIds),
+        supabase.from('profiles').select('id, full_name, username, avatar_url').in('id', candidateIds),
         supabase.from('candidate_profiles').select('user_id, title, years_experience, resume_url').in('user_id', candidateIds),
         supabase.from('jobs').select('id, title').in('id', appJobIds),
         supabase.from('candidate_verifications').select('*').in('candidate_id', candidateIds),
@@ -504,6 +504,7 @@ export const ApplicationPipeline = () => {
         candidate_profile: candProfileMap.get(app.candidate_id) || { title: '', years_experience: 0 },
         profile: {
           full_name: profileMap.get(app.candidate_id)?.full_name || 'Unknown',
+          username: profileMap.get(app.candidate_id)?.username || null,
           avatar_url: profileMap.get(app.candidate_id)?.avatar_url || null,
         },
         job: { title: jobsMap.get(app.job_id)?.title || '' },
@@ -619,7 +620,7 @@ export const ApplicationPipeline = () => {
       const [profileRes, candidateProfileRes, jobRes] = await Promise.all([
         supabase
           .from('profiles')
-          .select('full_name, avatar_url, location')
+          .select('full_name, username, avatar_url, location')
           .eq('id', candidateId)
           .single(),
         supabase
@@ -637,7 +638,7 @@ export const ApplicationPipeline = () => {
       // Construct the full application object
       const fullApplication = {
         ...newApp,
-        profile: profileRes.data || { full_name: 'Unknown', avatar_url: null, location: null },
+        profile: profileRes.data || { full_name: 'Unknown', username: null, avatar_url: null, location: null },
         candidate_profile: candidateProfileRes.data || { title: '', years_experience: 0 },
         job: jobRes.data || { title: 'Unknown' }
       };
@@ -993,12 +994,21 @@ export const ApplicationPipeline = () => {
                             </AvatarFallback>
                           </Avatar>
                           <div className="flex-1 min-w-0 pr-6">
-                            <h4 className="font-bold text-base leading-tight mb-1.5 text-foreground">
-                              {candidate.profile.full_name}
-                              {candidate.profile.username && (
+                            {candidate.profile.username ? (
+                              <a 
+                                href={`/profile/${candidate.candidate_id}`}
+                                className="font-bold text-base leading-tight mb-1.5 text-foreground hover:text-primary transition-colors cursor-pointer block"
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                {candidate.profile.full_name}
                                 <span className="text-muted-foreground font-normal text-sm"> (@{candidate.profile.username})</span>
-                              )}
-                            </h4>
+                              </a>
+                            ) : (
+                              <h4 className="font-bold text-base leading-tight mb-1.5 text-foreground">
+                                {candidate.profile.full_name}
+                                <span className="text-muted-foreground font-normal text-sm"> (No profile yet)</span>
+                              </h4>
+                            )}
                             <p className="text-sm text-muted-foreground line-clamp-2 leading-snug">
                               {candidate.candidate_profile?.title || "No title"}
                             </p>
