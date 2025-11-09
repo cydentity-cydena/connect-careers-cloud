@@ -16,7 +16,11 @@ export const CommentReactions = ({ commentId }: { commentId: string }) => {
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const { toast } = useToast();
 
+  const isValidUuid = (id: string) => /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$/.test(id);
+
   useEffect(() => {
+    if (!isValidUuid(commentId)) return; // Skip for optimistic temp IDs
+
     getCurrentUser();
     loadReactions();
 
@@ -45,6 +49,7 @@ export const CommentReactions = ({ commentId }: { commentId: string }) => {
   };
 
   const loadReactions = async () => {
+    if (!isValidUuid(commentId)) return;
     const { data, error } = await supabase
       .from('comment_reactions')
       .select('emoji, user_id')
@@ -81,6 +86,7 @@ export const CommentReactions = ({ commentId }: { commentId: string }) => {
     if (!reaction) return;
 
     if (reaction.hasReacted) {
+      if (!isValidUuid(commentId)) return; // Do nothing for temp comments
       const { error } = await supabase
         .from('comment_reactions')
         .delete()
@@ -97,6 +103,7 @@ export const CommentReactions = ({ commentId }: { commentId: string }) => {
         });
       }
     } else {
+      if (!isValidUuid(commentId)) return; // Do nothing for temp comments
       const { error } = await supabase
         .from('comment_reactions')
         .insert({ comment_id: commentId, user_id: currentUserId, emoji });
