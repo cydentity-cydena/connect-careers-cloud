@@ -74,8 +74,8 @@ const Profiles = () => {
       
       // Employers, recruiters, and admins can browse all profiles
       // Candidates can only see their own profile for preview
-      if (roles.some(role => ['employer', 'recruiter', 'admin'].includes(role))) {
-        const primaryRole = roles.find(role => ['admin', 'employer', 'recruiter'].includes(role));
+      if (roles.some(role => ['employer', 'recruiter', 'admin', 'staff'].includes(role))) {
+        const primaryRole = roles.find(role => ['admin', 'staff', 'employer', 'recruiter'].includes(role));
         setUserRole(primaryRole || 'employer');
         setCheckingAccess(false);
         fetchCandidates();
@@ -182,6 +182,22 @@ const Profiles = () => {
         skillsByCandidate[skill.candidate_id].push(skill);
       });
 
+      // Check if current user is admin or staff
+      const { data: { user } } = await supabase.auth.getUser();
+      let isAdminOrStaff = false;
+      
+      if (user) {
+        const { data: currentUserRoles } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', user.id);
+        
+        if (currentUserRoles) {
+          const roles = currentUserRoles.map(r => r.role);
+          isAdminOrStaff = roles.some(role => ['admin', 'staff'].includes(role));
+        }
+      }
+
       // Transform to candidate profile format
       const candidateData: CandidateProfile[] = xpData.map((entry, index) => {
         const profile = profileMap.get(entry.candidate_id);
@@ -204,7 +220,7 @@ const Profiles = () => {
           specializations,
           experience: `${candidateProfile?.years_experience || 0} years`,
           avatar: "🔒",
-          locked: index > 2
+          locked: isAdminOrStaff ? false : index > 2 // Admins see all profiles as unlocked
         };
       });
 
