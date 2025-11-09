@@ -7,6 +7,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { CheckCircle, XCircle, ExternalLink, FileText, User } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface CertVerificationRequest {
   id: string;
@@ -33,10 +35,16 @@ export function CertificationVerificationReview() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("pending");
   const [rejectionReasons, setRejectionReasons] = useState<Record<string, string>>({});
+  const [pageSize, setPageSize] = useState(12);
+  const [currentPage, setCurrentPage] = useState(0);
 
   useEffect(() => {
     loadRequests();
   }, []);
+
+  useEffect(() => {
+    setCurrentPage(0); // Reset to first page when changing tabs or page size
+  }, [activeTab, pageSize]);
 
   const loadRequests = async () => {
     setLoading(true);
@@ -154,6 +162,16 @@ export function CertificationVerificationReview() {
   };
 
   const filteredRequests = requests.filter(r => (r.verification_status ?? 'pending') === activeTab);
+  
+  // Pagination
+  const totalPages = Math.ceil(filteredRequests.length / pageSize);
+  const startIndex = currentPage * pageSize;
+  const endIndex = startIndex + pageSize;
+  const paginatedRequests = filteredRequests.slice(startIndex, endIndex);
+
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(Math.max(0, Math.min(newPage, totalPages - 1)));
+  };
 
   if (loading) {
     return <div className="text-center py-8">Loading verification requests...</div>;
@@ -167,13 +185,30 @@ export function CertificationVerificationReview() {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList>
-          <TabsTrigger value="pending">
-            Pending ({requests.filter(r => (r.verification_status ?? 'pending') === 'pending').length})
-          </TabsTrigger>
-          <TabsTrigger value="verified">Verified</TabsTrigger>
-          <TabsTrigger value="rejected">Rejected</TabsTrigger>
-        </TabsList>
+        <div className="flex items-center justify-between mb-4">
+          <TabsList>
+            <TabsTrigger value="pending">
+              Pending ({requests.filter(r => (r.verification_status ?? 'pending') === 'pending').length})
+            </TabsTrigger>
+            <TabsTrigger value="verified">Verified</TabsTrigger>
+            <TabsTrigger value="rejected">Rejected</TabsTrigger>
+          </TabsList>
+
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-muted-foreground">Show:</span>
+            <Select value={pageSize.toString()} onValueChange={(v) => setPageSize(Number(v))}>
+              <SelectTrigger className="w-24">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="12">12</SelectItem>
+                <SelectItem value="20">20</SelectItem>
+                <SelectItem value="50">50</SelectItem>
+                <SelectItem value="100">100</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
 
         <TabsContent value={activeTab} className="space-y-4 mt-6">
           {filteredRequests.length === 0 ? (
@@ -181,7 +216,10 @@ export function CertificationVerificationReview() {
               No {activeTab} requests
             </Card>
           ) : (
-            filteredRequests.map((request) => (
+            <>
+              <ScrollArea className="h-[calc(100vh-20rem)] pr-4">
+                <div className="space-y-4">
+                  {paginatedRequests.map((request) => (
               <Card key={request.id} className="p-6">
                 <div className="space-y-4">
                   <div className="flex items-start justify-between">
@@ -322,7 +360,62 @@ export function CertificationVerificationReview() {
                   )}
                 </div>
               </Card>
-            ))
+            ))}
+                </div>
+              </ScrollArea>
+
+              {/* Pagination Controls */}
+              {totalPages > 1 && (
+                <div className="flex items-center justify-between pt-4 border-t">
+                  <div className="text-sm text-muted-foreground">
+                    Showing {startIndex + 1}-{Math.min(endIndex, filteredRequests.length)} of {filteredRequests.length}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handlePageChange(currentPage - 1)}
+                      disabled={currentPage === 0}
+                    >
+                      Previous
+                    </Button>
+                    <div className="flex items-center gap-1">
+                      {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                        let pageNum;
+                        if (totalPages <= 5) {
+                          pageNum = i;
+                        } else if (currentPage < 3) {
+                          pageNum = i;
+                        } else if (currentPage > totalPages - 3) {
+                          pageNum = totalPages - 5 + i;
+                        } else {
+                          pageNum = currentPage - 2 + i;
+                        }
+                        return (
+                          <Button
+                            key={pageNum}
+                            variant={currentPage === pageNum ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => handlePageChange(pageNum)}
+                            className="w-8 h-8 p-0"
+                          >
+                            {pageNum + 1}
+                          </Button>
+                        );
+                      })}
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handlePageChange(currentPage + 1)}
+                      disabled={currentPage >= totalPages - 1}
+                    >
+                      Next
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </>
           )}
         </TabsContent>
       </Tabs>
