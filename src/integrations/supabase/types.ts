@@ -2734,7 +2734,11 @@ export type Database = {
       }
       award_points: {
         Args: { p_candidate_id: string; p_code: string; p_meta?: Json }
-        Returns: Json
+        Returns: {
+          already_awarded: boolean
+          new_total_xp: number
+          xp_awarded: number
+        }[]
       }
       calculate_level_from_xp: { Args: { xp_amount: number }; Returns: number }
       calculate_profile_completion: {

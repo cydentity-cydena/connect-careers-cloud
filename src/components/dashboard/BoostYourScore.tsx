@@ -42,15 +42,9 @@ export const BoostYourScore = () => {
             Boost Your Score
           </h2>
           <p className="text-muted-foreground mt-1">
-            <span className="font-semibold text-primary">100% FREE</span> employer-recognized courses. Complete → verify → earn points instantly.
+            <span className="font-semibold text-primary">100% FREE</span> employer-recognized courses. Complete → verify → earn XP instantly.
           </p>
         </div>
-        {boostData?.pointsBalance !== undefined && (
-          <div className="text-right">
-            <p className="text-sm text-muted-foreground">Your Balance</p>
-            <p className="text-2xl font-bold text-primary">{boostData.pointsBalance} pts</p>
-          </div>
-        )}
       </div>
 
       {boostData?.recommendedSkill && (
@@ -87,8 +81,8 @@ export const BoostYourScore = () => {
                       {course.partner_slug}
                     </Badge>
                   </div>
-                  <Badge className="bg-primary text-primary-foreground">
-                    +{course.reward_amount} pts
+                  <Badge className="bg-secondary text-secondary-foreground">
+                    +{course.reward_amount} XP
                   </Badge>
                 </div>
                 <CardTitle className="text-lg">{course.title}</CardTitle>

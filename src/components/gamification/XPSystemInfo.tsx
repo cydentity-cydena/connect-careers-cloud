@@ -21,7 +21,7 @@ export const XPSystemInfo = () => {
         <DialogHeader>
           <DialogTitle>Understanding Your Progress</DialogTitle>
           <DialogDescription>
-            Learn how the XP, Points, Level, and Profile Completion systems work
+            Learn how the XP, Level, and Profile Completion systems work
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-6">
@@ -31,11 +31,12 @@ export const XPSystemInfo = () => {
               <div className="bg-secondary/10 px-3 py-1 rounded">
                 <span className="text-sm font-bold text-secondary">550 XP</span>
               </div>
-              <h3 className="font-semibold">Total XP (Experience Points)</h3>
+              <h3 className="font-semibold">XP (Experience Points)</h3>
             </div>
             <p className="text-sm text-muted-foreground">
-              Your permanent progression score that never decreases. Earn XP by completing courses, 
+              Your progression score that tracks your growth. Earn XP by completing courses, 
               getting endorsements, adding certifications, and participating in the community.
+              Your XP determines your level and standing in the community.
             </p>
           </div>
 
@@ -64,19 +65,6 @@ export const XPSystemInfo = () => {
             </ul>
           </div>
 
-          {/* Points Section */}
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <div className="bg-accent/10 px-3 py-1 rounded">
-                <span className="text-sm font-bold text-accent">550 Points</span>
-              </div>
-              <h3 className="font-semibold">Points (Spendable Currency)</h3>
-            </div>
-            <p className="text-sm text-muted-foreground">
-              Your spendable currency balance. Use points to unlock premium training courses. 
-              When you spend points, your XP stays the same, but your points balance decreases.
-            </p>
-          </div>
 
           {/* Profile Completion Section */}
           <div className="space-y-2">
@@ -94,7 +82,7 @@ export const XPSystemInfo = () => {
 
           {/* How to Earn Section */}
           <div className="space-y-2">
-            <h3 className="font-semibold">How to Earn XP & Points</h3>
+            <h3 className="font-semibold">How to Earn XP</h3>
             <ul className="text-sm text-muted-foreground space-y-1 ml-4">
               <li>• Complete training courses</li>
               <li>• Add certifications to your profile</li>

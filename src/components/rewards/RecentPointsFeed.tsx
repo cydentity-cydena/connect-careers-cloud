@@ -46,7 +46,7 @@ export const RecentPointsFeed = ({ userId, limit = 5 }: RecentPointsFeedProps) =
   if (loading) return null;
   if (points.length === 0) return null;
 
-  const getPointTypeLabel = (type: string) => {
+  const getXPTypeLabel = (type: string) => {
     const labels: Record<string, string> = {
       'CERT_OPENBADGE_VERIFIED': '🏅 Certification Verified',
       'CERT_MANUAL_PENDING': '📝 Certification Added',
@@ -64,7 +64,7 @@ export const RecentPointsFeed = ({ userId, limit = 5 }: RecentPointsFeedProps) =
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <TrendingUp className="h-5 w-5 text-primary" />
-          Recent Points
+          Recent XP Earned
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -72,7 +72,7 @@ export const RecentPointsFeed = ({ userId, limit = 5 }: RecentPointsFeedProps) =
           {points.map((point) => (
             <div key={point.id} className="flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors">
               <div className="flex-1">
-                <p className="text-sm font-medium">{getPointTypeLabel(point.type)}</p>
+                <p className="text-sm font-medium">{getXPTypeLabel(point.type)}</p>
                 <p className="text-xs text-muted-foreground">
                   {formatDistanceToNow(new Date(point.created_at), { addSuffix: true })}
                 </p>
@@ -82,9 +82,9 @@ export const RecentPointsFeed = ({ userId, limit = 5 }: RecentPointsFeedProps) =
                   </p>
                 )}
               </div>
-              <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
+              <Badge variant="outline" className="bg-secondary/10 text-secondary border-secondary/20">
                 <Award className="h-3 w-3 mr-1" />
-                +{point.amount}
+                +{point.amount} XP
               </Badge>
             </div>
           ))}
