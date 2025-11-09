@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -10,7 +11,6 @@ import { Briefcase, Clock, UserCheck, FileCheck, XCircle, CheckCircle2, Users, S
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ApplicationCard } from "./ApplicationCard";
 import { toast } from "@/hooks/use-toast";
-import { useNavigate } from "react-router-dom";
 import { SendMessageDialog } from "@/components/messaging/SendMessageDialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -995,14 +995,14 @@ export const ApplicationPipeline = () => {
                           </Avatar>
                           <div className="flex-1 min-w-0 pr-6">
                             {candidate.profile.username ? (
-                              <a 
-                                href={`/profile/${candidate.candidate_id}`}
+                              <Link 
+                                to={`/profiles/${candidate.candidate_id}`}
                                 className="font-bold text-base leading-tight mb-1.5 text-foreground hover:text-primary transition-colors cursor-pointer block"
                                 onClick={(e) => e.stopPropagation()}
                               >
                                 {candidate.profile.full_name}
                                 <span className="text-muted-foreground font-normal text-sm"> (@{candidate.profile.username})</span>
-                              </a>
+                              </Link>
                             ) : (
                               <h4 className="font-bold text-base leading-tight mb-1.5 text-foreground">
                                 {candidate.profile.full_name}

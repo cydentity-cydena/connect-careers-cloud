@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -199,14 +200,14 @@ export const ApplicationCard = ({ application, onStageChange, onToggleStar, onAd
             </Avatar>
             <div className="flex-1 min-w-0 pr-6">
               {application.profile.username ? (
-                <a 
-                  href={`/profile/${application.candidate_id}`}
+                <Link 
+                  to={`/profiles/${application.candidate_id}`}
                   className="font-bold text-base leading-tight mb-1.5 text-foreground hover:text-primary transition-colors cursor-pointer block"
                   onClick={(e) => e.stopPropagation()}
                 >
                   {application.profile.full_name}
                   <span className="text-muted-foreground font-normal text-sm"> (@{application.profile.username})</span>
-                </a>
+                </Link>
               ) : (
                 <h4 className="font-bold text-base leading-tight mb-1.5 text-foreground">
                   {application.profile.full_name}

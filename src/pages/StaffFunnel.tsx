@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
@@ -696,8 +697,8 @@ export default function StaffFunnel() {
                           </div>
                           <div className="flex-1 min-w-0">
                             {(candidate.profiles as any).username ? (
-                              <a 
-                                href={`/profile/${candidate.candidate_id}`}
+                              <Link 
+                                to={`/profiles/${candidate.candidate_id}`}
                                 className="block hover:opacity-80 transition-opacity"
                                 onClick={(e) => e.stopPropagation()}
                               >
@@ -711,7 +712,7 @@ export default function StaffFunnel() {
                                 {candidate.desired_role && (
                                   <p className="text-xs font-medium text-muted-foreground mt-1">{candidate.desired_role}</p>
                                 )}
-                              </a>
+                              </Link>
                             ) : (
                               <>
                                 <div className="flex items-center gap-2">
@@ -851,8 +852,8 @@ export default function StaffFunnel() {
                             </Button>
                             <div className="flex-1 min-w-0">
                               {candidate.profiles?.username ? (
-                                <a 
-                                  href={`/profile/${candidate.candidate_id}`}
+                                <Link 
+                                  to={`/profiles/${candidate.candidate_id}`}
                                   className="block hover:opacity-80 transition-opacity"
                                   onClick={(e) => e.stopPropagation()}
                                 >
@@ -860,7 +861,7 @@ export default function StaffFunnel() {
                                     {candidate.profiles?.full_name || "Unknown"}
                                   </div>
                                   <div className="text-xs text-primary truncate">@{candidate.profiles.username}</div>
-                                </a>
+                                </Link>
                               ) : (
                                 <>
                                   <div className="font-semibold text-sm truncate">
