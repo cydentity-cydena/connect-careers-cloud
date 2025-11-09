@@ -696,37 +696,26 @@ export default function StaffFunnel() {
                             {candidate.profiles.full_name.split(' ').map(n => n[0]).join('')}
                           </div>
                           <div className="flex-1 min-w-0">
-                            {(candidate.profiles as any).username ? (
-                              <Link 
-                                to={`/profiles/${candidate.candidate_id}`}
-                                className="block hover:opacity-80 transition-opacity"
-                                onClick={(e) => e.stopPropagation()}
-                              >
-                                <div className="flex items-center gap-2">
-                                  <h4 className="font-semibold truncate hover:text-primary">
-                                    {candidate.profiles.full_name}
-                                  </h4>
-                                  {candidate.is_founding_20 && <Star className="h-4 w-4 text-yellow-500 fill-yellow-500 flex-shrink-0" />}
-                                </div>
+                            <Link 
+                              to={`/profiles/${candidate.candidate_id}`}
+                              className="block hover:opacity-80 transition-opacity"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <div className="flex items-center gap-2">
+                                <h4 className="font-semibold truncate hover:text-primary">
+                                  {candidate.profiles.full_name}
+                                </h4>
+                                {candidate.is_founding_20 && <Star className="h-4 w-4 text-yellow-500 fill-yellow-500 flex-shrink-0" />}
+                              </div>
+                              {(candidate.profiles as any).username ? (
                                 <div className="text-xs text-primary truncate">@{(candidate.profiles as any).username}</div>
-                                {candidate.desired_role && (
-                                  <p className="text-xs font-medium text-muted-foreground mt-1">{candidate.desired_role}</p>
-                                )}
-                              </Link>
-                            ) : (
-                              <>
-                                <div className="flex items-center gap-2">
-                                  <h4 className="font-semibold truncate">
-                                    {candidate.profiles.full_name}
-                                  </h4>
-                                  {candidate.is_founding_20 && <Star className="h-4 w-4 text-yellow-500 fill-yellow-500 flex-shrink-0" />}
-                                </div>
-                                <div className="text-xs text-muted-foreground truncate">No profile yet</div>
-                                {candidate.desired_role && (
-                                  <p className="text-xs font-medium text-primary mt-1">{candidate.desired_role}</p>
-                                )}
-                              </>
-                            )}
+                              ) : (
+                                <div className="text-xs text-muted-foreground truncate">View profile</div>
+                              )}
+                              {candidate.desired_role && (
+                                <p className="text-xs font-medium text-muted-foreground mt-1">{candidate.desired_role}</p>
+                              )}
+                            </Link>
                           </div>
                         </div>
                       <div className="mb-3">
@@ -851,25 +840,20 @@ export default function StaffFunnel() {
                               <Star className={`h-3.5 w-3.5 ${candidate.is_founding_20 ? 'fill-current' : ''}`} />
                             </Button>
                             <div className="flex-1 min-w-0">
-                              {candidate.profiles?.username ? (
-                                <Link 
-                                  to={`/profiles/${candidate.candidate_id}`}
-                                  className="block hover:opacity-80 transition-opacity"
-                                  onClick={(e) => e.stopPropagation()}
-                                >
-                                  <div className="font-semibold text-sm truncate hover:text-primary">
-                                    {candidate.profiles?.full_name || "Unknown"}
-                                  </div>
+                              <Link 
+                                to={`/profiles/${candidate.candidate_id}`}
+                                className="block hover:opacity-80 transition-opacity"
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                <div className="font-semibold text-sm truncate hover:text-primary">
+                                  {candidate.profiles?.full_name || "Unknown"}
+                                </div>
+                                {candidate.profiles?.username ? (
                                   <div className="text-xs text-primary truncate">@{candidate.profiles.username}</div>
-                                </Link>
-                              ) : (
-                                <>
-                                  <div className="font-semibold text-sm truncate">
-                                    {candidate.profiles?.full_name || "Unknown"}
-                                  </div>
-                                  <div className="text-xs text-muted-foreground truncate">No profile yet</div>
-                                </>
-                              )}
+                                ) : (
+                                  <div className="text-xs text-muted-foreground truncate">View profile</div>
+                                )}
+                              </Link>
                             </div>
                           </div>
                           <Button
