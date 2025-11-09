@@ -56,7 +56,7 @@ serve(async (req) => {
     // Load verification requests (identity/rtw, candidates only)
     let query = supabaseAdmin
       .from('verification_requests')
-      .select('id,candidate_id,verification_type,status,created_at,reviewed_at,reviewed_by,admin_comment,rejection_reason,document_urls,notes,company_name')
+      .select('id,candidate_id,verification_type,status,created_at,reviewed_at,reviewed_by,rejection_reason,document_urls,notes,company_name')
       .is('company_name', null)
       .in('verification_type', ['identity','rtw'])
       .order('created_at', { ascending: false });
