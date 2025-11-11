@@ -327,7 +327,7 @@ const Index = () => {
                     </li>
                     <li className="flex gap-3">
                       <span className="font-bold text-primary">4.</span>
-                      <span>Apply to jobs instantly with verified badges - skip admin delays</span>
+                      <span>Apply to jobs instantly with verified badges - remove blocks to verifying your skills</span>
                     </li>
                     <li className="flex gap-3">
                       <span className="font-bold text-primary">5.</span>
