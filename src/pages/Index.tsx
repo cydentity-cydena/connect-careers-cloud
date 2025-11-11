@@ -151,7 +151,7 @@ const Index = () => {
               <div className="bg-primary/10 w-12 h-12 md:w-14 md:h-14 rounded-lg flex items-center justify-center mb-4 md:mb-6">
                 <Shield className="h-6 w-6 md:h-7 md:w-7 text-primary" />
               </div>
-              <h3 className="text-lg md:text-xl font-semibold mb-2 md:mb-3">HR-Ready Verification</h3>
+              <h3 className="text-lg md:text-xl font-semibold mb-2 md:mb-3">HR-Aligned Verification Hub</h3>
               <p className="text-sm md:text-base text-muted-foreground">
                 Bring clarity and control together: identity, certifications, and eligibility — safely stored, ready for review.
               </p>
