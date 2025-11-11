@@ -36,7 +36,7 @@ const Index = () => {
               </span>
             </h1>
             <p className="text-xl md:text-2xl font-semibold mb-3 md:mb-4">
-              Hire with Confidence, Not Risk
+              Prove your skills. Hire with confidence.
             </p>
             <p className="text-base md:text-lg text-muted-foreground mb-6 md:mb-8 max-w-2xl mx-auto px-2">
               Every candidate comes with validated credentials and verified identity. No more guessing if certifications are real or backgrounds check out.
