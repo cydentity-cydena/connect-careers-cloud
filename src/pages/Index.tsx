@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Shield, Users, Briefcase, TrendingUp, ArrowRight, Clock, DollarSign, Target, CheckCircle, GraduationCap, Eye } from "lucide-react";
+import { Shield, Users, Briefcase, TrendingUp, ArrowRight, Clock, DollarSign, Target, CheckCircle, GraduationCap, Eye, Award } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import SEO from "@/components/SEO";
 import Schema from "@/components/Schema";
@@ -509,6 +509,15 @@ const Index = () => {
                     </div>
                     <h4 className="font-semibold mb-2">Global Reach</h4>
                     <p className="text-sm text-muted-foreground">Training and certification recognized across international markets</p>
+                  </CardContent>
+                </Card>
+                <Card className="group hover:shadow-xl transition-all duration-300 bg-card/80 backdrop-blur text-center">
+                  <CardContent className="p-6">
+                    <div className="bg-accent/10 w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                      <Award className="h-6 w-6 text-accent" />
+                    </div>
+                    <h4 className="font-semibold mb-2">Skills Validation</h4>
+                    <p className="text-sm text-muted-foreground">Verified competency assessments ensuring job-ready professionals</p>
                   </CardContent>
                 </Card>
               </div>
