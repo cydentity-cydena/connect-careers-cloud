@@ -92,7 +92,7 @@ const Index = () => {
                 <CheckCircle className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
                 <div>
                   <h3 className="font-semibold mb-1">Get HR-Ready Verified</h3>
-                  <p className="text-sm text-muted-foreground">Submit identity & right-to-work once, apply everywhere. Stand out with verified badges</p>
+                  <p className="text-sm text-muted-foreground">Submit identity & right-to-work securely once, apply everywhere. Stand out with verified badges</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
