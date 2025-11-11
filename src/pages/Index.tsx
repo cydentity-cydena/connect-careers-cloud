@@ -331,7 +331,7 @@ const Index = () => {
                     </li>
                     <li className="flex gap-3">
                       <span className="font-bold text-primary">5.</span>
-                      <span>Track applications in real-time and connect directly with employers</span>
+                      <span>Track applications in real-time</span>
                     </li>
                   </ol>
                 </div>
