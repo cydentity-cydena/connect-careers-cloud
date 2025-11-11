@@ -119,7 +119,7 @@ const Index = () => {
               <div className="flex items-start gap-3">
                 <CheckCircle className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
                 <div>
-                  <h3 className="font-semibold mb-1">No Application Black Holes</h3>
+                  <h3 className="font-semibold mb-1">Great Application Transparency</h3>
                   <p className="text-sm text-muted-foreground">See employer updates, status notes, and timeline of your application progress</p>
                 </div>
               </div>
