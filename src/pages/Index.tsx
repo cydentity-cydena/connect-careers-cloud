@@ -645,7 +645,7 @@ const Index = () => {
         <div className="absolute inset-0 bg-gradient-cyber opacity-10" />
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-4xl font-bold mb-6">Ready to Transform Your Cybersecurity Career or Hiring?</h2>
+            <h2 className="text-4xl font-bold mb-6">Proof. Not promises. For cyber talent and teams.</h2>
             <p className="text-xl text-muted-foreground mb-8">
               Join thousands of cybersecurity professionals and forward-thinking employers on Cydena. Whether you're looking for your next role in penetration testing, security operations, GRC, or cloud security, or hiring for critical positions, we make the process simple, transparent, and effective.
             </p>
