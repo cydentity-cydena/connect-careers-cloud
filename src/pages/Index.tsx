@@ -105,13 +105,6 @@ const Index = () => {
               <div className="flex items-start gap-3">
                 <CheckCircle className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
                 <div>
-                  <h3 className="font-semibold mb-1">Skip the Recruiter Gatekeepers</h3>
-                  <p className="text-sm text-muted-foreground">Apply directly to employers. Message them in-platform. No middleman</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <CheckCircle className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
-                <div>
                   <h3 className="font-semibold mb-1">Prove Your Skills with Assessments</h3>
                   <p className="text-sm text-muted-foreground">Take TryHackMe and HackTheBox verified assessments to showcase real technical ability</p>
                 </div>
