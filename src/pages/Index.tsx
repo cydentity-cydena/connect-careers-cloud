@@ -355,6 +355,10 @@ const Index = () => {
                       <span className="font-bold text-secondary">4.</span>
                       <span>Shorten time-to-hire with evidence based shortlists</span>
                     </li>
+                    <li className="flex gap-3">
+                      <span className="font-bold text-secondary">5.</span>
+                      <span>Speed up compliance verification</span>
+                    </li>
                   </ol>
                 </div>
               </div>
