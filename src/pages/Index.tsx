@@ -39,7 +39,7 @@ const Index = () => {
               Prove your skills. Hire with confidence.
             </p>
             <p className="text-base md:text-lg text-muted-foreground mb-6 md:mb-8 max-w-2xl mx-auto px-2">
-              Every candidate comes with validated credentials and verified identity. No more guessing if certifications are real or backgrounds check out.
+              Cydena connects verified cybersecurity professionals with employers who value real-world skills, certified credibility, and faster decisions.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center px-4">
               <Link to="/profiles" className="w-full sm:w-auto">
