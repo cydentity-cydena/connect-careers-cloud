@@ -450,7 +450,7 @@ const Index = () => {
                         Fair Pricing Model
                       </h3>
                       <p className="text-muted-foreground leading-relaxed">
-                        Unlike traditional recruitment platforms that charge hefty fees (often 15-30% of first-year salary), our subscription model allows companies to invest their budget in competitive salaries and benefits for candidates, not middlemen. This creates a healthier job market where talent is rewarded appropriately.
+                        Our competitive pricing models allow you to increase your value while not impacting the cost of hire.
                       </p>
                     </div>
                   </div>
