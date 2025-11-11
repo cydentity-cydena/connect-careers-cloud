@@ -511,15 +511,6 @@ const Index = () => {
                     <p className="text-sm text-muted-foreground">Training and certification recognized across international markets</p>
                   </CardContent>
                 </Card>
-                <Card className="group hover:shadow-xl transition-all duration-300 bg-card/80 backdrop-blur text-center">
-                  <CardContent className="p-6">
-                    <div className="bg-primary/10 w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                      <TrendingUp className="h-6 w-6 text-primary" />
-                    </div>
-                    <h4 className="font-semibold mb-2">Career Growth</h4>
-                    <p className="text-sm text-muted-foreground">Direct pathways to cybersecurity careers through Cydena recruitment</p>
-                  </CardContent>
-                </Card>
               </div>
             </div>
 
