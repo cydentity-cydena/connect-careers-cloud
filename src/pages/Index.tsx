@@ -215,7 +215,7 @@ const Index = () => {
                 <Shield className="h-7 w-7 md:h-8 md:w-8 text-primary" />
               </div>
               <h3 className="text-xl md:text-2xl font-bold mb-2">Confidence to Hire</h3>
-              <p className="text-sm md:text-base text-muted-foreground">Zero compliance risk with documented verification and expert guidance</p>
+              <p className="text-sm md:text-base text-muted-foreground">Compliance Support with documented verification and expert guidance</p>
             </div>
           </div>
         </div>
