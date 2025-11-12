@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Search, Download, Upload, FileText, Star, X, Trash2, ShieldCheck } from "lucide-react";
+import { Loader2, Search, Download, Upload, FileText, Star, X, Trash2, ShieldCheck, StickyNote } from "lucide-react";
 import { format } from "date-fns";
 import AddCandidateToPipeline from "@/components/admin/AddCandidateToPipeline";
 import Navigation from "@/components/Navigation";
@@ -16,6 +16,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { BadgesRow, BadgeItem } from "@/components/hrready/BadgesRow";
 import { VerificationPanel } from "@/components/hrready/VerificationPanel";
 import { EditVerificationDrawer } from "@/components/hrready/EditVerificationDrawer";
+import { Textarea } from "@/components/ui/textarea";
 
 interface PipelineCandidate {
   id: string;
@@ -82,6 +83,9 @@ export default function StaffFunnel() {
   const [rtwFilter, setRtwFilter] = useState<string>("all");
   const [editingVerification, setEditingVerification] = useState<{ candidateId: string; verification: any } | null>(null);
   const [viewingVerification, setViewingVerification] = useState<{ candidateId: string; verification: any } | null>(null);
+  const [editingNotes, setEditingNotes] = useState<{ candidateId: string; pipelineId: string; notes: string | null; sourceTable: string } | null>(null);
+  const [notesValue, setNotesValue] = useState<string>("");
+  const [savingNotes, setSavingNotes] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
@@ -420,6 +424,52 @@ export default function StaffFunnel() {
     }
   };
 
+  const openNotesDialog = (candidate: PipelineCandidate) => {
+    setEditingNotes({
+      candidateId: candidate.candidate_id,
+      pipelineId: candidate.id,
+      notes: candidate.staff_notes,
+      sourceTable: (candidate as any).source_table || 'candidate_pipeline',
+    });
+    setNotesValue(candidate.staff_notes || "");
+  };
+
+  const handleSaveNotes = async () => {
+    if (!editingNotes) return;
+    
+    setSavingNotes(true);
+    try {
+      const tableName = editingNotes.sourceTable as 'candidate_pipeline' | 'pipeline_candidates';
+      const updateData = tableName === 'pipeline_candidates' 
+        ? { notes: notesValue.trim() || null }
+        : { staff_notes: notesValue.trim() || null };
+
+      const { error } = await supabase
+        .from(tableName)
+        .update(updateData as any)
+        .eq('id', editingNotes.pipelineId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Notes saved",
+        description: "Candidate notes updated successfully",
+      });
+
+      fetchCandidates();
+      setEditingNotes(null);
+      setNotesValue("");
+    } catch (error: any) {
+      toast({
+        title: "Error saving notes",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setSavingNotes(false);
+    }
+  };
+
   const filteredCandidates = candidates.filter((candidate) => {
     const matchesSearch =
       !searchQuery ||
@@ -721,7 +771,15 @@ export default function StaffFunnel() {
                       <div className="mb-3">
                         <BadgesRow items={badgeItems} showHrReady />
                       </div>
-                      <div className="grid grid-cols-2 gap-2 pt-2 border-t">
+                      {candidate.staff_notes && (
+                        <div className="mb-2 p-2 bg-muted/50 rounded text-xs">
+                          <div className="flex items-start gap-1">
+                            <StickyNote className="h-3 w-3 mt-0.5 text-muted-foreground flex-shrink-0" />
+                            <span className="text-muted-foreground line-clamp-2">{candidate.staff_notes}</span>
+                          </div>
+                        </div>
+                      )}
+                      <div className="grid grid-cols-3 gap-2 pt-2 border-t">
                         {candidate.cv_url ? (
                           <Button
                             size="sm"
@@ -751,6 +809,15 @@ export default function StaffFunnel() {
                         >
                           <ShieldCheck className="h-3 w-3 mr-1" />
                           View Details
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="flex-1"
+                          onClick={() => openNotesDialog(candidate)}
+                        >
+                          <StickyNote className="h-3 w-3 mr-1" />
+                          Notes
                         </Button>
                       </div>
                     </Card>
@@ -897,6 +964,16 @@ export default function StaffFunnel() {
                         {stage.name === 'verified' && candidate.verification?.hr_ready && (
                           <div className="text-xs text-primary font-medium">✅ Ready to Present</div>
                         )}
+
+                        {/* Notes Preview */}
+                        {candidate.staff_notes && (
+                          <div className="p-2 bg-muted/50 rounded">
+                            <div className="flex items-start gap-1">
+                              <StickyNote className="h-3 w-3 mt-0.5 text-muted-foreground flex-shrink-0" />
+                              <span className="text-xs text-muted-foreground line-clamp-2">{candidate.staff_notes}</span>
+                            </div>
+                          </div>
+                        )}
                         
                         {/* Actions */}
                         <div className="space-y-2 pt-2 border-t">
@@ -940,6 +1017,15 @@ export default function StaffFunnel() {
                             <ShieldCheck className="h-3 w-3 mr-1" />
                             Edit Verification
                           </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="h-8 text-xs w-full"
+                            onClick={() => openNotesDialog(candidate)}
+                          >
+                            <StickyNote className="h-3 w-3 mr-1" />
+                            {candidate.staff_notes ? 'Edit Notes' : 'Add Notes'}
+                          </Button>
 
                           <Select
                             value={candidate.stage}
@@ -978,6 +1064,46 @@ export default function StaffFunnel() {
             onSuccess={fetchCandidates}
           />
         )}
+
+        {/* Notes Dialog */}
+        <Dialog open={!!editingNotes} onOpenChange={(open) => !open && setEditingNotes(null)}>
+          <DialogContent className="sm:max-w-[500px]">
+            <DialogHeader>
+              <DialogTitle>Staff Notes</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <Textarea
+                placeholder="Add notes about this candidate..."
+                value={notesValue}
+                onChange={(e) => setNotesValue(e.target.value)}
+                rows={6}
+                className="resize-none"
+              />
+              <div className="flex gap-2 justify-end">
+                <Button
+                  variant="outline"
+                  onClick={() => setEditingNotes(null)}
+                  disabled={savingNotes}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleSaveNotes}
+                  disabled={savingNotes}
+                >
+                  {savingNotes ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Saving...
+                    </>
+                  ) : (
+                    'Save Notes'
+                  )}
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
     </>
