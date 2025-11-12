@@ -206,27 +206,27 @@ const CertificationCatalog = () => {
           <div className="grid md:grid-cols-2 gap-5">
             {[
               {
-                name: "ISO 42001 Practitioner",
-                url: "https://cydentityacademy.com/checkout/iso-42001-practitioner",
-                description: "The fundamental concepts, ethical and regulatory requirements, risk assessments, and AI principles.",
-                slot: 1
-              },
-              {
                 name: "ISO 27001 Practitioner",
                 url: "https://cydentityacademy.com/checkout/iso-27001-practitioner",
                 description: "Understanding information security management fundamentals and ISO 27001 framework essentials.",
-                slot: 2
+                slot: 1
               },
               {
                 name: "ISO 27001 Lead Implementer",
                 url: "https://cydentityacademy.com/checkout/iso-27001-lead-implementer",
                 description: "This certification is perfect for professionals who are responsible for implementing Information Security Management Systems in their organizations.",
-                slot: 3
+                slot: 2
               },
               {
                 name: "ISO 27001 Lead Auditor",
                 url: "https://cydentityacademy.com/checkout/iso-27001-lead-auditor",
                 description: "This certification is perfect for professionals who are responsible for auditing Information Security Management Systems in their organizations.",
+                slot: 3
+              },
+              {
+                name: "ISO 42001 Practitioner",
+                url: "https://cydentityacademy.com/checkout/iso-42001-practitioner",
+                description: "The fundamental concepts, ethical and regulatory requirements, risk assessments, and AI principles.",
                 slot: 4
               }
             ].map((cert) => {
