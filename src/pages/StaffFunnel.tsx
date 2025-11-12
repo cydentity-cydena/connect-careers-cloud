@@ -789,8 +789,14 @@ export default function StaffFunnel() {
                         status: (() => {
                           if (!candidate.verification?.certifications) return 'grey';
                           const certs = candidate.verification.certifications;
-                          if (Array.isArray(certs) && certs.some((c: any) => c.status === 'green')) return 'green';
-                          if (Array.isArray(certs) && certs.some((c: any) => c.status === 'amber')) return 'amber';
+                          const certArray = typeof certs === 'string' ? JSON.parse(certs) : certs;
+                          if (!Array.isArray(certArray) || certArray.length === 0) return 'grey';
+                          const hasGreen = certArray.some((c: any) => c.status === 'green');
+                          const hasAmber = certArray.some((c: any) => c.status === 'amber');
+                          const hasRed = certArray.some((c: any) => c.status === 'red');
+                          if (hasGreen) return 'green';
+                          if (hasAmber) return 'amber';
+                          if (hasRed) return 'red';
                           return 'grey';
                         })() as any,
                         tooltip: 'Certifications status'
