@@ -242,11 +242,15 @@ const CertificationCatalog = () => {
                   key={cert.slot}
                   className={`relative ${slotStyles.border} ${slotStyles.size} bg-gradient-to-br ${slotStyles.bg} hover:scale-[1.02] transition-all duration-200`}
                 >
-                  <div className="absolute top-4 right-4 z-10">
+                  <div className="absolute top-4 right-4 z-10 flex flex-col gap-2 items-end">
                     <Badge className={`${slotStyles.badge} text-white border-0 px-3 py-1`}>
                       {cert.slot === 1 && <Star className="h-3.5 w-3.5 mr-1.5 fill-white" />}
                       <Star className="h-3.5 w-3.5 mr-1.5" />
                       {slotStyles.label}
+                    </Badge>
+                    <Badge variant="secondary" className="gap-1">
+                      <CheckCircle className="h-3 w-3" />
+                      Official Partner
                     </Badge>
                   </div>
 
