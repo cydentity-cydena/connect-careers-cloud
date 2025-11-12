@@ -721,20 +721,6 @@ export default function StaffFunnel() {
                       <div className="mb-3">
                         <BadgesRow items={badgeItems} showHrReady />
                       </div>
-                      {candidate.compliance_score !== null && (
-                        <div className="mb-3">
-                          <div className="flex items-center justify-between text-xs mb-1">
-                            <span className="text-muted-foreground">Compliance Score</span>
-                            <span className="font-semibold text-green-600">{candidate.compliance_score}%</span>
-                          </div>
-                          <div className="h-1.5 bg-muted rounded-full overflow-hidden">
-                            <div 
-                              className="h-full bg-gradient-to-r from-green-500 to-emerald-600 transition-all" 
-                              style={{ width: `${candidate.compliance_score}%` }}
-                            />
-                          </div>
-                        </div>
-                      )}
                       <div className="grid grid-cols-2 gap-2 pt-2 border-t">
                         {candidate.cv_url ? (
                           <Button
