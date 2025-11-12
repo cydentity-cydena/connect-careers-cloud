@@ -470,6 +470,42 @@ export default function StaffFunnel() {
     }
   };
 
+  const handleDeleteNotes = async () => {
+    if (!editingNotes) return;
+    
+    setSavingNotes(true);
+    try {
+      const tableName = editingNotes.sourceTable as 'candidate_pipeline' | 'pipeline_candidates';
+      const updateData = tableName === 'pipeline_candidates' 
+        ? { notes: null }
+        : { staff_notes: null };
+
+      const { error } = await supabase
+        .from(tableName)
+        .update(updateData as any)
+        .eq('id', editingNotes.pipelineId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Notes deleted",
+        description: "Candidate notes cleared successfully",
+      });
+
+      fetchCandidates();
+      setEditingNotes(null);
+      setNotesValue("");
+    } catch (error: any) {
+      toast({
+        title: "Error deleting notes",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setSavingNotes(false);
+    }
+  };
+
   const filteredCandidates = candidates.filter((candidate) => {
     const matchesSearch =
       !searchQuery ||
@@ -1079,27 +1115,41 @@ export default function StaffFunnel() {
                 rows={6}
                 className="resize-none"
               />
-              <div className="flex gap-2 justify-end">
-                <Button
-                  variant="outline"
-                  onClick={() => setEditingNotes(null)}
-                  disabled={savingNotes}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  onClick={handleSaveNotes}
-                  disabled={savingNotes}
-                >
-                  {savingNotes ? (
-                    <>
-                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      Saving...
-                    </>
-                  ) : (
-                    'Save Notes'
+              <div className="flex gap-2 justify-between">
+                <div>
+                  {editingNotes?.notes && (
+                    <Button
+                      variant="destructive"
+                      onClick={handleDeleteNotes}
+                      disabled={savingNotes}
+                    >
+                      <Trash2 className="h-4 w-4 mr-2" />
+                      Delete Notes
+                    </Button>
                   )}
-                </Button>
+                </div>
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    onClick={() => setEditingNotes(null)}
+                    disabled={savingNotes}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={handleSaveNotes}
+                    disabled={savingNotes}
+                  >
+                    {savingNotes ? (
+                      <>
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        Saving...
+                      </>
+                    ) : (
+                      'Save Notes'
+                    )}
+                  </Button>
+                </div>
               </div>
             </div>
           </DialogContent>
