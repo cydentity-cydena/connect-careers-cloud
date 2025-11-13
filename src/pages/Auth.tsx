@@ -353,7 +353,7 @@ const Auth = () => {
           <div className="mb-8 text-center max-w-2xl mx-auto">
             <h1 className="text-3xl font-bold mb-4">Join the Cybersecurity Recruitment Revolution</h1>
             <p className="text-muted-foreground mb-6">
-              Create your free account to access exclusive cybersecurity job opportunities, showcase your verified certifications, and connect directly with top employers. No recruitment fees, no barriers - just opportunities.
+              Create your free Cydena account to showcase verified certifications, present real proof of your cyber capabilities, and increase your visibility with hiring teams. No noise — just a platform designed to reduce the barriers to demonstrating what you can really do.
             </p>
             <div className="grid sm:grid-cols-3 gap-4 text-sm">
               <div className="bg-card/50 border border-border rounded-lg p-4">
