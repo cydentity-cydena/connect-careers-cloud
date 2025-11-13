@@ -610,7 +610,7 @@ const Auth = () => {
                   <div>
                     <h3 className="font-semibold text-foreground mb-2">For Employers & Recruiters</h3>
                     <p className="text-sm leading-relaxed">
-                      Employers and recruiters benefit from access to a curated talent pool of pre-screened cybersecurity professionals with verified credentials. Our subscription plans offer unlimited job postings, advanced candidate search, application management tools, and direct communication channels - all at a fraction of traditional recruitment costs.
+                      Employers and recruiters benefit from access to a curated talent pool of pre-screened cybersecurity professionals with verified credentials. Our subscription plans offer unlimited job postings, advanced candidate search, application management tools, and direct communication channels. All while making hiring faster, more cost-effective, and more confidence-driven.
                     </p>
                   </div>
                 </div>
