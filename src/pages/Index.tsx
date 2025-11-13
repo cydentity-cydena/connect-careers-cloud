@@ -30,10 +30,11 @@ const Index = () => {
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto text-center animate-fade-in">
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 md:mb-6">
-              The Future of{" "}
+              Join the{" "}
               <span className="bg-gradient-cyber bg-clip-text text-transparent">
-                Cyber Recruitment
+                Evidence-Led Future
               </span>
+              {" "}of Cyber Hiring
             </h1>
             <p className="text-xl md:text-2xl font-semibold mb-3 md:mb-4">
               Prove your skills. Hire with confidence.
