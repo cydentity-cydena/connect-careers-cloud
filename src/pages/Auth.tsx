@@ -596,7 +596,7 @@ const Auth = () => {
                       Skills-Based Matching
                     </h3>
                     <p className="text-sm leading-relaxed">
-                      Our platform prioritizes verified certifications (CISSP, CEH, OSCP, Security+, CISM, etc.) and practical experience over traditional credentials. Connect directly with employers seeking your specific skills and expertise.
+                      Our platform prioritizes verified certifications (CISSP, CEH, OSCP, Security+, CISM, etc.) and practical experience over traditional credentials. Connect with Employers and Hiring Teams seeking your specific skills and expertise.
                     </p>
                   </div>
 
