@@ -569,7 +569,7 @@ const Auth = () => {
             <CollapsibleTrigger className="w-full">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4 cursor-pointer hover:bg-accent/50 transition-colors">
                 <div className="space-y-1 text-left">
-                  <CardTitle className="text-xl">About Cydena Cybersecurity Recruitment</CardTitle>
+                  <CardTitle className="text-xl">About Cydena Cybersecurity Recruitment Platform</CardTitle>
                   <CardDescription>
                     Learn more about our specialized cybersecurity recruitment platform
                   </CardDescription>
