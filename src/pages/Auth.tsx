@@ -351,7 +351,7 @@ const Auth = () => {
 
           {/* Info Section */}
           <div className="mb-8 text-center max-w-2xl mx-auto">
-            <h1 className="text-3xl font-bold mb-4">Join the Cybersecurity Recruitment Revolution</h1>
+            <h1 className="text-3xl font-bold mb-4">Join the Evidence-Led Cyber Hiring Platform</h1>
             <p className="text-muted-foreground mb-6">
               Create your free Cydena account to showcase verified certifications, present real proof of your cyber capabilities, and increase your visibility with hiring teams. No noise — just a platform designed to reduce the barriers to demonstrating what you can really do.
             </p>
