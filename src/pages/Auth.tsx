@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Shield, Loader2, CheckCircle, ChevronDown } from "lucide-react";
+import { Shield, Loader2, CheckCircle, ChevronDown, Target } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { FunctionsHttpError } from "@supabase/supabase-js";
 import { useNavigate } from "react-router-dom";
@@ -355,7 +355,7 @@ const Auth = () => {
             <p className="text-muted-foreground mb-6">
               Create your free Cydena account to showcase verified certifications, present real proof of your cyber capabilities, and increase your visibility with hiring teams. No noise — just a platform designed to reduce the barriers to demonstrating what you can really do.
             </p>
-            <div className="grid sm:grid-cols-2 gap-4 text-sm">
+            <div className="grid sm:grid-cols-3 gap-4 text-sm">
               <div className="bg-card/50 border border-border rounded-lg p-4">
                 <CheckCircle className="h-6 w-6 text-primary mx-auto mb-2" />
                 <h3 className="font-semibold mb-1">100% Free for Candidates</h3>
@@ -365,6 +365,11 @@ const Auth = () => {
                 <Shield className="h-6 w-6 text-primary mx-auto mb-2" />
                 <h3 className="font-semibold mb-1">Verified Certifications</h3>
                 <p className="text-xs text-muted-foreground">Showcase CISSP, CEH, Security+, and more.</p>
+              </div>
+              <div className="bg-card/50 border border-border rounded-lg p-4">
+                <Target className="h-6 w-6 text-primary mx-auto mb-2" />
+                <h3 className="font-semibold mb-1">Verified Capability</h3>
+                <p className="text-xs text-muted-foreground">Showcase verified capability that strengthens your application and accelerates decisions.</p>
               </div>
             </div>
           </div>
