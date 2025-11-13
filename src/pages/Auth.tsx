@@ -359,7 +359,7 @@ const Auth = () => {
               <div className="bg-card/50 border border-border rounded-lg p-4">
                 <CheckCircle className="h-6 w-6 text-primary mx-auto mb-2" />
                 <h3 className="font-semibold mb-1">100% Free for Candidates</h3>
-                <p className="text-xs text-muted-foreground">Full access to all features. No credit card required.</p>
+                <p className="text-xs text-muted-foreground">Full access to all candidate features, with your data securely stored and protected.</p>
               </div>
               <div className="bg-card/50 border border-border rounded-lg p-4">
                 <Shield className="h-6 w-6 text-primary mx-auto mb-2" />
