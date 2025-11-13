@@ -603,7 +603,7 @@ const Auth = () => {
                   <div>
                     <h3 className="font-semibold text-foreground mb-2">Free for Candidates</h3>
                     <p className="text-sm leading-relaxed">
-                      For cybersecurity professionals, signing up is completely free with no hidden costs. Create your profile, upload your certifications for verification, and start applying to relevant positions immediately. Track your applications in real-time through our transparent pipeline system, and communicate directly with hiring managers through our in-platform messaging.
+                      For cybersecurity professionals, signing up is completely free with no hidden costs. Create your profile, upload your certifications for verification, and start applying to relevant positions immediately. Track your applications in real-time through our transparent pipeline system, and communicate directly with the hiring team through our in-platform messaging.
                     </p>
                   </div>
 
