@@ -74,54 +74,68 @@ const Index = () => {
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid md:grid-cols-2 gap-4 md:gap-6">
               <div className="flex items-start gap-3">
-                <CheckCircle className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
-                <div>
-                  <h3 className="font-semibold mb-1">Real-Time Application Tracking</h3>
-                  <p className="text-sm text-muted-foreground">Never wonder where your application stands - watch it progress from Applied → Under Review → Offer in real-time</p>
+                <div className="flex-shrink-0 mt-0.5">
+                  <CheckCircle className="h-5 w-5 md:h-6 md:w-6 text-primary" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-semibold mb-1 text-sm md:text-base">Real-Time Application Tracking</h3>
+                  <p className="text-xs md:text-sm text-muted-foreground">Never wonder where your application stands - watch it progress from Applied → Under Review → Offer in real-time</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <CheckCircle className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
-                <div>
-                  <h3 className="font-semibold mb-1">Career Transitioners Welcome</h3>
-                  <p className="text-sm text-muted-foreground">Breaking into cybersecurity? We support entry-level talent with partner certifications</p>
+                <div className="flex-shrink-0 mt-0.5">
+                  <CheckCircle className="h-5 w-5 md:h-6 md:w-6 text-primary" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-semibold mb-1 text-sm md:text-base">Career Transitioners Welcome</h3>
+                  <p className="text-xs md:text-sm text-muted-foreground">Breaking into cybersecurity? We support entry-level talent with partner certifications</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <CheckCircle className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
-                <div>
-                  <h3 className="font-semibold mb-1">Get HR-Ready Verified</h3>
-                  <p className="text-sm text-muted-foreground">Submit identity & right-to-work securely once, apply everywhere. Stand out with verified badges</p>
+                <div className="flex-shrink-0 mt-0.5">
+                  <CheckCircle className="h-5 w-5 md:h-6 md:w-6 text-primary" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-semibold mb-1 text-sm md:text-base">Get HR-Ready Verified</h3>
+                  <p className="text-xs md:text-sm text-muted-foreground">Submit identity & right-to-work securely once, apply everywhere. Stand out with verified badges</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <CheckCircle className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
-                <div>
-                  <h3 className="font-semibold mb-1">Showcase Your Certifications</h3>
-                  <p className="text-sm text-muted-foreground">CompTIA, CISSP, CEH, SANS - verified credentials get you noticed</p>
+                <div className="flex-shrink-0 mt-0.5">
+                  <CheckCircle className="h-5 w-5 md:h-6 md:w-6 text-primary" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-semibold mb-1 text-sm md:text-base">Showcase Your Certifications</h3>
+                  <p className="text-xs md:text-sm text-muted-foreground">CompTIA, CISSP, CEH, SANS - verified credentials get you noticed</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <CheckCircle className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
-                <div>
-                  <h3 className="font-semibold mb-1">Prove Your Skills with Assessments</h3>
-                  <p className="text-sm text-muted-foreground">Take TryHackMe and HackTheBox verified assessments to showcase real technical ability</p>
+                <div className="flex-shrink-0 mt-0.5">
+                  <CheckCircle className="h-5 w-5 md:h-6 md:w-6 text-primary" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-semibold mb-1 text-sm md:text-base">Prove Your Skills with Assessments</h3>
+                  <p className="text-xs md:text-sm text-muted-foreground">Take TryHackMe and HackTheBox verified assessments to showcase real technical ability</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <CheckCircle className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
-                <div>
-                  <h3 className="font-semibold mb-1">Gamified Profile & Peer Endorsements</h3>
-                  <p className="text-sm text-muted-foreground">Earn XP, climb the leaderboard, get endorsed by peers, unlock achievements as you grow</p>
+                <div className="flex-shrink-0 mt-0.5">
+                  <CheckCircle className="h-5 w-5 md:h-6 md:w-6 text-primary" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-semibold mb-1 text-sm md:text-base">Gamified Profile & Peer Endorsements</h3>
+                  <p className="text-xs md:text-sm text-muted-foreground">Earn XP, climb the leaderboard, get endorsed by peers, unlock achievements as you grow</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <CheckCircle className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
-                <div>
-                  <h3 className="font-semibold mb-1">Great Application Transparency</h3>
-                  <p className="text-sm text-muted-foreground">See employer updates, status notes, and timeline of your application progress</p>
+                <div className="flex-shrink-0 mt-0.5">
+                  <CheckCircle className="h-5 w-5 md:h-6 md:w-6 text-primary" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-semibold mb-1 text-sm md:text-base">Great Application Transparency</h3>
+                  <p className="text-xs md:text-sm text-muted-foreground">See employer updates, status notes, and timeline of your application progress</p>
                 </div>
               </div>
             </div>
@@ -147,33 +161,33 @@ const Index = () => {
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-            <div className="bg-gradient-card backdrop-blur-sm border border-border rounded-lg p-6 md:p-8 hover:scale-105 transition-transform animate-slide-up">
-              <div className="bg-primary/10 w-12 h-12 md:w-14 md:h-14 rounded-lg flex items-center justify-center mb-4 md:mb-6">
-                <Shield className="h-6 w-6 md:h-7 md:w-7 text-primary" />
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
+            <div className="bg-gradient-card backdrop-blur-sm border border-border rounded-lg p-5 md:p-6 lg:p-8 hover:scale-105 transition-transform animate-slide-up">
+              <div className="bg-primary/10 w-11 h-11 md:w-12 md:h-12 lg:w-14 lg:h-14 rounded-lg flex items-center justify-center mb-3 md:mb-4 lg:mb-6 flex-shrink-0">
+                <Shield className="h-5 w-5 md:h-6 md:w-6 lg:h-7 lg:w-7 text-primary" />
               </div>
-              <h3 className="text-lg md:text-xl font-semibold mb-2 md:mb-3">HR-Aligned Verification Hub</h3>
-              <p className="text-sm md:text-base text-muted-foreground">
+              <h3 className="text-base md:text-lg lg:text-xl font-semibold mb-2 md:mb-3">HR-Aligned Verification Hub</h3>
+              <p className="text-xs md:text-sm lg:text-base text-muted-foreground leading-relaxed">
                 Bring clarity and control together: identity, certifications, and eligibility — safely stored, ready for review.
               </p>
             </div>
 
-            <div className="bg-gradient-card backdrop-blur-sm border border-border rounded-lg p-6 md:p-8 hover:scale-105 transition-transform animate-slide-up" style={{animationDelay: '0.1s'}}>
-              <div className="bg-secondary/10 w-12 h-12 md:w-14 md:h-14 rounded-lg flex items-center justify-center mb-4 md:mb-6">
-                <Briefcase className="h-6 w-6 md:h-7 md:w-7 text-secondary" />
+            <div className="bg-gradient-card backdrop-blur-sm border border-border rounded-lg p-5 md:p-6 lg:p-8 hover:scale-105 transition-transform animate-slide-up" style={{animationDelay: '0.1s'}}>
+              <div className="bg-secondary/10 w-11 h-11 md:w-12 md:h-12 lg:w-14 lg:h-14 rounded-lg flex items-center justify-center mb-3 md:mb-4 lg:mb-6 flex-shrink-0">
+                <Briefcase className="h-5 w-5 md:h-6 md:w-6 lg:h-7 lg:w-7 text-secondary" />
               </div>
-              <h3 className="text-lg md:text-xl font-semibold mb-2 md:mb-3">ATS & Webhook Integration</h3>
-              <p className="text-sm md:text-base text-muted-foreground">
+              <h3 className="text-base md:text-lg lg:text-xl font-semibold mb-2 md:mb-3">ATS & Webhook Integration</h3>
+              <p className="text-xs md:text-sm lg:text-base text-muted-foreground leading-relaxed">
                 Push candidates to Workday and SAP SuccessFactors. Automate workflows with webhooks
               </p>
             </div>
 
-            <div className="bg-gradient-card backdrop-blur-sm border border-border rounded-lg p-6 md:p-8 hover:scale-105 transition-transform animate-slide-up sm:col-span-2 lg:col-span-1" style={{animationDelay: '0.2s'}}>
-              <div className="bg-accent/10 w-12 h-12 md:w-14 md:h-14 rounded-lg flex items-center justify-center mb-4 md:mb-6">
-                <Users className="h-6 w-6 md:h-7 md:w-7 text-accent" />
+            <div className="bg-gradient-card backdrop-blur-sm border border-border rounded-lg p-5 md:p-6 lg:p-8 hover:scale-105 transition-transform animate-slide-up sm:col-span-2 lg:col-span-1" style={{animationDelay: '0.2s'}}>
+              <div className="bg-accent/10 w-11 h-11 md:w-12 md:h-12 lg:w-14 lg:h-14 rounded-lg flex items-center justify-center mb-3 md:mb-4 lg:mb-6 flex-shrink-0">
+                <Users className="h-5 w-5 md:h-6 md:w-6 lg:h-7 lg:w-7 text-accent" />
               </div>
-              <h3 className="text-lg md:text-xl font-semibold mb-2 md:mb-3">Skills Verified by Platforms</h3>
-              <p className="text-sm md:text-base text-muted-foreground">
+              <h3 className="text-base md:text-lg lg:text-xl font-semibold mb-2 md:mb-3">Skills Verified by Platforms</h3>
+              <p className="text-xs md:text-sm lg:text-base text-muted-foreground leading-relaxed">
                 TryHackMe, HackTheBox rankings and verified assessments prove real technical ability
               </p>
             </div>
@@ -385,10 +399,10 @@ const Index = () => {
               {/* Skills-Based Recognition */}
               <Card className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/50 bg-card/50 backdrop-blur">
                 <CardContent className="p-6">
-                  <div className="flex items-start gap-4">
-                    <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                      <Shield className="h-6 w-6 text-primary" />
-                    </div>
+              <div className="flex items-start gap-3 md:gap-4">
+                <div className="flex-shrink-0 w-10 h-10 md:w-12 md:h-12 rounded-lg bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <Shield className="h-5 w-5 md:h-6 md:w-6 text-primary" />
+                </div>
                     <div className="flex-1">
                       <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors">
                         Skills-Based Recognition
@@ -404,10 +418,10 @@ const Index = () => {
               {/* Career Growth Partnerships */}
               <Card className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/50 bg-card/50 backdrop-blur">
                 <CardContent className="p-6">
-                  <div className="flex items-start gap-4">
-                    <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-green-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                      <GraduationCap className="h-6 w-6 text-green-600 dark:text-green-400" />
-                    </div>
+              <div className="flex items-start gap-3 md:gap-4">
+                <div className="flex-shrink-0 w-10 h-10 md:w-12 md:h-12 rounded-lg bg-green-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <GraduationCap className="h-5 w-5 md:h-6 md:w-6 text-green-600 dark:text-green-400" />
+                </div>
                     <div className="flex-1">
                       <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors">
                         Career Growth Partnerships
@@ -423,10 +437,10 @@ const Index = () => {
               {/* Transparent Process */}
               <Card className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/50 bg-card/50 backdrop-blur">
                 <CardContent className="p-6">
-                  <div className="flex items-start gap-4">
-                    <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-blue-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                      <Eye className="h-6 w-6 text-blue-600 dark:text-blue-400" />
-                    </div>
+              <div className="flex items-start gap-3 md:gap-4">
+                <div className="flex-shrink-0 w-10 h-10 md:w-12 md:h-12 rounded-lg bg-blue-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <Eye className="h-5 w-5 md:h-6 md:w-6 text-blue-600 dark:text-blue-400" />
+                </div>
                     <div className="flex-1">
                       <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors">
                         Transparent Application Process
@@ -442,10 +456,10 @@ const Index = () => {
               {/* Fair Pricing Model */}
               <Card className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/50 bg-card/50 backdrop-blur">
                 <CardContent className="p-6">
-                  <div className="flex items-start gap-4">
-                    <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-amber-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                      <DollarSign className="h-6 w-6 text-amber-600 dark:text-amber-400" />
-                    </div>
+              <div className="flex items-start gap-3 md:gap-4">
+                <div className="flex-shrink-0 w-10 h-10 md:w-12 md:h-12 rounded-lg bg-amber-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <DollarSign className="h-5 w-5 md:h-6 md:w-6 text-amber-600 dark:text-amber-400" />
+                </div>
                     <div className="flex-1">
                       <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors">
                         Fair Pricing Model
@@ -487,17 +501,17 @@ const Index = () => {
               <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 <Card className="group hover:shadow-xl transition-all duration-300 bg-card/80 backdrop-blur text-center">
                   <CardContent className="p-6">
-                    <div className="bg-primary/10 w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                      <Shield className="h-6 w-6 text-primary" />
-                    </div>
+                <div className="bg-primary/10 w-10 h-10 md:w-12 md:h-12 rounded-lg flex items-center justify-center mx-auto mb-3 md:mb-4 group-hover:scale-110 transition-transform flex-shrink-0">
+                  <Shield className="h-5 w-5 md:h-6 md:w-6 text-primary" />
+                </div>
                     <h4 className="font-semibold mb-2">Accredited Excellence</h4>
                     <p className="text-sm text-muted-foreground">TRECCERT accreditation ensures internationally recognized certifications</p>
                   </CardContent>
                 </Card>
                 <Card className="group hover:shadow-xl transition-all duration-300 bg-card/80 backdrop-blur text-center">
                   <CardContent className="p-6">
-                    <div className="bg-secondary/10 w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                      <Users className="h-6 w-6 text-secondary" />
+                    <div className="bg-secondary/10 w-10 h-10 md:w-12 md:h-12 rounded-lg flex items-center justify-center mx-auto mb-3 md:mb-4 group-hover:scale-110 transition-transform flex-shrink-0">
+                      <Users className="h-5 w-5 md:h-6 md:w-6 text-secondary" />
                     </div>
                     <h4 className="font-semibold mb-2">Expert Network</h4>
                     <p className="text-sm text-muted-foreground">Access to industry-leading cybersecurity professionals and thought leaders</p>
@@ -505,8 +519,8 @@ const Index = () => {
                 </Card>
                 <Card className="group hover:shadow-xl transition-all duration-300 bg-card/80 backdrop-blur text-center">
                   <CardContent className="p-6">
-                    <div className="bg-accent/10 w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                      <Eye className="h-6 w-6 text-accent" />
+                    <div className="bg-accent/10 w-10 h-10 md:w-12 md:h-12 rounded-lg flex items-center justify-center mx-auto mb-3 md:mb-4 group-hover:scale-110 transition-transform flex-shrink-0">
+                      <Eye className="h-5 w-5 md:h-6 md:w-6 text-accent" />
                     </div>
                     <h4 className="font-semibold mb-2">Global Reach</h4>
                     <p className="text-sm text-muted-foreground">Training and certification recognized across international markets</p>
@@ -514,8 +528,8 @@ const Index = () => {
                 </Card>
                 <Card className="group hover:shadow-xl transition-all duration-300 bg-card/80 backdrop-blur text-center">
                   <CardContent className="p-6">
-                    <div className="bg-accent/10 w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                      <Award className="h-6 w-6 text-accent" />
+                    <div className="bg-accent/10 w-10 h-10 md:w-12 md:h-12 rounded-lg flex items-center justify-center mx-auto mb-3 md:mb-4 group-hover:scale-110 transition-transform flex-shrink-0">
+                      <Award className="h-5 w-5 md:h-6 md:w-6 text-accent" />
                     </div>
                     <h4 className="font-semibold mb-2">Skills Validation</h4>
                     <p className="text-sm text-muted-foreground">Verified competency assessments ensuring job-ready professionals</p>
