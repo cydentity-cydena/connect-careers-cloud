@@ -205,56 +205,74 @@ const Navigation = () => {
           </TooltipProvider>
 
           {/* Mobile Menu */}
-          <div className="lg:hidden flex items-center gap-2 flex-shrink-0">
-            {user && (userRoles.includes('staff') || userRoles.includes('admin')) && (
-              <Link to="/staff/funnel" onClick={handleNavClick}>
-                <Button variant="hero" size="sm" className="font-semibold whitespace-nowrap">
-                  Staff Funnel
+          <div className="lg:hidden flex items-center gap-1.5 flex-shrink-0">
+            {user && (
+              <Link to="/messages" onClick={handleNavClick} className="relative">
+                <Button variant="ghost" size="sm" className="h-9 w-9 p-0">
+                  <Mail className="h-4 w-4" />
+                  {unreadCount > 0 && (
+                    <Badge 
+                      variant="destructive" 
+                      className="absolute -top-1 -right-1 h-4 w-4 p-0 flex items-center justify-center text-[10px]"
+                    >
+                      {unreadCount > 9 ? '9+' : unreadCount}
+                    </Badge>
+                  )}
                 </Button>
               </Link>
-            )}
-            {user && (
-              <>
-                <Link to="/messages" onClick={handleNavClick} className="relative">
-                  <Button variant="ghost" size="sm">
-                    <Mail className="h-4 w-4" />
-                    {unreadCount > 0 && (
-                      <Badge 
-                        variant="destructive" 
-                        className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center text-xs"
-                      >
-                        {unreadCount}
-                      </Badge>
-                    )}
-                  </Button>
-                </Link>
-                <Link to="/dashboard" onClick={handleNavClick}>
-                  <Button variant="hero" size="sm" className="font-semibold whitespace-nowrap">
-                    Dashboard
-                  </Button>
-                </Link>
-              </>
             )}
             
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="sm" className="lg:hidden">
+                <Button variant="ghost" size="sm" className="lg:hidden h-9 w-9 p-0">
                   <Menu className="h-5 w-5" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-[280px] sm:w-[350px]">
-                <div className="flex flex-col gap-6 mt-8">
+              <SheetContent side="right" className="w-[85vw] max-w-[350px]">
+                <div className="flex flex-col gap-6 mt-6">
+                  {/* Mobile Auth Actions - Prioritized */}
+                  {user && (
+                    <div className="flex flex-col gap-3">
+                      {(userRoles.includes('staff') || userRoles.includes('admin')) && (
+                        <Link to="/staff/funnel" onClick={handleNavClick}>
+                          <Button variant="hero" className="w-full font-semibold">
+                            Staff Funnel
+                          </Button>
+                        </Link>
+                      )}
+                      <Link to="/dashboard" onClick={handleNavClick}>
+                        <Button variant="hero" className="w-full font-semibold">
+                          Dashboard
+                        </Button>
+                      </Link>
+                      <Link to="/messages" onClick={handleNavClick}>
+                        <Button variant="outline" className="w-full relative justify-start">
+                          <Mail className="h-4 w-4 mr-2" />
+                          Messages
+                          {unreadCount > 0 && (
+                            <Badge 
+                              variant="destructive" 
+                              className="ml-auto"
+                            >
+                              {unreadCount}
+                            </Badge>
+                          )}
+                        </Button>
+                      </Link>
+                    </div>
+                  )}
+                  
                   {/* Mobile Navigation Links */}
-                  <div className="flex flex-col gap-4">
+                  <div className="flex flex-col gap-3 pt-4 border-t border-border">
                     {!isLoading && navLinks.map((link) => (
                       <Link
                         key={link.to}
                         to={link.to}
                         onClick={handleNavClick}
-                        className={`text-base font-medium transition-colors py-2 ${
+                        className={`text-base font-medium transition-colors py-2 px-1 rounded ${
                           location.pathname === link.to 
-                            ? "text-accent hover:text-accent/80 font-semibold" 
-                            : "hover:text-primary"
+                            ? "text-accent hover:text-accent/80 font-semibold bg-accent/10" 
+                            : "hover:text-primary hover:bg-muted/50"
                         }`}
                       >
                         {link.label}
@@ -262,38 +280,8 @@ const Navigation = () => {
                     ))}
                   </div>
 
-                  {/* Mobile Auth Actions */}
-                  <div className="pt-4 border-t border-border flex flex-col gap-3">
-                    {user && (
-                      <>
-                        {(userRoles.includes('staff') || userRoles.includes('admin')) && (
-                          <Link to="/staff/funnel" onClick={handleNavClick}>
-                            <Button variant="hero" className="w-full font-semibold">
-                              Staff Funnel
-                            </Button>
-                          </Link>
-                        )}
-                        <Link to="/messages" onClick={handleNavClick}>
-                          <Button variant="outline" className="w-full relative">
-                            <Mail className="h-4 w-4 mr-2" />
-                            Messages
-                            {unreadCount > 0 && (
-                              <Badge 
-                                variant="destructive" 
-                                className="ml-2"
-                              >
-                                {unreadCount}
-                              </Badge>
-                            )}
-                          </Button>
-                        </Link>
-                        <Link to="/dashboard" onClick={handleNavClick}>
-                          <Button variant="hero" className="w-full font-semibold">
-                            Dashboard
-                          </Button>
-                        </Link>
-                      </>
-                    )}
+                  {/* Sign Out / Sign In */}
+                  <div className="pt-4 border-t border-border">
                     {user ? (
                       <Button variant="outline" onClick={handleSignOut} className="w-full">
                         <LogOut className="h-4 w-4 mr-2" />
