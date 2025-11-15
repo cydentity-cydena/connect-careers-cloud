@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { User, Briefcase, FileText, TrendingUp, CheckCircle, ArrowRight, Eye, Bug, Target } from "lucide-react";
+import { User, Briefcase, FileText, TrendingUp, CheckCircle, ArrowRight, Eye, Bug } from "lucide-react";
 import { ProfileStrengthMeter } from "@/components/gamification/ProfileStrengthMeter";
 import { AchievementBadges } from "@/components/gamification/AchievementBadges";
 import { XPSystemInfo } from "@/components/gamification/XPSystemInfo";
@@ -15,7 +15,6 @@ import { SkillsAssessmentCTA } from "./SkillsAssessmentCTA";
 import { UsernameChangeDialog } from "./UsernameChangeDialog";
 import { ApplicationTracker } from "./ApplicationTracker";
 import { HRReadyCTA } from "./HRReadyCTA";
-import { PlatformProfilesManager } from "./PlatformProfilesManager";
 import { BadgeSelector } from "@/components/badges/BadgeSelector";
 import { CertificationManager } from "@/components/certifications/CertificationManager";
 import { useQuery } from "@tanstack/react-query";
@@ -329,21 +328,6 @@ const CandidateDashboard = () => {
             </CardContent>
           </Card>
 
-          {/* Platform Profiles Management */}
-          <Card className="border-border shadow-card hover:scale-105 transition-transform">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Target className="h-5 w-5 text-primary" />
-                Platform Profiles
-              </CardTitle>
-              <CardDescription>
-                Manage your TryHackMe and HackTheBox profiles
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <PlatformProfilesManager userId={userId!} />
-            </CardContent>
-          </Card>
 
           <Card className="border-border shadow-card hover:scale-105 transition-transform">
             <CardHeader>

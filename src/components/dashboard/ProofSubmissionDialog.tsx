@@ -96,7 +96,7 @@ export const ProofSubmissionDialog = ({
               required
             />
             <p className="text-xs text-muted-foreground">
-              Complete and import your OpenBadge to auto-verify. Works with: Credly, TryHackMe, HackTheBox, and any OpenBadge-compliant platform.
+              Complete and import your OpenBadge to auto-verify. Works with Credly and any OpenBadge-compliant platform.
             </p>
             {course.badge_hint && (
               <p className="text-xs text-muted-foreground mt-1">{course.badge_hint}</p>
