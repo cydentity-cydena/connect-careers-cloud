@@ -94,9 +94,9 @@ const CertificationCatalog = () => {
     <div className="min-h-screen bg-background">
       <Navigation />
       <SEO 
-        title="Cybersecurity Certifications Catalog - CISSP, Security+, GIAC"
-        description="Explore cybersecurity certification paths from CompTIA, ISC2, SANS. Find Security+, CISSP, OSCP exam vouchers and training."
-        keywords="cybersecurity certifications, CISSP certification, CompTIA Security+, OSCP exam, GIAC certifications"
+        title="Cybersecurity Certifications Catalog"
+        description="Explore cybersecurity certification paths from leading providers. Find exam vouchers and training resources."
+        keywords="cybersecurity certifications, security certifications, certification training, exam prep"
       />
       <Schema type="breadcrumb" data={{
         items: [
@@ -138,7 +138,7 @@ const CertificationCatalog = () => {
         </Card>
 
         <div className="mb-12">
-          <h1 className="text-4xl font-bold mb-2">Cybersecurity Certifications - CISSP, Security+, GIAC</h1>
+          <h1 className="text-4xl font-bold mb-2">Cybersecurity Certifications</h1>
           <p className="text-muted-foreground">
             Advance your cybersecurity career with industry-recognized professional certifications
           </p>
