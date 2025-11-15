@@ -26,6 +26,7 @@ import { HRReadyBadge } from "@/components/hrready/HRReadyBadge";
 import { CandidateAvatar } from "@/components/profiles/CandidateAvatar";
 import { AssessmentResults } from "@/components/profiles/AssessmentResults";
 import { ProfileBadgeDisplay } from "@/components/badges/ProfileBadgeDisplay";
+import { PushCandidateButton } from "@/components/integrations/PushCandidateButton";
 
 export default function ProfileDetail() {
   const { id } = useParams();
@@ -502,11 +503,19 @@ export default function ProfileDetail() {
                     />
                   )}
                   {isUnlocked && currentUserId && !isCandidateViewingCandidate && (
-                    <DirectMessageButton
-                      recipientId={id!}
-                      recipientName={profile.full_name || profile.username || "Candidate"}
-                      variant="default"
-                    />
+                    <>
+                      <DirectMessageButton
+                        recipientId={id!}
+                        recipientName={profile.full_name || profile.username || "Candidate"}
+                        variant="default"
+                      />
+                      {(viewerRole === 'employer' || viewerRole === 'recruiter') && (
+                        <PushCandidateButton 
+                          candidateId={id!}
+                          candidateName={profile.full_name || profile.username}
+                        />
+                      )}
+                    </>
                   )}
                 </div>
 
