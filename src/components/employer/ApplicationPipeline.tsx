@@ -789,6 +789,84 @@ export const ApplicationPipeline = () => {
     }
   };
 
+  const toggleApplicationSelection = (appId: string) => {
+    setSelectedApplications(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(appId)) {
+        newSet.delete(appId);
+      } else {
+        newSet.add(appId);
+      }
+      return newSet;
+    });
+  };
+
+  const handleBulkMove = async (stage: string) => {
+    const selectedApps = Array.from(selectedApplications);
+    if (selectedApps.length === 0) return;
+
+    try {
+      const { error } = await supabase
+        .from('applications')
+        .update({ stage: stage as PipelineStage })
+        .in('id', selectedApps);
+
+      if (error) throw error;
+
+      await fetchApplications();
+      setSelectedApplications(new Set());
+
+      toast({
+        title: "Success",
+        description: `Moved ${selectedApps.length} application(s) to ${stage}`,
+      });
+    } catch (error) {
+      console.error('Bulk move error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to move applications",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleBulkReject = async () => {
+    const selectedApps = Array.from(selectedApplications);
+    if (selectedApps.length === 0) return;
+
+    try {
+      const { error } = await supabase
+        .from('applications')
+        .update({ stage: 'rejected' as PipelineStage })
+        .in('id', selectedApps);
+
+      if (error) throw error;
+
+      await fetchApplications();
+      setSelectedApplications(new Set());
+
+      toast({
+        title: "Success",
+        description: `Rejected ${selectedApps.length} application(s)`,
+      });
+    } catch (error) {
+      console.error('Bulk reject error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to reject applications",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleBulkMessage = () => {
+    toast({
+      title: "Bulk Messaging",
+      description: "Select individual candidates to message them",
+    });
+    setSelectedApplications(new Set());
+  };
+
   const exportToCSV = () => {
     const headers = ["Name", "Title", "Years Experience", "Job", "Stage", "Applied Date", "Notes"];
     const rows = applications.map(app => [
@@ -1222,6 +1300,8 @@ export const ApplicationPipeline = () => {
                             candidateId: application.candidate_id, 
                             verification: application.candidate_verifications 
                           })}
+                          isSelected={selectedApplications.has(application.id)}
+                          onToggleSelection={() => toggleApplicationSelection(application.id)}
                         />
                       ))}
                       {stageApplications.length === 0 && (
