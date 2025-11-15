@@ -260,31 +260,38 @@ export function CertificationVerificationReview() {
                   </div>
 
                   <div className="space-y-3">
-                    {request.credential_id && (
-                      <div className="flex items-center gap-3 p-3 bg-secondary/50 rounded-lg">
-                        <div className="flex-1">
-                          <p className="text-sm text-muted-foreground mb-1">Credential ID</p>
-                          <p className="font-mono text-sm font-medium">{request.credential_id}</p>
-                        </div>
-                        {getVerificationUrl(request.issuer, request.credential_id) && (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            asChild
-                            className="gap-2"
-                          >
-                            <a
-                              href={getVerificationUrl(request.issuer, request.credential_id)!}
-                              target="_blank"
-                              rel="noopener noreferrer"
+                    {/* Credential ID Section */}
+                    <div className="p-4 bg-secondary/30 rounded-lg border border-border">
+                      <p className="text-sm font-semibold mb-2">Credential ID:</p>
+                      {request.credential_id ? (
+                        <div className="flex items-center gap-3">
+                          <div className="flex-1">
+                            <p className="font-mono text-sm font-medium bg-background px-3 py-2 rounded border">
+                              {request.credential_id}
+                            </p>
+                          </div>
+                          {getVerificationUrl(request.issuer, request.credential_id) && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              asChild
+                              className="gap-2"
                             >
-                              <ExternalLink className="h-4 w-4" />
-                              Verify with {request.issuer}
-                            </a>
-                          </Button>
-                        )}
-                      </div>
-                    )}
+                              <a
+                                href={getVerificationUrl(request.issuer, request.credential_id)!}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                <ExternalLink className="h-4 w-4" />
+                                Verify with {request.issuer}
+                              </a>
+                            </Button>
+                          )}
+                        </div>
+                      ) : (
+                        <p className="text-sm text-muted-foreground italic">No credential ID provided</p>
+                      )}
+                    </div>
                     
                     <div className="grid grid-cols-2 gap-4 text-sm">
                       {request.expiry_date && (
@@ -300,26 +307,41 @@ export function CertificationVerificationReview() {
                     </div>
                   </div>
 
-                  {request.proof_document_urls && Array.isArray(request.proof_document_urls) && request.proof_document_urls.length > 0 && (
-                    <div className="space-y-2">
-                      <p className="text-sm font-medium">Proof Documents:</p>
+                  {/* Proof Documents Section */}
+                  <div className="p-4 bg-secondary/30 rounded-lg border border-border">
+                    <p className="text-sm font-semibold mb-3 flex items-center gap-2">
+                      <FileText className="h-4 w-4" />
+                      Proof Documents:
+                    </p>
+                    {request.proof_document_urls && Array.isArray(request.proof_document_urls) && request.proof_document_urls.length > 0 ? (
                       <div className="flex flex-wrap gap-2">
-                        {request.proof_document_urls.map((url: string, idx: number) => (
-                          <a
-                            key={idx}
-                            href={getDocumentUrl(url)}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
-                          >
-                            <FileText className="h-4 w-4" />
-                            Document {idx + 1}
-                            <ExternalLink className="h-3 w-3" />
-                          </a>
-                        ))}
+                        {request.proof_document_urls.map((url: string, idx: number) => {
+                          const fileName = url.split('/').pop() || `Document ${idx + 1}`;
+                          return (
+                            <Button
+                              key={idx}
+                              variant="outline"
+                              size="sm"
+                              asChild
+                              className="gap-2"
+                            >
+                              <a
+                                href={getDocumentUrl(url)}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                <FileText className="h-4 w-4" />
+                                {fileName}
+                                <ExternalLink className="h-3 w-3" />
+                              </a>
+                            </Button>
+                          );
+                        })}
                       </div>
-                    </div>
-                  )}
+                    ) : (
+                      <p className="text-sm text-muted-foreground italic">No documents uploaded</p>
+                    )}
+                  </div>
 
                   {request.verification_status === 'pending' && (
                     <div className="space-y-3 pt-4 border-t">
