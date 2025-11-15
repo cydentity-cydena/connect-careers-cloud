@@ -147,6 +147,8 @@ export function CertificationVerificationReview() {
       return `https://www.credly.com/badges/${credentialId}`;
     } else if (issuerLower.includes('microsoft')) {
       return `https://learn.microsoft.com/api/credentials/share/${credentialId}`;
+    } else if (issuerLower.includes('securiti')) {
+      return `https://www.credly.com/badges/${credentialId}`;
     } else if (issuerLower.includes('linkedin')) {
       return `https://www.linkedin.com/learning/certificates/${credentialId}`;
     } else if (issuerLower.includes('coursera')) {
@@ -159,6 +161,20 @@ export function CertificationVerificationReview() {
       return `https://www.isc2.org/MemberVerification`;
     } else if (issuerLower.includes('offensive security') || issuerLower.includes('offsec')) {
       return `https://www.offensive-security.com/offsec/certification-verification/`;
+    } else if (issuerLower.includes('ec-council') || issuerLower.includes('eccouncil')) {
+      return `https://aspen.eccouncil.org/verify`;
+    } else if (issuerLower.includes('isaca')) {
+      return `https://www.isaca.org/credentialing/how-to-verify-a-certification`;
+    } else if (issuerLower.includes('giac') || issuerLower.includes('sans')) {
+      return `https://www.giac.org/certified-professional/${credentialId}`;
+    } else if (issuerLower.includes('aws') || issuerLower.includes('amazon web services')) {
+      return `https://www.credly.com/badges/${credentialId}`;
+    } else if (issuerLower.includes('google cloud') || issuerLower.includes('gcp')) {
+      return `https://www.credential.net/profile/${credentialId}`;
+    } else if (issuerLower.includes('palo alto')) {
+      return `https://www.credly.com/badges/${credentialId}`;
+    } else if (issuerLower.includes('fortinet')) {
+      return `https://www.credly.com/badges/${credentialId}`;
     }
     
     // Return null if no known verification URL
