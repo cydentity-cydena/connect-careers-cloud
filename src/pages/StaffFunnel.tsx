@@ -111,11 +111,18 @@ export default function StaffFunnel() {
 
       if (pipelineError) throw pipelineError;
 
-      // Fetch from pipeline_candidates (Founding 20 applications without profiles)
+      // Fetch from pipeline_candidates (Founding 20 applications)
       const { data: applicationsData, error: applicationsError } = await supabase
         .from("pipeline_candidates")
-        .select("*")
-        .is('profile_id', null) // Only show candidates who haven't created profiles yet
+        .select(`
+          *,
+          profiles:profile_id (
+            full_name,
+            username,
+            email,
+            avatar_url
+          )
+        `)
         .order("created_at", { ascending: false });
 
       if (applicationsError) throw applicationsError;
@@ -135,9 +142,9 @@ export default function StaffFunnel() {
         cv_url: app.cv_url,
         compliance_score: null,
         source_table: 'pipeline_candidates', // Track which table this came from
-        profiles: {
+        profiles: (app as any).profiles || {
           full_name: app.full_name,
-          username: null, // Pipeline candidates don't have usernames yet
+          username: null, // Will be null if they haven't created profile
           email: app.email,
           avatar_url: null
         }
