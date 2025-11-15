@@ -137,10 +137,6 @@ const Community = () => {
                       <span className="font-semibold">{stats.activeMembers.toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-sm text-muted-foreground">Certs Earned</span>
-                      <span className="font-semibold">{stats.certsEarned.toLocaleString()}</span>
-                    </div>
-                    <div className="flex justify-between items-center">
                       <span className="text-sm text-muted-foreground">Projects Shared</span>
                       <span className="font-semibold">{stats.projectsShared.toLocaleString()}</span>
                     </div>
