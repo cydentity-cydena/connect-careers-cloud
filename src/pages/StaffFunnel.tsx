@@ -115,6 +115,7 @@ export default function StaffFunnel() {
       const { data: applicationsData, error: applicationsError } = await supabase
         .from("pipeline_candidates")
         .select("*")
+        .is('profile_id', null) // Only show candidates who haven't created profiles yet
         .order("created_at", { ascending: false });
 
       if (applicationsError) throw applicationsError;
