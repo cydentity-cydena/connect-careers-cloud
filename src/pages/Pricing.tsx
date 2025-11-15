@@ -9,8 +9,6 @@ import { useSubscription } from "@/hooks/useSubscription";
 import { supabase } from "@/integrations/supabase/client";
 import SEO from "@/components/SEO";
 import Schema from "@/components/Schema";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ROICalculator } from "@/components/pricing/ROICalculator";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 
@@ -103,220 +101,209 @@ const Pricing = () => {
           </div>
         </div>
 
-        <Tabs defaultValue="pricing" className="w-full">
-          <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-12">
-            <TabsTrigger value="pricing">Pricing Plans</TabsTrigger>
-            <TabsTrigger value="roi">ROI Calculator</TabsTrigger>
-          </TabsList>
+        <div className="space-y-16">
+          <Card>
+            <CardHeader className="text-center">
+              <CardTitle className="text-2xl">Additional Unlocks</CardTitle>
+              <CardDescription>
+                Need more unlocks? Available at £8 each for all tiers. Enterprise plans can be customized to your needs.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid md:grid-cols-3 gap-4 text-center">
+                <div className="p-4 border rounded-lg">
+                  <DollarSign className="h-8 w-8 mx-auto mb-2 text-primary" />
+                  <h4 className="font-semibold mb-1">Transparent</h4>
+                  <p className="text-sm text-muted-foreground">No hidden fees</p>
+                </div>
+                <div className="p-4 border rounded-lg">
+                  <Users className="h-8 w-8 mx-auto mb-2 text-primary" />
+                  <h4 className="font-semibold mb-1">Pay for Value</h4>
+                  <p className="text-sm text-muted-foreground">Only unlock who you contact</p>
+                </div>
+                <div className="p-4 border rounded-lg">
+                  <Zap className="h-8 w-8 mx-auto mb-2 text-primary" />
+                  <h4 className="font-semibold mb-1">Scale Efficiently</h4>
+                  <p className="text-sm text-muted-foreground">Custom solutions for high-volume</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
-          <TabsContent value="pricing" className="space-y-16">
+          <div className="grid md:grid-cols-3 gap-8">
             <Card>
-              <CardHeader className="text-center">
-                <CardTitle className="text-2xl">Additional Unlocks</CardTitle>
-                <CardDescription>
-                  Need more unlocks? Available at £8 each for all tiers. Enterprise plans can be customized to your needs.
-                </CardDescription>
+              <CardHeader>
+                <CardTitle>Starter</CardTitle>
+                <CardDescription>Individual recruiters</CardDescription>
+                <div className="mt-4">
+                  {billingPeriod === 'annual' ? (
+                    <>
+                      <span className="text-4xl font-bold">£{Math.round(getPricing(99))}</span>
+                      <span className="text-muted-foreground">/year</span>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        £{Math.round(getMonthlyEquivalent(99))}/mo
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <span className="text-4xl font-bold">£99</span>
+                      <span className="text-muted-foreground">/month</span>
+                    </>
+                  )}
+                </div>
               </CardHeader>
               <CardContent>
-                <div className="grid md:grid-cols-3 gap-4 text-center">
-                  <div className="p-4 border rounded-lg">
-                    <DollarSign className="h-8 w-8 mx-auto mb-2 text-primary" />
-                    <h4 className="font-semibold mb-1">Transparent</h4>
-                    <p className="text-sm text-muted-foreground">No hidden fees</p>
-                  </div>
-                  <div className="p-4 border rounded-lg">
-                    <Users className="h-8 w-8 mx-auto mb-2 text-primary" />
-                    <h4 className="font-semibold mb-1">Pay for Value</h4>
-                    <p className="text-sm text-muted-foreground">Only unlock who you contact</p>
-                  </div>
-                  <div className="p-4 border rounded-lg">
-                    <Zap className="h-8 w-8 mx-auto mb-2 text-primary" />
-                    <h4 className="font-semibold mb-1">Scale Efficiently</h4>
-                    <p className="text-sm text-muted-foreground">Custom solutions for high-volume</p>
-                  </div>
-                </div>
+                <ul className="space-y-2">
+                  <li className="flex gap-2">
+                    <Check className="h-5 w-5 text-primary shrink-0" />
+                    <span>1 seat</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <Check className="h-5 w-5 text-primary shrink-0" />
+                    <span>10 unlocks/month</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <Check className="h-5 w-5 text-primary shrink-0" />
+                    <span>£8 per extra unlock</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <Check className="h-5 w-5 text-primary shrink-0" />
+                    <span>Evidence profiles</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <Check className="h-5 w-5 text-primary shrink-0" />
+                    <span>Pipeline tools</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <Check className="h-5 w-5 text-primary shrink-0" />
+                    <span>Direct messaging</span>
+                  </li>
+                </ul>
               </CardContent>
+              <CardFooter>
+                <Button 
+                  className="w-full" 
+                  variant="outline"
+                  onClick={() => handleTierSelect('employer_starter')}
+                  disabled={checkingAuth}
+                >
+                  Choose Starter
+                </Button>
+              </CardFooter>
             </Card>
 
-            <div className="grid md:grid-cols-3 gap-8">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Starter</CardTitle>
-                  <CardDescription>Individual recruiters</CardDescription>
-                  <div className="mt-4">
-                    {billingPeriod === 'annual' ? (
-                      <>
-                        <span className="text-4xl font-bold">£{Math.round(getPricing(99))}</span>
-                        <span className="text-muted-foreground">/year</span>
-                        <p className="text-sm text-muted-foreground mt-1">
-                          £{Math.round(getMonthlyEquivalent(99))}/mo
-                        </p>
-                      </>
-                    ) : (
-                      <>
-                        <span className="text-4xl font-bold">£99</span>
-                        <span className="text-muted-foreground">/month</span>
-                      </>
-                    )}
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2">
-                    <li className="flex gap-2">
-                      <Check className="h-5 w-5 text-primary shrink-0" />
-                      <span>1 seat</span>
-                    </li>
-                    <li className="flex gap-2">
-                      <Check className="h-5 w-5 text-primary shrink-0" />
-                      <span>10 unlocks/month</span>
-                    </li>
-                    <li className="flex gap-2">
-                      <Check className="h-5 w-5 text-primary shrink-0" />
-                      <span>£8 per extra unlock</span>
-                    </li>
-                    <li className="flex gap-2">
-                      <Check className="h-5 w-5 text-primary shrink-0" />
-                      <span>Evidence profiles</span>
-                    </li>
-                    <li className="flex gap-2">
-                      <Check className="h-5 w-5 text-primary shrink-0" />
-                      <span>Pipeline tools</span>
-                    </li>
-                    <li className="flex gap-2">
-                      <Check className="h-5 w-5 text-primary shrink-0" />
-                      <span>Direct messaging</span>
-                    </li>
-                  </ul>
-                </CardContent>
-                <CardFooter>
-                  <Button 
-                    className="w-full" 
-                    variant="outline"
-                    onClick={() => handleTierSelect('employer_starter')}
-                    disabled={checkingAuth}
-                  >
-                    Choose Starter
-                  </Button>
-                </CardFooter>
-              </Card>
+            <Card className="border-primary relative">
+              <Badge className="absolute -top-3 left-1/2 -translate-x-1/2">Most Popular</Badge>
+              <CardHeader>
+                <CardTitle>Team</CardTitle>
+                <CardDescription>Hiring teams</CardDescription>
+                <div className="mt-4">
+                  {billingPeriod === 'annual' ? (
+                    <>
+                      <span className="text-4xl font-bold">£{Math.round(getPricing(249))}</span>
+                      <span className="text-muted-foreground">/year</span>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        £{Math.round(getMonthlyEquivalent(249))}/mo
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <span className="text-4xl font-bold">£249</span>
+                      <span className="text-muted-foreground">/month</span>
+                    </>
+                  )}
+                </div>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2">
+                  <li className="flex gap-2">
+                    <Check className="h-5 w-5 text-primary shrink-0" />
+                    <span>5 seats</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <Check className="h-5 w-5 text-primary shrink-0" />
+                    <span>30 unlocks/month</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <Check className="h-5 w-5 text-primary shrink-0" />
+                    <span>£8 per extra unlock</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <Check className="h-5 w-5 text-primary shrink-0" />
+                    <span>All Starter features</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <Check className="h-5 w-5 text-primary shrink-0" />
+                    <span>Team collaboration</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <Check className="h-5 w-5 text-primary shrink-0" />
+                    <span>Priority support</span>
+                  </li>
+                </ul>
+              </CardContent>
+              <CardFooter>
+                <Button 
+                  className="w-full"
+                  onClick={() => handleTierSelect('employer_growth')}
+                  disabled={checkingAuth}
+                >
+                  Choose Team
+                </Button>
+              </CardFooter>
+            </Card>
 
-              <Card className="border-primary relative">
-                <Badge className="absolute -top-3 left-1/2 -translate-x-1/2">Most Popular</Badge>
-                <CardHeader>
-                  <CardTitle>Team</CardTitle>
-                  <CardDescription>Hiring teams</CardDescription>
-                  <div className="mt-4">
-                    {billingPeriod === 'annual' ? (
-                      <>
-                        <span className="text-4xl font-bold">£{Math.round(getPricing(249))}</span>
-                        <span className="text-muted-foreground">/year</span>
-                        <p className="text-sm text-muted-foreground mt-1">
-                          £{Math.round(getMonthlyEquivalent(249))}/mo
-                        </p>
-                      </>
-                    ) : (
-                      <>
-                        <span className="text-4xl font-bold">£249</span>
-                        <span className="text-muted-foreground">/month</span>
-                      </>
-                    )}
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2">
-                    <li className="flex gap-2">
-                      <Check className="h-5 w-5 text-primary shrink-0" />
-                      <span>5 seats</span>
-                    </li>
-                    <li className="flex gap-2">
-                      <Check className="h-5 w-5 text-primary shrink-0" />
-                      <span>30 unlocks/month</span>
-                    </li>
-                    <li className="flex gap-2">
-                      <Check className="h-5 w-5 text-primary shrink-0" />
-                      <span>£8 per extra unlock</span>
-                    </li>
-                    <li className="flex gap-2">
-                      <Check className="h-5 w-5 text-primary shrink-0" />
-                      <span>All Starter features</span>
-                    </li>
-                    <li className="flex gap-2">
-                      <Check className="h-5 w-5 text-primary shrink-0" />
-                      <span>Team collaboration</span>
-                    </li>
-                    <li className="flex gap-2">
-                      <Check className="h-5 w-5 text-primary shrink-0" />
-                      <span>Priority support</span>
-                    </li>
-                  </ul>
-                </CardContent>
-                <CardFooter>
-                  <Button 
-                    className="w-full"
-                    onClick={() => handleTierSelect('employer_growth')}
-                    disabled={checkingAuth}
-                  >
-                    Choose Team
-                  </Button>
-                </CardFooter>
-              </Card>
-
-              <Card className="border-2 border-primary/50 relative">
-                <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-primary to-purple-600">
-                  <Sparkles className="h-3 w-3 mr-1" />
-                  Best Value
-                </Badge>
-                <CardHeader>
-                  <CardTitle>Enterprise</CardTitle>
-                  <CardDescription>Agencies & high-volume</CardDescription>
-                  <div className="mt-4">
-                    <span className="text-4xl font-bold">Let&apos;s Talk</span>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2">
-                    <li className="flex gap-2">
-                      <Check className="h-5 w-5 text-primary shrink-0" />
-                      <span>10+ seats</span>
-                    </li>
-                    <li className="flex gap-2">
-                      <Check className="h-5 w-5 text-primary shrink-0" />
-                      <span className="font-semibold">Custom unlocks</span>
-                    </li>
-                    <li className="flex gap-2">
-                      <Check className="h-5 w-5 text-primary shrink-0" />
-                      <span>Custom integrations</span>
-                    </li>
-                    <li className="flex gap-2">
-                      <Check className="h-5 w-5 text-primary shrink-0" />
-                      <span>SLA guarantees</span>
-                    </li>
-                    <li className="flex gap-2">
-                      <Check className="h-5 w-5 text-primary shrink-0" />
-                      <span>Volume discounts</span>
-                    </li>
-                    <li className="flex gap-2">
-                      <Check className="h-5 w-5 text-primary shrink-0" />
-                      <span>White-label options</span>
-                    </li>
-                  </ul>
-                </CardContent>
-                <CardFooter>
-                  <Button 
-                    className="w-full"
-                    onClick={() => navigate('/contact')}
-                  >
-                    Contact Sales
-                  </Button>
-                </CardFooter>
-              </Card>
-            </div>
-          </TabsContent>
-
-          <TabsContent value="roi">
-            <ROICalculator />
-          </TabsContent>
-        </Tabs>
+            <Card className="border-2 border-primary/50 relative">
+              <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-primary to-purple-600">
+                <Sparkles className="h-3 w-3 mr-1" />
+                Best Value
+              </Badge>
+              <CardHeader>
+                <CardTitle>Enterprise</CardTitle>
+                <CardDescription>Agencies & high-volume</CardDescription>
+                <div className="mt-4">
+                  <span className="text-4xl font-bold">Let&apos;s Talk</span>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2">
+                  <li className="flex gap-2">
+                    <Check className="h-5 w-5 text-primary shrink-0" />
+                    <span>10+ seats</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <Check className="h-5 w-5 text-primary shrink-0" />
+                    <span className="font-semibold">Custom unlocks</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <Check className="h-5 w-5 text-primary shrink-0" />
+                    <span>Custom integrations</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <Check className="h-5 w-5 text-primary shrink-0" />
+                    <span>SLA guarantees</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <Check className="h-5 w-5 text-primary shrink-0" />
+                    <span>Volume discounts</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <Check className="h-5 w-5 text-primary shrink-0" />
+                    <span>White-label options</span>
+                  </li>
+                </ul>
+              </CardContent>
+              <CardFooter>
+                <Button 
+                  className="w-full"
+                  onClick={() => navigate('/contact')}
+                >
+                  Contact Sales
+                </Button>
+              </CardFooter>
+            </Card>
+          </div>
+        </div>
 
         <div className="text-center mt-16">
           <p className="text-muted-foreground mb-4">Questions about pricing?</p>
