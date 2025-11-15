@@ -563,12 +563,12 @@ const Partnerships = () => {
                           <div className="text-center mb-6">
                             {tier.originalPrice && (
                               <p className="text-sm text-muted-foreground line-through">
-                                ${tier.originalPrice.toLocaleString()}
+                                £{tier.originalPrice.toLocaleString()}
                               </p>
                             )}
-                            <p className="text-4xl font-bold">${tier.price.toLocaleString()}</p>
+                            <p className="text-4xl font-bold">£{tier.price.toLocaleString()}</p>
                             <p className="text-sm text-muted-foreground mt-1">
-                              ${Math.round(tier.price / tier.weeks)}/week
+                              £{Math.round(tier.price / tier.weeks)}/week
                             </p>
                           </div>
                           <Button 
@@ -879,7 +879,7 @@ const Partnerships = () => {
                   </CardHeader>
                   <CardContent>
                     <p className="text-muted-foreground">
-                      Standard placement lists you in the relevant category sections at $149/week base rate. Featured placement upgrades you to the premium top-of-page section with logo display, custom branding, and guaranteed visibility for an additional $100-250/week (depending on slot position 1-4). Volume discounts apply automatically.
+                      Standard placement lists you in the relevant category sections at £149/week base rate. Featured placement upgrades you to the premium top-of-page section with logo display, custom branding, and guaranteed visibility for an additional £100-250/week (depending on slot position 1-4). Volume discounts apply automatically.
                     </p>
                   </CardContent>
                 </Card>
