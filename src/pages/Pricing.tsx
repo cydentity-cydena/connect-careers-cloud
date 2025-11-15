@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Check, X, ArrowRight, TrendingDown, DollarSign, Users, Zap, Sparkles } from "lucide-react";
+import { Check, ArrowRight, DollarSign, Users, Zap, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useSubscription } from "@/hooks/useSubscription";
 import { supabase } from "@/integrations/supabase/client";
@@ -87,7 +87,7 @@ const Pricing = () => {
             Simple, Transparent Pricing
           </h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
-            No 20% agency fees. Just verified cyber talent and evidence-first profiles.
+            Verified cyber talent and evidence-first profiles for your hiring needs.
           </p>
           
           <div className="flex items-center justify-center gap-4">
@@ -110,69 +110,6 @@ const Pricing = () => {
           </TabsList>
 
           <TabsContent value="pricing" className="space-y-16">
-            <Card className="border-2 border-primary/20 bg-gradient-to-r from-background to-primary/5">
-              <CardContent className="p-8">
-                <div className="grid md:grid-cols-2 gap-8">
-                  <div>
-                    <div className="flex items-center gap-2 mb-4">
-                      <TrendingDown className="h-6 w-6 text-destructive" />
-                      <h3 className="text-2xl font-bold text-destructive">Traditional Recruitment</h3>
-                    </div>
-                    <ul className="space-y-3 text-muted-foreground">
-                      <li className="flex gap-2">
-                        <X className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
-                        <span>20% agency fees (£12k on £60k hire)</span>
-                      </li>
-                      <li className="flex gap-2">
-                        <X className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
-                        <span>Unverified candidates</span>
-                      </li>
-                      <li className="flex gap-2">
-                        <X className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
-                        <span>CV keyword matching</span>
-                      </li>
-                      <li className="flex gap-2">
-                        <X className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
-                        <span>No proof of skills</span>
-                      </li>
-                      <li className="flex gap-2">
-                        <X className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
-                        <span>Pay per hire every time</span>
-                      </li>
-                    </ul>
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2 mb-4">
-                      <Zap className="h-6 w-6 text-primary" />
-                      <h3 className="text-2xl font-bold text-primary">Cydena Platform</h3>
-                    </div>
-                    <ul className="space-y-3 text-muted-foreground">
-                      <li className="flex gap-2">
-                        <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                        <span>Fixed subscription from £99</span>
-                      </li>
-                      <li className="flex gap-2">
-                        <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                        <span>Verified identity & RTW</span>
-                      </li>
-                      <li className="flex gap-2">
-                        <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                        <span>Evidence-first profiles</span>
-                      </li>
-                      <li className="flex gap-2">
-                        <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                        <span>Skills assessments</span>
-                      </li>
-                      <li className="flex gap-2">
-                        <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                        <span>Unlimited with Enterprise</span>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
             <Card>
               <CardHeader className="text-center">
                 <CardTitle className="text-2xl">Overage Pricing</CardTitle>
