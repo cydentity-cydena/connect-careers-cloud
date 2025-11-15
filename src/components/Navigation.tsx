@@ -79,6 +79,7 @@ const Navigation = () => {
     { to: "/career-assistant", label: "AI Assistant", showForRoles: ["candidate"] },
     { to: "/training", label: "Training" },
     { to: "/certifications-catalog", label: "Certifications" },
+    { to: "/pricing", label: "Pricing" },
     { to: "/community", label: "Community" },
     { to: "/contact", label: "Contact" },
   ];
