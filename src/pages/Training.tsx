@@ -212,7 +212,7 @@ const Training = () => {
     <div className="min-h-screen bg-background">
       <Navigation />
       <SEO 
-        title="Free Cybersecurity Training Courses - Security+ to OSCP Prep"
+        title="Cybersecurity Training Courses - Security+ to OSCP Prep"
         description="Access free cybersecurity training from Hack The Box, TryHackMe, and top providers. Prepare for Security+, CEH, OSCP certifications with hands-on labs."
         keywords="free cybersecurity training, Security+ courses, OSCP preparation, penetration testing labs, HTB Academy"
       />
@@ -226,7 +226,7 @@ const Training = () => {
         <div className="max-w-6xl mx-auto">
           <div className="mb-12">
             <h1 className="text-5xl font-bold mb-4 bg-gradient-cyber bg-clip-text text-transparent">
-              Free Cybersecurity Training & Certification Prep
+              Cybersecurity Training & Certification Prep
             </h1>
             <p className="text-xl text-muted-foreground mb-6">
               Complete courses, import certifications, and boost your score with verified training
