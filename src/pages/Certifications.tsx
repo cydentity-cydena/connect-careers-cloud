@@ -51,8 +51,14 @@ const Certifications = () => {
   const handleAdd = async () => {
     if (!userId) return;
     if (!name) { toast.error('Certification name is required'); return; }
-    if ((!proofFiles || proofFiles.length === 0) && !credentialUrl.trim()) {
-      toast.error('Please provide either a Credly badge URL or upload proof documents');
+    
+    // Require at least one form of proof
+    const hasCredentialId = credentialId.trim().length > 0;
+    const hasCredentialUrl = credentialUrl.trim().length > 0;
+    const hasProofDocs = proofFiles && proofFiles.length > 0;
+    
+    if (!hasCredentialId && !hasCredentialUrl && !hasProofDocs) {
+      toast.error('Please provide at least one form of proof: Credential ID, Badge URL, or Proof Documents');
       return;
     }
     setLoading(true);
