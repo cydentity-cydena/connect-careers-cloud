@@ -23,6 +23,7 @@ import { formatDistanceToNow } from "date-fns";
 import { HireConfirmationDialog } from "./HireConfirmationDialog";
 import { SendMessageDialog } from "@/components/messaging/SendMessageDialog";
 import { BadgesRow, BadgeItem, BadgeStatus } from "@/components/hrready/BadgesRow";
+import { PushCandidateButton } from "@/components/integrations/PushCandidateButton";
 
 type PipelineStage = "applied" | "screening" | "interview" | "offer" | "rejected" | "hired";
 
@@ -351,6 +352,10 @@ export const ApplicationCard = ({ application, onStageChange, onToggleStar, onAd
               <MessageSquare className="h-4 w-4 mr-1.5" />
               <span className="truncate">Message</span>
             </Button>
+            <PushCandidateButton 
+              candidateId={application.candidate_id}
+              candidateName={application.profile.full_name}
+            />
           </div>
 
           {/* Stage Selection Dropdown */}
