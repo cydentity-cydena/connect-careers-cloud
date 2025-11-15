@@ -271,7 +271,7 @@ const Auth = () => {
       const errorMessage = error.message || '';
       
       if (errorMessage.includes('invite-only') || errorMessage.includes('request access')) {
-        setInviteOnlyMessage("Signups are invite-only right now. If you're on the Founding 20 or early access list, use your approved email or contact us.");
+        setInviteOnlyMessage("Signups are invite-only right now. If you're on the Founding 200 or early access list, use your approved email or contact us.");
       } else if (errorMessage.includes('already registered') || errorMessage.includes('already taken') || errorMessage.includes('email_exists')) {
         toast.error("This email is already registered. Please sign in or use a different email.");
       } else if (errorMessage.includes('Username already taken')) {
