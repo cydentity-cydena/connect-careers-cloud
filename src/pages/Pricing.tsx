@@ -318,20 +318,6 @@ const Pricing = () => {
           </TabsContent>
         </Tabs>
 
-        <Card className="bg-gradient-to-r from-primary/10 to-purple-500/10 border-primary/20 mt-16">
-          <CardContent className="p-8 text-center">
-            <h3 className="text-3xl font-bold mb-4">
-              Save up to 95% vs traditional agency fees
-            </h3>
-            <p className="text-lg text-muted-foreground mb-4">
-              3 hires at £60k = £36k agency fees vs £2,481 Team subscription
-            </p>
-            <p className="text-2xl font-bold text-primary">
-              Save £33,519 per year
-            </p>
-          </CardContent>
-        </Card>
-
         <div className="text-center mt-16">
           <p className="text-muted-foreground mb-4">Questions about pricing?</p>
           <Button variant="outline" onClick={() => navigate('/faq')}>
