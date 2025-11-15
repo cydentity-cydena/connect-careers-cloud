@@ -2261,6 +2261,39 @@ export type Database = {
         }
         Relationships: []
       }
+      saved_searches: {
+        Row: {
+          created_at: string | null
+          id: string
+          last_notified_at: string | null
+          name: string
+          notify_on_match: boolean | null
+          search_criteria: Json
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          last_notified_at?: string | null
+          name: string
+          notify_on_match?: boolean | null
+          search_criteria: Json
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          last_notified_at?: string | null
+          name?: string
+          notify_on_match?: boolean | null
+          search_criteria?: Json
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       skill_pathways: {
         Row: {
           category: string
