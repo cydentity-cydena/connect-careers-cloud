@@ -283,6 +283,34 @@ serve(async (req) => {
       } else {
         console.log('Candidate XP already exists, skipping');
       }
+
+      // Link to any existing pipeline_candidates record with matching email
+      console.log('Checking for existing pipeline candidate with email:', email);
+      const { data: pipelineCandidate, error: pipelineCheckError } = await supabaseAdmin
+        .from('pipeline_candidates')
+        .select('id, profile_id')
+        .eq('email', email.toLowerCase())
+        .maybeSingle();
+
+      if (pipelineCheckError) {
+        console.error('Error checking pipeline candidates:', pipelineCheckError);
+      } else if (pipelineCandidate && !pipelineCandidate.profile_id) {
+        console.log('Found unlinked pipeline candidate, linking profile_id:', pipelineCandidate.id);
+        const { error: linkError } = await supabaseAdmin
+          .from('pipeline_candidates')
+          .update({ profile_id: userId })
+          .eq('id', pipelineCandidate.id);
+
+        if (linkError) {
+          console.error('Error linking pipeline candidate to profile:', linkError);
+        } else {
+          console.log('Successfully linked pipeline candidate to profile');
+        }
+      } else if (pipelineCandidate?.profile_id) {
+        console.log('Pipeline candidate already linked to profile:', pipelineCandidate.profile_id);
+      } else {
+        console.log('No pipeline candidate found with this email');
+      }
     }
 
     // 5. If employer, create employer credits (idempotent)
