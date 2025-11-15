@@ -145,6 +145,8 @@ export function CertificationVerificationReview() {
     // Map common issuers to their verification URLs
     if (issuerLower.includes('credly')) {
       return `https://www.credly.com/badges/${credentialId}`;
+    } else if (issuerLower.includes('microsoft')) {
+      return `https://learn.microsoft.com/api/credentials/share/${credentialId}`;
     } else if (issuerLower.includes('linkedin')) {
       return `https://www.linkedin.com/learning/certificates/${credentialId}`;
     } else if (issuerLower.includes('coursera')) {
