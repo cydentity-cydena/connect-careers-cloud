@@ -815,7 +815,7 @@ export default function StaffFunnel() {
                           </div>
                         </div>
                       )}
-                      <div className="grid grid-cols-3 gap-2 pt-2 border-t">
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-2 border-t">
                         {candidate.cv_url ? (
                           <Button
                             size="sm"
