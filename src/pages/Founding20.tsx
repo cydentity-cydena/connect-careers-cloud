@@ -1,174 +1,60 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useToast } from "@/hooks/use-toast";
+import { Card, CardContent } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
-import { Award, Target, Zap, TrendingUp, Users, Briefcase, Shield, CheckCircle2 } from "lucide-react";
+import { Shield, CheckCircle2, ArrowRight, Users } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import SEO from "@/components/SEO";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Founding20() {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [resumeFile, setResumeFile] = useState<File | null>(null);
-  const [formData, setFormData] = useState({
-    fullName: "",
-    email: "",
-    countryCode: "+1",
-    phone: "",
-    location: "",
-    yearsExperience: "",
-    currentTitle: "",
-    topCertifications: "",
-    keySkills: "",
-    availability: "",
-    salaryCurrency: "USD",
-    salaryExpectations: "",
-    linkedinUrl: "",
-    githubUrl: "",
-    portfolioUrl: "",
-    whyTopTwenty: "",
-    consentVerification: false,
-    consentContact: false,
-  });
+  const [spacesLeft, setSpacesLeft] = useState<number | null>(null);
+  const [isFull, setIsFull] = useState(false);
+  const [isChecking, setIsChecking] = useState(true);
 
-  const benefits = [
-    {
-      icon: Target,
-      title: "Exclusive Exposure",
-      description: "Featured profiles shown to vetted HR professionals and employers actively hiring"
-    },
-    {
-      icon: Zap,
-      title: "Enhanced Visibility",
-      description: "Priority placement in searches and increased visibility with hiring teams and recruiters"
-    },
-    {
-      icon: Award,
-      title: "Elite Recognition",
-      description: "Badge and designation as verified top-tier cybersecurity talent in our ecosystem"
-    },
-    {
-      icon: TrendingUp,
-      title: "Quality Opportunities",
-      description: "Access to pre-screened, high-quality job openings from our trusted partners"
-    },
-    {
-      icon: Users,
-      title: "Direct Access",
-      description: "Get noticed first - employers see your profile before anyone else"
-    },
-    {
-      icon: Briefcase,
-      title: "Career Boost",
-      description: "Stand out in a competitive market with verified credentials and elite status"
+  useEffect(() => {
+    checkAvailability();
+  }, []);
+
+  const checkAvailability = async () => {
+    try {
+      const { data, error } = await supabase.rpc('check_founding_200_availability');
+      
+      if (error) throw error;
+
+      const available = data as boolean;
+      setIsFull(!available);
+
+      // Get current count
+      const { count } = await supabase
+        .from('profiles')
+        .select('*', { count: 'exact', head: true })
+        .eq('is_founding_200', true);
+
+      if (count !== null) {
+        setSpacesLeft(200 - count);
+      }
+    } catch (error) {
+      console.error('Error checking availability:', error);
+    } finally {
+      setIsChecking(false);
     }
-  ];
-
-  // Convert a File to base64 (without data URL prefix)
-  const fileToBase64 = async (file: File) => {
-    return await new Promise<string>((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const result = reader.result as string;
-        const base64 = result.includes(',') ? result.split(',')[1] : result;
-        resolve(base64);
-      };
-      reader.onerror = (e) => reject(e);
-      reader.readAsDataURL(file);
-    });
   };
 
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!formData.consentVerification || !formData.consentContact) {
+  const handleSignUpClick = () => {
+    if (isFull) {
       toast({
-        title: "Consent Required",
-        description: "Please accept both consent checkboxes to proceed",
+        title: "Program Full",
+        description: "The Founding 200 program has reached capacity. Join our waitlist instead!",
         variant: "destructive",
       });
       return;
     }
-
-    setIsSubmitting(true);
-
-    try {
-      let cvUrl = null;
-      let cvBase64: string | null = null;
-      let cvFileName: string | null = null;
-      let cvContentType: string | null = null;
-
-      // Prepare resume for backend upload if provided
-      if (resumeFile) {
-        cvBase64 = await fileToBase64(resumeFile);
-        cvFileName = resumeFile.name;
-        cvContentType = resumeFile.type || 'application/octet-stream';
-      }
-
-
-      // Call edge function to handle the submission
-      const { data, error } = await supabase.functions.invoke('founding-20-application', {
-        body: {
-          ...formData,
-          cvUrl, // kept for backward compatibility (may be null)
-          cvBase64,
-          cvFileName,
-          cvContentType,
-        }
-      });
-
-      if (error) throw error;
-
-      toast({
-        title: "Application Submitted! 🎉",
-        description: (data as any)?.message || "We'll review your application and contact you within 48 hours.",
-      });
-
-      // Reset form
-      setFormData({
-        fullName: "",
-        email: "",
-        countryCode: "+1",
-        phone: "",
-        location: "",
-        yearsExperience: "",
-        currentTitle: "",
-        topCertifications: "",
-        keySkills: "",
-        availability: "",
-        salaryCurrency: "USD",
-        salaryExpectations: "",
-        linkedinUrl: "",
-        githubUrl: "",
-        portfolioUrl: "",
-        whyTopTwenty: "",
-        consentVerification: false,
-        consentContact: false,
-      });
-      setResumeFile(null);
-
-      // Scroll to top
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-
-    } catch (error: any) {
-      console.error('Error submitting application:', error);
-      toast({
-        title: "Submission Failed",
-        description: error.message || "Please try again or contact support",
-        variant: "destructive",
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
+    // Redirect to signup with founding200 parameter
+    navigate('/auth?founding200=true&mode=signup');
   };
 
   return (
@@ -188,531 +74,146 @@ export default function Founding20() {
             <div className="text-center mb-12">
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full mb-6">
                 <Shield className="h-5 w-5 text-primary" />
-                <span className="text-sm font-semibold text-primary">🚀 Early Access Now Open — Founding 200</span>
+                <span className="text-sm font-semibold text-primary">
+                  🚀 Early Access Now Open — Founding 200
+                </span>
               </div>
+              
               <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary via-primary-glow to-primary bg-clip-text text-transparent">
                 Founding 200 Cybersecurity Professionals
               </h1>
+              
               <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-8">
                 Early access for the first 200 cyber professionals
               </p>
-              <div className="space-y-3 max-w-2xl mx-auto text-left bg-card/50 p-6 rounded-lg border border-primary/20">
-                <p className="text-base text-foreground font-medium mb-3">This cohort gets:</p>
-                <ul className="space-y-2 text-muted-foreground">
-                  <li className="flex items-start gap-2">
+
+              {!isChecking && (
+                <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/20 rounded-lg mb-8">
+                  <Users className="h-5 w-5 text-primary" />
+                  <span className="text-sm font-medium text-primary">
+                    {isFull ? (
+                      "Program Full - Join Waitlist"
+                    ) : spacesLeft !== null ? (
+                      `${spacesLeft} Spots Remaining`
+                    ) : (
+                      "Limited Spots Available"
+                    )}
+                  </span>
+                </div>
+              )}
+
+              <div className="space-y-3 max-w-2xl mx-auto text-left bg-card/50 p-8 rounded-lg border border-primary/20 mb-8">
+                <p className="text-base text-foreground font-medium mb-4">This cohort gets:</p>
+                <ul className="space-y-3 text-muted-foreground">
+                  <li className="flex items-start gap-3">
                     <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                     <span>Lifetime free access</span>
                   </li>
-                  <li className="flex items-start gap-2">
+                  <li className="flex items-start gap-3">
                     <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                     <span>Early ranking in recruiter search results</span>
                   </li>
-                  <li className="flex items-start gap-2">
+                  <li className="flex items-start gap-3">
                     <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                     <span>Verified profile badge</span>
                   </li>
-                  <li className="flex items-start gap-2">
+                  <li className="flex items-start gap-3">
                     <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                     <span>First look at transparency features (profile view alerts, pipeline visibility, etc.)</span>
                   </li>
-                  <li className="flex items-start gap-2">
+                  <li className="flex items-start gap-3">
                     <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                     <span>Priority onboarding before public launch</span>
                   </li>
                 </ul>
-                <p className="text-sm text-muted-foreground mt-4 pt-4 border-t border-border">
+                <p className="text-sm text-muted-foreground mt-6 pt-4 border-t border-border">
                   <strong className="text-primary">Limited early-access window</strong> — once the 200 places are filled, that's it.
                 </p>
               </div>
-            </div>
 
-            {/* Benefits Grid */}
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
-              {benefits.map((benefit, index) => (
-                <Card key={index} className="border-2 hover:border-primary/40 transition-all hover:shadow-lg">
-                  <CardHeader>
-                    <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
-                      <benefit.icon className="h-6 w-6 text-primary" />
-                    </div>
-                    <CardTitle className="text-xl">{benefit.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-muted-foreground">{benefit.description}</p>
-                  </CardContent>
-                </Card>
-              ))}
+              <Button 
+                size="lg" 
+                className="text-lg px-8 py-6 gap-2"
+                onClick={handleSignUpClick}
+                disabled={isChecking}
+              >
+                {isFull ? "Join Waitlist" : "Claim Your Spot Now"}
+                <ArrowRight className="h-5 w-5" />
+              </Button>
             </div>
           </div>
         </section>
 
-        {/* Application Form Section */}
-        <section className="py-16 px-4 bg-card/50 backdrop-blur">
-          <div className="container mx-auto max-w-4xl">
-            <Card className="border-2">
-              <CardHeader className="text-center">
-                <CardTitle className="text-3xl mb-2">Apply Now</CardTitle>
-                <CardDescription className="text-base">
-                  Complete the form below to join the Founding 200 early access program - open to cybersecurity professionals worldwide
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  {/* Personal Information */}
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-semibold flex items-center gap-2">
-                      <CheckCircle2 className="h-5 w-5 text-primary" />
-                      Personal Information
-                    </h3>
-                    
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="fullName">Full Name *</Label>
-                        <Input
-                          id="fullName"
-                          required
-                          value={formData.fullName}
-                          onChange={(e) => setFormData({...formData, fullName: e.target.value})}
-                          placeholder="John Doe"
-                        />
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <Label htmlFor="email">Email Address *</Label>
-                        <Input
-                          id="email"
-                          type="email"
-                          required
-                          value={formData.email}
-                          onChange={(e) => setFormData({...formData, email: e.target.value})}
-                          placeholder="john@example.com"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="location">Country/Location *</Label>
-                      <Select
-                        required
-                        value={formData.location}
-                        onValueChange={(value) => setFormData({...formData, location: value})}
-                      >
-                        <SelectTrigger className="bg-background">
-                          <SelectValue placeholder="Select your country" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-background z-50 max-h-[300px]">
-                          <SelectItem value="United States">🇺🇸 United States</SelectItem>
-                          <SelectItem value="United Kingdom">🇬🇧 United Kingdom</SelectItem>
-                          <SelectItem value="Canada">🇨🇦 Canada</SelectItem>
-                          <SelectItem value="Australia">🇦🇺 Australia</SelectItem>
-                          <SelectItem value="Germany">🇩🇪 Germany</SelectItem>
-                          <SelectItem value="France">🇫🇷 France</SelectItem>
-                          <SelectItem value="Netherlands">🇳🇱 Netherlands</SelectItem>
-                          <SelectItem value="India">🇮🇳 India</SelectItem>
-                          <SelectItem value="Singapore">🇸🇬 Singapore</SelectItem>
-                          <SelectItem value="United Arab Emirates">🇦🇪 United Arab Emirates</SelectItem>
-                          <SelectItem value="South Africa">🇿🇦 South Africa</SelectItem>
-                          <SelectItem value="Brazil">🇧🇷 Brazil</SelectItem>
-                          <SelectItem value="Mexico">🇲🇽 Mexico</SelectItem>
-                          <SelectItem value="Japan">🇯🇵 Japan</SelectItem>
-                          <SelectItem value="Other">🌍 Other</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="phone">Phone Number</Label>
-                      <div className="flex gap-2">
-                        <Select
-                          value={formData.countryCode}
-                          onValueChange={(value) => setFormData({...formData, countryCode: value})}
-                        >
-                          <SelectTrigger className="bg-background w-[140px]">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent className="bg-background z-50 max-h-[300px]">
-                            <SelectItem value="+1">🇺🇸 +1</SelectItem>
-                            <SelectItem value="+44">🇬🇧 +44</SelectItem>
-                            <SelectItem value="+61">🇦🇺 +61</SelectItem>
-                            <SelectItem value="+49">🇩🇪 +49</SelectItem>
-                            <SelectItem value="+33">🇫🇷 +33</SelectItem>
-                            <SelectItem value="+31">🇳🇱 +31</SelectItem>
-                            <SelectItem value="+91">🇮🇳 +91</SelectItem>
-                            <SelectItem value="+65">🇸🇬 +65</SelectItem>
-                            <SelectItem value="+971">🇦🇪 +971</SelectItem>
-                            <SelectItem value="+27">🇿🇦 +27</SelectItem>
-                            <SelectItem value="+55">🇧🇷 +55</SelectItem>
-                            <SelectItem value="+52">🇲🇽 +52</SelectItem>
-                            <SelectItem value="+81">🇯🇵 +81</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <Input
-                          id="phone"
-                          type="tel"
-                          className="flex-1"
-                          value={formData.phone}
-                          onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                          placeholder="XXX XXX XXXX"
-                        />
-                      </div>
-                    </div>
+        {/* Why Join Section */}
+        <section className="py-16 px-4 bg-card/30 backdrop-blur">
+          <div className="container mx-auto max-w-6xl">
+            <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+              Why Join the Founding 200?
+            </h2>
+            
+            <div className="grid md:grid-cols-3 gap-8">
+              <Card className="border-2 hover:border-primary/40 transition-all">
+                <CardContent className="pt-6">
+                  <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+                    <Shield className="h-6 w-6 text-primary" />
                   </div>
-
-                  {/* Professional Background */}
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-semibold flex items-center gap-2">
-                      <CheckCircle2 className="h-5 w-5 text-primary" />
-                      Professional Background
-                    </h3>
-                    
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="yearsExperience">Years of Experience *</Label>
-                        <Input
-                          id="yearsExperience"
-                          type="number"
-                          required
-                          min="0"
-                          value={formData.yearsExperience}
-                          onChange={(e) => setFormData({...formData, yearsExperience: e.target.value})}
-                          placeholder="5"
-                        />
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <Label htmlFor="currentTitle">Current Job Title *</Label>
-                        <Input
-                          id="currentTitle"
-                          required
-                          value={formData.currentTitle}
-                          onChange={(e) => setFormData({...formData, currentTitle: e.target.value})}
-                          placeholder="Security Analyst"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="topCertifications">Top 3 Certifications *</Label>
-                      <Textarea
-                        id="topCertifications"
-                        required
-                        value={formData.topCertifications}
-                        onChange={(e) => setFormData({...formData, topCertifications: e.target.value})}
-                        placeholder="e.g., CISSP, CEH, Security+"
-                        rows={3}
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="keySkills">Key Technical Skills *</Label>
-                      <Textarea
-                        id="keySkills"
-                        required
-                        value={formData.keySkills}
-                        onChange={(e) => setFormData({...formData, keySkills: e.target.value})}
-                        placeholder="e.g., Penetration Testing, SIEM, Cloud Security, Python..."
-                        rows={4}
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="resume">CV/Resume *</Label>
-                      <Input
-                        id="resume"
-                        type="file"
-                        required
-                        accept=".pdf,.doc,.docx"
-                        onChange={(e) => setResumeFile(e.target.files?.[0] || null)}
-                        className="cursor-pointer"
-                      />
-                      <p className="text-xs text-muted-foreground">
-                        Accepted formats: PDF, DOC, DOCX (Max 10MB)
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Availability & Expectations */}
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-semibold flex items-center gap-2">
-                      <CheckCircle2 className="h-5 w-5 text-primary" />
-                      Availability & Expectations
-                    </h3>
-                    
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="availability">Availability *</Label>
-                        <Select
-                          required
-                          value={formData.availability}
-                          onValueChange={(value) => setFormData({...formData, availability: value})}
-                        >
-                          <SelectTrigger className="bg-background">
-                            <SelectValue placeholder="Select availability" />
-                          </SelectTrigger>
-                          <SelectContent className="bg-background z-50">
-                            <SelectItem value="Immediate">Immediate</SelectItem>
-                            <SelectItem value="2 weeks">2 weeks</SelectItem>
-                            <SelectItem value="1 month">1 month</SelectItem>
-                            <SelectItem value="2 months">2 months</SelectItem>
-                            <SelectItem value="3+ months">3+ months</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <Label htmlFor="salaryCurrency">Salary Currency *</Label>
-                        <Select
-                          required
-                          value={formData.salaryCurrency}
-                          onValueChange={(value) => setFormData({...formData, salaryCurrency: value, salaryExpectations: ""})}
-                        >
-                          <SelectTrigger className="bg-background">
-                            <SelectValue placeholder="Select currency" />
-                          </SelectTrigger>
-                          <SelectContent className="bg-background z-50">
-                            <SelectItem value="USD">🇺🇸 USD (US Dollar)</SelectItem>
-                            <SelectItem value="GBP">🇬🇧 GBP (British Pound)</SelectItem>
-                            <SelectItem value="EUR">🇪🇺 EUR (Euro)</SelectItem>
-                            <SelectItem value="CAD">🇨🇦 CAD (Canadian Dollar)</SelectItem>
-                            <SelectItem value="AUD">🇦🇺 AUD (Australian Dollar)</SelectItem>
-                            <SelectItem value="INR">🇮🇳 INR (Indian Rupee)</SelectItem>
-                            <SelectItem value="SGD">🇸🇬 SGD (Singapore Dollar)</SelectItem>
-                            <SelectItem value="AED">🇦🇪 AED (UAE Dirham)</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="salaryExpectations">Salary Expectations ({formData.salaryCurrency}) *</Label>
-                      <Select
-                        required
-                        value={formData.salaryExpectations}
-                        onValueChange={(value) => setFormData({...formData, salaryExpectations: value})}
-                      >
-                        <SelectTrigger className="bg-background">
-                          <SelectValue placeholder="Select salary range" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-background z-50">
-                          {formData.salaryCurrency === 'USD' && (
-                            <>
-                              <SelectItem value="$40,000 - $60,000">$40,000 - $60,000</SelectItem>
-                              <SelectItem value="$60,000 - $80,000">$60,000 - $80,000</SelectItem>
-                              <SelectItem value="$80,000 - $100,000">$80,000 - $100,000</SelectItem>
-                              <SelectItem value="$100,000 - $120,000">$100,000 - $120,000</SelectItem>
-                              <SelectItem value="$120,000 - $150,000">$120,000 - $150,000</SelectItem>
-                              <SelectItem value="$150,000 - $200,000">$150,000 - $200,000</SelectItem>
-                              <SelectItem value="$200,000+">$200,000+</SelectItem>
-                            </>
-                          )}
-                          {formData.salaryCurrency === 'GBP' && (
-                            <>
-                              <SelectItem value="£30,000 - £40,000">£30,000 - £40,000</SelectItem>
-                              <SelectItem value="£40,000 - £50,000">£40,000 - £50,000</SelectItem>
-                              <SelectItem value="£50,000 - £60,000">£50,000 - £60,000</SelectItem>
-                              <SelectItem value="£60,000 - £80,000">£60,000 - £80,000</SelectItem>
-                              <SelectItem value="£80,000 - £100,000">£80,000 - £100,000</SelectItem>
-                              <SelectItem value="£100,000 - £150,000">£100,000 - £150,000</SelectItem>
-                              <SelectItem value="£150,000+">£150,000+</SelectItem>
-                            </>
-                          )}
-                          {formData.salaryCurrency === 'EUR' && (
-                            <>
-                              <SelectItem value="€30,000 - €45,000">€30,000 - €45,000</SelectItem>
-                              <SelectItem value="€45,000 - €60,000">€45,000 - €60,000</SelectItem>
-                              <SelectItem value="€60,000 - €75,000">€60,000 - €75,000</SelectItem>
-                              <SelectItem value="€75,000 - €90,000">€75,000 - €90,000</SelectItem>
-                              <SelectItem value="€90,000 - €120,000">€90,000 - €120,000</SelectItem>
-                              <SelectItem value="€120,000 - €150,000">€120,000 - €150,000</SelectItem>
-                              <SelectItem value="€150,000+">€150,000+</SelectItem>
-                            </>
-                          )}
-                          {formData.salaryCurrency === 'CAD' && (
-                            <>
-                              <SelectItem value="C$50,000 - C$70,000">C$50,000 - C$70,000</SelectItem>
-                              <SelectItem value="C$70,000 - C$90,000">C$70,000 - C$90,000</SelectItem>
-                              <SelectItem value="C$90,000 - C$110,000">C$90,000 - C$110,000</SelectItem>
-                              <SelectItem value="C$110,000 - C$130,000">C$110,000 - C$130,000</SelectItem>
-                              <SelectItem value="C$130,000 - C$160,000">C$130,000 - C$160,000</SelectItem>
-                              <SelectItem value="C$160,000 - C$200,000">C$160,000 - C$200,000</SelectItem>
-                              <SelectItem value="C$200,000+">C$200,000+</SelectItem>
-                            </>
-                          )}
-                          {formData.salaryCurrency === 'AUD' && (
-                            <>
-                              <SelectItem value="A$60,000 - A$80,000">A$60,000 - A$80,000</SelectItem>
-                              <SelectItem value="A$80,000 - A$100,000">A$80,000 - A$100,000</SelectItem>
-                              <SelectItem value="A$100,000 - A$120,000">A$100,000 - A$120,000</SelectItem>
-                              <SelectItem value="A$120,000 - A$150,000">A$120,000 - A$150,000</SelectItem>
-                              <SelectItem value="A$150,000 - A$180,000">A$150,000 - A$180,000</SelectItem>
-                              <SelectItem value="A$180,000 - A$220,000">A$180,000 - A$220,000</SelectItem>
-                              <SelectItem value="A$220,000+">A$220,000+</SelectItem>
-                            </>
-                          )}
-                          {formData.salaryCurrency === 'INR' && (
-                            <>
-                              <SelectItem value="₹5,00,000 - ₹8,00,000">₹5,00,000 - ₹8,00,000</SelectItem>
-                              <SelectItem value="₹8,00,000 - ₹12,00,000">₹8,00,000 - ₹12,00,000</SelectItem>
-                              <SelectItem value="₹12,00,000 - ₹18,00,000">₹12,00,000 - ₹18,00,000</SelectItem>
-                              <SelectItem value="₹18,00,000 - ₹25,00,000">₹18,00,000 - ₹25,00,000</SelectItem>
-                              <SelectItem value="₹25,00,000 - ₹35,00,000">₹25,00,000 - ₹35,00,000</SelectItem>
-                              <SelectItem value="₹35,00,000 - ₹50,00,000">₹35,00,000 - ₹50,00,000</SelectItem>
-                              <SelectItem value="₹50,00,000+">₹50,00,000+</SelectItem>
-                            </>
-                          )}
-                          {formData.salaryCurrency === 'SGD' && (
-                            <>
-                              <SelectItem value="S$50,000 - S$70,000">S$50,000 - S$70,000</SelectItem>
-                              <SelectItem value="S$70,000 - S$90,000">S$70,000 - S$90,000</SelectItem>
-                              <SelectItem value="S$90,000 - S$110,000">S$90,000 - S$110,000</SelectItem>
-                              <SelectItem value="S$110,000 - S$140,000">S$110,000 - S$140,000</SelectItem>
-                              <SelectItem value="S$140,000 - S$180,000">S$140,000 - S$180,000</SelectItem>
-                              <SelectItem value="S$180,000 - S$220,000">S$180,000 - S$220,000</SelectItem>
-                              <SelectItem value="S$220,000+">S$220,000+</SelectItem>
-                            </>
-                          )}
-                          {formData.salaryCurrency === 'AED' && (
-                            <>
-                              <SelectItem value="AED 150,000 - AED 220,000">AED 150,000 - AED 220,000</SelectItem>
-                              <SelectItem value="AED 220,000 - AED 290,000">AED 220,000 - AED 290,000</SelectItem>
-                              <SelectItem value="AED 290,000 - AED 370,000">AED 290,000 - AED 370,000</SelectItem>
-                              <SelectItem value="AED 370,000 - AED 440,000">AED 370,000 - AED 440,000</SelectItem>
-                              <SelectItem value="AED 440,000 - AED 550,000">AED 440,000 - AED 550,000</SelectItem>
-                              <SelectItem value="AED 550,000 - AED 730,000">AED 550,000 - AED 730,000</SelectItem>
-                              <SelectItem value="AED 730,000+">AED 730,000+</SelectItem>
-                            </>
-                          )}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-
-                  {/* Online Presence */}
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-semibold flex items-center gap-2">
-                      <CheckCircle2 className="h-5 w-5 text-primary" />
-                      Online Presence
-                    </h3>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="linkedinUrl">LinkedIn Profile URL</Label>
-                      <Input
-                        id="linkedinUrl"
-                        type="url"
-                        value={formData.linkedinUrl}
-                        onChange={(e) => setFormData({...formData, linkedinUrl: e.target.value})}
-                        placeholder="https://linkedin.com/in/johndoe"
-                      />
-                    </div>
-
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="githubUrl">GitHub Profile URL</Label>
-                        <Input
-                          id="githubUrl"
-                          type="url"
-                          value={formData.githubUrl}
-                          onChange={(e) => setFormData({...formData, githubUrl: e.target.value})}
-                          placeholder="https://github.com/johndoe"
-                        />
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <Label htmlFor="portfolioUrl">Portfolio/Website URL</Label>
-                        <Input
-                          id="portfolioUrl"
-                          type="url"
-                          value={formData.portfolioUrl}
-                          onChange={(e) => setFormData({...formData, portfolioUrl: e.target.value})}
-                          placeholder="https://johndoe.com"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Why You? */}
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-semibold flex items-center gap-2">
-                      <CheckCircle2 className="h-5 w-5 text-primary" />
-                      Your Story
-                    </h3>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="whyTopTwenty">Why should you be part of the Founding 200? *</Label>
-                      <Textarea
-                        id="whyTopTwenty"
-                        required
-                        value={formData.whyTopTwenty}
-                        onChange={(e) => setFormData({...formData, whyTopTwenty: e.target.value})}
-                        placeholder="Tell us about your background and why you're interested in joining."
-                        rows={6}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Consent Checkboxes */}
-                  <div className="space-y-4 pt-4 border-t">
-                    <div className="flex items-start space-x-3">
-                      <Checkbox
-                        id="consentVerification"
-                        checked={formData.consentVerification}
-                        onCheckedChange={(checked) => 
-                          setFormData({...formData, consentVerification: checked as boolean})
-                        }
-                      />
-                      <label
-                        htmlFor="consentVerification"
-                        className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                      >
-                        I consent to verification of my credentials, certifications, and background as part of the Founding 200 selection process. *
-                      </label>
-                    </div>
-
-                    <div className="flex items-start space-x-3">
-                      <Checkbox
-                        id="consentContact"
-                        checked={formData.consentContact}
-                        onCheckedChange={(checked) => 
-                          setFormData({...formData, consentContact: checked as boolean})
-                        }
-                      />
-                      <label
-                        htmlFor="consentContact"
-                        className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                      >
-                        I agree to be contacted by the Cydena team and partnered employers regarding opportunities. *
-                      </label>
-                    </div>
-                  </div>
-
-                  {/* Submit Button */}
-                  <Button 
-                    type="submit" 
-                    size="lg" 
-                    className="w-full text-lg"
-                    disabled={isSubmitting}
-                  >
-                    {isSubmitting ? "Submitting..." : "Submit Application"}
-                  </Button>
-
-                  <p className="text-xs text-muted-foreground text-center">
-                    By submitting this form, you acknowledge that all information provided is accurate and complete.
+                  <h3 className="text-xl font-semibold mb-3">Lifetime Benefits</h3>
+                  <p className="text-muted-foreground">
+                    Get permanent access to all premium features without ever paying a subscription fee
                   </p>
-                </form>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+
+              <Card className="border-2 hover:border-primary/40 transition-all">
+                <CardContent className="pt-6">
+                  <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+                    <CheckCircle2 className="h-6 w-6 text-primary" />
+                  </div>
+                  <h3 className="text-xl font-semibold mb-3">Verified Status</h3>
+                  <p className="text-muted-foreground">
+                    Stand out with an exclusive verified badge that showcases your elite status
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="border-2 hover:border-primary/40 transition-all">
+                <CardContent className="pt-6">
+                  <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+                    <Users className="h-6 w-6 text-primary" />
+                  </div>
+                  <h3 className="text-xl font-semibold mb-3">Priority Access</h3>
+                  <p className="text-muted-foreground">
+                    Be first in line for new features, opportunities, and direct employer connections
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </section>
 
         {/* Final CTA */}
-        <section className="py-16 px-4">
+        <section className="py-20 px-4">
           <div className="container mx-auto max-w-4xl text-center">
-            <h2 className="text-3xl font-bold mb-4">Questions About the Program?</h2>
-            <p className="text-muted-foreground mb-8">
-              We're here to help. Reach out to our team for more information.
+            <h2 className="text-3xl md:text-4xl font-bold mb-6">
+              Ready to Join?
+            </h2>
+            <p className="text-xl text-muted-foreground mb-8">
+              Create your account now to secure your spot in the Founding 200
             </p>
-            <Button variant="outline" size="lg" onClick={() => navigate("/contact")}>
-              Contact Us
+            <Button 
+              size="lg" 
+              className="text-lg px-8 py-6 gap-2"
+              onClick={handleSignUpClick}
+              disabled={isChecking}
+            >
+              {isFull ? "Join Waitlist" : "Get Started - It's Free"}
+              <ArrowRight className="h-5 w-5" />
             </Button>
+            {!isChecking && !isFull && spacesLeft !== null && (
+              <p className="text-sm text-muted-foreground mt-4">
+                Only {spacesLeft} spots remaining
+              </p>
+            )}
           </div>
         </section>
       </div>
