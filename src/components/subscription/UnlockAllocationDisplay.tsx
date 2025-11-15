@@ -1,9 +1,7 @@
 import { useSubscription } from '@/hooks/useSubscription';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
-import { AlertCircle, TrendingUp, Zap } from 'lucide-react';
+import { AlertCircle, Zap } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
 interface UnlockAllocationDisplayProps {
@@ -11,11 +9,11 @@ interface UnlockAllocationDisplayProps {
   remainingCredits: number;
 }
 
-const TIER_LIMITS = {
-  employer_starter: { limit: 10, overage: 15 },
-  employer_growth: { limit: 25, overage: 12 },
-  employer_scale: { limit: 75, overage: 10 },
-  recruiter_pro: { limit: 50, overage: 10 },
+const TIER_LIMITS: Record<string, { allocation: number; overageCharge: number; isUnlimited?: boolean }> = {
+  'employer_starter': { allocation: 10, overageCharge: 8 },
+  'employer_growth': { allocation: 30, overageCharge: 8 },
+  'employer_scale': { allocation: 999999, overageCharge: 0, isUnlimited: true },
+  'recruiter_pro': { allocation: 75, overageCharge: 8 },
 };
 
 export const UnlockAllocationDisplay = ({ 
@@ -39,12 +37,6 @@ export const UnlockAllocationDisplay = ({
             <p className="text-sm text-muted-foreground">
               You're using pay-as-you-go credits. <strong>{remainingCredits} credits remaining</strong>.
             </p>
-            {/* <Link to="/pricing">
-              <Button className="w-full">
-                <TrendingUp className="mr-2 h-4 w-4" />
-                View Subscription Plans
-              </Button>
-            </Link> */}
             <p className="text-sm text-muted-foreground text-center">
               Contact support for subscription options.
             </p>
@@ -55,54 +47,54 @@ export const UnlockAllocationDisplay = ({
   }
 
   const tierConfig = TIER_LIMITS[tier];
-  const percentUsed = (annualUsed / tierConfig.limit) * 100;
-  const remaining = Math.max(0, tierConfig.limit - annualUsed);
-  const isOverage = annualUsed > tierConfig.limit;
+  const usagePercentage = tierConfig.isUnlimited ? 0 : (annualUsed / tierConfig.allocation) * 100;
+  const remaining = tierConfig.isUnlimited ? Infinity : Math.max(0, tierConfig.allocation - annualUsed);
+  const overage = tierConfig.isUnlimited ? 0 : Math.max(0, annualUsed - tierConfig.allocation);
 
   return (
-    <Card className={isOverage ? "border-yellow-500" : ""}>
+    <Card>
       <CardHeader>
         <CardTitle>Annual Unlock Allocation</CardTitle>
-        <CardDescription>
-          {annualUsed} of {tierConfig.limit} unlocks used this year
-        </CardDescription>
+        <CardDescription>Track your unlock usage for the year</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div>
-          <div className="flex justify-between text-sm mb-2">
-            <span>Usage</span>
-            <span className="font-medium">{Math.round(percentUsed)}%</span>
+        <div className="space-y-2">
+          <div className="flex justify-between text-sm">
+            <span className="text-muted-foreground">Annual Usage</span>
+            <span className="font-medium">
+              {annualUsed} / {tierConfig.isUnlimited ? '∞' : tierConfig.allocation} unlocks
+            </span>
           </div>
-          <Progress value={Math.min(percentUsed, 100)} />
+          {!tierConfig.isUnlimited && <Progress value={usagePercentage} className="h-2" />}
         </div>
 
-        {remaining > 0 && remaining <= 5 && (
+        {!tierConfig.isUnlimited && remaining > 0 && remaining <= 5 && (
           <Alert>
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>
-              Only {remaining} unlocks remaining in your allocation. Additional unlocks will be charged at £{tierConfig.overage} each.
+              Only {remaining} unlocks remaining. Overage unlocks cost £{tierConfig.overageCharge} each.
             </AlertDescription>
           </Alert>
         )}
 
-        {isOverage && (
+        {!tierConfig.isUnlimited && overage > 0 && (
           <Alert variant="destructive">
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>
-              You've exceeded your allocation by {annualUsed - tierConfig.limit} unlocks. 
-              Using purchased credits at £{tierConfig.overage}/unlock.
-              <div className="mt-2">
-                <strong>{remainingCredits} purchased credits remaining</strong>
-              </div>
+              You've used {overage} unlocks beyond your allocation. Additional unlocks cost £{tierConfig.overageCharge} each.
+              {remainingCredits > 0 && ` You have ${remainingCredits} purchased credits remaining.`}
             </AlertDescription>
           </Alert>
         )}
 
-        {/* <div className="flex gap-2">
-          <Link to="/pricing" className="flex-1">
-            <Button variant="outline" className="w-full">Upgrade Plan</Button>
-          </Link>
-        </div> */}
+        {tierConfig.isUnlimited && (
+          <Alert>
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>
+              You have unlimited unlocks with your Enterprise plan. No overage charges apply.
+            </AlertDescription>
+          </Alert>
+        )}
       </CardContent>
     </Card>
   );

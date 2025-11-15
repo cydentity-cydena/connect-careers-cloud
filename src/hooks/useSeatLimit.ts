@@ -5,8 +5,8 @@ type TierKey = 'employer_starter' | 'employer_growth' | 'employer_scale' | 'recr
 
 const SEAT_LIMITS: Record<TierKey, number> = {
   'employer_starter': 1,
-  'employer_growth': 3,
-  'employer_scale': 6,
+  'employer_growth': 5,
+  'employer_scale': 10,
   'recruiter_pro': 3,
 };
 

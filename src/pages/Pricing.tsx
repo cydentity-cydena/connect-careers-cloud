@@ -1,20 +1,25 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Check, X, ArrowRight, Zap, Building2, Users, Loader2 } from "lucide-react";
-import Navigation from "@/components/Navigation";
-import { Link, useNavigate } from "react-router-dom";
-import SEO from "@/components/SEO";
-import Schema from "@/components/Schema";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import Navigation from "@/components/Navigation";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Check, X, ArrowRight, TrendingDown, DollarSign, Users, Zap, Sparkles } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { useSubscription } from "@/hooks/useSubscription";
 import { supabase } from "@/integrations/supabase/client";
+import SEO from "@/components/SEO";
+import Schema from "@/components/Schema";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ROICalculator } from "@/components/pricing/ROICalculator";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 const Pricing = () => {
-  const navigate = useNavigate();
-  const [billingPeriod, setBillingPeriod] = useState<'monthly' | 'annual'>('monthly');
+  const [billingPeriod, setBillingPeriod] = useState<'monthly' | 'annual'>('annual');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [checkingAuth, setCheckingAuth] = useState(true);
   const { createCheckout, tier: currentTier, loading: subscriptionLoading } = useSubscription();
+  const navigate = useNavigate();
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -24,8 +29,17 @@ const Pricing = () => {
   }, []);
 
   const getPricing = (monthly: number) => {
-    const annual = Math.round(monthly * 0.85); // 15% discount
-    return billingPeriod === 'monthly' ? monthly : annual;
+    if (billingPeriod === 'annual') {
+      return monthly * 12 * 0.83;
+    }
+    return monthly;
+  };
+
+  const getMonthlyEquivalent = (monthly: number) => {
+    if (billingPeriod === 'annual') {
+      return (monthly * 12 * 0.83) / 12;
+    }
+    return monthly;
   };
 
   const handleTierSelect = async (tierKey: string) => {
@@ -38,10 +52,10 @@ const Pricing = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <SEO
-        title="Pricing - Cydena | Transparent Cybersecurity Recruitment Costs"
-        description="Simple, transparent pricing for cybersecurity recruitment. No long-term contracts, no retainer fees. Pay only for what you use with our credit-based system."
-        keywords="cybersecurity recruitment pricing, tech recruitment costs, hire cybersecurity talent, recruitment fees, pay per hire"
+      <SEO 
+        title="Pricing - Cydena | No Agency Fees"
+        description="Simple subscription pricing for cybersecurity recruitment. From £99/month. No 20% agency fees."
+        keywords="cybersecurity recruitment pricing, no agency fees, tech hiring costs"
       />
       <Schema type="breadcrumb" data={{
         items: [
@@ -51,465 +65,238 @@ const Pricing = () => {
       }} />
       <Navigation />
 
-      <main className="container mx-auto px-4 py-12 md:py-16">
-        {/* Header */}
-        <div className="text-center mb-12 md:mb-16 animate-fade-in">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 md:mb-4 px-2">
-            Transparent Cybersecurity Recruitment <span className="bg-gradient-cyber bg-clip-text text-transparent">Pricing</span>
+      <main className="container mx-auto px-4 py-16">
+        <div className="text-center mb-12">
+          <h1 className="text-5xl font-bold mb-6 bg-gradient-cyber bg-clip-text text-transparent">
+            Simple, Transparent Pricing
           </h1>
-          <p className="text-base md:text-xl text-muted-foreground max-w-2xl mx-auto px-2">
-            No long-term contracts. No retainer fees. Pay only for what you use.
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
+            No 20% agency fees. Just verified cyber talent and evidence-first profiles.
           </p>
-        </div>
-
-        {/* Comparison with Traditional Recruitment */}
-        <Card className="mb-12 md:mb-16 border-2 border-primary/20 bg-gradient-card animate-slide-up">
-          <CardHeader>
-            <CardTitle className="text-xl md:text-2xl">Why Cydena vs Traditional Recruitment?</CardTitle>
-            <CardDescription className="text-sm md:text-base">See the difference in cost and speed</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid md:grid-cols-2 gap-6 md:gap-8">
-              <div>
-                <h3 className="font-semibold text-base md:text-lg mb-3 md:mb-4 flex items-center gap-2">
-                  <X className="h-4 w-4 md:h-5 md:w-5 text-destructive flex-shrink-0" />
-                  Traditional Recruitment Agency
-                </h3>
-                <ul className="space-y-2 md:space-y-3 text-muted-foreground text-sm md:text-base">
-                  <li className="flex items-start gap-2">
-                    <X className="h-4 w-4 text-destructive mt-1 flex-shrink-0" />
-                    <span>15-25% of first year salary (£7,500-£15,000+ per hire)</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <X className="h-4 w-4 text-destructive mt-1 flex-shrink-0" />
-                    <span>Retainer fees upfront (£2,000-£5,000)</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <X className="h-4 w-4 text-destructive mt-1 flex-shrink-0" />
-                    <span>Exclusive contracts locking you in</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <X className="h-4 w-4 text-destructive mt-1 flex-shrink-0" />
-                    <span>Average 6-8 weeks to fill role</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <X className="h-4 w-4 text-destructive mt-1 flex-shrink-0" />
-                    <span>Limited visibility into candidate pipeline</span>
-                  </li>
-                </ul>
-              </div>
-              <div>
-                <h3 className="font-semibold text-base md:text-lg mb-3 md:mb-4 flex items-center gap-2">
-                  <Check className="h-4 w-4 md:h-5 md:w-5 text-primary flex-shrink-0" />
-                  Cydena Platform
-                </h3>
-                <ul className="space-y-2 md:space-y-3 text-sm md:text-base">
-                  <li className="flex items-start gap-2">
-                    <Check className="h-4 w-4 text-primary mt-1 flex-shrink-0" />
-                    <span>£99-£699/month + pay-per-unlock after allocation</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="h-4 w-4 text-primary mt-1 flex-shrink-0" />
-                    <span>Zero upfront costs - pay as you go</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="h-4 w-4 text-primary mt-1 flex-shrink-0" />
-                    <span>No contracts - cancel anytime</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="h-4 w-4 text-primary mt-1 flex-shrink-0" />
-                    <span>Real-time candidate tracking pipeline</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Check className="h-4 w-4 text-primary mt-1 flex-shrink-0" />
-                    <span>Full transparency - see rankings, skills, certifications</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* ROI Calculator CTA */}
-        <Card className="mb-12 md:mb-16 border-green-500/30 bg-gradient-to-br from-green-500/5 to-primary/5 animate-slide-up">
-          <CardContent className="p-6 md:p-8">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-              <div className="flex-1 text-center md:text-left">
-                <h3 className="text-xl md:text-2xl font-bold mb-2 flex items-center justify-center md:justify-start gap-2">
-                  <Zap className="h-6 w-6 text-green-500" />
-                  Calculate Your Exact Savings
-                </h3>
-                <p className="text-muted-foreground">
-                  See precisely how much you'll save vs traditional recruitment agencies with our interactive ROI calculator
-                </p>
-              </div>
-              {/* <Link to="/roi-calculator">
-                <Button size="lg" className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white">
-                  Try ROI Calculator
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </Link> */}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Billing Toggle */}
-        <div className="flex justify-center mb-8 animate-fade-in">
-          <div className="inline-flex border border-border rounded-full p-1 bg-card">
-            <Button
-              variant={billingPeriod === 'monthly' ? 'default' : 'ghost'}
-              size="sm"
-              onClick={() => setBillingPeriod('monthly')}
-              className="rounded-full"
-            >
-              Monthly
-            </Button>
-            <Button
-              variant={billingPeriod === 'annual' ? 'default' : 'ghost'}
-              size="sm"
-              onClick={() => setBillingPeriod('annual')}
-              className="rounded-full gap-2"
-            >
-              Annual <span className="text-xs bg-primary/20 px-2 py-0.5 rounded-full">Save 15%</span>
-            </Button>
+          
+          <div className="flex items-center justify-center gap-4">
+            <Label htmlFor="billing-toggle">Monthly</Label>
+            <Switch
+              id="billing-toggle"
+              checked={billingPeriod === 'annual'}
+              onCheckedChange={(checked) => setBillingPeriod(checked ? 'annual' : 'monthly')}
+            />
+            <Label htmlFor="billing-toggle">
+              Annual <Badge variant="secondary" className="ml-2">Save 17%</Badge>
+            </Label>
           </div>
         </div>
 
-        {/* Pay-Per-Unlock Pricing Info */}
-        <Card className="mb-12 md:mb-16 border-primary/30 bg-gradient-to-br from-primary/5 to-secondary/5 animate-slide-up">
-          <CardHeader>
-            <CardTitle className="text-xl md:text-2xl">Pay-Per-Unlock Pricing</CardTitle>
-            <CardDescription className="text-sm md:text-base">
-              After your annual allocation, unlock additional candidates as needed
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ul className="space-y-3 text-sm md:text-base">
-              <li className="flex items-center gap-2">
-                <Check className="h-5 w-5 text-primary flex-shrink-0" />
-                <span><strong>Starter tier:</strong> £15 per unlock</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="h-5 w-5 text-primary flex-shrink-0" />
-                <span><strong>Growth tier:</strong> £12 per unlock</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="h-5 w-5 text-primary flex-shrink-0" />
-                <span><strong>Scale & Recruiter tiers:</strong> £10 per unlock</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="h-5 w-5 text-primary flex-shrink-0" />
-                <span><strong>Pay-per-hire option:</strong> £999 success fee (optional, risk-free)</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="h-5 w-5 text-primary flex-shrink-0" />
-                <span><strong>Training credits:</strong> Real LMS cohort vouchers (bulk discounts)</span>
-              </li>
-            </ul>
-          </CardContent>
-        </Card>
+        <Tabs defaultValue="pricing" className="w-full">
+          <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-12">
+            <TabsTrigger value="pricing">Pricing Plans</TabsTrigger>
+            <TabsTrigger value="roi">ROI Calculator</TabsTrigger>
+          </TabsList>
 
-        {/* Pricing Tiers */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-12 md:mb-16">
-          {/* Employer: Starter */}
-          <Card className="border-border shadow-card hover:scale-105 transition-transform animate-slide-up">
-            <CardHeader className="p-5">
-              <CardTitle className="text-base mb-1">Employer — Starter</CardTitle>
-              <div className="mt-3">
-                <span className="text-3xl font-bold">£{getPricing(99)}</span>
-                <span className="text-sm text-muted-foreground ml-2">/mo</span>
-              </div>
-            </CardHeader>
-            <CardContent className="p-5 pt-0">
-              <ul className="space-y-2 mb-6">
-                <li className="flex items-start gap-2 text-sm">
-                  <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                  <span>1 hiring seat</span>
-                </li>
-                <li className="flex items-start gap-2 text-sm">
-                  <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+          <TabsContent value="pricing" className="space-y-12">
+            {/* Comparison with Traditional Recruitment */}
+            <Card className="mb-8">
+              <CardHeader>
+                <CardTitle className="text-2xl font-semibold">
+                  Why Cydena vs Traditional Recruitment?
+                </CardTitle>
+                <CardDescription>
+                  See the difference in cost and speed
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid md:grid-cols-2 gap-6">
                   <div>
-                    <div>10 verified unlocks/year</div>
-                    <div className="text-xs text-muted-foreground">then £15 per unlock</div>
+                    <h3 className="flex items-center gap-2 text-lg font-semibold mb-4">
+                      <X className="w-5 h-5 text-red-500" />
+                      Traditional Agency
+                    </h3>
+                    <ul className="list-none space-y-3">
+                      <li className="text-muted-foreground flex items-center gap-2">
+                        <X className="w-4 h-4 text-red-500" />
+                        15-25% of first year salary (£7,500-£15,000+)
+                      </li>
+                      <li className="text-muted-foreground flex items-center gap-2">
+                        <X className="w-4 h-4 text-red-500" />
+                        Retainer fees upfront (£2,000-£5,000)
+                      </li>
+                      <li className="text-muted-foreground flex items-center gap-2">
+                        <X className="w-4 h-4 text-red-500" />
+                        Exclusive contracts locking you in
+                      </li>
+                      <li className="text-muted-foreground flex items-center gap-2">
+                        <X className="w-4 h-4 text-red-500" />
+                        6-8 weeks to fill role
+                      </li>
+                    </ul>
                   </div>
-                </li>
-                <li className="flex items-start gap-2 text-sm">
-                  <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                  <span>Candidate bookmarks & notes</span>
-                </li>
-                <li className="flex items-start gap-2 text-sm">
-                  <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                  <span>Email support</span>
-                </li>
-              </ul>
-              <Button 
-                className="w-full" 
-                size="sm"
-                onClick={() => handleTierSelect('employer_starter')}
-                disabled={checkingAuth || currentTier === 'employer_starter'}
-              >
-                {currentTier === 'employer_starter' ? 'Current Plan' : 'Choose Starter'}
-              </Button>
-            </CardContent>
-          </Card>
 
-          {/* Employer: Growth (Most Popular) */}
-          <Card className="border-2 border-primary shadow-card hover:scale-105 transition-transform animate-slide-up relative" style={{animationDelay: '0.1s'}}>
-            <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap">
-              Most Popular
-            </div>
-            <CardHeader className="p-5">
-              <CardTitle className="text-base mb-1">Employer — Growth</CardTitle>
-              <div className="mt-3">
-                <span className="text-3xl font-bold">£{getPricing(299)}</span>
-                <span className="text-sm text-muted-foreground ml-2">/mo</span>
-              </div>
-            </CardHeader>
-            <CardContent className="p-5 pt-0">
-              <ul className="space-y-2 mb-6">
-                <li className="flex items-start gap-2 text-sm">
-                  <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                  <span>3 hiring seats</span>
-                </li>
-                <li className="flex items-start gap-2 text-sm">
-                  <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
                   <div>
-                    <div>25 verified unlocks/year</div>
-                    <div className="text-xs text-muted-foreground">then £12 per unlock</div>
+                    <h3 className="flex items-center gap-2 text-lg font-semibold mb-4">
+                      <Check className="w-5 h-5 text-green-500" />
+                      Cydena Platform
+                    </h3>
+                    <ul className="list-none space-y-3">
+                      <li className="text-muted-foreground flex items-center gap-2">
+                        <Check className="w-4 h-4 text-green-500" />
+                        £99-£699/month + pay-per-unlock after allocation
+                      </li>
+                      <li className="text-muted-foreground flex items-center gap-2">
+                        <Check className="w-4 h-4 text-green-500" />
+                        Zero upfront costs - pay as you go
+                      </li>
+                      <li className="text-muted-foreground flex items-center gap-2">
+                        <Check className="w-4 h-4 text-green-500" />
+                        No contracts - cancel anytime
+                      </li>
+                       <li className="text-muted-foreground flex items-center gap-2">
+                        <Check className="w-4 h-4 text-green-500" />
+                        Real-time candidate tracking pipeline
+                      </li>
+                    </ul>
                   </div>
-                </li>
-                <li className="flex items-start gap-2 text-sm">
-                  <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                  <span>Application pipeline management</span>
-                </li>
-                <li className="flex items-start gap-2 text-sm">
-                  <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                  <span>Priority support</span>
-                </li>
-              </ul>
-              <Button 
-                className="w-full gap-2" 
-                size="sm"
-                onClick={() => handleTierSelect('employer_growth')}
-                disabled={checkingAuth || currentTier === 'employer_growth'}
-              >
-                {currentTier === 'employer_growth' ? 'Current Plan' : (
-                  <>Choose Growth <ArrowRight className="h-4 w-4" /></>
-                )}
-              </Button>
-            </CardContent>
-          </Card>
+                </div>
+              </CardContent>
+            </Card>
 
-          {/* Employer: Scale */}
-          <Card className="border-border shadow-card hover:scale-105 transition-transform animate-slide-up" style={{animationDelay: '0.2s'}}>
-            <CardHeader className="p-5">
-              <CardTitle className="text-base mb-1">Employer — Scale</CardTitle>
-              <div className="mt-3">
-                <span className="text-3xl font-bold">£{getPricing(699)}</span>
-                <span className="text-sm text-muted-foreground ml-2">/mo</span>
-              </div>
-            </CardHeader>
-            <CardContent className="p-5 pt-0">
-              <ul className="space-y-2 mb-6">
-                <li className="flex items-start gap-2 text-sm">
-                  <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                  <span>6 hiring seats</span>
-                </li>
-                <li className="flex items-start gap-2 text-sm">
-                  <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                  <div>
-                    <div>75 verified unlocks/year</div>
-                    <div className="text-xs text-muted-foreground">then £10 per unlock</div>
-                  </div>
-                </li>
-                <li className="flex items-start gap-2 text-sm">
-                  <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                  <span>Talent pool sharing & role pipelines</span>
-                </li>
-                <li className="flex items-start gap-2 text-sm">
-                  <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                  <span>Advanced analytics</span>
-                </li>
-              </ul>
-              <Button 
-                className="w-full" 
-                size="sm"
-                onClick={() => handleTierSelect('employer_scale')}
-                disabled={checkingAuth || currentTier === 'employer_scale'}
-              >
-                {currentTier === 'employer_scale' ? 'Current Plan' : 'Choose Scale'}
-              </Button>
-            </CardContent>
-          </Card>
-
-          {/* Recruiter: Pro */}
-          <Card className="border-border shadow-card hover:scale-105 transition-transform animate-slide-up" style={{animationDelay: '0.3s'}}>
-            <CardHeader className="p-5">
-              <CardTitle className="text-base mb-1">Recruiter — Pro</CardTitle>
-              <div className="mt-3">
-                <span className="text-3xl font-bold">£{getPricing(499)}</span>
-                <span className="text-sm text-muted-foreground ml-2">/mo</span>
-              </div>
-            </CardHeader>
-            <CardContent className="p-5 pt-0">
-              <ul className="space-y-2 mb-6">
-                <li className="flex items-start gap-2 text-sm">
-                  <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                  <span>3 recruiter seats</span>
-                </li>
-                <li className="flex items-start gap-2 text-sm">
-                  <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                  <span>Advanced filters & saved searches</span>
-                </li>
-                <li className="flex items-start gap-2 text-sm">
-                  <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                  <div>
-                    <div>50 unlocks/year</div>
-                    <div className="text-xs text-muted-foreground">then £10 per unlock</div>
-                  </div>
-                </li>
-                <li className="flex items-start gap-2 text-sm">
-                  <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                  <span>Bulk candidate actions</span>
-                </li>
-              </ul>
-              <Button 
-                className="w-full" 
-                variant="outline" 
-                size="sm"
-                onClick={() => handleTierSelect('recruiter_pro')}
-                disabled={checkingAuth || currentTier === 'recruiter_pro'}
-              >
-                {currentTier === 'recruiter_pro' ? 'Current Plan' : 'Choose Recruiter Pro'}
-              </Button>
-            </CardContent>
-          </Card>
-
-          {/* Enterprise */}
-          <Card className="border-border shadow-card hover:scale-105 transition-transform animate-slide-up" style={{animationDelay: '0.4s'}}>
-            <CardHeader className="p-5">
-              <CardTitle className="text-base mb-1">Enterprise</CardTitle>
-              <div className="mt-3">
-                <span className="text-3xl font-bold">Custom</span>
-              </div>
-            </CardHeader>
-            <CardContent className="p-5 pt-0">
-              <ul className="space-y-2 mb-6">
-                <li className="flex items-start gap-2 text-sm">
-                  <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                  <span>Unlimited seats & SSO</span>
-                </li>
-                <li className="flex items-start gap-2 text-sm">
-                  <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                  <span>Private talent pools & internal mobility</span>
-                </li>
-                <li className="flex items-start gap-2 text-sm">
-                  <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                  <span>ATS integrations & API access</span>
-                </li>
-                <li className="flex items-start gap-2 text-sm">
-                  <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                  <span>Dedicated CSM & SLAs</span>
-                </li>
-              </ul>
-              <Link to="/contact">
-                <Button className="w-full" variant="outline" size="sm">Talk to Sales</Button>
-              </Link>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Value Banner */}
-        <Card className="mb-8 border-primary/20 bg-card/50 animate-fade-in">
-          <CardContent className="p-6">
-            <p className="text-sm text-muted-foreground text-center">
-              <strong className="text-foreground">Compare:</strong> Typical agency fee 15–25% of salary (≈ £9k–£15k per hire). 
-              Cydena replaces that with affordable monthly subscriptions + pay-per-unlock after your allocation — still <strong>70-80% cheaper than agencies</strong>.
-            </p>
-          </CardContent>
-        </Card>
-
-        {/* Add-ons */}
-        <Card className="mb-12 animate-fade-in">
-          <CardHeader>
-            <CardTitle className="text-xl">Pay-Per-Unlock Pricing</CardTitle>
-            <CardDescription>After your annual allocation, unlock additional candidates as needed</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ul className="space-y-2 text-sm">
-              <li className="flex items-start gap-2">
-                <ArrowRight className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                <span><strong>Starter tier:</strong> £15 per unlock</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <ArrowRight className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                <span><strong>Growth tier:</strong> £12 per unlock</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <ArrowRight className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                <span><strong>Scale & Recruiter tiers:</strong> £10 per unlock</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <ArrowRight className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                <span><strong>Pay-per-hire option:</strong> £999 success fee (optional, risk-free)</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <ArrowRight className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                <span><strong>Training credits:</strong> Real LMS cohort vouchers (bulk discounts)</span>
-              </li>
-            </ul>
-          </CardContent>
-        </Card>
-
-        {/* ROI Calculator */}
-        <Card className="border-primary/20 bg-gradient-card animate-fade-in">
-          <CardHeader className="p-5 md:p-6">
-            <CardTitle className="text-xl md:text-2xl">Calculate Your Savings</CardTitle>
-            <CardDescription className="text-sm md:text-base">See how much you save vs traditional recruitment</CardDescription>
-          </CardHeader>
-          <CardContent className="p-5 md:p-6 pt-0">
-            <div className="grid md:grid-cols-2 gap-6 md:gap-8">
-              <div className="space-y-3 md:space-y-4">
+            {/* Pricing Plans */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {/* Starter Plan */}
+              <Card className="bg-white shadow-md rounded-lg overflow-hidden flex flex-col justify-between">
                 <div>
-                  <h4 className="font-semibold mb-2 text-sm md:text-base">Traditional Recruitment Cost</h4>
-                  <p className="text-2xl md:text-3xl font-bold text-destructive">£12,500</p>
-                  <p className="text-xs md:text-sm text-muted-foreground">Average for £50k salary role (25% fee)</p>
+                  <CardHeader className="px-6 py-4">
+                    <CardTitle className="text-xl font-semibold">
+                      Starter
+                    </CardTitle>
+                    <CardDescription>
+                      For individuals and small teams getting started.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="px-6 py-4">
+                    <div className="mb-4">
+                      <div className="font-bold text-2xl">
+                        £{getPricing(99).toFixed(0)}
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        £{getMonthlyEquivalent(99).toFixed(0)}/month
+                      </div>
+                    </div>
+                    <ul className="list-none space-y-2">
+                      <li className="flex items-center gap-2">
+                        <Check className="w-4 h-4 text-green-500" />
+                        1 user
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Check className="w-4 h-4 text-green-500" />
+                        10 unlocks per year
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Check className="w-4 h-4 text-green-500" />
+                        Community support
+                      </li>
+                    </ul>
+                  </CardContent>
                 </div>
-                <div className="text-xs md:text-sm text-muted-foreground space-y-1">
-                  <p>+ £3,000 retainer upfront</p>
-                  <p>+ 6-8 weeks hiring time</p>
-                  <p>+ Limited candidate visibility</p>
-                </div>
-              </div>
-              <div className="space-y-3 md:space-y-4">
-                <div>
-                  <h4 className="font-semibold mb-2 text-sm md:text-base">Cydena Platform Cost</h4>
-                  <p className="text-2xl md:text-3xl font-bold text-primary">£1,188</p>
-                  <p className="text-xs md:text-sm text-muted-foreground">Starter plan: £99/mo with 10 unlocks/year</p>
-                </div>
-                <div className="text-xs md:text-sm space-y-1">
-                  <p className="text-primary">✓ Zero upfront costs</p>
-                  <p className="text-primary">✓ Instant candidate access</p>
-                  <p className="text-primary">✓ Full profile transparency</p>
-                </div>
-                <div className="pt-3 md:pt-4 border-t">
-                  <p className="text-xl md:text-2xl font-bold text-primary">Save £11,312</p>
-                  <p className="text-xs md:text-sm text-muted-foreground">90% cost reduction per hire</p>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+                <CardFooter className="px-6 py-4">
+                  <Button className="w-full" onClick={() => handleTierSelect('employer_starter')} disabled={checkingAuth || currentTier === 'employer_starter'}>
+                    {subscriptionLoading ? "Loading..." : (currentTier === 'employer_starter' ? "Current Plan" : "Choose Starter")}
+                  </Button>
+                </CardFooter>
+              </Card>
 
-        {/* FAQ Link */}
-        <div className="text-center mt-12 md:mt-16">
-          <p className="text-muted-foreground mb-4 text-sm md:text-base">Have questions about pricing?</p>
-          <Link to="/faq">
-            <Button variant="outline" className="gap-2 w-full sm:w-auto">
-              View FAQ <ArrowRight className="h-4 w-4" />
-            </Button>
-          </Link>
-        </div>
+              {/* Growth Plan */}
+              <Card className="bg-white shadow-md rounded-lg overflow-hidden flex flex-col justify-between">
+                <div>
+                  <CardHeader className="px-6 py-4">
+                    <CardTitle className="text-xl font-semibold">
+                      Growth
+                      <Badge className="ml-2">Popular</Badge>
+                    </CardTitle>
+                    <CardDescription>
+                      For growing teams that need more features.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="px-6 py-4">
+                    <div className="mb-4">
+                      <div className="font-bold text-2xl">
+                        £{getPricing(299).toFixed(0)}
+                      </div>
+                       <div className="text-sm text-muted-foreground">
+                        £{getMonthlyEquivalent(299).toFixed(0)}/month
+                      </div>
+                    </div>
+                    <ul className="list-none space-y-2">
+                      <li className="flex items-center gap-2">
+                        <Check className="w-4 h-4 text-green-500" />
+                        5 users
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Check className="w-4 h-4 text-green-500" />
+                        30 unlocks per year
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Check className="w-4 h-4 text-green-500" />
+                        Priority support
+                      </li>
+                    </ul>
+                  </CardContent>
+                </div>
+                <CardFooter className="px-6 py-4">
+                  <Button className="w-full" onClick={() => handleTierSelect('employer_growth')} disabled={checkingAuth || currentTier === 'employer_growth'}>
+                    {subscriptionLoading ? "Loading..." : (currentTier === 'employer_growth' ? "Current Plan" : "Choose Growth")}
+                  </Button>
+                </CardFooter>
+              </Card>
+
+              {/* Scale Plan */}
+              <Card className="bg-white shadow-md rounded-lg overflow-hidden flex flex-col justify-between">
+                <div>
+                  <CardHeader className="px-6 py-4">
+                    <CardTitle className="text-xl font-semibold">
+                      Scale
+                    </CardTitle>
+                    <CardDescription>
+                      For larger organizations with advanced needs.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="px-6 py-4">
+                    <div className="mb-4">
+                      <div className="font-bold text-2xl">
+                        £{getPricing(699).toFixed(0)}
+                      </div>
+                       <div className="text-sm text-muted-foreground">
+                        £{getMonthlyEquivalent(699).toFixed(0)}/month
+                      </div>
+                    </div>
+                    <ul className="list-none space-y-2">
+                      <li className="flex items-center gap-2">
+                        <Check className="w-4 h-4 text-green-500" />
+                        Unlimited users
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Check className="w-4 h-4 text-green-500" />
+                        Unlimited unlocks
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Check className="w-4 h-4 text-green-500" />
+                        24/7 support
+                      </li>
+                    </ul>
+                  </CardContent>
+                </div>
+                <CardFooter className="px-6 py-4">
+                  <Button className="w-full" onClick={() => handleTierSelect('employer_scale')} disabled={checkingAuth || currentTier === 'employer_scale'}>
+                    {subscriptionLoading ? "Loading..." : (currentTier === 'employer_scale' ? "Current Plan" : "Choose Scale")}
+                  </Button>
+                </CardFooter>
+              </Card>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="roi">
+            <ROICalculator />
+          </TabsContent>
+        </Tabs>
       </main>
     </div>
   );
