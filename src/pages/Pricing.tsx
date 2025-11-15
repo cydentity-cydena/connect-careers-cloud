@@ -112,9 +112,9 @@ const Pricing = () => {
           <TabsContent value="pricing" className="space-y-16">
             <Card>
               <CardHeader className="text-center">
-                <CardTitle className="text-2xl">Overage Pricing</CardTitle>
+                <CardTitle className="text-2xl">Additional Unlocks</CardTitle>
                 <CardDescription>
-                  Additional unlocks at £8 each for all paid tiers. Custom plans have unlimited unlocks.
+                  Extra unlocks available at £8 each for all paid tiers. Custom plans have unlimited unlocks.
                 </CardDescription>
               </CardHeader>
               <CardContent>
