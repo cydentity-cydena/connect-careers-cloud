@@ -14,16 +14,12 @@ interface UpgradeTierDialogProps {
 
 const TIER_COMPARISON = {
   "Starter": {
-    current: { allocation: 50, price: 199 },
-    upgrade: { tier: "Growth", allocation: 100, price: 499, perUnlock: 4.99 }
+    current: { allocation: 10, price: 99 },
+    upgrade: { tier: "Team", allocation: 30, price: 249, perUnlock: 8.30 }
   },
-  "Growth": {
-    current: { allocation: 100, price: 499 },
-    upgrade: { tier: "Scale", allocation: 200, price: 799, perUnlock: 3.99 }
-  },
-  "Scale": {
-    current: { allocation: 200, price: 799 },
-    upgrade: { tier: "Pro", allocation: 500, price: 999, perUnlock: 1.99 }
+  "Team": {
+    current: { allocation: 30, price: 249 },
+    upgrade: { tier: "Enterprise", allocation: 999999, price: 499, perUnlock: 0 }
   }
 };
 
@@ -55,8 +51,12 @@ export const UpgradeTierDialog = ({
     );
   }
 
-  const monthlySavings = (comparison.current.price + (5.90 * 50)) - comparison.upgrade.price;
-  const additionalUnlocks = comparison.upgrade.allocation - comparison.current.allocation;
+  const monthlySavings = comparison.upgrade.perUnlock === 0 
+    ? (8 * 50) // Enterprise: save £8 per unlock if buying 50 overages
+    : (comparison.current.price + (8 * 50)) - comparison.upgrade.price;
+  const additionalUnlocks = comparison.upgrade.allocation === 999999 
+    ? 'Unlimited' 
+    : comparison.upgrade.allocation - comparison.current.allocation;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -102,11 +102,11 @@ export const UpgradeTierDialog = ({
                   </div>
                   <div className="flex justify-between">
                     <span>50 unlock pack:</span>
-                    <span>£249</span>
+                    <span>£400</span>
                   </div>
                   <div className="flex justify-between font-bold text-foreground pt-2 border-t">
                     <span>Total:</span>
-                    <span>£{comparison.current.price + 249}</span>
+                    <span>£{comparison.current.price + 400}</span>
                   </div>
                 </div>
               </div>
@@ -130,18 +130,22 @@ export const UpgradeTierDialog = ({
                 <li className="flex items-start gap-2">
                   <Check className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
                   <div>
-                    <div className="font-semibold">{comparison.upgrade.allocation} annual unlocks</div>
+                    <div className="font-semibold">
+                      {comparison.upgrade.allocation === 999999 ? 'Unlimited' : comparison.upgrade.allocation} annual unlocks
+                    </div>
                     <div className="text-sm text-muted-foreground">
-                      +{additionalUnlocks} more than {currentTier}
+                      {typeof additionalUnlocks === 'number' ? `+${additionalUnlocks}` : additionalUnlocks} more than {currentTier}
                     </div>
                   </div>
                 </li>
                 <li className="flex items-start gap-2">
                   <Check className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
                   <div>
-                    <div className="font-semibold">£{comparison.upgrade.perUnlock.toFixed(2)} per unlock</div>
+                    <div className="font-semibold">
+                      {comparison.upgrade.perUnlock === 0 ? 'FREE' : `£${comparison.upgrade.perUnlock.toFixed(2)}`} per unlock
+                    </div>
                     <div className="text-sm text-muted-foreground">
-                      Better value than buying packs
+                      {comparison.upgrade.perUnlock === 0 ? 'No overage charges' : 'Better value than buying packs'}
                     </div>
                   </div>
                 </li>

@@ -14,7 +14,6 @@ import { ROICalculator } from "@/components/pricing/ROICalculator";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 
-// Stripe Price IDs for Monthly and Annual billing
 const PRICING_IDS = {
   employer_starter: {
     monthly: 'price_1SG35MDOcfakZuIamZqqT7mn',
@@ -111,7 +110,6 @@ const Pricing = () => {
           </TabsList>
 
           <TabsContent value="pricing" className="space-y-16">
-            {/* Comparison Banner */}
             <Card className="border-2 border-primary/20 bg-gradient-to-r from-background to-primary/5">
               <CardContent className="p-8">
                 <div className="grid md:grid-cols-2 gap-8">
@@ -175,12 +173,11 @@ const Pricing = () => {
               </CardContent>
             </Card>
 
-            {/* Overage Pricing */}
             <Card>
               <CardHeader className="text-center">
                 <CardTitle className="text-2xl">Overage Pricing</CardTitle>
                 <CardDescription>
-                  Additional unlocks at £8 each for Starter and Team plans. Enterprise has unlimited.
+                  Additional unlocks at £8 each for Starter and Team. Enterprise has unlimited.
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -204,9 +201,7 @@ const Pricing = () => {
               </CardContent>
             </Card>
 
-            {/* Pricing Cards */}
             <div className="grid md:grid-cols-4 gap-8">
-              {/* Starter */}
               <Card>
                 <CardHeader>
                   <CardTitle>Starter</CardTitle>
@@ -244,11 +239,11 @@ const Pricing = () => {
                     </li>
                     <li className="flex gap-2">
                       <Check className="h-5 w-5 text-primary shrink-0" />
-                      <span>Evidence-first profiles</span>
+                      <span>Evidence profiles</span>
                     </li>
                     <li className="flex gap-2">
                       <Check className="h-5 w-5 text-primary shrink-0" />
-                      <span>Pipeline management</span>
+                      <span>Pipeline tools</span>
                     </li>
                     <li className="flex gap-2">
                       <Check className="h-5 w-5 text-primary shrink-0" />
@@ -268,7 +263,6 @@ const Pricing = () => {
                 </CardFooter>
               </Card>
 
-              {/* Team */}
               <Card className="border-primary relative">
                 <Badge className="absolute -top-3 left-1/2 -translate-x-1/2">Most Popular</Badge>
                 <CardHeader>
@@ -330,7 +324,6 @@ const Pricing = () => {
                 </CardFooter>
               </Card>
 
-              {/* Enterprise */}
               <Card className="border-2 border-primary/50 relative">
                 <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-primary to-purple-600">
                   <Sparkles className="h-3 w-3 mr-1" />
@@ -395,7 +388,6 @@ const Pricing = () => {
                 </CardFooter>
               </Card>
 
-              {/* Custom */}
               <Card>
                 <CardHeader>
                   <CardTitle>Custom</CardTitle>
@@ -449,7 +441,6 @@ const Pricing = () => {
           </TabsContent>
         </Tabs>
 
-        {/* Value Banner */}
         <Card className="bg-gradient-to-r from-primary/10 to-purple-500/10 border-primary/20 mt-16">
           <CardContent className="p-8 text-center">
             <h3 className="text-3xl font-bold mb-4">
@@ -464,7 +455,6 @@ const Pricing = () => {
           </CardContent>
         </Card>
 
-        {/* FAQ Link */}
         <div className="text-center mt-16">
           <p className="text-muted-foreground mb-4">Questions about pricing?</p>
           <Button variant="outline" onClick={() => navigate('/faq')}>
