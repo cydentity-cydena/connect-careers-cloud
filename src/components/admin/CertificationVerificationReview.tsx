@@ -308,7 +308,7 @@ export function CertificationVerificationReview() {
                               {request.credential_id}
                             </p>
                           </div>
-                          {!request.credential_url && getVerificationUrl(request.issuer, request.credential_id) && (
+                          {getVerificationUrl(request.issuer, request.credential_id) && (
                             <Button
                               variant="outline"
                               size="sm"
