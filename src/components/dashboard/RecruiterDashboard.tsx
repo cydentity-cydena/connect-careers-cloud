@@ -9,6 +9,7 @@ import RecruiterClientsList from "./RecruiterClientsList";
 import RecruiterPlacements from "./RecruiterPlacements";
 import { ApplicationPipeline } from "@/components/employer/ApplicationPipeline";
 import { JobManagement } from "./JobManagement";
+import { AnalyticsDashboard } from "@/components/employer/AnalyticsDashboard";
 
 const RecruiterDashboard = () => {
   const navigate = useNavigate();
@@ -137,8 +138,9 @@ const RecruiterDashboard = () => {
       )}
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full max-w-4xl grid-cols-5">
+        <TabsList className="grid w-full max-w-4xl grid-cols-6">
           <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="analytics">Analytics</TabsTrigger>
           <TabsTrigger value="pipeline">Pipeline</TabsTrigger>
           <TabsTrigger value="jobs">Jobs</TabsTrigger>
           <TabsTrigger value="clients">Clients</TabsTrigger>
@@ -337,6 +339,10 @@ const RecruiterDashboard = () => {
               </CardContent>
             </Card>
           </div>
+        </TabsContent>
+
+        <TabsContent value="analytics" className="mt-6">
+          <AnalyticsDashboard />
         </TabsContent>
 
         <TabsContent value="pipeline" className="mt-6">
