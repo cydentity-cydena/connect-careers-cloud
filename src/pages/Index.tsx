@@ -181,16 +181,6 @@ const Index = () => {
                 Push candidates to Workday and SAP SuccessFactors. Automate workflows with webhooks
               </p>
             </div>
-
-            <div className="bg-gradient-card backdrop-blur-sm border border-border rounded-lg p-5 md:p-6 lg:p-8 hover:scale-105 transition-transform animate-slide-up sm:col-span-2 lg:col-span-1" style={{animationDelay: '0.2s'}}>
-              <div className="bg-accent/10 w-11 h-11 md:w-12 md:h-12 lg:w-14 lg:h-14 rounded-lg flex items-center justify-center mb-3 md:mb-4 lg:mb-6 flex-shrink-0">
-                <Users className="h-5 w-5 md:h-6 md:w-6 lg:h-7 lg:w-7 text-accent" />
-              </div>
-              <h3 className="text-base md:text-lg lg:text-xl font-semibold mb-2 md:mb-3">Skills Verified by Platforms</h3>
-              <p className="text-xs md:text-sm lg:text-base text-muted-foreground leading-relaxed">
-                TryHackMe, HackTheBox rankings and verified assessments prove real technical ability
-              </p>
-            </div>
           </div>
         </div>
       </section>

@@ -24,7 +24,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { HRReadyBadge } from "@/components/hrready/HRReadyBadge";
 import { CandidateAvatar } from "@/components/profiles/CandidateAvatar";
-import { SkillsValidation } from "@/components/profiles/SkillsValidation";
 import { AssessmentResults } from "@/components/profiles/AssessmentResults";
 import { ProfileBadgeDisplay } from "@/components/badges/ProfileBadgeDisplay";
 
@@ -766,21 +765,6 @@ export default function ProfileDetail() {
                   </Collapsible>
                 )}
 
-                {/* Skills Validation Platforms */}
-                <SkillsValidation
-                  candidateId={id!}
-                  isOwnProfile={currentUserId === id}
-                  tryHackMeUsername={profile?.tryhackme_username}
-                  hackTheBoxUsername={profile?.hackthebox_username}
-                  tryHackMeRank={profile?.tryhackme_rank}
-                  hackTheBoxRank={profile?.hackthebox_rank}
-                  tryHackMeLevel={profile?.tryhackme_level}
-                  tryHackMePoints={profile?.tryhackme_points}
-                  tryHackMeBadges={profile?.tryhackme_badges}
-                  hackTheBoxPoints={profile?.hackthebox_points}
-                  hackTheBoxRankText={profile?.hackthebox_rank_text}
-                  hackTheBoxUserOwns={profile?.hackthebox_user_owns}
-                />
 
                 {/* AI Skills Assessments */}
                 <AssessmentResults candidateId={id!} />
