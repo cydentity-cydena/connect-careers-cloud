@@ -174,9 +174,9 @@ export default function Founding20() {
   return (
     <>
       <SEO 
-        title="Founding 20 - Elite Cybersecurity Talent Program"
-        description="Join the exclusive Founding 20 program for enhanced visibility with top cybersecurity employers and recruiters. Elite recognition, verified credentials, and access to quality opportunities."
-        keywords="cybersecurity jobs, elite talent, founding 20, verified professionals, priority hiring, cyber security careers"
+        title="Founding 200 - Early Access for Cybersecurity Professionals"
+        description="Join the exclusive Founding 200 program - lifetime free access, verified profile badge, early ranking in search results, and priority onboarding. Limited to first 200 cyber professionals."
+        keywords="cybersecurity jobs, elite talent, founding 200, verified professionals, priority hiring, cyber security careers, early access"
       />
       <Navigation />
       
@@ -188,16 +188,41 @@ export default function Founding20() {
             <div className="text-center mb-12">
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full mb-6">
                 <Shield className="h-5 w-5 text-primary" />
-                <span className="text-sm font-semibold text-primary">Limited Spots Available</span>
+                <span className="text-sm font-semibold text-primary">🚀 Early Access Now Open — Founding 200</span>
               </div>
               <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary via-primary-glow to-primary bg-clip-text text-transparent">
-                Join the Founding 20
+                Founding 200 Cybersecurity Professionals
               </h1>
-              <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-4">
-                Become part of an elite group of verified cybersecurity professionals with exclusive access to top-tier opportunities
+              <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-8">
+                Early access for the first 200 cyber professionals
               </p>
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/20 rounded-lg">
-                <span className="text-sm font-medium text-primary">🌍 Now Open Globally</span>
+              <div className="space-y-3 max-w-2xl mx-auto text-left bg-card/50 p-6 rounded-lg border border-primary/20">
+                <p className="text-base text-foreground font-medium mb-3">This cohort gets:</p>
+                <ul className="space-y-2 text-muted-foreground">
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                    <span>Lifetime free access</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                    <span>Early ranking in recruiter search results</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                    <span>Verified profile badge</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                    <span>First look at transparency features (profile view alerts, pipeline visibility, etc.)</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                    <span>Priority onboarding before public launch</span>
+                  </li>
+                </ul>
+                <p className="text-sm text-muted-foreground mt-4 pt-4 border-t border-border">
+                  <strong className="text-primary">Limited early-access window</strong> — once the 200 places are filled, that's it.
+                </p>
               </div>
             </div>
 
@@ -227,7 +252,7 @@ export default function Founding20() {
               <CardHeader className="text-center">
                 <CardTitle className="text-3xl mb-2">Apply Now</CardTitle>
                 <CardDescription className="text-base">
-                  Complete the form below to be considered for the Founding 20 program - open to cybersecurity professionals worldwide
+                  Complete the form below to join the Founding 200 early access program - open to cybersecurity professionals worldwide
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -612,7 +637,7 @@ export default function Founding20() {
                     </h3>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="whyTopTwenty">Why should you be part of the Founding 20? *</Label>
+                      <Label htmlFor="whyTopTwenty">Why should you be part of the Founding 200? *</Label>
                       <Textarea
                         id="whyTopTwenty"
                         required
@@ -638,7 +663,7 @@ export default function Founding20() {
                         htmlFor="consentVerification"
                         className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                       >
-                        I consent to verification of my credentials, certifications, and background as part of the Founding 20 selection process. *
+                        I consent to verification of my credentials, certifications, and background as part of the Founding 200 selection process. *
                       </label>
                     </div>
 

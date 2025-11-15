@@ -18,16 +18,16 @@ async function sendEmailNotification(formData: any) {
   const emailBody = {
     personalizations: [{
       to: [{ email: "contact@cydena.com" }],
-      subject: `New Founding 20 Application - ${formData.fullName}`,
+      subject: `New Founding 200 Application - ${formData.fullName}`,
     }],
     from: { 
       email: "noreply@cydena.com",
-      name: "Cydena Founding 20"
+      name: "Cydena Founding 200"
     },
     content: [{
       type: "text/html",
       value: `
-        <h2>New Founding 20 Application Received</h2>
+        <h2>New Founding 200 Application Received</h2>
         
         <h3>Personal Information</h3>
         <p><strong>Name:</strong> ${formData.fullName}</p>
@@ -52,7 +52,7 @@ async function sendEmailNotification(formData: any) {
         <p><strong>GitHub:</strong> ${formData.githubUrl || 'Not provided'}</p>
         <p><strong>Portfolio:</strong> ${formData.portfolioUrl || 'Not provided'}</p>
         
-        <h3>Why They Should Be in the Founding 20</h3>
+        <h3>Why They Should Be in the Founding 200</h3>
         <p>${formData.whyTopTwenty.replace(/\n/g, '<br>')}</p>
         
         <hr>
@@ -116,7 +116,7 @@ serve(async (req) => {
         const bytes = new Uint8Array(binary.length);
         for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
         const ext = String(formData.cvFileName).split('.').pop() || 'bin';
-        const path = `founding-20/${crypto.randomUUID()}.${ext}`;
+        const path = `founding-200/${crypto.randomUUID()}.${ext}`;
         const contentType = formData.cvContentType || 'application/octet-stream';
         const { error: uploadErr } = await supabase.storage.from('resumes').upload(path, bytes, { contentType });
         if (uploadErr) {
@@ -228,8 +228,8 @@ serve(async (req) => {
         const notifications = adminUsers.map(admin => ({
           user_id: admin.user_id,
           type: 'system',
-          title: 'New Founding 20 Application',
-          message: `${formData.fullName} has applied for the Founding 20 program`,
+          title: 'New Founding 200 Application',
+          message: `${formData.fullName} has applied for the Founding 200 program`,
           link: '/staff/funnel',
         }));
 
