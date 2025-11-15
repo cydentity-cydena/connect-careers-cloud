@@ -2760,6 +2760,14 @@ export type Database = {
         Returns: boolean
       }
       check_founding_200_availability: { Args: never; Returns: boolean }
+      get_community_stats: {
+        Args: never
+        Returns: {
+          active_members: number
+          certs_earned: number
+          projects_shared: number
+        }[]
+      }
       get_public_candidate_profile: {
         Args: { profile_user_id: string }
         Returns: {
