@@ -44,10 +44,10 @@ export const useSubscription = () => {
     }
   };
 
-  const createCheckout = async (tier: string) => {
+  const createCheckout = async (priceId: string) => {
     try {
       const { data, error } = await supabase.functions.invoke('create-checkout', {
-        body: { tier },
+        body: { price_id: priceId },
       });
 
       if (error) throw error;
