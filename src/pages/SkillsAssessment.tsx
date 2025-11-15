@@ -187,10 +187,23 @@ export default function SkillsAssessment() {
   };
 
   const submitAssessment = async () => {
+    // Validate all answers are provided
+    const unansweredQuestions = answers.filter((a, i) => i < questions.length && !a?.trim());
+    if (unansweredQuestions.length > 0) {
+      toast({
+        variant: "destructive",
+        title: "Incomplete Assessment",
+        description: "Please answer all questions before submitting.",
+      });
+      return;
+    }
+
     setSubmitting(true);
     try {
       // Calculate average time per question for integrity check
-      const avgTimePerQuestion = questionTimeSpent.reduce((a, b) => a + b, 0) / questionTimeSpent.length;
+      const avgTimePerQuestion = questionTimeSpent.length > 0 
+        ? questionTimeSpent.reduce((a, b) => a + b, 0) / questionTimeSpent.length 
+        : 0;
 
       const { data, error } = await supabase.functions.invoke("skills-assessment", {
         body: {
@@ -403,7 +416,7 @@ export default function SkillsAssessment() {
               ) : (
                 <Button
                   onClick={submitAssessment}
-                  disabled={!answers[currentQuestion]?.trim() || submitting}
+                  disabled={submitting || answers.some((a, i) => i < questions.length && !a?.trim())}
                 >
                   {submitting ? (
                     <>
