@@ -4,13 +4,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Building, Users, Briefcase, TrendingUp, Coins, Workflow, CheckCircle, Bug, ArrowRight } from "lucide-react";
+import { Building, Users, Briefcase, TrendingUp, Coins, Workflow, CheckCircle, Bug, ArrowRight, BarChart3 } from "lucide-react";
 import { CreditsPurchaseDialog } from "@/components/employer/CreditsPurchaseDialog";
 import { ApplicationPipeline } from "@/components/employer/ApplicationPipeline";
 import { UnlockUsageTracker } from "@/components/employer/UnlockUsageTracker";
 import { VerificationRequestDialog } from "@/components/verification/VerificationRequestDialog";
 import { SubscriptionStatus } from "@/components/subscription/SubscriptionStatus";
 import { JobManagement } from "./JobManagement";
+import { AnalyticsDashboard } from "@/components/employer/AnalyticsDashboard";
 import { useQuery } from "@tanstack/react-query";
 
 const EmployerDashboard = () => {
@@ -197,8 +198,12 @@ const EmployerDashboard = () => {
       )}
 
       <Tabs defaultValue="overview" className="w-full">
-        <TabsList className="grid w-full max-w-2xl grid-cols-3">
+        <TabsList className="grid w-full max-w-3xl grid-cols-4">
           <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="analytics" className="gap-2">
+            <BarChart3 className="h-4 w-4" />
+            Analytics
+          </TabsTrigger>
           <TabsTrigger value="pipeline" className="gap-2">
             <Workflow className="h-4 w-4" />
             Pipeline
@@ -316,6 +321,10 @@ const EmployerDashboard = () => {
         </Card>
       </div>
 
+        </TabsContent>
+
+        <TabsContent value="analytics" className="mt-6">
+          <AnalyticsDashboard />
         </TabsContent>
 
         <TabsContent value="jobs" className="mt-6">
