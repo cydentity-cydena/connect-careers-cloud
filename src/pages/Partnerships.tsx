@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import Navigation from "@/components/Navigation";
 import SEO from "@/components/SEO";
-import { Check, Star, TrendingUp, Users, BarChart, Sparkles, ArrowRight, Award, GraduationCap, AlertCircle } from "lucide-react";
+import { Check, Star, TrendingUp, Users, BarChart, Sparkles, ArrowRight, Award, GraduationCap, AlertCircle, Building2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useState, useEffect } from "react";
@@ -666,8 +666,40 @@ const Partnerships = () => {
 
                     {/* Pricing Plans */}
                     <div className="pt-6 border-t border-border">
-                      <h3 className="text-2xl font-bold text-center mb-6">Featured Placement Plans</h3>
-                      <div className="max-w-2xl mx-auto mb-6">
+                      <h3 className="text-2xl font-bold text-center mb-6">Placement Options</h3>
+                      <div className="max-w-2xl mx-auto mb-6 space-y-6">
+                        {/* Standard Listing - Cydentity Academy */}
+                        <div className="space-y-3 p-6 rounded-lg border-2 border-border bg-card">
+                          <div className="flex items-center gap-3 mb-4">
+                            <Building2 className="h-6 w-6 text-muted-foreground" />
+                            <h4 className="text-xl font-bold">Standard Listing</h4>
+                          </div>
+                          <p className="text-muted-foreground mb-4">
+                            Basic listing on Training & Certifications pages (e.g., Cydentity Academy).
+                          </p>
+                          <ul className="space-y-2">
+                            <li className="flex items-start gap-2">
+                              <Check className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                              <span className="text-sm">Listed in partner directory</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <Check className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                              <span className="text-sm">Company logo display</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <Check className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                              <span className="text-sm">Basic description</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <Check className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                              <span className="text-sm">Link to website</span>
+                            </li>
+                          </ul>
+                          <div className="pt-4">
+                            <div className="text-3xl font-bold">From £149<span className="text-base font-normal text-muted-foreground">/week</span></div>
+                          </div>
+                        </div>
+
                         {/* Featured Placement */}
                         <div className="space-y-3 p-6 rounded-lg border-4 border-primary bg-primary/5 relative">
                           <Badge className="absolute top-4 right-4 bg-primary">
