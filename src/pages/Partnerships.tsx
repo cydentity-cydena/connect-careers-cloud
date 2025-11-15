@@ -584,13 +584,10 @@ const Partnerships = () => {
                   </div>
                 </div>
 
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <div className="flex justify-center">
                   <Button size="lg" className="text-lg" onClick={handleContactSales}>
                     Get Boost Dashboard Placement
                     <ArrowRight className="ml-2 h-5 w-5" />
-                  </Button>
-                  <Button size="lg" variant="outline" asChild>
-                    <a href="https://www.loom.com" target="_blank" rel="noopener noreferrer">View Dashboard Demo</a>
                   </Button>
                 </div>
               </TabsContent>
