@@ -159,6 +159,12 @@ const Profile = () => {
       return;
     }
     
+    // Require location
+    if (!location) {
+      toast.error('Location is required');
+      return;
+    }
+    
     setLoading(true);
     try {
       const { error: pErr } = await supabase
@@ -588,10 +594,11 @@ const Profile = () => {
                   </p>
                 )}
 
-                <Label htmlFor="location">Location (public)</Label>
+                <Label htmlFor="location">Location (public) *</Label>
                 <Select
                   value={location}
                   onValueChange={(value) => setLocation(value)}
+                  required
                 >
                   <SelectTrigger className="bg-background">
                     <SelectValue placeholder="Select your location" />
@@ -625,6 +632,11 @@ const Profile = () => {
                     <SelectItem value="Other">🌍 Other</SelectItem>
                   </SelectContent>
                 </Select>
+                {!location && (
+                  <p className="text-xs text-muted-foreground">
+                    ⚠️ Location is required for your public profile
+                  </p>
+                )}
                 
                 <div className="space-y-4">
                   <Label className="flex items-center gap-2 text-base">
