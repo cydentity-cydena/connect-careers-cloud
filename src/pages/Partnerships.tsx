@@ -82,7 +82,7 @@ const Partnerships = () => {
     checkAvailableSlots();
   }, []);
 
-  // Base placement pricing (Standard listing on Training/Cert pages)
+  // Base placement pricing (Paid listing on Training/Cert pages)
   const basePricingTiers: PricingTier[] = [
     {
       name: "Weekly",
@@ -200,7 +200,7 @@ const Partnerships = () => {
 
   const features = [
     "Featured slot with custom logo and branding",
-    "Prominent placement above all standard listings",
+    "Prominent placement at top of page",
     "Direct link to your website and courses",
     "Custom description and value proposition",
     "Priority positioning in all search results",
@@ -310,8 +310,8 @@ const Partnerships = () => {
                             <Check className="h-5 w-5 text-primary" />
                           </div>
                           <div>
-                            <h4 className="font-bold">Standard Placement</h4>
-                            <p className="text-sm text-muted-foreground">Listed in category sections. Base pricing starting at £149/week.</p>
+                            <h4 className="font-bold">Base Placement</h4>
+                            <p className="text-sm text-muted-foreground">Listed in category sections. Pricing starting at £149/week.</p>
                           </div>
                         </div>
                       </div>
@@ -471,7 +471,7 @@ const Partnerships = () => {
                       </li>
                     </ul>
                     <p className="text-sm text-muted-foreground mt-4 pt-4 border-t">
-                      <strong>Example:</strong> Standard placement (4 weeks at £537) + Slot 1 Featured upgrade (4 weeks × £250 = £1,000) = £1,537 total
+                      <strong>Example:</strong> Base placement (4 weeks at £537) + Slot 1 Featured upgrade (4 weeks × £250 = £1,000) = £1,537 total
                     </p>
                   </div>
                 </div>
@@ -667,37 +667,8 @@ const Partnerships = () => {
                     {/* Pricing Plans */}
                     <div className="pt-6 border-t border-border">
                       <h3 className="text-2xl font-bold text-center mb-6">Featured Placement Plans</h3>
-                      <div className="grid md:grid-cols-2 gap-6 mb-6">
-                        {/* Standard Placement */}
-                        <div className="space-y-3 p-6 rounded-lg border-2 border-border bg-card">
-                          <div className="flex items-center gap-2 mb-4">
-                            <Award className="h-6 w-6 text-primary" />
-                            <h4 className="text-xl font-bold">Standard Listing</h4>
-                          </div>
-                          <p className="text-muted-foreground mb-4">
-                            Free standard listing in our certification catalog with basic visibility.
-                          </p>
-                          <ul className="space-y-2">
-                            <li className="flex items-start gap-2">
-                              <Check className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                              <span className="text-sm">Listed in certification catalog</span>
-                            </li>
-                            <li className="flex items-start gap-2">
-                              <Check className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                              <span className="text-sm">Searchable by candidates</span>
-                            </li>
-                            <li className="flex items-start gap-2">
-                              <Check className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                              <span className="text-sm">Basic certification details</span>
-                            </li>
-                          </ul>
-                          <div className="pt-4">
-                            <div className="text-3xl font-bold">FREE</div>
-                            <p className="text-sm text-muted-foreground">No cost to list</p>
-                          </div>
-                        </div>
-
-                        {/* Featured Upgrade */}
+                      <div className="max-w-2xl mx-auto mb-6">
+                        {/* Featured Placement */}
                         <div className="space-y-3 p-6 rounded-lg border-4 border-primary bg-primary/5 relative">
                           <Badge className="absolute top-4 right-4 bg-primary">
                             <Star className="h-3 w-3 mr-1" />
@@ -711,10 +682,6 @@ const Partnerships = () => {
                             Premium featured placement at the top of the certification catalog.
                           </p>
                           <ul className="space-y-2">
-                            <li className="flex items-start gap-2">
-                              <Check className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                              <span className="text-sm font-semibold">Everything in Standard</span>
-                            </li>
                             <li className="flex items-start gap-2">
                               <Check className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
                               <span className="text-sm">Top of page placement</span>
@@ -853,7 +820,7 @@ const Partnerships = () => {
                 </div>
                 <div>
                   <div className="text-4xl md:text-5xl font-bold text-primary mb-2">5x</div>
-                  <p className="text-muted-foreground">Average CTR Increase vs Standard Listing</p>
+                  <p className="text-muted-foreground">Average CTR Increase with Featured Placement</p>
                 </div>
                 <div>
                   <div className="text-4xl md:text-5xl font-bold text-primary mb-2">92%</div>
@@ -875,11 +842,11 @@ const Partnerships = () => {
               <div className="space-y-6">
                 <Card>
                   <CardHeader>
-                    <CardTitle className="text-lg">What's the difference between standard and featured placement?</CardTitle>
+                    <CardTitle className="text-lg">What's the difference between base and featured placement?</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <p className="text-muted-foreground">
-                      Standard placement lists you in the relevant category sections at £149/week base rate. Featured placement upgrades you to the premium top-of-page section with logo display, custom branding, and guaranteed visibility for an additional £100-250/week (depending on slot position 1-4). Volume discounts apply automatically.
+                      Base placement lists you in the relevant category sections at £149/week base rate. Featured placement upgrades you to the premium top-of-page section with logo display, custom branding, and guaranteed visibility for an additional £100-250/week (depending on slot position 1-4). Volume discounts apply automatically.
                     </p>
                   </CardContent>
                 </Card>
@@ -912,7 +879,7 @@ const Partnerships = () => {
                   </CardHeader>
                   <CardContent>
                     <p className="text-muted-foreground">
-                      Featured partners typically see 5x higher click-through rates compared to standard listings. With our audience of active job seekers and career advancers, you're reaching highly motivated candidates at the perfect moment in their learning journey.
+                      Featured partners typically see 5x higher click-through rates with premium placement. With our audience of active job seekers and career advancers, you're reaching highly motivated candidates at the perfect moment in their learning journey.
                     </p>
                   </CardContent>
                 </Card>
