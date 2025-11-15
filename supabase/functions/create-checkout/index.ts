@@ -12,14 +12,6 @@ const logStep = (step: string, details?: any) => {
   console.log(`[CREATE-CHECKOUT] ${step}${detailsStr}`);
 };
 
-// Tier to price ID mapping - Cydena Stripe Account
-const TIER_PRICES: Record<string, string> = {
-  'employer_starter': 'price_1SG35MDOcfakZuIamZqqT7mn',
-  'employer_growth': 'price_1SG35YDOcfakZuIasvamb8aS',
-  'employer_scale': 'price_1SG35iDOcfakZuIaarlVZp2y',
-  'recruiter_pro': 'price_1SG35uDOcfakZuIa2H5BFOFe',
-};
-
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -39,22 +31,19 @@ serve(async (req) => {
 
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) throw new Error("No authorization header provided");
-    logStep("Authorization header found");
 
     const token = authHeader.replace("Bearer ", "");
-    logStep("Authenticating user with token");
-    
     const { data: userData, error: userError } = await supabaseClient.auth.getUser(token);
     if (userError) throw new Error(`Authentication error: ${userError.message}`);
     const user = userData.user;
     if (!user?.email) throw new Error("User not authenticated or email not available");
     logStep("User authenticated", { userId: user.id, email: user.email });
 
-    const { tier } = await req.json();
-    if (!tier || !TIER_PRICES[tier]) {
-      throw new Error(`Invalid tier: ${tier}`);
+    const { price_id } = await req.json();
+    if (!price_id) {
+      throw new Error("price_id is required");
     }
-    logStep("Tier selected", { tier });
+    logStep("Price ID provided", { price_id });
 
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
     const customers = await stripe.customers.list({ email: user.email, limit: 1 });
@@ -70,7 +59,7 @@ serve(async (req) => {
       customer_email: customerId ? undefined : user.email,
       line_items: [
         {
-          price: TIER_PRICES[tier],
+          price: price_id,
           quantity: 1,
         },
       ],
@@ -79,11 +68,10 @@ serve(async (req) => {
       cancel_url: `${req.headers.get("origin")}/pricing?subscription=canceled`,
       metadata: {
         user_id: user.id,
-        tier: tier,
       },
     });
 
-    logStep("Checkout session created", { sessionId: session.id, url: session.url });
+    logStep("Checkout session created", { sessionId: session.id });
 
     return new Response(JSON.stringify({ url: session.url }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -91,7 +79,7 @@ serve(async (req) => {
     });
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    logStep("ERROR in create-checkout", { message: errorMessage });
+    logStep("ERROR", { message: errorMessage });
     return new Response(JSON.stringify({ error: errorMessage }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,

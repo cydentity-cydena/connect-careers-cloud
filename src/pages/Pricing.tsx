@@ -14,11 +14,27 @@ import { ROICalculator } from "@/components/pricing/ROICalculator";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 
+// Stripe Price IDs for Monthly and Annual billing
+const PRICING_IDS = {
+  employer_starter: {
+    monthly: 'price_1SG35MDOcfakZuIamZqqT7mn',
+    annual: 'price_1STqS4FnZFXoJvyLDyLk7HL7',
+  },
+  employer_growth: {
+    monthly: 'price_1SG365DOcfakZuIaYxbAFBdh',
+    annual: 'price_1STqSMDOcfakZuIaR9wdVJmh',
+  },
+  employer_scale: {
+    monthly: 'price_1SG36IDOcfakZuIaRFQhbM5M',
+    annual: 'price_1STqSkDOcfakZuIap8GfIy8S',
+  }
+};
+
 const Pricing = () => {
   const [billingPeriod, setBillingPeriod] = useState<'monthly' | 'annual'>('annual');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [checkingAuth, setCheckingAuth] = useState(true);
-  const { createCheckout, tier: currentTier, loading: subscriptionLoading } = useSubscription();
+  const { createCheckout } = useSubscription();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -42,12 +58,13 @@ const Pricing = () => {
     return monthly;
   };
 
-  const handleTierSelect = async (tierKey: string) => {
+  const handleTierSelect = async (tierKey: keyof typeof PRICING_IDS) => {
     if (!isAuthenticated) {
       navigate('/auth');
       return;
     }
-    await createCheckout(tierKey);
+    const priceId = PRICING_IDS[tierKey][billingPeriod];
+    await createCheckout(priceId);
   };
 
   return (
@@ -93,65 +110,64 @@ const Pricing = () => {
             <TabsTrigger value="roi">ROI Calculator</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="pricing" className="space-y-12">
-            {/* Comparison with Traditional Recruitment */}
-            <Card className="mb-8">
-              <CardHeader>
-                <CardTitle className="text-2xl font-semibold">
-                  Why Cydena vs Traditional Recruitment?
-                </CardTitle>
-                <CardDescription>
-                  See the difference in cost and speed
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid md:grid-cols-2 gap-6">
+          <TabsContent value="pricing" className="space-y-16">
+            {/* Comparison Banner */}
+            <Card className="border-2 border-primary/20 bg-gradient-to-r from-background to-primary/5">
+              <CardContent className="p-8">
+                <div className="grid md:grid-cols-2 gap-8">
                   <div>
-                    <h3 className="flex items-center gap-2 text-lg font-semibold mb-4">
-                      <X className="w-5 h-5 text-red-500" />
-                      Traditional Agency
-                    </h3>
-                    <ul className="list-none space-y-3">
-                      <li className="text-muted-foreground flex items-center gap-2">
-                        <X className="w-4 h-4 text-red-500" />
-                        15-25% of first year salary (£7,500-£15,000+)
+                    <div className="flex items-center gap-2 mb-4">
+                      <TrendingDown className="h-6 w-6 text-destructive" />
+                      <h3 className="text-2xl font-bold text-destructive">Traditional Recruitment</h3>
+                    </div>
+                    <ul className="space-y-3 text-muted-foreground">
+                      <li className="flex gap-2">
+                        <X className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
+                        <span>20% agency fees (£12k on £60k hire)</span>
                       </li>
-                      <li className="text-muted-foreground flex items-center gap-2">
-                        <X className="w-4 h-4 text-red-500" />
-                        Retainer fees upfront (£2,000-£5,000)
+                      <li className="flex gap-2">
+                        <X className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
+                        <span>Unverified candidates</span>
                       </li>
-                      <li className="text-muted-foreground flex items-center gap-2">
-                        <X className="w-4 h-4 text-red-500" />
-                        Exclusive contracts locking you in
+                      <li className="flex gap-2">
+                        <X className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
+                        <span>CV keyword matching</span>
                       </li>
-                      <li className="text-muted-foreground flex items-center gap-2">
-                        <X className="w-4 h-4 text-red-500" />
-                        6-8 weeks to fill role
+                      <li className="flex gap-2">
+                        <X className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
+                        <span>No proof of skills</span>
+                      </li>
+                      <li className="flex gap-2">
+                        <X className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
+                        <span>Pay per hire every time</span>
                       </li>
                     </ul>
                   </div>
-
                   <div>
-                    <h3 className="flex items-center gap-2 text-lg font-semibold mb-4">
-                      <Check className="w-5 h-5 text-green-500" />
-                      Cydena Platform
-                    </h3>
-                    <ul className="list-none space-y-3">
-                      <li className="text-muted-foreground flex items-center gap-2">
-                        <Check className="w-4 h-4 text-green-500" />
-                        £99-£699/month + pay-per-unlock after allocation
+                    <div className="flex items-center gap-2 mb-4">
+                      <Zap className="h-6 w-6 text-primary" />
+                      <h3 className="text-2xl font-bold text-primary">Cydena Platform</h3>
+                    </div>
+                    <ul className="space-y-3 text-muted-foreground">
+                      <li className="flex gap-2">
+                        <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                        <span>Fixed subscription from £99</span>
                       </li>
-                      <li className="text-muted-foreground flex items-center gap-2">
-                        <Check className="w-4 h-4 text-green-500" />
-                        Zero upfront costs - pay as you go
+                      <li className="flex gap-2">
+                        <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                        <span>Verified identity & RTW</span>
                       </li>
-                      <li className="text-muted-foreground flex items-center gap-2">
-                        <Check className="w-4 h-4 text-green-500" />
-                        No contracts - cancel anytime
+                      <li className="flex gap-2">
+                        <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                        <span>Evidence-first profiles</span>
                       </li>
-                       <li className="text-muted-foreground flex items-center gap-2">
-                        <Check className="w-4 h-4 text-green-500" />
-                        Real-time candidate tracking pipeline
+                      <li className="flex gap-2">
+                        <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                        <span>Skills assessments</span>
+                      </li>
+                      <li className="flex gap-2">
+                        <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                        <span>Unlimited with Enterprise</span>
                       </li>
                     </ul>
                   </div>
@@ -159,134 +175,269 @@ const Pricing = () => {
               </CardContent>
             </Card>
 
-            {/* Pricing Plans */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {/* Starter Plan */}
-              <Card className="bg-white shadow-md rounded-lg overflow-hidden flex flex-col justify-between">
-                <div>
-                  <CardHeader className="px-6 py-4">
-                    <CardTitle className="text-xl font-semibold">
-                      Starter
-                    </CardTitle>
-                    <CardDescription>
-                      For individuals and small teams getting started.
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="px-6 py-4">
-                    <div className="mb-4">
-                      <div className="font-bold text-2xl">
-                        £{getPricing(99).toFixed(0)}
-                      </div>
-                      <div className="text-sm text-muted-foreground">
-                        £{getMonthlyEquivalent(99).toFixed(0)}/month
-                      </div>
-                    </div>
-                    <ul className="list-none space-y-2">
-                      <li className="flex items-center gap-2">
-                        <Check className="w-4 h-4 text-green-500" />
-                        1 user
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <Check className="w-4 h-4 text-green-500" />
-                        10 unlocks per year
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <Check className="w-4 h-4 text-green-500" />
-                        Community support
-                      </li>
-                    </ul>
-                  </CardContent>
+            {/* Overage Pricing */}
+            <Card>
+              <CardHeader className="text-center">
+                <CardTitle className="text-2xl">Overage Pricing</CardTitle>
+                <CardDescription>
+                  Additional unlocks at £8 each for Starter and Team plans. Enterprise has unlimited.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid md:grid-cols-3 gap-4 text-center">
+                  <div className="p-4 border rounded-lg">
+                    <DollarSign className="h-8 w-8 mx-auto mb-2 text-primary" />
+                    <h4 className="font-semibold mb-1">Transparent</h4>
+                    <p className="text-sm text-muted-foreground">No hidden fees</p>
+                  </div>
+                  <div className="p-4 border rounded-lg">
+                    <Users className="h-8 w-8 mx-auto mb-2 text-primary" />
+                    <h4 className="font-semibold mb-1">Pay for Value</h4>
+                    <p className="text-sm text-muted-foreground">Only unlock who you contact</p>
+                  </div>
+                  <div className="p-4 border rounded-lg">
+                    <Zap className="h-8 w-8 mx-auto mb-2 text-primary" />
+                    <h4 className="font-semibold mb-1">Scale Efficiently</h4>
+                    <p className="text-sm text-muted-foreground">Unlimited at Enterprise</p>
+                  </div>
                 </div>
-                <CardFooter className="px-6 py-4">
-                  <Button className="w-full" onClick={() => handleTierSelect('employer_starter')} disabled={checkingAuth || currentTier === 'employer_starter'}>
-                    {subscriptionLoading ? "Loading..." : (currentTier === 'employer_starter' ? "Current Plan" : "Choose Starter")}
+              </CardContent>
+            </Card>
+
+            {/* Pricing Cards */}
+            <div className="grid md:grid-cols-4 gap-8">
+              {/* Starter */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Starter</CardTitle>
+                  <CardDescription>Individual recruiters</CardDescription>
+                  <div className="mt-4">
+                    {billingPeriod === 'annual' ? (
+                      <>
+                        <span className="text-4xl font-bold">£{Math.round(getPricing(99))}</span>
+                        <span className="text-muted-foreground">/year</span>
+                        <p className="text-sm text-muted-foreground mt-1">
+                          £{Math.round(getMonthlyEquivalent(99))}/mo
+                        </p>
+                      </>
+                    ) : (
+                      <>
+                        <span className="text-4xl font-bold">£99</span>
+                        <span className="text-muted-foreground">/month</span>
+                      </>
+                    )}
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-2">
+                    <li className="flex gap-2">
+                      <Check className="h-5 w-5 text-primary shrink-0" />
+                      <span>1 seat</span>
+                    </li>
+                    <li className="flex gap-2">
+                      <Check className="h-5 w-5 text-primary shrink-0" />
+                      <span>10 unlocks/month</span>
+                    </li>
+                    <li className="flex gap-2">
+                      <Check className="h-5 w-5 text-primary shrink-0" />
+                      <span>£8 per extra unlock</span>
+                    </li>
+                    <li className="flex gap-2">
+                      <Check className="h-5 w-5 text-primary shrink-0" />
+                      <span>Evidence-first profiles</span>
+                    </li>
+                    <li className="flex gap-2">
+                      <Check className="h-5 w-5 text-primary shrink-0" />
+                      <span>Pipeline management</span>
+                    </li>
+                    <li className="flex gap-2">
+                      <Check className="h-5 w-5 text-primary shrink-0" />
+                      <span>Direct messaging</span>
+                    </li>
+                  </ul>
+                </CardContent>
+                <CardFooter>
+                  <Button 
+                    className="w-full" 
+                    variant="outline"
+                    onClick={() => handleTierSelect('employer_starter')}
+                    disabled={checkingAuth}
+                  >
+                    Choose Starter
                   </Button>
                 </CardFooter>
               </Card>
 
-              {/* Growth Plan */}
-              <Card className="bg-white shadow-md rounded-lg overflow-hidden flex flex-col justify-between">
-                <div>
-                  <CardHeader className="px-6 py-4">
-                    <CardTitle className="text-xl font-semibold">
-                      Growth
-                      <Badge className="ml-2">Popular</Badge>
-                    </CardTitle>
-                    <CardDescription>
-                      For growing teams that need more features.
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="px-6 py-4">
-                    <div className="mb-4">
-                      <div className="font-bold text-2xl">
-                        £{getPricing(299).toFixed(0)}
-                      </div>
-                       <div className="text-sm text-muted-foreground">
-                        £{getMonthlyEquivalent(299).toFixed(0)}/month
-                      </div>
-                    </div>
-                    <ul className="list-none space-y-2">
-                      <li className="flex items-center gap-2">
-                        <Check className="w-4 h-4 text-green-500" />
-                        5 users
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <Check className="w-4 h-4 text-green-500" />
-                        30 unlocks per year
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <Check className="w-4 h-4 text-green-500" />
-                        Priority support
-                      </li>
-                    </ul>
-                  </CardContent>
-                </div>
-                <CardFooter className="px-6 py-4">
-                  <Button className="w-full" onClick={() => handleTierSelect('employer_growth')} disabled={checkingAuth || currentTier === 'employer_growth'}>
-                    {subscriptionLoading ? "Loading..." : (currentTier === 'employer_growth' ? "Current Plan" : "Choose Growth")}
+              {/* Team */}
+              <Card className="border-primary relative">
+                <Badge className="absolute -top-3 left-1/2 -translate-x-1/2">Most Popular</Badge>
+                <CardHeader>
+                  <CardTitle>Team</CardTitle>
+                  <CardDescription>Hiring teams</CardDescription>
+                  <div className="mt-4">
+                    {billingPeriod === 'annual' ? (
+                      <>
+                        <span className="text-4xl font-bold">£{Math.round(getPricing(249))}</span>
+                        <span className="text-muted-foreground">/year</span>
+                        <p className="text-sm text-muted-foreground mt-1">
+                          £{Math.round(getMonthlyEquivalent(249))}/mo
+                        </p>
+                      </>
+                    ) : (
+                      <>
+                        <span className="text-4xl font-bold">£249</span>
+                        <span className="text-muted-foreground">/month</span>
+                      </>
+                    )}
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-2">
+                    <li className="flex gap-2">
+                      <Check className="h-5 w-5 text-primary shrink-0" />
+                      <span>5 seats</span>
+                    </li>
+                    <li className="flex gap-2">
+                      <Check className="h-5 w-5 text-primary shrink-0" />
+                      <span>30 unlocks/month</span>
+                    </li>
+                    <li className="flex gap-2">
+                      <Check className="h-5 w-5 text-primary shrink-0" />
+                      <span>£8 per extra unlock</span>
+                    </li>
+                    <li className="flex gap-2">
+                      <Check className="h-5 w-5 text-primary shrink-0" />
+                      <span>All Starter features</span>
+                    </li>
+                    <li className="flex gap-2">
+                      <Check className="h-5 w-5 text-primary shrink-0" />
+                      <span>Team collaboration</span>
+                    </li>
+                    <li className="flex gap-2">
+                      <Check className="h-5 w-5 text-primary shrink-0" />
+                      <span>Priority support</span>
+                    </li>
+                  </ul>
+                </CardContent>
+                <CardFooter>
+                  <Button 
+                    className="w-full"
+                    onClick={() => handleTierSelect('employer_growth')}
+                    disabled={checkingAuth}
+                  >
+                    Choose Team
                   </Button>
                 </CardFooter>
               </Card>
 
-              {/* Scale Plan */}
-              <Card className="bg-white shadow-md rounded-lg overflow-hidden flex flex-col justify-between">
-                <div>
-                  <CardHeader className="px-6 py-4">
-                    <CardTitle className="text-xl font-semibold">
-                      Scale
-                    </CardTitle>
-                    <CardDescription>
-                      For larger organizations with advanced needs.
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="px-6 py-4">
-                    <div className="mb-4">
-                      <div className="font-bold text-2xl">
-                        £{getPricing(699).toFixed(0)}
-                      </div>
-                       <div className="text-sm text-muted-foreground">
-                        £{getMonthlyEquivalent(699).toFixed(0)}/month
-                      </div>
-                    </div>
-                    <ul className="list-none space-y-2">
-                      <li className="flex items-center gap-2">
-                        <Check className="w-4 h-4 text-green-500" />
-                        Unlimited users
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <Check className="w-4 h-4 text-green-500" />
-                        Unlimited unlocks
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <Check className="w-4 h-4 text-green-500" />
-                        24/7 support
-                      </li>
-                    </ul>
-                  </CardContent>
-                </div>
-                <CardFooter className="px-6 py-4">
-                  <Button className="w-full" onClick={() => handleTierSelect('employer_scale')} disabled={checkingAuth || currentTier === 'employer_scale'}>
-                    {subscriptionLoading ? "Loading..." : (currentTier === 'employer_scale' ? "Current Plan" : "Choose Scale")}
+              {/* Enterprise */}
+              <Card className="border-2 border-primary/50 relative">
+                <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-primary to-purple-600">
+                  <Sparkles className="h-3 w-3 mr-1" />
+                  Best Value
+                </Badge>
+                <CardHeader>
+                  <CardTitle>Enterprise</CardTitle>
+                  <CardDescription>Agencies & high-volume</CardDescription>
+                  <div className="mt-4">
+                    {billingPeriod === 'annual' ? (
+                      <>
+                        <span className="text-4xl font-bold">£{Math.round(getPricing(499))}</span>
+                        <span className="text-muted-foreground">/year</span>
+                        <p className="text-sm text-muted-foreground mt-1">
+                          £{Math.round(getMonthlyEquivalent(499))}/mo
+                        </p>
+                      </>
+                    ) : (
+                      <>
+                        <span className="text-4xl font-bold">£499</span>
+                        <span className="text-muted-foreground">/month</span>
+                      </>
+                    )}
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-2">
+                    <li className="flex gap-2">
+                      <Check className="h-5 w-5 text-primary shrink-0" />
+                      <span>10 seats</span>
+                    </li>
+                    <li className="flex gap-2">
+                      <Check className="h-5 w-5 text-primary shrink-0" />
+                      <span className="font-semibold">Unlimited unlocks</span>
+                    </li>
+                    <li className="flex gap-2">
+                      <Check className="h-5 w-5 text-primary shrink-0" />
+                      <span>No overage fees</span>
+                    </li>
+                    <li className="flex gap-2">
+                      <Check className="h-5 w-5 text-primary shrink-0" />
+                      <span>All Team features</span>
+                    </li>
+                    <li className="flex gap-2">
+                      <Check className="h-5 w-5 text-primary shrink-0" />
+                      <span>API access</span>
+                    </li>
+                    <li className="flex gap-2">
+                      <Check className="h-5 w-5 text-primary shrink-0" />
+                      <span>Account manager</span>
+                    </li>
+                  </ul>
+                </CardContent>
+                <CardFooter>
+                  <Button 
+                    className="w-full"
+                    onClick={() => handleTierSelect('employer_scale')}
+                    disabled={checkingAuth}
+                  >
+                    Choose Enterprise
+                  </Button>
+                </CardFooter>
+              </Card>
+
+              {/* Custom */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Custom</CardTitle>
+                  <CardDescription>Enterprise solutions</CardDescription>
+                  <div className="mt-4">
+                    <span className="text-4xl font-bold">Let's Talk</span>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-2">
+                    <li className="flex gap-2">
+                      <Check className="h-5 w-5 text-primary shrink-0" />
+                      <span>10+ seats</span>
+                    </li>
+                    <li className="flex gap-2">
+                      <Check className="h-5 w-5 text-primary shrink-0" />
+                      <span>Unlimited unlocks</span>
+                    </li>
+                    <li className="flex gap-2">
+                      <Check className="h-5 w-5 text-primary shrink-0" />
+                      <span>Custom integrations</span>
+                    </li>
+                    <li className="flex gap-2">
+                      <Check className="h-5 w-5 text-primary shrink-0" />
+                      <span>SLA guarantees</span>
+                    </li>
+                    <li className="flex gap-2">
+                      <Check className="h-5 w-5 text-primary shrink-0" />
+                      <span>Volume discounts</span>
+                    </li>
+                    <li className="flex gap-2">
+                      <Check className="h-5 w-5 text-primary shrink-0" />
+                      <span>White-label options</span>
+                    </li>
+                  </ul>
+                </CardContent>
+                <CardFooter>
+                  <Button 
+                    className="w-full" 
+                    onClick={() => navigate('/contact')}
+                  >
+                    Contact Sales
                   </Button>
                 </CardFooter>
               </Card>
@@ -297,6 +448,29 @@ const Pricing = () => {
             <ROICalculator />
           </TabsContent>
         </Tabs>
+
+        {/* Value Banner */}
+        <Card className="bg-gradient-to-r from-primary/10 to-purple-500/10 border-primary/20 mt-16">
+          <CardContent className="p-8 text-center">
+            <h3 className="text-3xl font-bold mb-4">
+              Save up to 95% vs traditional agency fees
+            </h3>
+            <p className="text-lg text-muted-foreground mb-4">
+              3 hires at £60k = £36k agency fees vs £2,481 Team subscription
+            </p>
+            <p className="text-2xl font-bold text-primary">
+              Save £33,519 per year
+            </p>
+          </CardContent>
+        </Card>
+
+        {/* FAQ Link */}
+        <div className="text-center mt-16">
+          <p className="text-muted-foreground mb-4">Questions about pricing?</p>
+          <Button variant="outline" onClick={() => navigate('/faq')}>
+            View FAQ <ArrowRight className="ml-2 h-4 w-4" />
+          </Button>
+        </div>
       </main>
     </div>
   );
