@@ -16,11 +16,13 @@ interface CertVerificationRequest {
   name: string;
   issuer: string;
   credential_id: string | null;
+  credential_url: string | null;
   issue_date: string | null;
   expiry_date: string | null;
   verification_status: string;
   proof_document_urls: string[];
   source: string;
+  signed_webhook: boolean | null;
   created_at: string;
   profiles?: {
     id?: string;
@@ -260,6 +262,40 @@ export function CertificationVerificationReview() {
                   </div>
 
                   <div className="space-y-3">
+                    {/* Credential URL Section - Show for Credly and other sources with URLs */}
+                    {request.credential_url && (
+                      <div className="p-4 bg-primary/10 rounded-lg border-2 border-primary/30">
+                        <div className="flex items-center justify-between mb-2">
+                          <p className="text-sm font-semibold">Badge URL:</p>
+                          {request.source === 'credly' && (
+                            <Badge className="bg-primary">Credly Verified</Badge>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <div className="flex-1">
+                            <p className="text-xs text-muted-foreground break-all">
+                              {request.credential_url}
+                            </p>
+                          </div>
+                          <Button
+                            variant="default"
+                            size="sm"
+                            asChild
+                            className="gap-2 shrink-0"
+                          >
+                            <a
+                              href={request.credential_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              <ExternalLink className="h-4 w-4" />
+                              View Badge
+                            </a>
+                          </Button>
+                        </div>
+                      </div>
+                    )}
+
                     {/* Credential ID Section */}
                     <div className="p-4 bg-secondary/30 rounded-lg border border-border">
                       <p className="text-sm font-semibold mb-2">Credential ID:</p>
@@ -270,7 +306,7 @@ export function CertificationVerificationReview() {
                               {request.credential_id}
                             </p>
                           </div>
-                          {getVerificationUrl(request.issuer, request.credential_id) && (
+                          {!request.credential_url && getVerificationUrl(request.issuer, request.credential_id) && (
                             <Button
                               variant="outline"
                               size="sm"
@@ -345,12 +381,28 @@ export function CertificationVerificationReview() {
 
                   {request.verification_status === 'pending' && (
                     <div className="space-y-3 pt-4 border-t">
-                      <div className="p-3 bg-amber-500/10 rounded text-sm">
-                        <p className="font-medium mb-1">⚠️ Manual Review Required</p>
-                        <p className="text-muted-foreground text-xs">
-                          This certification couldn't be auto-verified via Credly or issuer API. Please verify the credential ID and check the issuer's website.
-                        </p>
-                      </div>
+                      {request.credential_url && request.source === 'credly' ? (
+                        <div className="p-3 bg-green-500/10 rounded text-sm border border-green-500/30">
+                          <p className="font-medium mb-1">✓ Credly Badge Detected</p>
+                          <p className="text-muted-foreground text-xs">
+                            This certification has a valid Credly badge URL. Click "View Badge" above to verify on Credly's website, then approve below.
+                          </p>
+                        </div>
+                      ) : request.credential_url ? (
+                        <div className="p-3 bg-blue-500/10 rounded text-sm border border-blue-500/30">
+                          <p className="font-medium mb-1">🔗 Badge URL Provided</p>
+                          <p className="text-muted-foreground text-xs">
+                            This certification includes a badge URL. Click "View Badge" above to verify, then approve below.
+                          </p>
+                        </div>
+                      ) : (
+                        <div className="p-3 bg-amber-500/10 rounded text-sm">
+                          <p className="font-medium mb-1">⚠️ Manual Review Required</p>
+                          <p className="text-muted-foreground text-xs">
+                            This certification couldn't be auto-verified via Credly or issuer API. Please verify the credential ID and check the issuer's website.
+                          </p>
+                        </div>
+                      )}
                       <Textarea
                         placeholder="Rejection reason (required if rejecting)"
                         value={rejectionReasons[request.id] || ''}
