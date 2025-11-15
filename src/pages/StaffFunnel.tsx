@@ -127,8 +127,30 @@ export default function StaffFunnel() {
 
       if (applicationsError) throw applicationsError;
 
+      // Auto-link any pipeline candidates who have since created a profile (match on email, case-insensitive)
+      const appsWithProfiles = await Promise.all((applicationsData || []).map(async (app: any) => {
+        if (!app.profile_id && app.email) {
+          const { data: profileMatch } = await supabase
+            .from('profiles')
+            .select('id, full_name, username, email, avatar_url')
+            .ilike('email', app.email)
+            .maybeSingle();
+
+          if (profileMatch) {
+            // Link for future fetches and UI rendering
+            await supabase
+              .from('pipeline_candidates')
+              .update({ profile_id: profileMatch.id })
+              .eq('id', app.id);
+
+            return { ...app, profile_id: profileMatch.id, profiles: profileMatch };
+          }
+        }
+        return app;
+      }));
+
       // Transform pipeline_candidates to match the structure
-      const transformedApplications = (applicationsData || []).map(app => ({
+      const transformedApplications = (appsWithProfiles || []).map((app: any) => ({
         id: app.id,
         candidate_id: app.profile_id || app.id, // Use profile_id if exists, otherwise use id
         stage: app.stage,
