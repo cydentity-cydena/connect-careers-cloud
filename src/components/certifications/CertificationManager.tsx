@@ -7,6 +7,7 @@ import { Pencil, Trash2, ExternalLink, Shield, Clock, XCircle } from 'lucide-rea
 import { toast } from 'sonner';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { EditCertificationDialog } from './EditCertificationDialog';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface Certification {
   id: string;
@@ -99,8 +100,9 @@ export const CertificationManager = () => {
 
   return (
     <>
-      <div className="space-y-4">
-        {certifications.map((cert) => (
+      <ScrollArea className="h-[calc(100vh-300px)]">
+        <div className="space-y-4 pr-4">
+          {certifications.map((cert) => (
           <Card key={cert.id}>
             <CardHeader className="pb-3">
               <div className="flex items-start justify-between gap-4">
@@ -173,7 +175,8 @@ export const CertificationManager = () => {
             </CardContent>
           </Card>
         ))}
-      </div>
+        </div>
+      </ScrollArea>
 
       <AlertDialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
         <AlertDialogContent>
