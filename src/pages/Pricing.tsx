@@ -177,7 +177,7 @@ const Pricing = () => {
               <CardHeader className="text-center">
                 <CardTitle className="text-2xl">Overage Pricing</CardTitle>
                 <CardDescription>
-                  Additional unlocks at £8 each for Starter and Team. Enterprise has unlimited.
+                  Additional unlocks at £8 each for all paid tiers. Custom plans have unlimited unlocks.
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -357,11 +357,11 @@ const Pricing = () => {
                     </li>
                     <li className="flex gap-2">
                       <Check className="h-5 w-5 text-primary shrink-0" />
-                      <span className="font-semibold">Unlimited unlocks</span>
+                      <span className="font-semibold">100 unlocks/month</span>
                     </li>
                     <li className="flex gap-2">
                       <Check className="h-5 w-5 text-primary shrink-0" />
-                      <span>No overage fees</span>
+                      <span>£8 per extra unlock</span>
                     </li>
                     <li className="flex gap-2">
                       <Check className="h-5 w-5 text-primary shrink-0" />
