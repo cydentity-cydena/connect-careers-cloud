@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Trophy, Award, Briefcase, GraduationCap, ThumbsUp, User, Code, BookOpen, Sparkles, Trash2, Edit } from 'lucide-react';
 import { PostComments } from './PostComments';
 import { PostReactions } from './PostReactions';
+import { EditPostDialog } from './EditPostDialog';
 import { formatDistanceToNow } from 'date-fns';
 import { useToast } from '@/hooks/use-toast';
 import {
@@ -185,6 +186,8 @@ export const ActivityFeed = ({ limit = 20 }: { limit?: number }) => {
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [postToDelete, setPostToDelete] = useState<string | null>(null);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [postToEdit, setPostToEdit] = useState<Activity | null>(null);
 
   const confirmDelete = (activityId: string) => {
     setPostToDelete(activityId);
@@ -197,6 +200,15 @@ export const ActivityFeed = ({ limit = 20 }: { limit?: number }) => {
     }
     setDeleteDialogOpen(false);
     setPostToDelete(null);
+  };
+
+  const openEditDialog = (activity: Activity) => {
+    setPostToEdit(activity);
+    setEditDialogOpen(true);
+  };
+
+  const handleEditSuccess = () => {
+    loadActivities();
   };
 
   if (loading) {
@@ -249,6 +261,15 @@ export const ActivityFeed = ({ limit = 20 }: { limit?: number }) => {
         </AlertDialogContent>
       </AlertDialog>
 
+      {postToEdit && (
+        <EditPostDialog
+          activity={postToEdit}
+          open={editDialogOpen}
+          onOpenChange={setEditDialogOpen}
+          onSuccess={handleEditSuccess}
+        />
+      )}
+
       <div className="space-y-4">
         {activities.map((activity) => (
           <Card key={activity.id} className="hover:shadow-md transition-shadow">
@@ -282,14 +303,24 @@ export const ActivityFeed = ({ limit = 20 }: { limit?: number }) => {
                         {formatDistanceToNow(new Date(activity.created_at), { addSuffix: true })}
                       </span>
                       {canModifyPost(activity) && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => confirmDelete(activity.id)}
-                          className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
+                        <>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => openEditDialog(activity)}
+                            className="h-8 w-8 p-0 text-muted-foreground hover:text-primary"
+                          >
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => confirmDelete(activity.id)}
+                            className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </>
                       )}
                     </div>
                   </div>
