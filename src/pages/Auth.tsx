@@ -61,7 +61,7 @@ const Auth = () => {
   const oauthProfileStarted = useRef(false);
 
   useEffect(() => {
-    // Check for Founding 200 parameter in URL
+    // Check for Early Access 200 parameter in URL
     const searchParams = new URLSearchParams(window.location.search);
     const founding200Param = searchParams.get('founding200');
     const modeParam = searchParams.get('mode');
@@ -69,7 +69,7 @@ const Auth = () => {
     if (founding200Param === 'true') {
       setIsFounding200(true);
       if (modeParam === 'signup') {
-        setUserRole('candidate'); // Founding 200 is for candidates only
+        setUserRole('candidate'); // Early Access 200 is for candidates only
       }
     }
     
@@ -278,7 +278,7 @@ const Auth = () => {
       if (signInError) throw signInError;
 
       const successMessage = isFounding200 
-        ? "Welcome to the Founding 200! Your account has been created with lifetime free access."
+        ? "Welcome to Early Access 200! Your account has been created with lifetime free access."
         : "Account created successfully! Welcome to Cydena.";
       
       toast.success(successMessage);
@@ -289,7 +289,7 @@ const Auth = () => {
       const errorMessage = error.message || '';
       
       if (errorMessage.includes('invite-only') || errorMessage.includes('request access')) {
-        setInviteOnlyMessage("Signups are invite-only right now. If you're on the Founding 200 or early access list, use your approved email or contact us.");
+        setInviteOnlyMessage("Signups are invite-only right now. If you're on the Early Access 200 list, use your approved email or contact us.");
       } else if (errorMessage.includes('already registered') || errorMessage.includes('already taken') || errorMessage.includes('email_exists')) {
         toast.error("This email is already registered. Please sign in or use a different email.");
       } else if (errorMessage.includes('Username already taken')) {
@@ -457,17 +457,17 @@ const Auth = () => {
               </TabsContent>
 
               <TabsContent value="signup">
-                {/* Founding 200 Badge */}
+                {/* Early Access 200 Badge */}
                 {isFounding200 && userRole === "candidate" && (
                   <div className="mb-4 bg-gradient-to-r from-primary/10 to-primary-glow/10 border border-primary/30 rounded-lg p-4">
                     <div className="flex items-center gap-3 mb-2">
                       <Shield className="h-5 w-5 text-primary flex-shrink-0" />
                       <span className="font-bold text-lg text-primary">
-                        🚀 Founding 200 Early Access
+                        🚀 Early Access 200
                       </span>
                     </div>
                     <p className="text-sm text-muted-foreground">
-                      You're joining the exclusive Founding 200 cohort! Create your account to claim lifetime free access and all early member benefits.
+                      You're joining the exclusive Early Access 200 cohort! Create your account to claim lifetime free access and all early member benefits.
                     </p>
                   </div>
                 )}

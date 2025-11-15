@@ -48,7 +48,7 @@ export default function Founding20() {
     if (isFull) {
       toast({
         title: "Program Full",
-        description: "The Founding 200 program has reached capacity. Join our waitlist instead!",
+        description: "Early Access 200 has reached capacity. Join our waitlist instead!",
         variant: "destructive",
       });
       return;
@@ -60,9 +60,9 @@ export default function Founding20() {
   return (
     <>
       <SEO 
-        title="Founding 200 - Early Access for Cybersecurity Professionals"
-        description="Join the exclusive Founding 200 program - lifetime free access, verified profile badge, early ranking in search results, and priority onboarding. Limited to first 200 cyber professionals."
-        keywords="cybersecurity jobs, elite talent, founding 200, verified professionals, priority hiring, cyber security careers, early access"
+        title="Early Access 200 - Exclusive for Cybersecurity Professionals"
+        description="Join the exclusive Early Access 200 program - lifetime free access, verified profile badge, early ranking in search results, and priority onboarding. Limited to first 200 cyber professionals."
+        keywords="cybersecurity jobs, elite talent, early access 200, verified professionals, priority hiring, cyber security careers, early access"
       />
       <Navigation />
       
@@ -75,12 +75,12 @@ export default function Founding20() {
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full mb-6">
                 <Shield className="h-5 w-5 text-primary" />
                 <span className="text-sm font-semibold text-primary">
-                  🚀 Early Access Now Open — Founding 200
+                  🚀 Early Access Now Open — Limited to 200
                 </span>
               </div>
               
               <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary via-primary-glow to-primary bg-clip-text text-transparent">
-                Founding 200 Cybersecurity Professionals
+                Early Access 200 Cybersecurity Professionals
               </h1>
               
               <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-8">
@@ -148,7 +148,7 @@ export default function Founding20() {
         <section className="py-16 px-4 bg-card/30 backdrop-blur">
           <div className="container mx-auto max-w-6xl">
             <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
-              Why Join the Founding 200?
+              Why Join Early Access 200?
             </h2>
             
             <div className="grid md:grid-cols-3 gap-8">
@@ -198,7 +198,7 @@ export default function Founding20() {
               Ready to Join?
             </h2>
             <p className="text-xl text-muted-foreground mb-8">
-              Create your account now to secure your spot in the Founding 200
+              Create your account now to secure your spot in Early Access 200
             </p>
             <Button 
               size="lg" 

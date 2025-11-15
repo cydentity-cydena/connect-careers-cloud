@@ -111,7 +111,7 @@ export default function StaffFunnel() {
 
       if (pipelineError) throw pipelineError;
 
-      // Fetch from pipeline_candidates (Founding 20 applications)
+      // Fetch from pipeline_candidates (Early Access 200 applications)
       const { data: applicationsData, error: applicationsError } = await supabase
         .from("pipeline_candidates")
         .select(`
