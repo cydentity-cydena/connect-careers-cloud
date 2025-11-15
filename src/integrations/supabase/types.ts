@@ -2068,6 +2068,7 @@ export type Database = {
           created_at: string
           desired_job_title: string | null
           email: string
+          founding_200_joined_at: string | null
           full_name: string | null
           hackthebox_api_key: string | null
           hackthebox_points: number | null
@@ -2076,6 +2077,7 @@ export type Database = {
           hackthebox_user_owns: number | null
           hackthebox_username: string | null
           id: string
+          is_founding_200: boolean | null
           is_verified: boolean | null
           location: string | null
           selected_avatar_frame: string | null
@@ -2096,6 +2098,7 @@ export type Database = {
           created_at?: string
           desired_job_title?: string | null
           email: string
+          founding_200_joined_at?: string | null
           full_name?: string | null
           hackthebox_api_key?: string | null
           hackthebox_points?: number | null
@@ -2104,6 +2107,7 @@ export type Database = {
           hackthebox_user_owns?: number | null
           hackthebox_username?: string | null
           id: string
+          is_founding_200?: boolean | null
           is_verified?: boolean | null
           location?: string | null
           selected_avatar_frame?: string | null
@@ -2124,6 +2128,7 @@ export type Database = {
           created_at?: string
           desired_job_title?: string | null
           email?: string
+          founding_200_joined_at?: string | null
           full_name?: string | null
           hackthebox_api_key?: string | null
           hackthebox_points?: number | null
@@ -2132,6 +2137,7 @@ export type Database = {
           hackthebox_user_owns?: number | null
           hackthebox_username?: string | null
           id?: string
+          is_founding_200?: boolean | null
           is_verified?: boolean | null
           location?: string | null
           selected_avatar_frame?: string | null
@@ -2753,6 +2759,7 @@ export type Database = {
         Args: { p_badge_id: string; p_user_id: string }
         Returns: boolean
       }
+      check_founding_200_availability: { Args: never; Returns: boolean }
       get_public_candidate_profile: {
         Args: { profile_user_id: string }
         Returns: {
@@ -2795,6 +2802,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      mark_as_founding_200: { Args: { user_id: string }; Returns: Json }
       mark_message_read: { Args: { message_id: string }; Returns: undefined }
     }
     Enums: {

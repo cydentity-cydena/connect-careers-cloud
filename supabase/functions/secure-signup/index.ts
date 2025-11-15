@@ -14,6 +14,7 @@ interface SignupRequest {
   username?: string;
   role: 'candidate' | 'employer' | 'recruiter';
   isOAuthCompletion?: boolean;
+  isFounding200?: boolean;
 }
 
 serve(async (req) => {
@@ -45,37 +46,55 @@ serve(async (req) => {
       }).optional(),
       companyName: z.string().max(200).optional(),
       oauthToken: z.string().optional(),
-      isOAuthCompletion: z.boolean().optional()
+      isOAuthCompletion: z.boolean().optional(),
+      isFounding200: z.boolean().optional()
     });
 
     const rawBody = await req.json();
     const validatedData = SignupSchema.parse(rawBody);
-    const { email, password, fullName, username, role, isOAuthCompletion } = validatedData;
+    const { email, password, fullName, username, role, isOAuthCompletion, isFounding200 } = validatedData;
 
-    console.log('Starting secure signup for:', email, 'with role:', role);
+    console.log('Starting secure signup for:', email, 'with role:', role, isFounding200 ? '(Founding 200)' : '');
 
-    // Check if email is on the allowlist (private beta restriction)
-    const { data: allowedEmail, error: allowlistError } = await supabaseAdmin
-      .from('allowed_signups')
-      .select('*')
-      .eq('email', email.toLowerCase())
-      .maybeSingle();
+    // Check if email is on the allowlist (skip for Founding 200 signups)
+    if (!isFounding200) {
+      const { data: allowedEmail, error: allowlistError } = await supabaseAdmin
+        .from('allowed_signups')
+        .select('*')
+        .eq('email', email.toLowerCase())
+        .maybeSingle();
 
-    if (allowlistError) {
-      console.error('Error checking allowlist:', allowlistError);
-      throw new Error('Failed to verify signup eligibility');
+      if (allowlistError) {
+        console.error('Error checking allowlist:', allowlistError);
+        throw new Error('Failed to verify signup eligibility');
+      }
+
+      if (!allowedEmail) {
+        throw new Error('Signups are currently invite-only. Please contact us to request access.');
+      }
+
+      // If allowlist has a specific role requirement, enforce it
+      if (allowedEmail.allowed_role && allowedEmail.allowed_role !== role) {
+        throw new Error(`This email is registered for ${allowedEmail.allowed_role} access only.`);
+      }
+
+      console.log('Email verified on allowlist:', email);
+    } else {
+      console.log('Founding 200 signup - skipping allowlist check');
+      
+      // Check if Founding 200 is still available
+      const { data: availability, error: availError } = await supabaseAdmin
+        .rpc('check_founding_200_availability');
+        
+      if (availError) {
+        console.error('Error checking Founding 200 availability:', availError);
+        throw new Error('Failed to verify Founding 200 availability');
+      }
+      
+      if (!availability) {
+        throw new Error('The Founding 200 program has reached capacity. Please join our waitlist!');
+      }
     }
-
-    if (!allowedEmail) {
-      throw new Error('Signups are currently invite-only. Please contact us to request access.');
-    }
-
-    // If allowlist has a specific role requirement, enforce it
-    if (allowedEmail.allowed_role && allowedEmail.allowed_role !== role) {
-      throw new Error(`This email is registered for ${allowedEmail.allowed_role} access only.`);
-    }
-
-    console.log('Email verified on allowlist:', email);
 
     // Validate professional email for employers and recruiters
     const publicEmailDomains = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'aol.com', 'icloud.com', 'mail.com', 'protonmail.com', 'live.com', 'msn.com'];
@@ -296,8 +315,21 @@ serve(async (req) => {
       }
     }
 
-    // Mark the allowed email as used
-    if (!isOAuthCompletion) {
+    // Mark user as Founding 200 member if applicable
+    if (isFounding200 && role === 'candidate') {
+      const { error: founding200Error } = await supabaseAdmin
+        .rpc('mark_as_founding_200', { user_id: userId });
+        
+      if (founding200Error) {
+        console.error('Failed to mark as Founding 200:', founding200Error);
+        // Don't fail the entire signup if this fails, just log it
+      } else {
+        console.log('User marked as Founding 200 member');
+      }
+    }
+
+    // Mark the allowed email as used (skip for Founding 200)
+    if (!isOAuthCompletion && !isFounding200) {
       await supabaseAdmin
         .from('allowed_signups')
         .update({ used_at: new Date().toISOString() })

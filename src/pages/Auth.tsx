@@ -57,9 +57,22 @@ const Auth = () => {
   const [username, setUsername] = useState("");
   const [userRole, setUserRole] = useState<"candidate" | "employer" | "recruiter">("candidate");
   const [inviteOnlyMessage, setInviteOnlyMessage] = useState<string | null>(null);
+  const [isFounding200, setIsFounding200] = useState(false);
   const oauthProfileStarted = useRef(false);
 
   useEffect(() => {
+    // Check for Founding 200 parameter in URL
+    const searchParams = new URLSearchParams(window.location.search);
+    const founding200Param = searchParams.get('founding200');
+    const modeParam = searchParams.get('mode');
+    
+    if (founding200Param === 'true') {
+      setIsFounding200(true);
+      if (modeParam === 'signup') {
+        setUserRole('candidate'); // Founding 200 is for candidates only
+      }
+    }
+    
     // Check if user is already logged in and has a role
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (session) {
@@ -230,7 +243,7 @@ const Auth = () => {
     try {
       console.log('Starting secure signup process...');
       
-      // Call secure signup edge function
+      // Call secure-signup edge function
       const { data, error: functionError } = await supabase.functions.invoke('secure-signup', {
         body: {
           email: email.trim().toLowerCase(),
@@ -238,6 +251,7 @@ const Auth = () => {
           fullName: fullName.trim(),
           username: username.trim().toLowerCase(),
           role: userRole,
+          isFounding200: isFounding200,
         },
       });
 
@@ -263,7 +277,11 @@ const Auth = () => {
 
       if (signInError) throw signInError;
 
-      toast.success("Account created successfully! Welcome to Cydena.");
+      const successMessage = isFounding200 
+        ? "Welcome to the Founding 200! Your account has been created with lifetime free access."
+        : "Account created successfully! Welcome to Cydena.";
+      
+      toast.success(successMessage);
       navigate("/dashboard");
     } catch (error: any) {
       console.error('Signup error:', error);
@@ -439,8 +457,23 @@ const Auth = () => {
               </TabsContent>
 
               <TabsContent value="signup">
+                {/* Founding 200 Badge */}
+                {isFounding200 && userRole === "candidate" && (
+                  <div className="mb-4 bg-gradient-to-r from-primary/10 to-primary-glow/10 border border-primary/30 rounded-lg p-4">
+                    <div className="flex items-center gap-3 mb-2">
+                      <Shield className="h-5 w-5 text-primary flex-shrink-0" />
+                      <span className="font-bold text-lg text-primary">
+                        🚀 Founding 200 Early Access
+                      </span>
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      You're joining the exclusive Founding 200 cohort! Create your account to claim lifetime free access and all early member benefits.
+                    </p>
+                  </div>
+                )}
+                
                 {/* Free for Candidates Badge */}
-                {userRole === "candidate" && (
+                {userRole === "candidate" && !isFounding200 && (
                   <div className="mb-4 bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/20 rounded-lg p-3">
                     <div className="flex items-center gap-2 text-sm">
                       <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />
