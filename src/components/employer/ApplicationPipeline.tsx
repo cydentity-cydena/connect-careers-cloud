@@ -25,6 +25,7 @@ import { EditVerificationDrawer } from "@/components/hrready/EditVerificationDra
 import { BadgesRow, BadgeItem, BadgeStatus } from "@/components/hrready/BadgesRow";
 import { BulkActionsBar } from "./BulkActionsBar";
 import { Checkbox } from "@/components/ui/checkbox";
+import { PushCandidateButton } from "@/components/integrations/PushCandidateButton";
 
 type PipelineStage = "applied" | "screening" | "interview" | "offer" | "rejected" | "hired";
 
@@ -1216,6 +1217,12 @@ export const ApplicationPipeline = () => {
                             <MessageCircle className="h-4 w-4 mr-1.5" />
                             <span className="truncate">Message</span>
                           </Button>
+                        </div>
+                        <div className="pt-2">
+                          <PushCandidateButton 
+                            candidateId={candidate.candidate_id}
+                            candidateName={candidate.profile.full_name}
+                          />
                         </div>
 
                         {/* Stage Selection Dropdown */}
