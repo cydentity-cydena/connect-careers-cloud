@@ -14,6 +14,7 @@ import { detectSpecializations, SPECIALIZATIONS, type Specialization } from "@/l
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { HRReadyBadge } from "@/components/hrready/HRReadyBadge";
 import { ProfileBadgeDisplay } from "@/components/badges/ProfileBadgeDisplay";
+import { SmartCandidateFilters, FilterCriteria } from "@/components/employer/SmartCandidateFilters";
 
 interface CandidateProfile {
   id: string;
@@ -39,6 +40,18 @@ const Profiles = () => {
   const [selectedSpecialization, setSelectedSpecialization] = useState<Specialization | 'all'>('all');
   const [hrReadyOnly, setHrReadyOnly] = useState(false);
   const [verificationStatuses, setVerificationStatuses] = useState<Record<string, boolean>>({});
+  const [advancedFilters, setAdvancedFilters] = useState<FilterCriteria>({
+    mustHaveSkills: [],
+    niceToHaveSkills: [],
+    minExperience: 0,
+    maxExperience: 20,
+    hrReadyOnly: false,
+    certifications: [],
+    clearance: [],
+    location: "",
+    remoteOk: false,
+  });
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
 
   useEffect(() => {
     checkUserAccess();
@@ -248,8 +261,24 @@ const Profiles = () => {
       candidate.specializations.includes(selectedSpecialization);
 
     const matchesHRReady = !hrReadyOnly || verificationStatuses[candidate.id];
+    
+    // Advanced filters
+    const experienceYears = parseInt(candidate.experience) || 0;
+    const matchesExperience = experienceYears >= advancedFilters.minExperience && 
+                               experienceYears <= advancedFilters.maxExperience;
+    
+    const matchesMustHaveSkills = advancedFilters.mustHaveSkills.length === 0 ||
+      advancedFilters.mustHaveSkills.every(skill =>
+        candidate.skills.some(s => s.toLowerCase().includes(skill.toLowerCase()))
+      );
+    
+    const matchesCertifications = advancedFilters.certifications.length === 0 ||
+      advancedFilters.certifications.some(cert =>
+        candidate.certifications.some(c => c.toLowerCase().includes(cert.toLowerCase()))
+      );
 
-    return matchesSearch && matchesSpecialization && matchesHRReady;
+    return matchesSearch && matchesSpecialization && matchesHRReady && 
+           matchesExperience && matchesMustHaveSkills && matchesCertifications;
   });
 
   const getRankBadgeColor = (rank: number) => {
@@ -316,7 +345,7 @@ const Profiles = () => {
               </div>
               
               {/* Specialization Filter */}
-              <div className="flex flex-wrap items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2 mb-4">
                 <Filter className="h-4 w-4 text-muted-foreground" />
                 <span className="text-sm font-medium">Filter by specialization:</span>
                 <div className="flex flex-wrap gap-2">
@@ -339,7 +368,25 @@ const Profiles = () => {
                     </Badge>
                   ))}
                 </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
+                  className="ml-auto"
+                >
+                  {showAdvancedFilters ? 'Hide' : 'Show'} Advanced Filters
+                </Button>
               </div>
+
+              {/* Advanced Filters */}
+              {showAdvancedFilters && (
+                <div className="mb-6">
+                  <SmartCandidateFilters
+                    currentFilters={advancedFilters}
+                    onFilterChange={setAdvancedFilters}
+                  />
+                </div>
+              )}
             </div>
 
             {loading ? (

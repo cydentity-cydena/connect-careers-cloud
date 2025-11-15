@@ -23,6 +23,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { EditVerificationDrawer } from "@/components/hrready/EditVerificationDrawer";
 import { BadgesRow, BadgeItem, BadgeStatus } from "@/components/hrready/BadgesRow";
+import { BulkActionsBar } from "./BulkActionsBar";
+import { Checkbox } from "@/components/ui/checkbox";
 
 type PipelineStage = "applied" | "screening" | "interview" | "offer" | "rejected" | "hired";
 
@@ -238,6 +240,7 @@ export const ApplicationPipeline = () => {
     targetStage: "applied"
   });
   const [editingVerification, setEditingVerification] = useState<{ candidateId: string; verification: any } | null>(null);
+  const [selectedApplications, setSelectedApplications] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     checkUserRole();
