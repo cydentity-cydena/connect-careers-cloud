@@ -63,9 +63,11 @@ interface ApplicationCardProps {
   onToggleStar?: () => void;
   onAddNotes?: () => void;
   onEditVerification?: () => void;
+  isSelected?: boolean;
+  onToggleSelection?: () => void;
 }
 
-export const ApplicationCard = ({ application, onStageChange, onToggleStar, onAddNotes, onEditVerification }: ApplicationCardProps) => {
+export const ApplicationCard = ({ application, onStageChange, onToggleStar, onAddNotes, onEditVerification, isSelected, onToggleSelection }: ApplicationCardProps) => {
   const [showDetails, setShowDetails] = useState(false);
   const [showHireDialog, setShowHireDialog] = useState(false);
   const [showMessageDialog, setShowMessageDialog] = useState(false);
@@ -184,8 +186,21 @@ export const ApplicationCard = ({ application, onStageChange, onToggleStar, onAd
   return (
     <>
       <Card 
-        className={`hover:shadow-lg transition-all duration-200 border-2 relative ${application.is_starred ? 'border-amber-400 shadow-amber-100 dark:shadow-amber-900/20' : 'border-border/50 hover:border-border'}`}
+        className={`hover:shadow-lg transition-all duration-200 border-2 relative ${application.is_starred ? 'border-amber-400 shadow-amber-100 dark:shadow-amber-900/20' : 'border-border/50 hover:border-border'} ${isSelected ? 'ring-2 ring-primary' : ''}`}
       >
+        {onToggleSelection && (
+          <div className="absolute top-3 left-3 z-10">
+            <input
+              type="checkbox"
+              checked={isSelected}
+              onChange={(e) => {
+                e.stopPropagation();
+                onToggleSelection();
+              }}
+              className="h-4 w-4 rounded border-border cursor-pointer"
+            />
+          </div>
+        )}
         {application.is_starred && (
           <div className="absolute -top-1 -right-1 z-10 bg-background rounded-full p-0.5">
             <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
