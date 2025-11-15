@@ -667,38 +667,9 @@ const Partnerships = () => {
                     {/* Pricing Plans */}
                     <div className="pt-6 border-t border-border">
                       <h3 className="text-2xl font-bold text-center mb-6">Featured Placement Plans</h3>
-                      <div className="grid md:grid-cols-2 gap-6 mb-6">
-                        {/* Standard Placement */}
-                        <div className="space-y-3 p-6 rounded-lg border-2 border-border bg-card">
-                          <div className="flex items-center gap-2 mb-4">
-                            <Award className="h-6 w-6 text-primary" />
-                            <h4 className="text-xl font-bold">Standard Listing</h4>
-                          </div>
-                          <p className="text-muted-foreground mb-4">
-                            Free standard listing in our certification catalog with basic visibility.
-                          </p>
-                          <ul className="space-y-2">
-                            <li className="flex items-start gap-2">
-                              <Check className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                              <span className="text-sm">Listed in certification catalog</span>
-                            </li>
-                            <li className="flex items-start gap-2">
-                              <Check className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                              <span className="text-sm">Searchable by candidates</span>
-                            </li>
-                            <li className="flex items-start gap-2">
-                              <Check className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                              <span className="text-sm">Basic certification details</span>
-                            </li>
-                          </ul>
-                          <div className="pt-4">
-                            <div className="text-3xl font-bold">FREE</div>
-                            <p className="text-sm text-muted-foreground">No cost to list</p>
-                          </div>
-                        </div>
-
+                      <div className="flex justify-center mb-6">
                         {/* Featured Upgrade */}
-                        <div className="space-y-3 p-6 rounded-lg border-4 border-primary bg-primary/5 relative">
+                        <div className="space-y-3 p-6 rounded-lg border-4 border-primary bg-primary/5 relative max-w-md w-full">
                           <Badge className="absolute top-4 right-4 bg-primary">
                             <Star className="h-3 w-3 mr-1" />
                             Popular
