@@ -29,28 +29,19 @@ const Community = () => {
 
   const fetchStats = async () => {
     try {
-      // Count active members (users with candidate role)
-      const membersQuery = await supabase
-        .from('user_roles')
-        .select('id')
-        .eq('role', 'candidate');
+      // Use security definer function to get accurate counts
+      const { data, error } = await supabase
+        .rpc('get_community_stats');
 
-      // Count certifications earned
-      const certsQuery = await supabase
-        .from('certifications')
-        .select('id');
+      if (error) throw error;
 
-      // Count projects shared (posts with type 'project')
-      const projectsQuery = await supabase
-        .from('activity_feed' as any)
-        .select('id')
-        .eq('type', 'project');
-
-      setStats({
-        activeMembers: membersQuery.data?.length ?? 0,
-        certsEarned: certsQuery.data?.length ?? 0,
-        projectsShared: projectsQuery.data?.length ?? 0
-      });
+      if (data && data.length > 0) {
+        setStats({
+          activeMembers: Number(data[0].active_members),
+          certsEarned: Number(data[0].certs_earned),
+          projectsShared: Number(data[0].projects_shared)
+        });
+      }
     } catch (error) {
       console.error('Error fetching stats:', error);
     }
