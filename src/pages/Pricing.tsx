@@ -114,7 +114,7 @@ const Pricing = () => {
               <CardHeader className="text-center">
                 <CardTitle className="text-2xl">Additional Unlocks</CardTitle>
                 <CardDescription>
-                  Extra unlocks available at £8 each for all paid tiers. Custom plans have unlimited unlocks.
+                  Need more unlocks? Available at £8 each for all tiers. Enterprise plans can be customized to your needs.
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -132,13 +132,13 @@ const Pricing = () => {
                   <div className="p-4 border rounded-lg">
                     <Zap className="h-8 w-8 mx-auto mb-2 text-primary" />
                     <h4 className="font-semibold mb-1">Scale Efficiently</h4>
-                    <p className="text-sm text-muted-foreground">Unlimited at Enterprise</p>
+                    <p className="text-sm text-muted-foreground">Custom solutions for high-volume</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            <div className="grid md:grid-cols-4 gap-8">
+            <div className="grid md:grid-cols-3 gap-8">
               <Card>
                 <CardHeader>
                   <CardTitle>Starter</CardTitle>
@@ -270,67 +270,7 @@ const Pricing = () => {
                   <CardTitle>Enterprise</CardTitle>
                   <CardDescription>Agencies & high-volume</CardDescription>
                   <div className="mt-4">
-                    {billingPeriod === 'annual' ? (
-                      <>
-                        <span className="text-4xl font-bold">£{Math.round(getPricing(499))}</span>
-                        <span className="text-muted-foreground">/year</span>
-                        <p className="text-sm text-muted-foreground mt-1">
-                          £{Math.round(getMonthlyEquivalent(499))}/mo
-                        </p>
-                      </>
-                    ) : (
-                      <>
-                        <span className="text-4xl font-bold">£499</span>
-                        <span className="text-muted-foreground">/month</span>
-                      </>
-                    )}
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2">
-                    <li className="flex gap-2">
-                      <Check className="h-5 w-5 text-primary shrink-0" />
-                      <span>10 seats</span>
-                    </li>
-                    <li className="flex gap-2">
-                      <Check className="h-5 w-5 text-primary shrink-0" />
-                      <span className="font-semibold">100 unlocks/month</span>
-                    </li>
-                    <li className="flex gap-2">
-                      <Check className="h-5 w-5 text-primary shrink-0" />
-                      <span>£8 per extra unlock</span>
-                    </li>
-                    <li className="flex gap-2">
-                      <Check className="h-5 w-5 text-primary shrink-0" />
-                      <span>All Team features</span>
-                    </li>
-                    <li className="flex gap-2">
-                      <Check className="h-5 w-5 text-primary shrink-0" />
-                      <span>API access</span>
-                    </li>
-                    <li className="flex gap-2">
-                      <Check className="h-5 w-5 text-primary shrink-0" />
-                      <span>Account manager</span>
-                    </li>
-                  </ul>
-                </CardContent>
-                <CardFooter>
-                  <Button 
-                    className="w-full"
-                    onClick={() => handleTierSelect('employer_scale')}
-                    disabled={checkingAuth}
-                  >
-                    Choose Enterprise
-                  </Button>
-                </CardFooter>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>Custom</CardTitle>
-                  <CardDescription>Enterprise solutions</CardDescription>
-                  <div className="mt-4">
-                    <span className="text-4xl font-bold">Let's Talk</span>
+                    <span className="text-4xl font-bold">Let&apos;s Talk</span>
                   </div>
                 </CardHeader>
                 <CardContent>
@@ -341,7 +281,7 @@ const Pricing = () => {
                     </li>
                     <li className="flex gap-2">
                       <Check className="h-5 w-5 text-primary shrink-0" />
-                      <span>Unlimited unlocks</span>
+                      <span className="font-semibold">Custom unlocks</span>
                     </li>
                     <li className="flex gap-2">
                       <Check className="h-5 w-5 text-primary shrink-0" />
@@ -363,7 +303,7 @@ const Pricing = () => {
                 </CardContent>
                 <CardFooter>
                   <Button 
-                    className="w-full" 
+                    className="w-full"
                     onClick={() => navigate('/contact')}
                   >
                     Contact Sales
