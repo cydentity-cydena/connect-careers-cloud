@@ -52,6 +52,7 @@ const SecuritySettings = () => {
     try {
       const { data, error } = await supabase.auth.mfa.enroll({
         factorType: "totp",
+        issuer: "Cydena",
       });
 
       if (error) throw error;
