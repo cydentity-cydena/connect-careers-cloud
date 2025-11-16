@@ -223,7 +223,7 @@ const EmployerDashboard = () => {
           </TabsTrigger>
           <TabsTrigger value="assessments" className="gap-2">
             <ListChecks className="h-4 w-4" />
-            Custom Assessments
+            Assessments
           </TabsTrigger>
         </TabsList>
 
