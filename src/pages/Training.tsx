@@ -288,7 +288,7 @@ const Training = () => {
 
             {/* Featured Partners Section - Tiered Display */}
             {featuredPartners.length > 0 && (
-              <div className="mb-12 animate-fade-in">
+              <div className="mb-12 animate-fade-in overflow-x-hidden">
                 <div className="mb-6">
                   <h2 className="text-3xl font-bold">
                     Featured Training Partners
@@ -311,7 +311,7 @@ const Training = () => {
                     return (
                       <Card
                         key={partner.id}
-                        className={`relative ${slotStyles.border} ${slotStyles.size} bg-gradient-to-br ${slotStyles.bg} hover:scale-[1.02] transition-all duration-200`}
+                        className={`relative ${slotStyles.border} md:${slotStyles.size} bg-gradient-to-br ${slotStyles.bg} hover:scale-[1.02] transition-all duration-200 overflow-hidden`}
                       >
                         <div className="absolute top-4 right-4 z-10 flex flex-col gap-2 items-end">
                           <Badge className={`${slotStyles.badge} text-white border-0 px-3 py-1`}>
