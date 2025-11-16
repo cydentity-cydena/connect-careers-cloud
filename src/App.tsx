@@ -49,6 +49,7 @@ import NotFound from "./pages/NotFound";
 import Messages from "./pages/Messages";
 import EmployerPitchDeck from "./pages/EmployerPitchDeck";
 import Founding20 from "./pages/Founding20";
+import AcceptInvitation from "./pages/AcceptInvitation";
 
 const queryClient = new QueryClient();
 
@@ -96,6 +97,7 @@ const App = () => (
               <Route path="/hr-ready" element={<ProtectedRoute><HRReady /></ProtectedRoute>} />
               <Route path="/integrations" element={<ProtectedRoute><Integrations /></ProtectedRoute>} />
               <Route path="/messages" element={<ProtectedRoute><Messages /></ProtectedRoute>} />
+              <Route path="/accept-invitation" element={<ProtectedRoute><AcceptInvitation /></ProtectedRoute>} />
               
               {/* Admin Routes */}
               <Route path="/admin/users" element={<ProtectedRoute><UserManagement /></ProtectedRoute>} />

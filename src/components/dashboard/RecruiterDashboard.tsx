@@ -13,6 +13,7 @@ import { AnalyticsDashboard } from "@/components/employer/AnalyticsDashboard";
 import { ImportCandidatesDialog } from "@/components/recruiter/ImportCandidatesDialog";
 import { ImportedCandidatesView } from "@/components/recruiter/ImportedCandidatesView";
 import { ImportBatchesView } from "@/components/recruiter/ImportBatchesView";
+import { TeamMembersView } from "@/components/team/TeamMembersView";
 
 const RecruiterDashboard = () => {
   const navigate = useNavigate();
@@ -142,7 +143,7 @@ const RecruiterDashboard = () => {
       )}
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full max-w-5xl grid-cols-7">
+        <TabsList className="grid w-full max-w-5xl grid-cols-8">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="analytics">Analytics</TabsTrigger>
           <TabsTrigger value="pipeline">Pipeline</TabsTrigger>
@@ -150,6 +151,7 @@ const RecruiterDashboard = () => {
           <TabsTrigger value="jobs">Jobs</TabsTrigger>
           <TabsTrigger value="clients">Clients</TabsTrigger>
           <TabsTrigger value="placements">Placements</TabsTrigger>
+          <TabsTrigger value="team">Team</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-8 mt-6">
@@ -461,6 +463,10 @@ const RecruiterDashboard = () => {
               </Tabs>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="team" className="mt-6">
+          <TeamMembersView role="recruiter" />
         </TabsContent>
       </Tabs>
 

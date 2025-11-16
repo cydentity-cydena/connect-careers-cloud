@@ -13,6 +13,7 @@ import { SubscriptionStatus } from "@/components/subscription/SubscriptionStatus
 import { JobManagement } from "./JobManagement";
 import { AnalyticsDashboard } from "@/components/employer/AnalyticsDashboard";
 import { useQuery } from "@tanstack/react-query";
+import { TeamMembersView } from "@/components/team/TeamMembersView";
 
 const EmployerDashboard = () => {
   const navigate = useNavigate();
@@ -198,7 +199,7 @@ const EmployerDashboard = () => {
       )}
 
       <Tabs defaultValue="overview" className="w-full">
-        <TabsList className="grid w-full max-w-3xl grid-cols-4">
+        <TabsList className="grid w-full max-w-3xl grid-cols-5">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="analytics" className="gap-2">
             <BarChart3 className="h-4 w-4" />
@@ -211,6 +212,10 @@ const EmployerDashboard = () => {
           <TabsTrigger value="jobs" className="gap-2">
             <Briefcase className="h-4 w-4" />
             Jobs
+          </TabsTrigger>
+          <TabsTrigger value="team" className="gap-2">
+            <Users className="h-4 w-4" />
+            Team
           </TabsTrigger>
         </TabsList>
 
@@ -333,6 +338,10 @@ const EmployerDashboard = () => {
 
         <TabsContent value="pipeline" className="mt-6">
           <ApplicationPipeline />
+        </TabsContent>
+
+        <TabsContent value="team" className="mt-6">
+          <TeamMembersView role="employer" />
         </TabsContent>
       </Tabs>
 
