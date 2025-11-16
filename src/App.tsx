@@ -117,7 +117,7 @@ const App = () => (
               <Route path="/employer-pitch-deck" element={<EmployerPitchDeck />} />
               
               {/* Lead Generation */}
-              <Route path="/founding-20" element={<Founding20 />} />
+              <Route path="/Early-Access-200" element={<Founding20 />} />
               
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
