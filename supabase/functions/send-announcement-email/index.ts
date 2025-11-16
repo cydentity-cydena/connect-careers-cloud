@@ -1,8 +1,8 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
-import { Resend } from "https://esm.sh/resend@4.0.0";
 
-const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
+const SENDGRID_API_KEY = Deno.env.get("SENDGRID_API_KEY");
+const SENDGRID_API_URL = "https://api.sendgrid.com/v3/mail/send";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -42,6 +42,10 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error("No users found");
     }
 
+    if (!SENDGRID_API_KEY) {
+      throw new Error("SENDGRID_API_KEY is not configured");
+    }
+
     const announcementType = activityType === "release" ? "Version Release" : "Bug Fix";
     const emailSubject = activityType === "release" 
       ? `New Version Release: ${title}` 
@@ -51,55 +55,81 @@ const handler = async (req: Request): Promise<Response> => {
     const batchSize = 50;
     for (let i = 0; i < users.length; i += batchSize) {
       const batch = users.slice(i, i + batchSize);
-      const emailPromises = batch.map(user => {
+      const emailPromises = batch.map(async (user) => {
         const userName = user.full_name || user.username || "there";
         
-        return resend.emails.send({
-          from: "Cydena Updates <notifications@cydena.app>",
-          to: [user.email],
-          subject: emailSubject,
-          html: `
-            <!DOCTYPE html>
-            <html>
-              <head>
-                <meta charset="utf-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-              </head>
-              <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
-                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 10px 10px 0 0; text-align: center;">
-                  <h1 style="color: white; margin: 0; font-size: 24px;">${announcementType}</h1>
-                </div>
-                
-                <div style="background: #ffffff; padding: 30px; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 10px 10px;">
-                  <p style="font-size: 16px; margin-top: 0;">Hi ${userName},</p>
-                  
-                  <h2 style="color: #667eea; font-size: 20px; margin: 20px 0;">${title}</h2>
-                  
-                  ${description ? `
-                    <div style="background: #f5f5f5; padding: 20px; border-left: 4px solid #667eea; margin: 20px 0; border-radius: 4px;">
-                      <p style="margin: 0; color: #555;">${description}</p>
+        const emailBody = {
+          personalizations: [
+            {
+              to: [{ email: user.email }],
+              subject: emailSubject,
+            },
+          ],
+          from: { email: "notifications@cydena.app", name: "Cydena Updates" },
+          content: [
+            {
+              type: "text/html",
+              value: `
+                <!DOCTYPE html>
+                <html>
+                  <head>
+                    <meta charset="utf-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                  </head>
+                  <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+                    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 10px 10px 0 0; text-align: center;">
+                      <h1 style="color: white; margin: 0; font-size: 24px;">${announcementType}</h1>
                     </div>
-                  ` : ''}
-                  
-                  <div style="text-align: center; margin: 30px 0;">
-                    <a href="${Deno.env.get("SUPABASE_URL")?.replace("supabase.co", "lovable.app") || "https://cydena.lovable.app"}/community" 
-                       style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 14px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 16px;">
-                      View in Community
-                    </a>
-                  </div>
-                  
-                  <p style="font-size: 14px; color: #666; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e0e0e0;">
-                    You're receiving this email because you're a member of the Cydena community.
-                  </p>
-                </div>
-                
-                <div style="text-align: center; padding: 20px; color: #999; font-size: 12px;">
-                  <p>© ${new Date().getFullYear()} Cydena. All rights reserved.</p>
-                </div>
-              </body>
-            </html>
-          `,
+                    
+                    <div style="background: #ffffff; padding: 30px; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 10px 10px;">
+                      <p style="font-size: 16px; margin-top: 0;">Hi ${userName},</p>
+                      
+                      <h2 style="color: #667eea; font-size: 20px; margin: 20px 0;">${title}</h2>
+                      
+                      ${description ? `
+                        <div style="background: #f5f5f5; padding: 20px; border-left: 4px solid #667eea; margin: 20px 0; border-radius: 4px;">
+                          <p style="margin: 0; color: #555;">${description}</p>
+                        </div>
+                      ` : ''}
+                      
+                      <div style="text-align: center; margin: 30px 0;">
+                        <a href="${Deno.env.get("SUPABASE_URL")?.replace("supabase.co", "lovable.app") || "https://cydena.lovable.app"}/community" 
+                           style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 14px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 16px;">
+                          View in Community
+                        </a>
+                      </div>
+                      
+                      <p style="font-size: 14px; color: #666; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e0e0e0;">
+                        You're receiving this email because you're a member of the Cydena community.
+                      </p>
+                    </div>
+                    
+                    <div style="text-align: center; padding: 20px; color: #999; font-size: 12px;">
+                      <p>© ${new Date().getFullYear()} Cydena. All rights reserved.</p>
+                    </div>
+                  </body>
+                </html>
+              `,
+            },
+          ],
+        };
+
+        const response = await fetch(SENDGRID_API_URL, {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${SENDGRID_API_KEY}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(emailBody),
         });
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error(`SendGrid error for ${user.email}:`, errorText);
+          throw new Error(`SendGrid API error: ${response.status}`);
+        }
+
+        return response;
       });
 
       await Promise.allSettled(emailPromises);
