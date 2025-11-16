@@ -88,8 +88,7 @@ export const CreatePostDialog = () => {
           activity_type: activityType,
           title,
           description: description || null,
-          is_public: true,
-          metadata: {}
+          is_public: true
         });
 
       if (error) throw error;
@@ -105,11 +104,12 @@ export const CreatePostDialog = () => {
       setActivityType('');
       
       window.location.reload();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error creating post:', error);
+      const message = error?.message || error?.details || 'Failed to create post. Please try again.';
       toast({
         title: "Error",
-        description: "Failed to create post. Please try again.",
+        description: message,
         variant: "destructive",
       });
     } finally {
