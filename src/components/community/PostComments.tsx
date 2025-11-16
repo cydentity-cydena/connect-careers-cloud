@@ -157,6 +157,21 @@ export const PostComments = ({ postId }: { postId: string }) => {
         return;
       }
 
+      // Extract mentioned usernames and look up their IDs
+      const mentionPattern = /@(\w+)/g;
+      const matches = [...validated.content.matchAll(mentionPattern)];
+      const usernames = matches.map(m => m[1]);
+      
+      let mentionedUserIds: string[] = [];
+      if (usernames.length > 0) {
+        const { data: mentionedProfiles } = await supabase
+          .from('profiles')
+          .select('id')
+          .in('username', usernames);
+        
+        mentionedUserIds = mentionedProfiles?.map(p => p.id) || [];
+      }
+
       // Moderate comment content before posting
       const { data: moderationResult, error: moderationError } = await supabase.functions.invoke('moderate-content', {
         body: { content: validated.content }
@@ -209,7 +224,7 @@ export const PostComments = ({ postId }: { postId: string }) => {
           post_id: postId,
           user_id: user.id,
           content: validated.content,
-          mentioned_users: mentionedUsers // Always pass array (empty or with IDs)
+          mentioned_users: mentionedUserIds
         });
 
       if (error) {
@@ -310,6 +325,21 @@ export const PostComments = ({ postId }: { postId: string }) => {
     try {
       const validated = commentSchema.parse({ content: editContent });
 
+      // Extract mentioned usernames and look up their IDs
+      const mentionPattern = /@(\w+)/g;
+      const matches = [...validated.content.matchAll(mentionPattern)];
+      const usernames = matches.map(m => m[1]);
+      
+      let mentionedUserIds: string[] = [];
+      if (usernames.length > 0) {
+        const { data: mentionedProfiles } = await supabase
+          .from('profiles')
+          .select('id')
+          .in('username', usernames);
+        
+        mentionedUserIds = mentionedProfiles?.map(p => p.id) || [];
+      }
+
       // Optimistic update
       const oldComment = comments.find(c => c.id === commentId);
       setComments(prev => prev.map(c => 
@@ -319,7 +349,10 @@ export const PostComments = ({ postId }: { postId: string }) => {
 
       const { error } = await supabase
         .from('post_comments')
-        .update({ content: validated.content })
+        .update({ 
+          content: validated.content,
+          mentioned_users: mentionedUserIds
+        })
         .eq('id', commentId);
 
       if (error) {
