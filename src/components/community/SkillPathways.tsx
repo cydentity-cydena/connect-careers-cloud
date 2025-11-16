@@ -196,16 +196,18 @@ export const SkillPathways = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 overflow-x-hidden">
       <Tabs value={selectedCategory} onValueChange={setSelectedCategory}>
-        <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6">
-          {categories.map(cat => (
-            <TabsTrigger key={cat.value} value={cat.value} className="flex items-center gap-2">
-              {cat.icon}
-              <span className="hidden sm:inline">{cat.label}</span>
-            </TabsTrigger>
-          ))}
-        </TabsList>
+        <div className="overflow-x-auto -mx-4 px-4 pb-2">
+          <TabsList className="inline-flex min-w-full sm:min-w-0">
+            {categories.map(cat => (
+              <TabsTrigger key={cat.value} value={cat.value} className="flex items-center gap-2 whitespace-nowrap">
+                {cat.icon}
+                <span className="hidden sm:inline">{cat.label}</span>
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </div>
       </Tabs>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
