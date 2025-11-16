@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,7 +15,26 @@ export const CreatePostDialog = () => {
   const [activityType, setActivityType] = useState('');
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [isAdmin, setIsAdmin] = useState(false);
   const { toast } = useToast();
+
+  useEffect(() => {
+    const checkAdminStatus = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', user.id)
+        .eq('role', 'admin')
+        .maybeSingle();
+
+      setIsAdmin(!!data);
+    };
+
+    checkAdminStatus();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -124,6 +143,12 @@ export const CreatePostDialog = () => {
                 <SelectItem value="project">Project Completed</SelectItem>
                 <SelectItem value="milestone">Career Milestone</SelectItem>
                 <SelectItem value="other">Other</SelectItem>
+                {isAdmin && (
+                  <>
+                    <SelectItem value="release">Version Release</SelectItem>
+                    <SelectItem value="bug_fix">Bug Fix</SelectItem>
+                  </>
+                )}
               </SelectContent>
             </Select>
           </div>
