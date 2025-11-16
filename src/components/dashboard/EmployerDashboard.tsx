@@ -14,6 +14,9 @@ import { JobManagement } from "./JobManagement";
 import { AnalyticsDashboard } from "@/components/employer/AnalyticsDashboard";
 import { useQuery } from "@tanstack/react-query";
 import { TeamMembersView } from "@/components/team/TeamMembersView";
+import { CreateCustomAssessmentDialog } from "@/components/assessments/CreateCustomAssessmentDialog";
+import { CustomAssessmentsList } from "@/components/assessments/CustomAssessmentsList";
+import { AssessmentQuotaDisplay } from "@/components/assessments/AssessmentQuotaDisplay";
 
 const EmployerDashboard = () => {
   const navigate = useNavigate();
@@ -342,6 +345,25 @@ const EmployerDashboard = () => {
 
         <TabsContent value="team" className="mt-6">
           <TeamMembersView role="employer" />
+        </TabsContent>
+
+        <TabsContent value="assessments" className="mt-6 space-y-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-2xl font-bold">Custom Assessments</h2>
+              <p className="text-muted-foreground">Create tailored technical assessments to validate candidate skills</p>
+            </div>
+            <CreateCustomAssessmentDialog />
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-3">
+            <div className="md:col-span-2">
+              <CustomAssessmentsList />
+            </div>
+            <div>
+              <AssessmentQuotaDisplay />
+            </div>
+          </div>
         </TabsContent>
       </Tabs>
 

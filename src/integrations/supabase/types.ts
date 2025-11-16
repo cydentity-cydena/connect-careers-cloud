@@ -1057,6 +1057,45 @@ export type Database = {
         }
         Relationships: []
       }
+      custom_assessments: {
+        Row: {
+          assessment_name: string
+          assessment_type: string
+          created_at: string | null
+          created_by: string
+          description: string | null
+          id: string
+          is_active: boolean | null
+          questions: Json
+          times_used: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          assessment_name: string
+          assessment_type: string
+          created_at?: string | null
+          created_by: string
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          questions: Json
+          times_used?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          assessment_name?: string
+          assessment_type?: string
+          created_at?: string | null
+          created_by?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          questions?: Json
+          times_used?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       direct_messages: {
         Row: {
           content: string
@@ -2894,7 +2933,15 @@ export type Database = {
         Returns: boolean
       }
       check_founding_200_availability: { Args: never; Returns: boolean }
+      count_monthly_assessments: {
+        Args: { p_user_id: string }
+        Returns: number
+      }
       generate_invitation_token: { Args: never; Returns: string }
+      get_assessment_quota: {
+        Args: { p_tier: Database["public"]["Enums"]["subscription_tier"] }
+        Returns: number
+      }
       get_community_stats: {
         Args: never
         Returns: {
