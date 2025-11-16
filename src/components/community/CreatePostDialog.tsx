@@ -81,7 +81,7 @@ export const CreatePostDialog = () => {
         return;
       }
 
-      const { error } = await supabase
+      const { data: newPost, error } = await supabase
         .from('activity_feed')
         .insert({
           user_id: user.id,
@@ -89,9 +89,28 @@ export const CreatePostDialog = () => {
           title,
           description: description || null,
           is_public: true
-        });
+        })
+        .select()
+        .single();
 
       if (error) throw error;
+
+      // Send announcement emails for release notes and bug fixes if user is admin
+      if (isAdmin && (activityType === 'release' || activityType === 'bug_fix')) {
+        try {
+          await supabase.functions.invoke('send-announcement-email', {
+            body: {
+              postId: newPost.id,
+              activityType,
+              title,
+              description
+            }
+          });
+        } catch (emailError) {
+          console.error('Failed to send announcement emails:', emailError);
+          // Don't throw - post was created successfully
+        }
+      }
 
       toast({
         title: "Success!",
