@@ -116,7 +116,7 @@ serve(async (req) => {
         const bytes = new Uint8Array(binary.length);
         for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
         const ext = String(formData.cvFileName).split('.').pop() || 'bin';
-        const path = `founding-200/${crypto.randomUUID()}.${ext}`;
+        const path = `early-access-200/${crypto.randomUUID()}.${ext}`;
         const contentType = formData.cvContentType || 'application/octet-stream';
         const { error: uploadErr } = await supabase.storage.from('resumes').upload(path, bytes, { contentType });
         if (uploadErr) {
