@@ -56,8 +56,8 @@ serve(async (req) => {
 
     console.log('Starting secure signup for:', email, 'with role:', role, isFounding200 ? '(Founding 200)' : '');
 
-    // Check if email is on the allowlist (skip for Founding 200 signups)
-    if (!isFounding200) {
+    // Check if email is on the allowlist (skip for Founding 200 signups and OAuth completions)
+    if (!isFounding200 && !isOAuthCompletion) {
       const { data: allowedEmail, error: allowlistError } = await supabaseAdmin
         .from('allowed_signups')
         .select('*')
@@ -79,6 +79,8 @@ serve(async (req) => {
       }
 
       console.log('Email verified on allowlist:', email);
+    } else if (isOAuthCompletion) {
+      console.log('OAuth completion - skipping allowlist check');
     } else {
       console.log('Founding 200 signup - skipping allowlist check');
       
