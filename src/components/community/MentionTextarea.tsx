@@ -1,8 +1,9 @@
-import { useState, useRef, useEffect, KeyboardEvent } from 'react';
+import { useState, useRef, useEffect, KeyboardEvent, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Textarea } from '@/components/ui/textarea';
 import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from '@/components/ui/command';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { debounce } from 'lodash';
 
 type Mention = {
   id: string;
@@ -32,28 +33,38 @@ export const MentionTextarea = ({
   const [mentionSearch, setMentionSearch] = useState('');
   const [candidates, setCandidates] = useState<Mention[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const [mentionedUsers, setMentionedUsers] = useState<string[]>([]);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [cursorPosition, setCursorPosition] = useState(0);
 
+  // Debounced search function to avoid querying on every keystroke
+  const debouncedSearch = useCallback(
+    debounce(async (search: string) => {
+      if (!search) {
+        setCandidates([]);
+        return;
+      }
+      
+      const { data } = await supabase
+        .from('profiles')
+        .select('id, username, full_name, avatar_url')
+        .or(`username.ilike.%${search}%,full_name.ilike.%${search}%`)
+        .not('username', 'is', null)
+        .limit(5);
+
+      setCandidates(data || []);
+    }, 300),
+    []
+  );
+
   useEffect(() => {
     if (mentionSearch) {
-      searchCandidates(mentionSearch);
+      debouncedSearch(mentionSearch);
+    } else {
+      setCandidates([]);
     }
-  }, [mentionSearch]);
+  }, [mentionSearch, debouncedSearch]);
 
-  const searchCandidates = async (search: string) => {
-    const { data } = await supabase
-      .from('profiles')
-      .select('id, username, full_name, avatar_url')
-      .or(`username.ilike.%${search}%,full_name.ilike.%${search}%`)
-      .not('username', 'is', null)
-      .limit(5);
-
-    setCandidates(data || []);
-  };
-
-  const handleTextChange = async (text: string) => {
+  const handleTextChange = (text: string) => {
     const cursorPos = textareaRef.current?.selectionStart || 0;
     setCursorPosition(cursorPos);
 
@@ -76,25 +87,13 @@ export const MentionTextarea = ({
       setShowMentions(false);
     }
 
-    // Extract mentioned usernames from text
+    // Extract mentioned usernames from text (don't look up IDs on every keystroke)
     const mentionPattern = /@(\w+)/g;
     const matches = [...text.matchAll(mentionPattern)];
     const usernames = matches.map(m => m[1]);
     
-    if (usernames.length > 0) {
-      // Look up user IDs from database for all mentioned usernames
-      const { data } = await supabase
-        .from('profiles')
-        .select('id, username')
-        .in('username', usernames);
-      
-      const mentioned = data?.map(u => u.id) || [];
-      setMentionedUsers(mentioned);
-      onChange(text, mentioned);
-    } else {
-      setMentionedUsers([]);
-      onChange(text, []);
-    }
+    // Pass the text and empty array - parent can look up IDs on submit
+    onChange(text, []);
   };
 
   const insertMention = (candidate: Mention) => {
@@ -112,10 +111,7 @@ export const MentionTextarea = ({
     setShowMentions(false);
     setMentionSearch('');
     
-    // Add to mentioned users
-    const updatedMentioned = [...new Set([...mentionedUsers, candidate.id])];
-    setMentionedUsers(updatedMentioned);
-    onChange(newText, updatedMentioned);
+    onChange(newText, []);
 
     // Focus back on textarea
     setTimeout(() => {
