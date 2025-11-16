@@ -144,7 +144,12 @@ const Dashboard = () => {
                 <span className="text-sm text-muted-foreground">
                   {user?.email}
                 </span>
-                <Button variant="ghost" size="icon" onClick={handleSignOut}>
+                <Link to="/security">
+                  <Button variant="ghost" size="icon" title="Security Settings">
+                    <Shield className="h-5 w-5" />
+                  </Button>
+                </Link>
+                <Button variant="ghost" size="icon" onClick={handleSignOut} title="Sign Out">
                   <LogOut className="h-5 w-5" />
                 </Button>
               </div>
@@ -235,10 +240,18 @@ const Dashboard = () => {
               </Link>
               <div className="pt-3 border-t border-border">
                 <p className="text-xs text-muted-foreground mb-2">{user?.email}</p>
-                <Button variant="outline" size="sm" onClick={handleSignOut} className="w-full">
-                  <LogOut className="h-4 w-4 mr-2" />
-                  Sign Out
-                </Button>
+                <div className="space-y-2">
+                  <Link to="/security" onClick={() => setMobileMenuOpen(false)}>
+                    <Button variant="outline" size="sm" className="w-full">
+                      <Shield className="h-4 w-4 mr-2" />
+                      Security Settings
+                    </Button>
+                  </Link>
+                  <Button variant="outline" size="sm" onClick={handleSignOut} className="w-full">
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Sign Out
+                  </Button>
+                </div>
               </div>
             </div>
           )}

@@ -51,6 +51,8 @@ import EmployerPitchDeck from "./pages/EmployerPitchDeck";
 import Founding20 from "./pages/Founding20";
 import AcceptInvitation from "./pages/AcceptInvitation";
 
+import SecuritySettings from "./pages/SecuritySettings";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -80,6 +82,7 @@ const App = () => (
               <Route path="/pricing" element={<Pricing />} />
               <Route path="/faq" element={<ProtectedRoute><FAQ /></ProtectedRoute>} />
               <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+              <Route path="/security" element={<ProtectedRoute><SecuritySettings /></ProtectedRoute>} />
               <Route path="/skills" element={<ProtectedRoute><Skills /></ProtectedRoute>} />
               <Route path="/specializations" element={<ProtectedRoute><Specializations /></ProtectedRoute>} />
               <Route path="/certifications" element={<ProtectedRoute><Certifications /></ProtectedRoute>} />
