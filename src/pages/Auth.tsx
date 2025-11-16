@@ -324,20 +324,15 @@ const Auth = () => {
     setIsLoading(true);
 
     try {
+      // First, sign out to clear any existing session
+      await supabase.auth.signOut();
+      
       const { data, error } = await supabase.auth.signInWithPassword({
         email: email.trim().toLowerCase(),
         password,
       });
 
       if (error) throw error;
-
-      // Check if MFA is required
-      if (data.user && !data.session) {
-        // MFA is enabled but not verified yet
-        setMfaRequired(true);
-        setIsLoading(false);
-        return;
-      }
 
       // Check if user has MFA enabled - mandatory for security platform
       const { data: factors } = await supabase.auth.mfa.listFactors();
@@ -349,8 +344,21 @@ const Auth = () => {
         return;
       }
 
-      toast.success("Welcome back!");
-      navigate("/dashboard");
+      // ALWAYS require MFA verification for security
+      // Sign out again to prevent automatic session creation
+      await supabase.auth.signOut();
+      
+      // Re-authenticate to get to MFA challenge state
+      const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+        email: email.trim().toLowerCase(),
+        password,
+      });
+
+      if (signInError) throw signInError;
+
+      // Now trigger MFA challenge
+      setMfaRequired(true);
+      setIsLoading(false);
     } catch (error: any) {
       console.error('Sign in error:', error);
       
@@ -363,7 +371,6 @@ const Auth = () => {
       } else {
         toast.error(error.message || "Failed to sign in. Please try again.");
       }
-    } finally {
       setIsLoading(false);
     }
   };
