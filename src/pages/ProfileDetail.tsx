@@ -697,11 +697,11 @@ export default function ProfileDetail() {
                           <p className="text-muted-foreground">{candidateProfile.security_clearance}</p>
                         </div>
                       )}
-                      {candidateProfile.willing_to_relocate !== null && (
+                      {candidateProfile.work_mode_preference && (
                         <div>
-                          <span className="text-sm font-semibold">Willing to Relocate:</span>
-                          <p className="text-muted-foreground">
-                            {candidateProfile.willing_to_relocate ? "Yes" : "No"}
+                          <span className="text-sm font-semibold">Work Mode Preference:</span>
+                          <p className="text-muted-foreground capitalize">
+                            {candidateProfile.work_mode_preference}
                           </p>
                         </div>
                       )}
