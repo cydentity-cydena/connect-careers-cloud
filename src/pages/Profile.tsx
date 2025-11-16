@@ -31,6 +31,7 @@ const Profile = () => {
 
   const [title, setTitle] = useState('');
   const [yearsExperience, setYearsExperience] = useState<string>('');
+  const [workModePreference, setWorkModePreference] = useState('');
   const [countryCode, setCountryCode] = useState('+44');
   const [phone, setPhone] = useState('');
   const [linkedinUrl, setLinkedinUrl] = useState('');
@@ -78,13 +79,14 @@ const Profile = () => {
       // Load candidate profile
       const { data: candidate } = await supabase
         .from('candidate_profiles')
-        .select('title, years_experience, phone, linkedin_url, github_url, portfolio_url, resume_url, professional_statement')
+        .select('title, years_experience, work_mode_preference, phone, linkedin_url, github_url, portfolio_url, resume_url, professional_statement')
         .eq('user_id', session.user.id)
         .maybeSingle();
 
       if (candidate) {
         setTitle(candidate.title ?? '');
         setYearsExperience(candidate.years_experience ? candidate.years_experience.toString() : '');
+        setWorkModePreference(candidate.work_mode_preference ?? '');
         
         // Parse phone number to extract country code
         const phoneValue = candidate.phone ?? '';
@@ -166,6 +168,12 @@ const Profile = () => {
       return;
     }
     
+    // Require work mode preference
+    if (!workModePreference) {
+      toast.error('Work mode preference is required');
+      return;
+    }
+    
     setLoading(true);
     try {
       const { error: pErr } = await supabase
@@ -186,6 +194,7 @@ const Profile = () => {
         .update({ 
           title, 
           years_experience: parseInt(yearsExperience) || 0,
+          work_mode_preference: workModePreference,
           phone: phone ? `${countryCode} ${phone}` : '',
           linkedin_url: linkedinUrl, 
           github_url: githubUrl, 
@@ -700,6 +709,27 @@ const Profile = () => {
                   onChange={(e) => setYearsExperience(e.target.value)}
                   placeholder="0"
                 />
+                
+                <Label htmlFor="workMode">Work Mode Preference *</Label>
+                <Select
+                  value={workModePreference}
+                  onValueChange={(value) => setWorkModePreference(value)}
+                >
+                  <SelectTrigger className="bg-background">
+                    <SelectValue placeholder="Select work mode preference" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-background z-50">
+                    <SelectItem value="remote">Remote</SelectItem>
+                    <SelectItem value="hybrid">Hybrid</SelectItem>
+                    <SelectItem value="on-site">On-site</SelectItem>
+                    <SelectItem value="flexible">Flexible</SelectItem>
+                  </SelectContent>
+                </Select>
+                {!workModePreference && (
+                  <p className="text-xs text-muted-foreground">
+                    ⚠️ Work mode preference is required
+                  </p>
+                )}
                 
                 <Label htmlFor="linkedin">LinkedIn URL</Label>
                 <Input 

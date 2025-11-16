@@ -404,6 +404,7 @@ export type Database = {
           updated_at: string
           user_id: string
           willing_to_relocate: boolean | null
+          work_mode_preference: string | null
           years_experience: number | null
         }
         Insert: {
@@ -421,6 +422,7 @@ export type Database = {
           updated_at?: string
           user_id: string
           willing_to_relocate?: boolean | null
+          work_mode_preference?: string | null
           years_experience?: number | null
         }
         Update: {
@@ -438,6 +440,7 @@ export type Database = {
           updated_at?: string
           user_id?: string
           willing_to_relocate?: boolean | null
+          work_mode_preference?: string | null
           years_experience?: number | null
         }
         Relationships: []
