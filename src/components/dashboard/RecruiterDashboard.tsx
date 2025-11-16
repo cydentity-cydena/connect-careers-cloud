@@ -4,12 +4,15 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Building2, Users, Briefcase, TrendingUp, PoundSterling, UserPlus, Bug, Award, ListChecks, Workflow } from "lucide-react";
+import { Building2, Users, Briefcase, TrendingUp, PoundSterling, UserPlus, Bug, Award, ListChecks, Workflow, Upload } from "lucide-react";
 import RecruiterClientsList from "./RecruiterClientsList";
 import RecruiterPlacements from "./RecruiterPlacements";
 import { ApplicationPipeline } from "@/components/employer/ApplicationPipeline";
 import { JobManagement } from "./JobManagement";
 import { AnalyticsDashboard } from "@/components/employer/AnalyticsDashboard";
+import { ImportCandidatesDialog } from "@/components/recruiter/ImportCandidatesDialog";
+import { ImportedCandidatesView } from "@/components/recruiter/ImportedCandidatesView";
+import { ImportBatchesView } from "@/components/recruiter/ImportBatchesView";
 
 const RecruiterDashboard = () => {
   const navigate = useNavigate();
@@ -20,6 +23,7 @@ const RecruiterDashboard = () => {
   const [userName, setUserName] = useState<string>("");
   const [totalCommissions, setTotalCommissions] = useState(0);
   const [activeTab, setActiveTab] = useState("overview");
+  const [showImportDialog, setShowImportDialog] = useState(false);
 
   useEffect(() => {
     getCurrentUser();
@@ -138,10 +142,11 @@ const RecruiterDashboard = () => {
       )}
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full max-w-4xl grid-cols-6">
+        <TabsList className="grid w-full max-w-5xl grid-cols-7">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="analytics">Analytics</TabsTrigger>
           <TabsTrigger value="pipeline">Pipeline</TabsTrigger>
+          <TabsTrigger value="imported">Imported</TabsTrigger>
           <TabsTrigger value="jobs">Jobs</TabsTrigger>
           <TabsTrigger value="clients">Clients</TabsTrigger>
           <TabsTrigger value="placements">Placements</TabsTrigger>
@@ -334,6 +339,33 @@ const RecruiterDashboard = () => {
                     onClick={() => navigate('/profiles')}
                   >
                     Browse Candidates
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-primary/30 shadow-lg bg-gradient-to-br from-primary/5 to-accent/5">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Upload className="h-5 w-5 text-primary" />
+                  Import Your Database
+                </CardTitle>
+                <CardDescription>
+                  Upload your existing candidate database
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <p className="text-sm text-muted-foreground">
+                    Import your candidate database and invite them to create platform-enhanced profiles
+                  </p>
+                  <Button 
+                    variant="default" 
+                    className="w-full"
+                    onClick={() => setShowImportDialog(true)}
+                  >
+                    <Upload className="h-4 w-4 mr-2" />
+                    Import Candidates
                   </Button>
                 </div>
               </CardContent>
