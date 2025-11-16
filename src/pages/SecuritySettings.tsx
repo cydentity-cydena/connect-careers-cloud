@@ -101,27 +101,7 @@ const SecuritySettings = () => {
   };
 
   const handleDisableMFA = async () => {
-    try {
-      const { data: factors } = await supabase.auth.mfa.listFactors();
-      const totpFactor = factors?.totp?.find((f) => f.status === "verified");
-      
-      if (!totpFactor) {
-        toast.error("No MFA factor found");
-        return;
-      }
-
-      const { error } = await supabase.auth.mfa.unenroll({
-        factorId: totpFactor.id,
-      });
-
-      if (error) throw error;
-
-      toast.success("MFA disabled successfully");
-      setMfaEnabled(false);
-    } catch (error: any) {
-      console.error("Error disabling MFA:", error);
-      toast.error(error.message || "Failed to disable MFA");
-    }
+    toast.error("Two-factor authentication is mandatory for all users on this security platform and cannot be disabled.");
   };
 
   if (loading) {
@@ -148,9 +128,9 @@ const SecuritySettings = () => {
             <div className="flex items-center gap-3">
               <Shield className="h-6 w-6 text-primary" />
               <div>
-                <CardTitle>Two-Factor Authentication (2FA)</CardTitle>
+                <CardTitle>Two-Factor Authentication (2FA) - Required</CardTitle>
                 <CardDescription>
-                  Add an extra layer of security to your account
+                  Mandatory security requirement for all platform users
                 </CardDescription>
               </div>
             </div>
@@ -161,19 +141,22 @@ const SecuritySettings = () => {
                 <Alert className="border-green-500/50 bg-green-500/10">
                   <CheckCircle className="h-4 w-4 text-green-500" />
                   <AlertDescription className="text-green-500">
-                    Two-factor authentication is enabled on your account
+                    Two-factor authentication is enabled and protecting your account
                   </AlertDescription>
                 </Alert>
-                <Button variant="destructive" onClick={handleDisableMFA}>
-                  Disable 2FA
-                </Button>
+                <Alert variant="destructive">
+                  <Shield className="h-4 w-4" />
+                  <AlertDescription>
+                    MFA is mandatory for all users on this cybersecurity platform and cannot be disabled.
+                  </AlertDescription>
+                </Alert>
               </div>
             ) : enrolling ? (
               <div className="space-y-6">
                 <Alert>
                   <QrCode className="h-4 w-4" />
                   <AlertDescription>
-                    Scan this QR code with your authenticator app (Google Authenticator, Authy, etc.)
+                    <strong>Step 1:</strong> Scan this QR code with your authenticator app (Google Authenticator, Authy, Microsoft Authenticator, etc.)
                   </AlertDescription>
                 </Alert>
 
@@ -196,7 +179,7 @@ const SecuritySettings = () => {
                 )}
 
                 <div className="space-y-2">
-                  <Label htmlFor="verify-code">Enter 6-digit code from your app</Label>
+                  <Label htmlFor="verify-code"><strong>Step 2:</strong> Enter the 6-digit code from your authenticator app</Label>
                   <Input
                     id="verify-code"
                     type="text"
@@ -227,13 +210,18 @@ const SecuritySettings = () => {
               </div>
             ) : (
               <div className="space-y-4">
+                <Alert>
+                  <Shield className="h-4 w-4" />
+                  <AlertDescription>
+                    <strong>Mandatory Security Requirement:</strong> Two-factor authentication is required for all users on this cybersecurity platform. You must enable 2FA to access your account.
+                  </AlertDescription>
+                </Alert>
                 <p className="text-sm text-muted-foreground">
-                  Two-factor authentication adds an extra layer of security to your account. 
-                  You'll need to enter a code from your authenticator app every time you sign in.
+                  You'll need to scan a QR code with your authenticator app (Google Authenticator, Authy, Microsoft Authenticator, etc.) and enter a 6-digit verification code.
                 </p>
                 <Button onClick={handleEnrollMFA}>
                   <Shield className="h-4 w-4 mr-2" />
-                  Enable 2FA
+                  Set Up 2FA Now
                 </Button>
               </div>
             )}

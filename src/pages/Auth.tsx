@@ -164,8 +164,8 @@ const Auth = () => {
         throw new Error(data.error || 'Failed to complete profile');
       }
 
-      toast.success("Welcome! Your account has been set up successfully.");
-      navigate('/dashboard');
+      toast.success("Welcome! Please set up two-factor authentication to secure your account.");
+      navigate('/security-settings');
     } catch (error: any) {
       console.error('OAuth profile completion error:', error);
       toast.error(error.message || "Failed to complete profile setup. Please contact support.");
@@ -272,10 +272,10 @@ const Auth = () => {
 
       console.log('Signup successful!');
 
-      // Show verification message instead of auto-signing in
+      // Show verification message and redirect to MFA setup after email verification
       toast.success(
-        "Account created! Please check your email to verify your account.",
-        { duration: 8000 }
+        "Account created! Please check your email to verify your account. After verification, you'll need to set up two-factor authentication.",
+        { duration: 10000 }
       );
       
       // Clear form
@@ -336,6 +336,16 @@ const Auth = () => {
         // MFA is enabled but not verified yet
         setMfaRequired(true);
         setIsLoading(false);
+        return;
+      }
+
+      // Check if user has MFA enabled - mandatory for security platform
+      const { data: factors } = await supabase.auth.mfa.listFactors();
+      const hasMFA = factors?.totp?.some((f) => f.status === "verified");
+      
+      if (!hasMFA) {
+        toast.warning("Two-factor authentication is required for all users on this platform.");
+        navigate("/security-settings");
         return;
       }
 
