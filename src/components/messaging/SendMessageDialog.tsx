@@ -44,15 +44,34 @@ export const SendMessageDialog = ({
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      const { error } = await supabase
+      const { data: newMessage, error } = await supabase
         .from('direct_messages')
         .insert({
           sender_id: user.id,
           recipient_id: recipientId,
           content: message.trim()
-        });
+        })
+        .select()
+        .single();
 
       if (error) throw error;
+
+      // Send email notification
+      if (newMessage) {
+        try {
+          await supabase.functions.invoke('send-dm-notification', {
+            body: {
+              messageId: newMessage.id,
+              recipientId,
+              senderId: user.id,
+              content: message.trim()
+            }
+          });
+        } catch (emailError) {
+          console.error('Failed to send DM email notification:', emailError);
+          // Don't throw - message was sent successfully
+        }
+      }
 
       toast({
         title: "Success",

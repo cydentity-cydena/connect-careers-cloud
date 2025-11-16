@@ -218,14 +218,16 @@ export const PostComments = ({ postId }: { postId: string }) => {
       setMentionedUsers([]);
 
       // Insert to database - real-time subscription will update with actual data
-      const { error } = await supabase
+      const { data: newCommentData, error } = await supabase
         .from('post_comments')
         .insert({
           post_id: postId,
           user_id: user.id,
           content: validated.content,
           mentioned_users: mentionedUserIds
-        });
+        })
+        .select()
+        .single();
 
       if (error) {
         // Remove optimistic comment on error
@@ -233,6 +235,29 @@ export const PostComments = ({ postId }: { postId: string }) => {
         setCommentCount(prev => prev - 1);
         console.error('Database insert error:', error);
         throw error;
+      }
+
+      // Send email notifications for mentions
+      if (mentionedUserIds.length > 0 && newCommentData) {
+        mentionedUserIds.forEach(async (mentionedUserId) => {
+          // Don't notify if user mentions themselves
+          if (mentionedUserId !== user.id) {
+            try {
+              await supabase.functions.invoke('send-mention-notification', {
+                body: {
+                  commentId: newCommentData.id,
+                  mentionedUserId,
+                  mentionerUserId: user.id,
+                  content: validated.content,
+                  postId
+                }
+              });
+            } catch (emailError) {
+              console.error('Failed to send mention email:', emailError);
+              // Don't throw - comment was created successfully
+            }
+          }
+        });
       }
 
       toast({

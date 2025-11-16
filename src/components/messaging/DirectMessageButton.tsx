@@ -31,13 +31,32 @@ export const DirectMessageButton = ({ recipientId, recipientName, variant = "def
         return;
       }
 
-      const { error } = await supabase.from("direct_messages").insert({
+      const { data: newMessage, error } = await supabase.from("direct_messages").insert({
         sender_id: user.id,
         recipient_id: recipientId,
         content: message,
-      });
+      })
+      .select()
+      .single();
 
       if (error) throw error;
+
+      // Send email notification
+      if (newMessage) {
+        try {
+          await supabase.functions.invoke('send-dm-notification', {
+            body: {
+              messageId: newMessage.id,
+              recipientId,
+              senderId: user.id,
+              content: message
+            }
+          });
+        } catch (emailError) {
+          console.error('Failed to send DM email notification:', emailError);
+          // Don't throw - message was sent successfully
+        }
+      }
 
       toast.success("Message sent successfully!");
       setMessage("");
