@@ -50,9 +50,20 @@ const SecuritySettings = () => {
   const handleEnrollMFA = async () => {
     setEnrolling(true);
     try {
+      // Clear any previous in-progress TOTP factor to avoid name conflicts
+      const { data: factorsData, error: factorsError } = await supabase.auth.mfa.listFactors();
+      if (factorsError) throw factorsError;
+
+      const pendingTotp = factorsData?.totp?.find((f) => f.status !== "verified");
+      if (pendingTotp) {
+        await supabase.auth.mfa.unenroll({ factorId: pendingTotp.id });
+      }
+
+      const friendlyName = `Cydena ${new Date().toISOString()}`;
       const { data, error } = await supabase.auth.mfa.enroll({
         factorType: "totp",
         issuer: "Cydena",
+        friendlyName,
       });
 
       if (error) throw error;
@@ -98,6 +109,26 @@ const SecuritySettings = () => {
       toast.error(error.message || "Invalid verification code");
     } finally {
       setVerifying(false);
+    }
+  };
+
+  const handleResetEnrollment = async () => {
+    try {
+      setEnrolling(true);
+      const { data, error } = await supabase.auth.mfa.listFactors();
+      if (error) throw error;
+
+      const pending = data?.totp?.filter((f) => f.status !== "verified") || [];
+      for (const f of pending) {
+        await supabase.auth.mfa.unenroll({ factorId: f.id });
+      }
+
+      toast.success("Pending MFA setup reset. Please enroll again.");
+      await handleEnrollMFA();
+    } catch (err: any) {
+      console.error("Error resetting MFA enrollment:", err);
+      toast.error(err.message || "Failed to reset MFA setup");
+      setEnrolling(false);
     }
   };
 
@@ -220,10 +251,15 @@ const SecuritySettings = () => {
                 <p className="text-sm text-muted-foreground">
                   You'll need to scan a QR code with your authenticator app (Google Authenticator, Authy, Microsoft Authenticator, etc.) and enter a 6-digit verification code.
                 </p>
-                <Button onClick={handleEnrollMFA}>
-                  <Shield className="h-4 w-4 mr-2" />
-                  Set Up 2FA Now
-                </Button>
+                <div className="flex gap-2">
+                  <Button onClick={handleEnrollMFA}>
+                    <Shield className="h-4 w-4 mr-2" />
+                    Set Up 2FA Now
+                  </Button>
+                  <Button variant="outline" onClick={handleResetEnrollment}>
+                    Reset pending setup
+                  </Button>
+                </div>
               </div>
             )}
           </CardContent>
