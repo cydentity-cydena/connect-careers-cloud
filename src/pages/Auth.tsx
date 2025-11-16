@@ -15,6 +15,7 @@ import Navigation from "@/components/Navigation";
 import SEO from "@/components/SEO";
 import { z } from "zod";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { MFAVerification } from "@/components/auth/MFAVerification";
 
 // Validation schemas
 const publicEmailDomains = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'aol.com', 'icloud.com', 'mail.com', 'protonmail.com', 'live.com', 'msn.com'];
@@ -58,6 +59,8 @@ const Auth = () => {
   const [userRole, setUserRole] = useState<"candidate" | "employer" | "recruiter">("candidate");
   const [inviteOnlyMessage, setInviteOnlyMessage] = useState<string | null>(null);
   const [isFounding200, setIsFounding200] = useState(false);
+  const [mfaRequired, setMfaRequired] = useState(false);
+  const [mfaCode, setMfaCode] = useState("");
   const oauthProfileStarted = useRef(false);
 
   useEffect(() => {
@@ -324,12 +327,20 @@ const Auth = () => {
     setIsLoading(true);
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email: email.trim().toLowerCase(),
         password,
       });
 
       if (error) throw error;
+
+      // Check if MFA is required
+      if (data.user && !data.session) {
+        // MFA is enabled but not verified yet
+        setMfaRequired(true);
+        setIsLoading(false);
+        return;
+      }
 
       toast.success("Welcome back!");
       navigate("/dashboard");
@@ -408,52 +419,60 @@ const Auth = () => {
               </TabsList>
 
               <TabsContent value="signin">
-                <form onSubmit={handleSignIn} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="signin-email">Email</Label>
-                    <Input
-                      id="signin-email"
-                      type="email"
-                      placeholder="you@example.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="signin-password">Password</Label>
-                    <Input
-                      id="signin-password"
-                      type="password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                    />
-                  </div>
-                  <Button
-                    type="submit"
-                    variant="hero"
-                    className="w-full"
-                    disabled={isLoading}
-                  >
-                    {isLoading ? (
-                      <>
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                        Signing in...
-                      </>
-                    ) : (
-                      "Sign In"
-                    )}
-                  </Button>
+                {mfaRequired ? (
+                  <MFAVerification onCancel={() => {
+                    setMfaRequired(false);
+                    setEmail("");
+                    setPassword("");
+                  }} />
+                ) : (
+                  <form onSubmit={handleSignIn} className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="signin-email">Email</Label>
+                      <Input
+                        id="signin-email"
+                        type="email"
+                        placeholder="you@example.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="signin-password">Password</Label>
+                      <Input
+                        id="signin-password"
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                      />
+                    </div>
+                    <Button
+                      type="submit"
+                      variant="hero"
+                      className="w-full"
+                      disabled={isLoading}
+                    >
+                      {isLoading ? (
+                        <>
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                          Signing in...
+                        </>
+                      ) : (
+                        "Sign In"
+                      )}
+                    </Button>
 
-                  {/* Google OAuth temporarily disabled during invite-only period */}
-                  <div className="mt-4 p-3 bg-muted/50 rounded-lg border border-border">
-                    <p className="text-xs text-center text-muted-foreground">
-                      <span className="font-medium">Google Sign-In temporarily unavailable.</span><br />
-                      Signups are invite-only. If you're on the approved list, please use email/password above.
-                    </p>
-                  </div>
-                </form>
+                    {/* Google OAuth temporarily disabled during invite-only period */}
+                    <div className="mt-4 p-3 bg-muted/50 rounded-lg border border-border">
+                      <p className="text-xs text-center text-muted-foreground">
+                        <span className="font-medium">Google Sign-In temporarily unavailable.</span><br />
+                        Signups are invite-only. If you're on the approved list, please use email/password above.
+                      </p>
+                    </div>
+                  </form>
+                )}
               </TabsContent>
 
               <TabsContent value="signup">
