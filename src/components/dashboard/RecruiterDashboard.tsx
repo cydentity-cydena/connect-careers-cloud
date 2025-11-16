@@ -427,7 +427,47 @@ const RecruiterDashboard = () => {
             </CardContent>
           </Card>
         </TabsContent>
+
+        <TabsContent value="imported" className="mt-6 space-y-6">
+          <Card className="border-border shadow-card">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle>Imported Candidates</CardTitle>
+                  <CardDescription>
+                    Manage your imported candidate database
+                  </CardDescription>
+                </div>
+                <Button onClick={() => setShowImportDialog(true)}>
+                  <Upload className="h-4 w-4 mr-2" />
+                  Import New Batch
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <Tabs defaultValue="candidates" className="space-y-6">
+                <TabsList>
+                  <TabsTrigger value="candidates">Candidates</TabsTrigger>
+                  <TabsTrigger value="batches">Import History</TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="candidates">
+                  <ImportedCandidatesView />
+                </TabsContent>
+
+                <TabsContent value="batches">
+                  <ImportBatchesView />
+                </TabsContent>
+              </Tabs>
+            </CardContent>
+          </Card>
+        </TabsContent>
       </Tabs>
+
+      <ImportCandidatesDialog 
+        open={showImportDialog}
+        onOpenChange={setShowImportDialog}
+      />
 
       <Card className="border-border shadow-card bg-primary/5">
         <CardHeader>
