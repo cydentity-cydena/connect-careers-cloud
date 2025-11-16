@@ -28,6 +28,7 @@ const EmployerDashboard = () => {
   const [applicationsCount, setApplicationsCount] = useState(0);
   const [userName, setUserName] = useState<string>("");
   const [showGettingStarted, setShowGettingStarted] = useState(true);
+  const [activeTab, setActiveTab] = useState("overview");
 
   const { data: verificationRequest } = useQuery({
     queryKey: ['verification-request', userId],
@@ -201,7 +202,7 @@ const EmployerDashboard = () => {
         </Card>
       )}
 
-      <Tabs defaultValue="overview" className="w-full">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full max-w-3xl grid-cols-5">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="analytics" className="gap-2">
@@ -249,7 +250,10 @@ const EmployerDashboard = () => {
           </CardContent>
         </Card>
 
-        <Card className="border-border shadow-card hover:scale-105 transition-transform">
+        <Card 
+          className="border-border shadow-card hover:scale-105 transition-transform cursor-pointer"
+          onClick={() => setActiveTab("jobs")}
+        >
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-lg">
               <Briefcase className="h-5 w-5 text-secondary" />
@@ -262,7 +266,10 @@ const EmployerDashboard = () => {
           </CardContent>
         </Card>
 
-        <Card className="border-border shadow-card hover:scale-105 transition-transform">
+        <Card 
+          className="border-border shadow-card hover:scale-105 transition-transform cursor-pointer"
+          onClick={() => setActiveTab("pipeline")}
+        >
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-lg">
               <Users className="h-5 w-5 text-accent" />
