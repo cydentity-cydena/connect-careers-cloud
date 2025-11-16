@@ -269,15 +269,34 @@ export default function Messages() {
 
     setSending(true);
     try {
-      const { error } = await supabase
+      const { data: sentMessage, error } = await supabase
         .from('direct_messages')
         .insert({
           sender_id: currentUserId,
           recipient_id: selectedConversation,
           content: newMessage.trim()
-        });
+        })
+        .select()
+        .single();
 
       if (error) throw error;
+
+      // Send email notification
+      if (sentMessage) {
+        try {
+          await supabase.functions.invoke('send-dm-notification', {
+            body: {
+              messageId: sentMessage.id,
+              recipientId: selectedConversation,
+              senderId: currentUserId,
+              content: newMessage.trim()
+            }
+          });
+        } catch (emailError) {
+          console.error('Failed to send DM email notification:', emailError);
+          // Don't throw - message was sent successfully
+        }
+      }
 
       setNewMessage("");
     } catch (error) {
