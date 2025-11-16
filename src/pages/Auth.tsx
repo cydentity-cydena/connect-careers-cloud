@@ -270,22 +270,19 @@ const Auth = () => {
       }
       if (!data.success) throw new Error(data.error || 'Signup failed');
 
-      console.log('Signup successful, now signing in...');
+      console.log('Signup successful!');
 
-      // Sign in the user
-      const { error: signInError } = await supabase.auth.signInWithPassword({
-        email: email.trim().toLowerCase(),
-        password,
-      });
-
-      if (signInError) throw signInError;
-
-      const successMessage = isFounding200 
-        ? "Welcome to Early Access 200! Your account has been created with lifetime free access."
-        : "Account created successfully! Welcome to Cydena.";
+      // Show verification message instead of auto-signing in
+      toast.success(
+        "Account created! Please check your email to verify your account.",
+        { duration: 8000 }
+      );
       
-      toast.success(successMessage);
-      navigate("/dashboard");
+      // Clear form
+      setEmail("");
+      setPassword("");
+      setFullName("");
+      setUsername("");
     } catch (error: any) {
       console.error('Signup error:', error);
       
@@ -350,7 +347,9 @@ const Auth = () => {
       if (error.message?.includes('Invalid login credentials')) {
         toast.error("Invalid email or password. Please try again.");
       } else if (error.message?.includes('Email not confirmed')) {
-        toast.error("Please confirm your email before signing in.");
+        toast.error("Please verify your email address before signing in. Check your inbox for the verification link.");
+      } else if (error.message?.includes('email_not_confirmed')) {
+        toast.error("Email not verified. Please check your inbox and verify your email address.");
       } else {
         toast.error(error.message || "Failed to sign in. Please try again.");
       }
