@@ -20,7 +20,8 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
       const { data: { session } } = await supabase.auth.getSession();
       setIsAuthenticated(!!session);
       
-      if (session && location.pathname !== '/security-settings') {
+      const isSecuritySettings = location.pathname === '/security-settings' || location.pathname === '/security';
+      if (session && !isSecuritySettings) {
         // Check MFA status for all routes except security settings
         const { data: factors } = await supabase.auth.mfa.listFactors();
         const hasVerifiedMFA = factors?.totp?.some((f) => f.status === "verified");
