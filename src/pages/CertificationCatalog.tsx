@@ -242,24 +242,24 @@ const CertificationCatalog = () => {
                   key={cert.slot}
                   className={`relative ${slotStyles.border} md:${slotStyles.size} bg-gradient-to-br ${slotStyles.bg} hover:scale-[1.02] transition-all duration-200 overflow-hidden`}
                 >
-                  <div className="absolute top-4 right-4 z-10 flex flex-col gap-2 items-end">
-                    <Badge className={`${slotStyles.badge} text-white border-0 px-3 py-1`}>
-                      {cert.slot === 1 && <Star className="h-3.5 w-3.5 mr-1.5 fill-white" />}
-                      <Star className="h-3.5 w-3.5 mr-1.5" />
-                      {slotStyles.label}
-                    </Badge>
-                    <Badge variant="secondary" className="gap-1">
-                      <CheckCircle className="h-3 w-3" />
-                      Official Partner
-                    </Badge>
-                  </div>
-
-                  <div className="p-6 pb-0">
+                  <div className="p-6 pb-4 pr-4">
                     <img 
                       src="/logos/cydentity-academy-logo.png" 
                       alt="Cydentity Academy logo"
-                      className="h-12 object-contain"
+                      className="h-12 w-auto object-contain max-w-[65%]"
                     />
+                  </div>
+
+                  <div className="absolute top-2 right-2 z-10 flex flex-col gap-1.5 items-end max-w-[35%]">
+                    <Badge className={`${slotStyles.badge} text-white border-0 px-2 py-0.5 text-xs whitespace-nowrap`}>
+                      {cert.slot === 1 && <Star className="h-3 w-3 mr-1 fill-white" />}
+                      <Star className="h-3 w-3 mr-1" />
+                      {slotStyles.label}
+                    </Badge>
+                    <Badge variant="secondary" className="gap-1 px-2 py-0.5 text-xs whitespace-nowrap">
+                      <CheckCircle className="h-3 w-3" />
+                      Official
+                    </Badge>
                   </div>
 
                   <CardHeader className="pb-3">
