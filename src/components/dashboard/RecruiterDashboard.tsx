@@ -146,7 +146,7 @@ const RecruiterDashboard = () => {
       )}
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full max-w-5xl grid-cols-8">
+        <TabsList className="grid w-full max-w-5xl grid-cols-9">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="analytics">Analytics</TabsTrigger>
           <TabsTrigger value="pipeline">Pipeline</TabsTrigger>
@@ -154,9 +154,9 @@ const RecruiterDashboard = () => {
           <TabsTrigger value="jobs">Jobs</TabsTrigger>
           <TabsTrigger value="clients">Clients</TabsTrigger>
           <TabsTrigger value="placements">Placements</TabsTrigger>
-        <TabsTrigger value="team">Team</TabsTrigger>
-        <TabsTrigger value="assessments">Custom Assessments</TabsTrigger>
-      </TabsList>
+          <TabsTrigger value="team">Team</TabsTrigger>
+          <TabsTrigger value="assessments">Custom Assessments</TabsTrigger>
+        </TabsList>
 
         <TabsContent value="overview" className="space-y-8 mt-6">
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">

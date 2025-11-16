@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Building, Users, Briefcase, TrendingUp, Coins, Workflow, CheckCircle, Bug, ArrowRight, BarChart3 } from "lucide-react";
+import { Building, Users, Briefcase, TrendingUp, Coins, Workflow, CheckCircle, Bug, ArrowRight, BarChart3, ListChecks } from "lucide-react";
 import { CreditsPurchaseDialog } from "@/components/employer/CreditsPurchaseDialog";
 import { ApplicationPipeline } from "@/components/employer/ApplicationPipeline";
 import { UnlockUsageTracker } from "@/components/employer/UnlockUsageTracker";
@@ -203,7 +203,7 @@ const EmployerDashboard = () => {
       )}
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full max-w-3xl grid-cols-5">
+        <TabsList className="grid w-full max-w-4xl grid-cols-6">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="analytics" className="gap-2">
             <BarChart3 className="h-4 w-4" />
@@ -220,6 +220,10 @@ const EmployerDashboard = () => {
           <TabsTrigger value="team" className="gap-2">
             <Users className="h-4 w-4" />
             Team
+          </TabsTrigger>
+          <TabsTrigger value="assessments" className="gap-2">
+            <ListChecks className="h-4 w-4" />
+            Custom Assessments
           </TabsTrigger>
         </TabsList>
 
