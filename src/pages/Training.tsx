@@ -313,29 +313,29 @@ const Training = () => {
                         key={partner.id}
                         className={`relative ${slotStyles.border} md:${slotStyles.size} bg-gradient-to-br ${slotStyles.bg} hover:scale-[1.02] transition-all duration-200 overflow-hidden`}
                       >
-                        <div className="absolute top-4 right-4 z-10 flex flex-col gap-2 items-end">
-                          <Badge className={`${slotStyles.badge} text-white border-0 px-3 py-1`}>
-                            {partner.slot_position === 1 && <Star className="h-3.5 w-3.5 mr-1.5 fill-white" />}
-                            <Star className="h-3.5 w-3.5 mr-1.5" />
-                            {slotStyles.label}
-                          </Badge>
-                          {isOfficialPartner && (
-                            <Badge variant="secondary" className="gap-1">
-                              <CheckCircle className="h-3 w-3" />
-                              Official Partner
-                            </Badge>
-                          )}
-                        </div>
-
                         {partner.logo_url && (
-                          <div className="p-6 pb-4">
+                          <div className="p-6 pb-4 pr-4">
                             <img 
                               src={partner.logo_url} 
                               alt={`${partner.partner_name} logo`}
-                              className="h-20 w-auto object-contain"
+                              className="h-20 w-auto object-contain max-w-[65%]"
                             />
                           </div>
                         )}
+                        
+                        <div className="absolute top-2 right-2 z-10 flex flex-col gap-1.5 items-end max-w-[35%]">
+                          <Badge className={`${slotStyles.badge} text-white border-0 px-2 py-0.5 text-xs whitespace-nowrap`}>
+                            {partner.slot_position === 1 && <Star className="h-3 w-3 mr-1 fill-white" />}
+                            <Star className="h-3 w-3 mr-1" />
+                            {slotStyles.label}
+                          </Badge>
+                          {isOfficialPartner && (
+                            <Badge variant="secondary" className="gap-1 px-2 py-0.5 text-xs whitespace-nowrap">
+                              <CheckCircle className="h-3 w-3" />
+                              Official
+                            </Badge>
+                          )}
+                        </div>
 
                         <CardHeader className="pb-3">
                           <CardTitle className={`${partner.slot_position === 1 ? 'text-2xl' : 'text-xl'} flex items-center gap-2`}>
