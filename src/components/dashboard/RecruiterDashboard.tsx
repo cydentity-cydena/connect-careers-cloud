@@ -14,6 +14,9 @@ import { ImportCandidatesDialog } from "@/components/recruiter/ImportCandidatesD
 import { ImportedCandidatesView } from "@/components/recruiter/ImportedCandidatesView";
 import { ImportBatchesView } from "@/components/recruiter/ImportBatchesView";
 import { TeamMembersView } from "@/components/team/TeamMembersView";
+import { CreateCustomAssessmentDialog } from "@/components/assessments/CreateCustomAssessmentDialog";
+import { CustomAssessmentsList } from "@/components/assessments/CustomAssessmentsList";
+import { AssessmentQuotaDisplay } from "@/components/assessments/AssessmentQuotaDisplay";
 
 const RecruiterDashboard = () => {
   const navigate = useNavigate();
@@ -151,8 +154,9 @@ const RecruiterDashboard = () => {
           <TabsTrigger value="jobs">Jobs</TabsTrigger>
           <TabsTrigger value="clients">Clients</TabsTrigger>
           <TabsTrigger value="placements">Placements</TabsTrigger>
-          <TabsTrigger value="team">Team</TabsTrigger>
-        </TabsList>
+        <TabsTrigger value="team">Team</TabsTrigger>
+        <TabsTrigger value="assessments">Custom Assessments</TabsTrigger>
+      </TabsList>
 
         <TabsContent value="overview" className="space-y-8 mt-6">
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -467,6 +471,25 @@ const RecruiterDashboard = () => {
 
         <TabsContent value="team" className="mt-6">
           <TeamMembersView role="recruiter" />
+        </TabsContent>
+
+        <TabsContent value="assessments" className="mt-6 space-y-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-2xl font-bold">Custom Assessments</h2>
+              <p className="text-muted-foreground">Create tailored technical assessments for your candidate pool</p>
+            </div>
+            <CreateCustomAssessmentDialog />
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-3">
+            <div className="md:col-span-2">
+              <CustomAssessmentsList />
+            </div>
+            <div>
+              <AssessmentQuotaDisplay />
+            </div>
+          </div>
         </TabsContent>
       </Tabs>
 
