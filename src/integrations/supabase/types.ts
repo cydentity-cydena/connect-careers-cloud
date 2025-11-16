@@ -2077,9 +2077,11 @@ export type Database = {
           hackthebox_user_owns: number | null
           hackthebox_username: string | null
           id: string
+          imported_by_recruiter: boolean | null
           is_founding_200: boolean | null
           is_verified: boolean | null
           location: string | null
+          profile_claimed: boolean | null
           selected_avatar_frame: string | null
           selected_badge_id: string | null
           tryhackme_badges: number | null
@@ -2107,9 +2109,11 @@ export type Database = {
           hackthebox_user_owns?: number | null
           hackthebox_username?: string | null
           id: string
+          imported_by_recruiter?: boolean | null
           is_founding_200?: boolean | null
           is_verified?: boolean | null
           location?: string | null
+          profile_claimed?: boolean | null
           selected_avatar_frame?: string | null
           selected_badge_id?: string | null
           tryhackme_badges?: number | null
@@ -2137,9 +2141,11 @@ export type Database = {
           hackthebox_user_owns?: number | null
           hackthebox_username?: string | null
           id?: string
+          imported_by_recruiter?: boolean | null
           is_founding_200?: boolean | null
           is_verified?: boolean | null
           location?: string | null
+          profile_claimed?: boolean | null
           selected_avatar_frame?: string | null
           selected_badge_id?: string | null
           tryhackme_badges?: number | null
@@ -2203,6 +2209,101 @@ export type Database = {
           url?: string | null
         }
         Relationships: []
+      }
+      recruiter_candidate_imports: {
+        Row: {
+          activated_candidates: number
+          batch_name: string
+          created_at: string
+          file_name: string | null
+          id: string
+          import_date: string
+          invited_candidates: number
+          notes: string | null
+          recruiter_id: string
+          total_candidates: number
+          updated_at: string
+        }
+        Insert: {
+          activated_candidates?: number
+          batch_name: string
+          created_at?: string
+          file_name?: string | null
+          id?: string
+          import_date?: string
+          invited_candidates?: number
+          notes?: string | null
+          recruiter_id: string
+          total_candidates?: number
+          updated_at?: string
+        }
+        Update: {
+          activated_candidates?: number
+          batch_name?: string
+          created_at?: string
+          file_name?: string | null
+          id?: string
+          import_date?: string
+          invited_candidates?: number
+          notes?: string | null
+          recruiter_id?: string
+          total_candidates?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      recruiter_candidate_relationships: {
+        Row: {
+          activated_at: string | null
+          activation_status: Database["public"]["Enums"]["candidate_activation_status"]
+          candidate_id: string
+          created_at: string
+          declined_at: string | null
+          id: string
+          import_batch_id: string | null
+          invitation_sent_at: string | null
+          invitation_token: string | null
+          recruiter_id: string
+          recruiter_notes: string | null
+          updated_at: string
+        }
+        Insert: {
+          activated_at?: string | null
+          activation_status?: Database["public"]["Enums"]["candidate_activation_status"]
+          candidate_id: string
+          created_at?: string
+          declined_at?: string | null
+          id?: string
+          import_batch_id?: string | null
+          invitation_sent_at?: string | null
+          invitation_token?: string | null
+          recruiter_id: string
+          recruiter_notes?: string | null
+          updated_at?: string
+        }
+        Update: {
+          activated_at?: string | null
+          activation_status?: Database["public"]["Enums"]["candidate_activation_status"]
+          candidate_id?: string
+          created_at?: string
+          declined_at?: string | null
+          id?: string
+          import_batch_id?: string | null
+          invitation_sent_at?: string | null
+          invitation_token?: string | null
+          recruiter_id?: string
+          recruiter_notes?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recruiter_candidate_relationships_import_batch_id_fkey"
+            columns: ["import_batch_id"]
+            isOneToOne: false
+            referencedRelation: "recruiter_candidate_imports"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       reward_points: {
         Row: {
@@ -2793,6 +2894,7 @@ export type Database = {
         Returns: boolean
       }
       check_founding_200_availability: { Args: never; Returns: boolean }
+      generate_invitation_token: { Args: never; Returns: string }
       get_community_stats: {
         Args: never
         Returns: {
@@ -2855,6 +2957,11 @@ export type Database = {
         | "training"
       app_role: "candidate" | "employer" | "admin" | "recruiter" | "staff"
       ats_provider: "workday" | "greenhouse" | "lever" | "bamboohr" | "webhook"
+      candidate_activation_status:
+        | "unclaimed"
+        | "invited"
+        | "claimed"
+        | "declined"
       job_type: "full-time" | "part-time" | "contract" | "freelance"
       notification_type:
         | "application"
@@ -3012,6 +3119,12 @@ export const Constants = {
       ],
       app_role: ["candidate", "employer", "admin", "recruiter", "staff"],
       ats_provider: ["workday", "greenhouse", "lever", "bamboohr", "webhook"],
+      candidate_activation_status: [
+        "unclaimed",
+        "invited",
+        "claimed",
+        "declined",
+      ],
       job_type: ["full-time", "part-time", "contract", "freelance"],
       notification_type: [
         "application",
