@@ -3,6 +3,8 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 
 const SENDGRID_API_KEY = Deno.env.get("SENDGRID_API_KEY");
 const SENDGRID_API_URL = "https://api.sendgrid.com/v3/mail/send";
+const SENDGRID_FROM_EMAIL = Deno.env.get("SENDGRID_FROM_EMAIL") || "notifications@cydena.app";
+const SENDGRID_FROM_NAME = Deno.env.get("SENDGRID_FROM_NAME") || "Cydena Updates";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -52,7 +54,7 @@ const handler = async (req: Request): Promise<Response> => {
       : `Bug Fix Update: ${title}`;
 
     // Send email to all users in batches
-    const batchSize = 50;
+    const batchSize = 50; let totalFailures = 0;
     for (let i = 0; i < users.length; i += batchSize) {
       const batch = users.slice(i, i + batchSize);
       const emailPromises = batch.map(async (user) => {
@@ -126,20 +128,21 @@ const handler = async (req: Request): Promise<Response> => {
         if (!response.ok) {
           const errorText = await response.text();
           console.error(`SendGrid error for ${user.email}:`, errorText);
-          throw new Error(`SendGrid API error: ${response.status}`);
+          totalFailures++;
+          return { ok: false, email: user.email, error: errorText };
         }
 
-        return response;
+        return { ok: true, email: user.email };
       });
 
       await Promise.allSettled(emailPromises);
-      console.log(`Sent batch ${Math.floor(i / batchSize) + 1} of ${Math.ceil(users.length / batchSize)}`);
+      console.log(`Sent batch ${Math.floor(i / batchSize) + 1} of ${Math.ceil(users.length / batchSize)}. Failures so far: ${totalFailures}`);
     }
 
-    console.log(`Announcement emails sent to ${users.length} users`);
+    console.log(`Announcement email processing complete. Total recipients: ${users.length}, failures: ${totalFailures}`);
 
     return new Response(
-      JSON.stringify({ success: true, recipients: users.length }),
+      JSON.stringify({ success: totalFailures === 0, recipients: users.length, failed: totalFailures }),
       {
         status: 200,
         headers: { "Content-Type": "application/json", ...corsHeaders },
