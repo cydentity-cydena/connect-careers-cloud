@@ -5,24 +5,27 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
-import { ArrowLeft, X } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { ArrowLeft, X, Pencil } from 'lucide-react';
 import { toast } from 'sonner';
 import SEO from '@/components/SEO';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 
 interface Skill { id: string; name: string }
-interface UserSkill { id: string; skill_id: string; skills: { name: string } }
+interface UserSkill { id: string; skill_id: string; years_experience: number | null; skills: { name: string } }
 
 const Skills = () => {
   const navigate = useNavigate();
   const [userId, setUserId] = useState<string | null>(null);
   const [skills, setSkills] = useState<Skill[]>([]);
   const [selected, setSelected] = useState<Record<string, boolean>>({});
+  const [yearsExp, setYearsExp] = useState<Record<string, number>>({});
   const [existingSkills, setExistingSkills] = useState<UserSkill[]>([]);
   const [existing, setExisting] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   const [removing, setRemoving] = useState<string | null>(null);
+  const [editingExp, setEditingExp] = useState<string | null>(null);
 
   useEffect(() => {
     const init = async () => {
@@ -32,7 +35,7 @@ const Skills = () => {
 
       const [{ data: skillsData }, { data: userSkills }] = await Promise.all([
         supabase.from('skills').select('id, name').order('name'),
-        supabase.from('candidate_skills').select('id, skill_id, skills(name)').eq('candidate_id', session.user.id)
+        supabase.from('candidate_skills').select('id, skill_id, years_experience, skills(name)').eq('candidate_id', session.user.id)
       ]);
 
       setSkills(skillsData ?? []);
@@ -58,7 +61,11 @@ const Skills = () => {
       return;
     }
 
-    const rows = newSkillIds.map(id => ({ candidate_id: userId, skill_id: id }));
+    const rows = newSkillIds.map(id => ({ 
+      candidate_id: userId, 
+      skill_id: id,
+      years_experience: yearsExp[id] || 0
+    }));
     const { error } = await supabase.from('candidate_skills').insert(rows);
     if (error) {
       toast.error(error.message);
@@ -110,12 +117,13 @@ const Skills = () => {
     // Reload existing skills
     const { data: updatedUserSkills } = await supabase
       .from('candidate_skills')
-      .select('id, skill_id, skills(name)')
+      .select('id, skill_id, years_experience, skills(name)')
       .eq('candidate_id', userId);
     
     setExistingSkills((updatedUserSkills ?? []) as UserSkill[]);
     setExisting(new Set((updatedUserSkills ?? []).map((s: any) => s.skill_id)));
     setSelected({});
+    setYearsExp({});
   };
 
   const handleRemoveSkill = async (candidateSkillId: string, skillName: string) => {
@@ -178,6 +186,46 @@ const Skills = () => {
                     className="text-sm py-1.5 px-3 flex items-center gap-2"
                   >
                     {userSkill.skills.name}
+                    {editingExp === userSkill.id ? (
+                      <Input
+                        type="number"
+                        min="0"
+                        max="50"
+                        value={yearsExp[userSkill.id] ?? userSkill.years_experience ?? 0}
+                        onChange={(e) => setYearsExp(prev => ({ ...prev, [userSkill.id]: parseInt(e.target.value) || 0 }))}
+                        onBlur={async () => {
+                          const years = yearsExp[userSkill.id] ?? userSkill.years_experience ?? 0;
+                          const { error } = await supabase
+                            .from('candidate_skills')
+                            .update({ years_experience: years })
+                            .eq('id', userSkill.id);
+                          if (error) {
+                            toast.error('Failed to update years of experience');
+                          } else {
+                            toast.success('Years of experience updated');
+                            const { data: updatedSkills } = await supabase
+                              .from('candidate_skills')
+                              .select('id, skill_id, years_experience, skills(name)')
+                              .eq('candidate_id', userId);
+                            setExistingSkills((updatedSkills ?? []) as UserSkill[]);
+                          }
+                          setEditingExp(null);
+                        }}
+                        className="ml-2 w-16 h-6 text-xs"
+                        autoFocus
+                      />
+                    ) : (
+                      <button
+                        onClick={() => {
+                          setYearsExp(prev => ({ ...prev, [userSkill.id]: userSkill.years_experience ?? 0 }));
+                          setEditingExp(userSkill.id);
+                        }}
+                        className="ml-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+                      >
+                        {userSkill.years_experience ? `${userSkill.years_experience} yrs` : '0 yrs'}
+                        <Pencil className="ml-1 h-3 w-3 inline" />
+                      </button>
+                    )}
                     <button
                       onClick={() => handleRemoveSkill(userSkill.id, userSkill.skills.name)}
                       disabled={removing === userSkill.id}
@@ -206,24 +254,43 @@ const Skills = () => {
             {loading ? (
               <p className="text-muted-foreground">Loading...</p>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="space-y-3">
                 {skills.map(skill => {
                   const isExisting = existing.has(skill.id);
                   const isSelected = !!selected[skill.id];
                   return (
-                    <div key={skill.id} className="flex items-center space-x-2">
-                      <Checkbox
-                        id={skill.id}
-                        checked={isExisting || isSelected}
-                        disabled={isExisting}
-                        onCheckedChange={() => handleToggle(skill.id)}
-                      />
-                      <Label 
-                        htmlFor={skill.id} 
-                        className={isExisting ? 'text-muted-foreground cursor-not-allowed' : 'cursor-pointer'}
-                      >
-                        {skill.name} {isExisting && '✓'}
-                      </Label>
+                    <div key={skill.id} className="flex items-center justify-between gap-4">
+                      <div className="flex items-center space-x-2 flex-1">
+                        <Checkbox
+                          id={skill.id}
+                          checked={isExisting || isSelected}
+                          disabled={isExisting}
+                          onCheckedChange={() => handleToggle(skill.id)}
+                        />
+                        <Label 
+                          htmlFor={skill.id} 
+                          className={isExisting ? 'text-muted-foreground cursor-not-allowed' : 'cursor-pointer'}
+                        >
+                          {skill.name} {isExisting && '✓'}
+                        </Label>
+                      </div>
+                      {isSelected && !isExisting && (
+                        <div className="flex items-center gap-2">
+                          <Label htmlFor={`years-${skill.id}`} className="text-xs text-muted-foreground whitespace-nowrap">
+                            Years:
+                          </Label>
+                          <Input
+                            id={`years-${skill.id}`}
+                            type="number"
+                            min="0"
+                            max="50"
+                            placeholder="0"
+                            value={yearsExp[skill.id] || ''}
+                            onChange={(e) => setYearsExp(prev => ({ ...prev, [skill.id]: parseInt(e.target.value) || 0 }))}
+                            className="w-20 h-8"
+                          />
+                        </div>
+                      )}
                     </div>
                   );
                 })}
