@@ -94,11 +94,11 @@ const Community = () => {
       
       <Navigation />
       
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8 overflow-x-hidden">
         <header className="mb-8 flex flex-wrap justify-between items-start gap-4">
-          <div>
-            <h1 className="text-4xl font-bold mb-2">Cybersecurity Community - Connect with Security Professionals</h1>
-            <p className="text-muted-foreground text-lg">
+          <div className="min-w-0 flex-1">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 break-words">Cybersecurity Community - Connect with Security Professionals</h1>
+            <p className="text-muted-foreground text-base sm:text-lg break-words">
               Connect, learn, and grow with the cybersecurity community
             </p>
           </div>
@@ -146,10 +146,10 @@ const Community = () => {
             </div>
           </TabsContent>
 
-          <TabsContent value="pathways" className="space-y-6">
-            <div className="bg-card border rounded-lg p-6 mb-6">
-              <h2 className="text-2xl font-bold mb-2">Your Career Pathways</h2>
-              <p className="text-muted-foreground">
+          <TabsContent value="pathways" className="space-y-6 overflow-x-hidden">
+            <div className="bg-card border rounded-lg p-4 sm:p-6 mb-6">
+              <h2 className="text-xl sm:text-2xl font-bold mb-2 break-words">Your Career Pathways</h2>
+              <p className="text-sm sm:text-base text-muted-foreground break-words">
                 Explore structured learning paths to advance your cybersecurity career. 
                 Track your progress and see what skills you need to reach the next level.
               </p>

@@ -291,10 +291,10 @@ const CertificationCatalog = () => {
         </div>
 
         {/* Cydentity Academy Section */}
-        <div className="mb-12 animate-fade-in">
-          <div className="flex items-center gap-3 mb-6">
-            <img src="/logos/cydentity-academy-logo.png" alt="Cydentity Academy" className="h-10 object-contain" />
-            <h2 className="text-3xl font-bold">Cydentity Academy Compliance Certifications</h2>
+        <div className="mb-12 animate-fade-in overflow-x-hidden">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 mb-6">
+            <img src="/logos/cydentity-academy-logo.png" alt="Cydentity Academy" className="h-8 sm:h-10 object-contain flex-shrink-0" />
+            <h2 className="text-2xl sm:text-3xl font-bold break-words">Cydentity Academy Compliance Certifications</h2>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
