@@ -172,17 +172,17 @@ export const CreatePostDialog = () => {
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <Label htmlFor="description">Description (Optional)</Label>
-              <span className={`text-xs ${description.length > 900 ? 'text-destructive' : 'text-muted-foreground'}`}>
-                {description.length}/1000
+              <span className={`text-xs ${description.length > (isAdmin ? 2700 : 900) ? 'text-destructive' : 'text-muted-foreground'}`}>
+                {description.length}/{isAdmin ? 3000 : 1000}
               </span>
             </div>
             <Textarea
               id="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Share more details about your achievement..."
-              rows={4}
-              maxLength={1000}
+              placeholder={isAdmin ? "Share detailed information about this update or announcement..." : "Share more details about your achievement..."}
+              rows={isAdmin ? 8 : 4}
+              maxLength={isAdmin ? 3000 : 1000}
             />
           </div>
 
