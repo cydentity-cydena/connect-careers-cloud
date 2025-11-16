@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
-import { Resend } from "npm:resend@2.0.0";
+import { Resend } from "https://esm.sh/resend@4.0.0";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
@@ -70,7 +70,7 @@ const handler = async (req: Request): Promise<Response> => {
     // Truncate content for preview
     const preview = content.length > 150 ? content.substring(0, 150) + "..." : content;
 
-    const emailResponse = await resend.emails.send({
+    const { data: emailData, error: emailError } = await resend.emails.send({
       from: "Cydena <notifications@cydena.app>",
       to: [mentionedUser.email],
       subject: `${mentionerName} mentioned you in a comment`,
@@ -115,10 +115,15 @@ const handler = async (req: Request): Promise<Response> => {
       `,
     });
 
-    console.log("Email sent successfully:", emailResponse);
+    if (emailError) {
+      console.error("Error sending email:", emailError);
+      throw emailError;
+    }
+
+    console.log("Email sent successfully:", emailData);
 
     return new Response(
-      JSON.stringify({ success: true, messageId: emailResponse.id }),
+      JSON.stringify({ success: true, messageId: emailData?.id }),
       {
         status: 200,
         headers: { "Content-Type": "application/json", ...corsHeaders },
