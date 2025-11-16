@@ -13,6 +13,7 @@ import { ArrowLeft, Plus, Trash2, Upload, Image as ImageIcon, User, ChevronDown,
 import { Separator } from '@/components/ui/separator';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { CandidateAvatar } from '@/components/profiles/CandidateAvatar';
+import { countries, countryPhoneCodes } from '@/lib/countries';
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -552,19 +553,11 @@ const Profile = () => {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="bg-background z-50 max-h-[300px]">
-                      <SelectItem value="+1">🇺🇸 +1</SelectItem>
-                      <SelectItem value="+44">🇬🇧 +44</SelectItem>
-                      <SelectItem value="+61">🇦🇺 +61</SelectItem>
-                      <SelectItem value="+49">🇩🇪 +49</SelectItem>
-                      <SelectItem value="+33">🇫🇷 +33</SelectItem>
-                      <SelectItem value="+31">🇳🇱 +31</SelectItem>
-                      <SelectItem value="+91">🇮🇳 +91</SelectItem>
-                      <SelectItem value="+65">🇸🇬 +65</SelectItem>
-                      <SelectItem value="+971">🇦🇪 +971</SelectItem>
-                      <SelectItem value="+27">🇿🇦 +27</SelectItem>
-                      <SelectItem value="+55">🇧🇷 +55</SelectItem>
-                      <SelectItem value="+52">🇲🇽 +52</SelectItem>
-                      <SelectItem value="+81">🇯🇵 +81</SelectItem>
+                      {countryPhoneCodes.map((item) => (
+                        <SelectItem key={item.code} value={item.code}>
+                          {item.country} {item.code}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                   <Input 
@@ -604,32 +597,11 @@ const Profile = () => {
                     <SelectValue placeholder="Select your location" />
                   </SelectTrigger>
                   <SelectContent className="bg-background z-50 max-h-[300px]">
-                    <SelectItem value="United States">🇺🇸 United States</SelectItem>
-                    <SelectItem value="United Kingdom">🇬🇧 United Kingdom</SelectItem>
-                    <SelectItem value="Canada">🇨🇦 Canada</SelectItem>
-                    <SelectItem value="Australia">🇦🇺 Australia</SelectItem>
-                    <SelectItem value="Germany">🇩🇪 Germany</SelectItem>
-                    <SelectItem value="France">🇫🇷 France</SelectItem>
-                    <SelectItem value="Netherlands">🇳🇱 Netherlands</SelectItem>
-                    <SelectItem value="India">🇮🇳 India</SelectItem>
-                    <SelectItem value="Singapore">🇸🇬 Singapore</SelectItem>
-                    <SelectItem value="United Arab Emirates">🇦🇪 United Arab Emirates</SelectItem>
-                    <SelectItem value="South Africa">🇿🇦 South Africa</SelectItem>
-                    <SelectItem value="Brazil">🇧🇷 Brazil</SelectItem>
-                    <SelectItem value="Mexico">🇲🇽 Mexico</SelectItem>
-                    <SelectItem value="Japan">🇯🇵 Japan</SelectItem>
-                    <SelectItem value="Spain">🇪🇸 Spain</SelectItem>
-                    <SelectItem value="Italy">🇮🇹 Italy</SelectItem>
-                    <SelectItem value="Poland">🇵🇱 Poland</SelectItem>
-                    <SelectItem value="Sweden">🇸🇪 Sweden</SelectItem>
-                    <SelectItem value="Norway">🇳🇴 Norway</SelectItem>
-                    <SelectItem value="Denmark">🇩🇰 Denmark</SelectItem>
-                    <SelectItem value="Switzerland">🇨🇭 Switzerland</SelectItem>
-                    <SelectItem value="Belgium">🇧🇪 Belgium</SelectItem>
-                    <SelectItem value="Austria">🇦🇹 Austria</SelectItem>
-                    <SelectItem value="Ireland">🇮🇪 Ireland</SelectItem>
-                    <SelectItem value="New Zealand">🇳🇿 New Zealand</SelectItem>
-                    <SelectItem value="Other">🌍 Other</SelectItem>
+                    {countries.map((country) => (
+                      <SelectItem key={country} value={country}>
+                        {country}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
                 {!location && (
