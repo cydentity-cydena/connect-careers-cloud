@@ -3,6 +3,8 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 
 const SENDGRID_API_KEY = Deno.env.get("SENDGRID_API_KEY");
 const SENDGRID_API_URL = "https://api.sendgrid.com/v3/mail/send";
+const SENDGRID_FROM_EMAIL = Deno.env.get("SENDGRID_FROM_EMAIL") || "notifications@cydena.app";
+const SENDGRID_FROM_NAME = Deno.env.get("SENDGRID_FROM_NAME") || "Cydena";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -72,7 +74,7 @@ const handler = async (req: Request): Promise<Response> => {
           subject: `New message from ${senderName}`,
         },
       ],
-      from: { email: "notifications@cydena.app", name: "Cydena" },
+      from: { email: SENDGRID_FROM_EMAIL, name: SENDGRID_FROM_NAME },
       content: [
         {
           type: "text/html",

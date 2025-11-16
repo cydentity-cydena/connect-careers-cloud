@@ -67,7 +67,7 @@ const handler = async (req: Request): Promise<Response> => {
               subject: emailSubject,
             },
           ],
-          from: { email: "notifications@cydena.app", name: "Cydena Updates" },
+          from: { email: SENDGRID_FROM_EMAIL, name: SENDGRID_FROM_NAME },
           content: [
             {
               type: "text/html",
