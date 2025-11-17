@@ -4,7 +4,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Shield, Crosshair, Scale, Cloud, Brain, Clock, CheckCircle2, Circle, ArrowRight, BookOpen } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Shield, Crosshair, Scale, Cloud, Brain, Clock, CheckCircle2, Circle, ArrowRight, BookOpen, Info } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { PathwayCoursesDialog } from './PathwayCoursesDialog';
 
@@ -288,6 +289,13 @@ export const SkillPathways = () => {
                     <span>{pathwayCourses[pathway.id].length} courses</span>
                   </div>
                 )}
+
+                <Alert className="mb-3">
+                  <Info className="h-4 w-4" />
+                  <AlertDescription className="text-sm">
+                    No courses configured for this pathway yet. Check back soon for updates!
+                  </AlertDescription>
+                </Alert>
 
                 <Button 
                   className="w-full" 
