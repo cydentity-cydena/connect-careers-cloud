@@ -87,8 +87,8 @@ const App = () => (
               <Route path="/pricing" element={<Pricing />} />
               <Route path="/faq" element={<ProtectedRoute><FAQ /></ProtectedRoute>} />
               <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-              <Route path="/security-settings" element={<ProtectedRoute><SecuritySettings /></ProtectedRoute>} />
-              <Route path="/security" element={<ProtectedRoute><SecuritySettings /></ProtectedRoute>} />
+              <Route path="/security-settings" element={<SecuritySettings />} />
+              <Route path="/security" element={<SecuritySettings />} />
               <Route path="/skills" element={<ProtectedRoute><Skills /></ProtectedRoute>} />
               <Route path="/specializations" element={<ProtectedRoute><Specializations /></ProtectedRoute>} />
               <Route path="/certifications" element={<ProtectedRoute><Certifications /></ProtectedRoute>} />
@@ -107,7 +107,7 @@ const App = () => (
               <Route path="/integrations" element={<ProtectedRoute><Integrations /></ProtectedRoute>} />
               <Route path="/messages" element={<ProtectedRoute><Messages /></ProtectedRoute>} />
               <Route path="/accept-invitation" element={<ProtectedRoute><AcceptInvitation /></ProtectedRoute>} />
-              <Route path="/mfa" element={<ProtectedRoute><MFA /></ProtectedRoute>} />
+              <Route path="/mfa" element={<MFA />} />
               
               {/* Admin Routes */}
               <Route path="/admin/users" element={<ProtectedRoute><UserManagement /></ProtectedRoute>} />
