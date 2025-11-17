@@ -263,31 +263,6 @@ const CandidateDashboard = () => {
       {/* Multiple Resumes - Full Width */}
       {userId && <MultipleResumesManager />}
 
-      {/* Certification Management - Full Width */}
-      {userId && (
-        <Card className="border-border shadow-card">
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <div>
-                <CardTitle className="flex items-center gap-2">
-                  <FileText className="h-5 w-5 text-accent" />
-                  Your Certifications
-                </CardTitle>
-                <CardDescription>
-                  Manage your certifications - edit pending or delete anytime
-                </CardDescription>
-              </div>
-              <Button onClick={() => navigate('/certifications')}>
-                Add Certification
-              </Button>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <CertificationManager />
-          </CardContent>
-        </Card>
-      )}
-
       {userId && (
         <div className="grid md:grid-cols-2 gap-6">
           <Card className="border-border shadow-card hover:scale-105 transition-transform">
@@ -402,6 +377,31 @@ const CandidateDashboard = () => {
             </CardContent>
           </Card>
         </div>
+      )}
+
+      {/* Certification Management - Full Width */}
+      {userId && (
+        <Card className="border-border shadow-card">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="flex items-center gap-2">
+                  <FileText className="h-5 w-5 text-accent" />
+                  Your Certifications
+                </CardTitle>
+                <CardDescription>
+                  Manage your certifications - edit pending or delete anytime
+                </CardDescription>
+              </div>
+              <Button onClick={() => navigate('/certifications')}>
+                Add Certification
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <CertificationManager />
+          </CardContent>
+        </Card>
       )}
 
       {userId && (
