@@ -249,7 +249,7 @@ export function SecurityIQ() {
                 Share Result
               </Button>
               <Button 
-                onClick={() => window.location.href = '/community'}
+                onClick={() => window.location.href = '/leaderboard'}
                 variant="default"
                 className="flex-1"
               >
