@@ -4,6 +4,8 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ExternalLink, CheckCircle2 } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 type Course = {
   id: string;
@@ -36,11 +38,40 @@ export const PathwayCoursesDialog = ({
     setConfirmDialogOpen(true);
   };
 
-  const handleConfirmEnrollment = () => {
-    if (selectedCourse) {
-      window.open(selectedCourse.url, '_blank');
-      // Here you could also add logic to track enrollment in the database
+  const handleConfirmEnrollment = async () => {
+    if (!selectedCourse) return;
+
+    try {
+      // Track enrollment in database
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { error } = await supabase
+          .from('course_completions')
+          .insert({
+            candidate_id: user.id,
+            partner_course_id: selectedCourse.id,
+            proof_type: 'enrollment',
+            status: 'in_progress'
+          });
+
+        if (error && error.code !== '23505') { // Ignore duplicate key error
+          console.error('Error tracking enrollment:', error);
+        }
+      }
+
+      // Open course URL in new tab
+      const url = selectedCourse.url;
+      if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
+        window.open(url, '_blank', 'noopener,noreferrer');
+        toast.success('Course opened! Good luck with your learning.');
+      } else {
+        toast.error('Invalid course URL. Please contact support.');
+      }
+    } catch (error) {
+      console.error('Error enrolling in course:', error);
+      toast.error('Failed to enroll in course');
     }
+
     setConfirmDialogOpen(false);
     setSelectedCourse(null);
   };
