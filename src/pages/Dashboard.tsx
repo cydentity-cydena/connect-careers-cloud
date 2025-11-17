@@ -4,6 +4,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Shield, LogOut, Loader2, Menu, X } from "lucide-react";
 import { toast } from "sonner";
+import SEO from "@/components/SEO";
 import CandidateDashboard from "@/components/dashboard/CandidateDashboard";
 import EmployerDashboard from "@/components/dashboard/EmployerDashboard";
 import AdminDashboard from "@/components/dashboard/AdminDashboard";
@@ -93,6 +94,10 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO 
+        title="Dashboard | Cydena"
+        description="Manage your cybersecurity career on Cydena"
+      />
       {/* Navigation */}
       <nav className="border-b border-border backdrop-blur-sm sticky top-0 z-50 bg-background/80">
         <div className="container mx-auto px-4 py-4">
