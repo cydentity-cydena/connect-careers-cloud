@@ -18,7 +18,6 @@ import { HRReadyCTA } from "./HRReadyCTA";
 import { BadgeSelector } from "@/components/badges/BadgeSelector";
 import { CertificationManager } from "@/components/certifications/CertificationManager";
 import { ReferralSystem } from "./ReferralSystem";
-import { SkillGenomeCard } from "./SkillGenomeCard";
 import { CareerPathsAI } from "./CareerPathsAI";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
@@ -270,7 +269,6 @@ const CandidateDashboard = () => {
           <div className="h-1 w-1 rounded-full bg-primary animate-pulse" />
         </div>
         
-        {userId && <SkillGenomeCard />}
         {userId && <CareerPathsAI />}
       </div>
 
