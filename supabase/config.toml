@@ -54,3 +54,9 @@ verify_jwt = true
 
 [functions.send-daily-challenge-email]
 verify_jwt = false
+
+[functions.send-mention-notification]
+verify_jwt = false
+
+[functions.send-announcement-email]
+verify_jwt = false
