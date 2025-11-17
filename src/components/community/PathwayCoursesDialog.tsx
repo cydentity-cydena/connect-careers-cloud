@@ -3,7 +3,8 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ExternalLink, CheckCircle2 } from 'lucide-react';
+import { ExternalLink, CheckCircle2, BookOpen } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 type Course = {
   id: string;
@@ -90,9 +91,17 @@ export const PathwayCoursesDialog = ({
         </div>
 
         {sortedCourses.length === 0 && (
-          <div className="text-center py-8 text-muted-foreground">
-            <p>No courses configured for this pathway yet.</p>
-            <p className="text-sm mt-2">Check back soon for updates!</p>
+          <div className="text-center py-8 space-y-4">
+            <div className="text-muted-foreground">
+              <p>No courses configured for this pathway yet.</p>
+              <p className="text-sm mt-2">Check back soon for updates!</p>
+            </div>
+            <Link to="/certifications">
+              <Button variant="outline" className="gap-2">
+                <BookOpen className="h-4 w-4" />
+                Browse Certifications Catalog
+              </Button>
+            </Link>
           </div>
         )}
       </DialogContent>
