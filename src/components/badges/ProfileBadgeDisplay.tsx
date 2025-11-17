@@ -33,35 +33,74 @@ export function ProfileBadgeDisplay({ userId, size = 'md' }: ProfileBadgeDisplay
 
   if (!profileBadge) return null;
 
-  const getRarityColor = (rarity: string) => {
+  const getRarityStyles = (rarity: string) => {
     switch (rarity) {
-      case 'legendary': return 'from-yellow-500 to-orange-500';
-      case 'epic': return 'from-purple-500 to-pink-500';
-      case 'rare': return 'from-blue-500 to-cyan-500';
-      default: return 'from-gray-500 to-gray-600';
+      case 'legendary':
+        return {
+          stroke: '#fbbf24',
+          glow: 'drop-shadow-[0_0_8px_rgba(251,191,36,0.6)]',
+          bg: 'from-yellow-500/20 to-orange-500/20'
+        };
+      case 'epic':
+        return {
+          stroke: '#a855f7',
+          glow: 'drop-shadow-[0_0_8px_rgba(168,85,247,0.6)]',
+          bg: 'from-purple-500/20 to-pink-500/20'
+        };
+      case 'rare':
+        return {
+          stroke: '#3b82f6',
+          glow: 'drop-shadow-[0_0_8px_rgba(59,130,246,0.6)]',
+          bg: 'from-blue-500/20 to-cyan-500/20'
+        };
+      default:
+        return {
+          stroke: '#6b7280',
+          glow: 'drop-shadow-[0_0_4px_rgba(107,114,128,0.4)]',
+          bg: 'from-gray-500/20 to-gray-600/20'
+        };
     }
   };
 
   const sizeClasses = {
-    sm: 'h-8 w-8',
-    md: 'h-10 w-10',
-    lg: 'h-12 w-12'
+    sm: 'h-12 w-12',
+    md: 'h-16 w-16',
+    lg: 'h-20 w-20'
   };
 
   const iconSizes = {
-    sm: 'h-4 w-4',
-    md: 'h-5 w-5',
-    lg: 'h-6 w-6'
+    sm: 'h-5 w-5',
+    md: 'h-7 w-7',
+    lg: 'h-9 w-9'
   };
+
+  const styles = getRarityStyles(profileBadge.rarity);
 
   return (
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <div 
-            className={`${sizeClasses[size]} rounded-full bg-gradient-to-br ${getRarityColor(profileBadge.rarity)} flex items-center justify-center shadow-lg cursor-help`}
-          >
-            <Award className={`${iconSizes[size]} text-white`} />
+          <div className={`relative ${sizeClasses[size]} cursor-help group`}>
+            <svg
+              viewBox="0 0 100 100"
+              className={`absolute inset-0 w-full h-full ${styles.glow} transition-all duration-300 group-hover:scale-110`}
+            >
+              <polygon
+                points="50,5 90,25 90,75 50,95 10,75 10,25"
+                fill="url(#hexGradient)"
+                stroke={styles.stroke}
+                strokeWidth="2"
+              />
+              <defs>
+                <linearGradient id="hexGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor={styles.stroke} stopOpacity="0.2" />
+                  <stop offset="100%" stopColor={styles.stroke} stopOpacity="0.05" />
+                </linearGradient>
+              </defs>
+            </svg>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <Award className={`${iconSizes[size]} text-white z-10`} style={{ filter: 'drop-shadow(0 0 4px rgba(255,255,255,0.5))' }} />
+            </div>
           </div>
         </TooltipTrigger>
         <TooltipContent className="max-w-xs">
