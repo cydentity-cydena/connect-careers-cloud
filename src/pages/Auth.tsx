@@ -171,8 +171,20 @@ const Auth = () => {
         throw new Error(data.error || 'Failed to complete profile');
       }
 
-      toast.success("Welcome! Please set up two-factor authentication to secure your account.");
-      navigate('/security-settings');
+      // Only prompt to set up MFA if no verified factor exists
+      try {
+        const { data: factors } = await supabase.auth.mfa.listFactors();
+        const hasVerifiedMFA = factors?.totp?.some((f) => f.status === 'verified');
+        if (!hasVerifiedMFA) {
+          toast.success("Welcome! Please set up two-factor authentication to secure your account.");
+          navigate('/security-settings');
+        } else {
+          navigate('/dashboard');
+        }
+      } catch {
+        // Fallback: send to security settings if we can't determine
+        navigate('/security-settings');
+      }
     } catch (error: any) {
       console.error('OAuth profile completion error:', error);
       toast.error(error.message || "Failed to complete profile setup. Please contact support.");

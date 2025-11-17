@@ -58,6 +58,12 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
       if (!session) {
         setHasMFA(false);
         setMfaChecked(false);
+        setNeedsMfaVerify(false);
+      } else {
+        // Defer to avoid deadlocks per best practices
+        setTimeout(() => {
+          checkAuth();
+        }, 0);
       }
     });
 
