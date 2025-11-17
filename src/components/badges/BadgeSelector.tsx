@@ -310,32 +310,117 @@ function BadgeCard({
     return badge.description || 'Complete specific achievements to unlock';
   };
 
+  const getRarityGlow = (rarity: string) => {
+    switch (rarity.toLowerCase()) {
+      case 'legendary':
+        return 'drop-shadow-[0_0_20px_rgba(251,191,36,0.8)]';
+      case 'epic':
+        return 'drop-shadow-[0_0_20px_rgba(168,85,247,0.8)]';
+      case 'rare':
+        return 'drop-shadow-[0_0_20px_rgba(59,130,246,0.8)]';
+      case 'uncommon':
+        return 'drop-shadow-[0_0_15px_rgba(34,197,94,0.7)]';
+      default:
+        return 'drop-shadow-[0_0_10px_rgba(148,163,184,0.5)]';
+    }
+  };
+
+  const getRarityStrokeColor = (rarity: string) => {
+    switch (rarity.toLowerCase()) {
+      case 'legendary':
+        return '#fbbf24';
+      case 'epic':
+        return '#a855f7';
+      case 'rare':
+        return '#3b82f6';
+      case 'uncommon':
+        return '#22c55e';
+      default:
+        return '#94a3b8';
+    }
+  };
+
+  const getRarityBgGradient = (rarity: string) => {
+    switch (rarity.toLowerCase()) {
+      case 'legendary':
+        return 'from-yellow-500/10 via-orange-500/10 to-amber-500/10';
+      case 'epic':
+        return 'from-purple-500/10 via-pink-500/10 to-fuchsia-500/10';
+      case 'rare':
+        return 'from-blue-500/10 via-cyan-500/10 to-sky-500/10';
+      case 'uncommon':
+        return 'from-green-500/10 via-emerald-500/10 to-teal-500/10';
+      default:
+        return 'from-slate-500/10 via-gray-500/10 to-zinc-500/10';
+    }
+  };
+
   return (
     <Card 
-      className={`relative transition-all ${
+      className={`relative transition-all duration-300 group overflow-hidden bg-gradient-to-br ${getRarityBgGradient(badge.rarity)} ${
         isUnlocked 
-          ? `hover:scale-105 cursor-pointer ${getRarityBorder(badge.rarity)} ${isSelected ? 'ring-2 ring-primary' : ''}`
-          : 'opacity-60'
+          ? `hover:scale-105 cursor-pointer ${getRarityBorder(badge.rarity)} ${isSelected ? 'ring-2 ring-primary shadow-[0_0_30px_rgba(79,209,197,0.6)]' : ''}`
+          : 'opacity-50'
       }`}
     >
-      <CardContent className="p-4">
+      {/* Animated background gradient on hover */}
+      <div className={`absolute inset-0 bg-gradient-to-br ${getRarityBgGradient(badge.rarity)} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
+      
+      <CardContent className="p-4 relative">
         {!isUnlocked && (
-          <div className="absolute top-2 right-2">
+          <div className="absolute top-2 right-2 z-10">
             <Lock className="h-4 w-4 text-muted-foreground" />
           </div>
         )}
         {isSelected && (
-          <div className="absolute top-2 right-2">
-            <Check className="h-4 w-4 text-primary" />
+          <div className="absolute top-2 right-2 z-10">
+            <Check className="h-4 w-4 text-primary drop-shadow-[0_0_10px_rgba(79,209,197,1)]" />
           </div>
         )}
+        
         <div className="space-y-3">
-          <div className={`h-16 w-16 rounded-full bg-gradient-to-br ${getRarityColor(badge.rarity)} flex items-center justify-center mx-auto ${!isUnlocked ? 'opacity-40' : ''}`}>
-            <Award className="h-8 w-8 text-white" />
+          {/* Hexagonal badge with neon glow */}
+          <div className="relative w-20 h-20 mx-auto">
+            {/* Outer hexagon with glow */}
+            <svg viewBox="0 0 100 100" className={`w-full h-full ${isUnlocked ? getRarityGlow(badge.rarity) : ''} ${isUnlocked ? 'group-hover:animate-pulse' : ''}`}>
+              <polygon 
+                points="50 5, 90 27.5, 90 72.5, 50 95, 10 72.5, 10 27.5" 
+                fill="none"
+                stroke={getRarityStrokeColor(badge.rarity)}
+                strokeWidth="2.5"
+              />
+            </svg>
+            
+            {/* Inner hexagon with gradient fill */}
+            <svg viewBox="0 0 100 100" className="w-full h-full absolute inset-0">
+              <defs>
+                <linearGradient id={`gradient-${badge.id}`} x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor={getRarityStrokeColor(badge.rarity)} stopOpacity="0.3" />
+                  <stop offset="100%" stopColor={getRarityStrokeColor(badge.rarity)} stopOpacity="0.1" />
+                </linearGradient>
+              </defs>
+              <polygon 
+                points="50 10, 85 30, 85 70, 50 90, 15 70, 15 30" 
+                fill={`url(#gradient-${badge.id})`}
+              />
+            </svg>
+            
+            {/* Icon */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <Award className={`h-9 w-9 ${isUnlocked ? 'text-foreground' : 'text-muted-foreground'}`} />
+            </div>
           </div>
+
           <div className="text-center space-y-2">
             <p className="font-semibold text-sm">{badge.name}</p>
-            <Badge variant="secondary" className="text-xs capitalize">
+            <Badge 
+              variant="outline" 
+              className="text-xs capitalize border-0"
+              style={{
+                background: `linear-gradient(135deg, ${getRarityStrokeColor(badge.rarity)}40, ${getRarityStrokeColor(badge.rarity)}20)`,
+                color: getRarityStrokeColor(badge.rarity)
+              }}
+            >
               {badge.rarity}
             </Badge>
             {badge.description && (
