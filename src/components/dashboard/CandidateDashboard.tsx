@@ -17,6 +17,7 @@ import { ApplicationTracker } from "./ApplicationTracker";
 import { HRReadyCTA } from "./HRReadyCTA";
 import { BadgeSelector } from "@/components/badges/BadgeSelector";
 import { CertificationManager } from "@/components/certifications/CertificationManager";
+import { ReferralSystem } from "./ReferralSystem";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 
@@ -401,6 +402,10 @@ const CandidateDashboard = () => {
             </CardContent>
           </Card>
         </div>
+      )}
+
+      {userId && (
+        <ReferralSystem />
       )}
 
       <ApplicationTracker />
