@@ -48,10 +48,21 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error("SENDGRID_API_KEY is not configured");
     }
 
-    const announcementType = activityType === "release" ? "Version Release" : "Bug Fix";
+    const announcementType = activityType === "release" 
+      ? "Version Release" 
+      : activityType === "bug_fix" 
+        ? "Bug Fix" 
+        : activityType === "announcement"
+          ? "Announcement"
+          : "Community Update";
+    
     const emailSubject = activityType === "release" 
-      ? `New Version Release: ${title}` 
-      : `Bug Fix Update: ${title}`;
+      ? `🚀 New Version Release: ${title}` 
+      : activityType === "bug_fix"
+        ? `🐛 Bug Fix Update: ${title}`
+        : activityType === "announcement"
+          ? `📢 ${title}`
+          : `✨ ${title}`;
 
     // Send email to all users in batches
     const batchSize = 50; let totalFailures = 0;
