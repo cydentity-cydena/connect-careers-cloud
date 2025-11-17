@@ -363,8 +363,40 @@ function BadgeCard({
           : 'opacity-50'
       }`}
     >
-      {/* Animated background gradient on hover */}
+      {/* Animated shine effect */}
+      {isUnlocked && (
+        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+          <div 
+            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"
+            style={{ transform: 'skewX(-20deg)' }}
+          />
+        </div>
+      )}
+      
+      {/* Animated background pulse */}
       <div className={`absolute inset-0 bg-gradient-to-br ${getRarityBgGradient(badge.rarity)} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
+      
+      {/* Corner accents */}
+      {isUnlocked && (
+        <>
+          <div className="absolute top-0 left-0 w-8 h-8 opacity-50">
+            <div className="absolute top-2 left-2 w-1 h-4 bg-gradient-to-b" style={{ 
+              backgroundImage: `linear-gradient(to bottom, ${getRarityStrokeColor(badge.rarity)}, transparent)` 
+            }} />
+            <div className="absolute top-2 left-2 w-4 h-1 bg-gradient-to-r" style={{ 
+              backgroundImage: `linear-gradient(to right, ${getRarityStrokeColor(badge.rarity)}, transparent)` 
+            }} />
+          </div>
+          <div className="absolute top-0 right-0 w-8 h-8 opacity-50">
+            <div className="absolute top-2 right-2 w-1 h-4 bg-gradient-to-b" style={{ 
+              backgroundImage: `linear-gradient(to bottom, ${getRarityStrokeColor(badge.rarity)}, transparent)` 
+            }} />
+            <div className="absolute top-2 right-2 w-4 h-1 bg-gradient-to-l" style={{ 
+              backgroundImage: `linear-gradient(to left, ${getRarityStrokeColor(badge.rarity)}, transparent)` 
+            }} />
+          </div>
+        </>
+      )}
       
       <CardContent className="p-4 relative">
         {!isUnlocked && (
@@ -379,46 +411,118 @@ function BadgeCard({
         )}
         
         <div className="space-y-3">
-          {/* Hexagonal badge with neon glow */}
-          <div className="relative w-20 h-20 mx-auto">
-            {/* Outer hexagon with glow */}
-            <svg viewBox="0 0 100 100" className={`w-full h-full ${isUnlocked ? getRarityGlow(badge.rarity) : ''} ${isUnlocked ? 'group-hover:animate-pulse' : ''}`}>
+          {/* Hexagonal badge with multiple layers */}
+          <div className="relative w-24 h-24 mx-auto">
+            {/* Outer glow ring */}
+            {isUnlocked && (
+              <svg viewBox="0 0 100 100" className={`w-full h-full absolute inset-0 ${getRarityGlow(badge.rarity)} opacity-60 group-hover:opacity-100 transition-opacity duration-300`}>
+                <polygon 
+                  points="50 2, 93 26, 93 74, 50 98, 7 74, 7 26" 
+                  fill="none"
+                  stroke={getRarityStrokeColor(badge.rarity)}
+                  strokeWidth="1"
+                  className="animate-pulse"
+                />
+              </svg>
+            )}
+            
+            {/* Middle hexagon layer with gradient */}
+            <svg viewBox="0 0 100 100" className="w-full h-full absolute inset-0">
+              <defs>
+                <linearGradient id={`grad-outer-${badge.id}`} x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor={getRarityStrokeColor(badge.rarity)} stopOpacity="0.5" />
+                  <stop offset="50%" stopColor={getRarityStrokeColor(badge.rarity)} stopOpacity="0.8" />
+                  <stop offset="100%" stopColor={getRarityStrokeColor(badge.rarity)} stopOpacity="0.5" />
+                </linearGradient>
+                <radialGradient id={`rad-${badge.id}`}>
+                  <stop offset="0%" stopColor={getRarityStrokeColor(badge.rarity)} stopOpacity="0.3" />
+                  <stop offset="100%" stopColor={getRarityStrokeColor(badge.rarity)} stopOpacity="0" />
+                </radialGradient>
+              </defs>
+              
+              {/* Background glow circle */}
+              <circle cx="50" cy="50" r="45" fill={`url(#rad-${badge.id})`} />
+              
+              {/* Main hexagon border */}
               <polygon 
                 points="50 5, 90 27.5, 90 72.5, 50 95, 10 72.5, 10 27.5" 
                 fill="none"
-                stroke={getRarityStrokeColor(badge.rarity)}
-                strokeWidth="2.5"
+                stroke={`url(#grad-outer-${badge.id})`}
+                strokeWidth="3"
+                className={isUnlocked ? 'group-hover:animate-pulse' : ''}
               />
             </svg>
             
-            {/* Inner hexagon with gradient fill */}
+            {/* Inner hexagon with complex gradient */}
             <svg viewBox="0 0 100 100" className="w-full h-full absolute inset-0">
               <defs>
                 <linearGradient id={`gradient-${badge.id}`} x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor={getRarityStrokeColor(badge.rarity)} stopOpacity="0.3" />
+                  <stop offset="0%" stopColor={getRarityStrokeColor(badge.rarity)} stopOpacity="0.4" />
+                  <stop offset="50%" stopColor={getRarityStrokeColor(badge.rarity)} stopOpacity="0.2" />
                   <stop offset="100%" stopColor={getRarityStrokeColor(badge.rarity)} stopOpacity="0.1" />
                 </linearGradient>
               </defs>
               <polygon 
-                points="50 10, 85 30, 85 70, 50 90, 15 70, 15 30" 
+                points="50 12, 82 30, 82 70, 50 88, 18 70, 18 30" 
                 fill={`url(#gradient-${badge.id})`}
+                className="group-hover:opacity-80 transition-opacity"
+              />
+              
+              {/* Inner border */}
+              <polygon 
+                points="50 12, 82 30, 82 70, 50 88, 18 70, 18 30" 
+                fill="none"
+                stroke={getRarityStrokeColor(badge.rarity)}
+                strokeWidth="1.5"
+                opacity="0.6"
               />
             </svg>
             
-            {/* Icon */}
+            {/* Center icon with glow */}
             <div className="absolute inset-0 flex items-center justify-center">
-              <Award className={`h-9 w-9 ${isUnlocked ? 'text-foreground' : 'text-muted-foreground'}`} />
+              <div className={`relative ${isUnlocked ? 'group-hover:scale-110' : ''} transition-transform duration-300`}>
+                {isUnlocked && (
+                  <div className="absolute inset-0 blur-xl opacity-50" style={{
+                    background: getRarityStrokeColor(badge.rarity)
+                  }} />
+                )}
+                <Award 
+                  className={`h-10 w-10 relative z-10 ${isUnlocked ? 'text-foreground' : 'text-muted-foreground'}`}
+                  style={isUnlocked ? {
+                    filter: `drop-shadow(0 0 8px ${getRarityStrokeColor(badge.rarity)})`
+                  } : {}}
+                />
+              </div>
             </div>
+            
+            {/* Rotating particle effects */}
+            {isUnlocked && (
+              <>
+                <div className="absolute top-[15%] left-[15%] w-1 h-1 rounded-full animate-pulse" style={{
+                  background: getRarityStrokeColor(badge.rarity),
+                  boxShadow: `0 0 8px ${getRarityStrokeColor(badge.rarity)}`
+                }} />
+                <div className="absolute top-[15%] right-[15%] w-1 h-1 rounded-full animate-pulse delay-100" style={{
+                  background: getRarityStrokeColor(badge.rarity),
+                  boxShadow: `0 0 8px ${getRarityStrokeColor(badge.rarity)}`
+                }} />
+                <div className="absolute bottom-[20%] left-1/2 w-1 h-1 rounded-full animate-pulse delay-200" style={{
+                  background: getRarityStrokeColor(badge.rarity),
+                  boxShadow: `0 0 8px ${getRarityStrokeColor(badge.rarity)}`
+                }} />
+              </>
+            )}
           </div>
 
           <div className="text-center space-y-2">
             <p className="font-semibold text-sm">{badge.name}</p>
             <Badge 
               variant="outline" 
-              className="text-xs capitalize border-0"
+              className="text-xs capitalize border-0 font-medium"
               style={{
                 background: `linear-gradient(135deg, ${getRarityStrokeColor(badge.rarity)}40, ${getRarityStrokeColor(badge.rarity)}20)`,
-                color: getRarityStrokeColor(badge.rarity)
+                color: getRarityStrokeColor(badge.rarity),
+                boxShadow: `0 0 10px ${getRarityStrokeColor(badge.rarity)}20`
               }}
             >
               {badge.rarity}
