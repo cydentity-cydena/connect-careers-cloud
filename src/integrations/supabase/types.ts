@@ -3063,7 +3063,6 @@ export type Database = {
         | "certifications"
         | "community"
         | "training"
-        | "ctf"
       app_role: "candidate" | "employer" | "admin" | "recruiter" | "staff"
       ats_provider: "workday" | "greenhouse" | "lever" | "bamboohr" | "webhook"
       candidate_activation_status:
@@ -3225,7 +3224,6 @@ export const Constants = {
         "certifications",
         "community",
         "training",
-        "ctf",
       ],
       app_role: ["candidate", "employer", "admin", "recruiter", "staff"],
       ats_provider: ["workday", "greenhouse", "lever", "bamboohr", "webhook"],
