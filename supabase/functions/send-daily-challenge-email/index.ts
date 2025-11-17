@@ -1,8 +1,8 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { Resend } from "https://esm.sh/resend@2.0.0";
 
-const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
+const SENDGRID_API_KEY = Deno.env.get("SENDGRID_API_KEY");
+const SENDGRID_API_URL = "https://api.sendgrid.com/v3/mail/send";
 const SENDGRID_FROM_EMAIL = Deno.env.get("SENDGRID_FROM_EMAIL") || "noreply@cydena.com";
 const SENDGRID_FROM_NAME = Deno.env.get("SENDGRID_FROM_NAME") || "Cydena";
 
@@ -54,6 +54,10 @@ const handler = async (req: Request): Promise<Response> => {
     const candidateProfiles = profiles.filter(p => candidateIds.has(p.id));
 
     console.log(`Sending daily challenge notification to ${candidateProfiles.length} candidates`);
+
+    if (!SENDGRID_API_KEY) {
+      throw new Error("SENDGRID_API_KEY is not configured");
+    }
 
     let successCount = 0;
     let failureCount = 0;
@@ -141,14 +145,39 @@ const handler = async (req: Request): Promise<Response> => {
               </html>
             `;
 
-            await resend.emails.send({
-              from: `${SENDGRID_FROM_NAME} <${SENDGRID_FROM_EMAIL}>`,
-              to: [profile.email],
-              subject: "🎯 Your Daily Security Challenge is Ready!",
-              html: emailHtml,
+            const emailBody = {
+              personalizations: [
+                {
+                  to: [{ email: profile.email }],
+                  subject: "🎯 Your Daily Security Challenge is Ready!",
+                },
+              ],
+              from: { email: SENDGRID_FROM_EMAIL, name: SENDGRID_FROM_NAME },
+              content: [
+                {
+                  type: "text/html",
+                  value: emailHtml,
+                },
+              ],
+            };
+
+            const response = await fetch(SENDGRID_API_URL, {
+              method: "POST",
+              headers: {
+                "Authorization": `Bearer ${SENDGRID_API_KEY}`,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(emailBody),
             });
 
-            successCount++;
+            if (response.ok) {
+              successCount++;
+              console.log(`Email sent successfully to ${profile.email}`);
+            } else {
+              failureCount++;
+              const errorText = await response.text();
+              console.error(`Failed to send email to ${profile.email}:`, response.status, errorText);
+            }
           } catch (error) {
             console.error(`Failed to send email to ${profile.email}:`, error);
             failureCount++;
