@@ -42,24 +42,36 @@ export function SecurityIQ() {
       category: "Access Control"
     });
     
-    // Check if user already answered today (localStorage for demo)
+    // Check if user already answered today
     const today = new Date().toISOString().split('T')[0];
-    const stored = localStorage.getItem(`security_iq_${today}`);
+    const { data: { user } } = await supabase.auth.getUser();
     
-    if (stored) {
-      const data = JSON.parse(stored);
-      setHasAnswered(true);
-      setSelectedAnswer(data.selectedAnswer);
-      setTodayScore(data.score);
+    if (user) {
+      const { data } = await supabase
+        .from('security_iq_attempts')
+        .select('*')
+        .eq('candidate_id', user.id)
+        .eq('challenge_date', today)
+        .single();
+      
+      if (data) {
+        setHasAnswered(true);
+        setSelectedAnswer(data.selected_answer);
+        setTodayScore(data.score);
+      }
     }
     
     setLoading(false);
   };
 
   const loadUserStats = async () => {
-    // Mock streak from localStorage
-    const storedStreak = localStorage.getItem('security_iq_streak');
-    setStreak(storedStreak ? parseInt(storedStreak) : 0);
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      const { data: streakData } = await supabase.rpc('calculate_security_iq_streak', {
+        p_candidate_id: user.id
+      });
+      setStreak(streakData || 0);
+    }
   };
 
   const handleAnswerSubmit = async () => {
@@ -71,19 +83,30 @@ export function SecurityIQ() {
     setHasAnswered(true);
     setTodayScore(score);
     
-    // Save to localStorage for demo
-    const today = new Date().toISOString().split('T')[0];
-    localStorage.setItem(`security_iq_${today}`, JSON.stringify({
-      selectedAnswer,
-      score,
-      date: today
-    }));
-    
-    // Update streak
-    const currentStreak = streak;
-    const newStreak = isCorrect ? currentStreak + 1 : 0;
-    setStreak(newStreak);
-    localStorage.setItem('security_iq_streak', newStreak.toString());
+    // Save to database
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      const today = new Date().toISOString().split('T')[0];
+      
+      const { error } = await supabase
+        .from('security_iq_attempts')
+        .insert({
+          candidate_id: user.id,
+          challenge_date: today,
+          selected_answer: selectedAnswer,
+          score: score
+        });
+      
+      if (error) {
+        console.error('Error saving attempt:', error);
+      } else {
+        // Recalculate streak
+        const { data: streakData } = await supabase.rpc('calculate_security_iq_streak', {
+          p_candidate_id: user.id
+        });
+        setStreak(streakData || 0);
+      }
+    }
     
     if (isCorrect) {
       toast.success("Correct! +100 XP", {

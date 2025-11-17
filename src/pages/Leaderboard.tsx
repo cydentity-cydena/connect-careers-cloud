@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Trophy, Medal, Award, Target, Users, ChevronDown, TrendingUp, Heart } from "lucide-react";
+import { Trophy, Medal, Award, Target, Users, ChevronDown, TrendingUp, Heart, Shield, Flame } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
@@ -27,12 +27,26 @@ interface LeaderboardEntry {
   hr_ready: boolean;
 }
 
+interface SecurityIQEntry {
+  id: string;
+  user_id: string;
+  username: string;
+  title: string;
+  streak: number;
+  total_correct: number;
+  total_attempts: number;
+  accuracy: number;
+  rank: number;
+}
+
 const Leaderboard = () => {
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
+  const [securityIQLeaderboard, setSecurityIQLeaderboard] = useState<SecurityIQEntry[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchLeaderboard();
+    fetchSecurityIQLeaderboard();
   }, []);
 
   const fetchLeaderboard = async () => {
@@ -153,6 +167,109 @@ const Leaderboard = () => {
     }
   };
 
+  const fetchSecurityIQLeaderboard = async () => {
+    try {
+      // Get all candidates with at least one attempt
+      const { data: attempts } = await supabase
+        .from('security_iq_attempts')
+        .select('candidate_id, score, created_at');
+      
+      if (!attempts || attempts.length === 0) {
+        setSecurityIQLeaderboard([]);
+        return;
+      }
+      
+      // Group by candidate and calculate stats
+      const candidateStats = attempts.reduce((acc, attempt) => {
+        if (!acc[attempt.candidate_id]) {
+          acc[attempt.candidate_id] = {
+            total_attempts: 0,
+            total_correct: 0
+          };
+        }
+        acc[attempt.candidate_id].total_attempts++;
+        if (attempt.score === 100) {
+          acc[attempt.candidate_id].total_correct++;
+        }
+        return acc;
+      }, {} as Record<string, { total_attempts: number; total_correct: number }>);
+      
+      const candidateIds = Object.keys(candidateStats);
+      
+      // Get streaks for all candidates
+      const streakPromises = candidateIds.map(async (cid) => {
+        const { data: streak } = await supabase.rpc('calculate_security_iq_streak', {
+          p_candidate_id: cid
+        });
+        return { candidate_id: cid, streak: streak || 0 };
+      });
+      
+      const streaksData = await Promise.all(streakPromises);
+      const streaksMap = new Map(streaksData.map(s => [s.candidate_id, s.streak]));
+      
+      // Fetch profiles
+      const profileResults = await Promise.all(
+        candidateIds.map(async (cid) => {
+          const { data } = await supabase.rpc('get_public_profile', { profile_id: cid });
+          const row = Array.isArray(data) ? data?.[0] : data;
+          return { 
+            id: cid, 
+            username: row?.username ?? 'anonymous',
+            desired_job_title: (row as any)?.desired_job_title ?? null 
+          };
+        })
+      );
+      
+      const candidateProfileResults = await Promise.all(
+        candidateIds.map(async (cid) => {
+          const { data } = await supabase.rpc('get_public_candidate_profile', { profile_user_id: cid });
+          const row = Array.isArray(data) ? data?.[0] : data;
+          return { user_id: cid, title: row?.title ?? 'Cybersecurity Professional' };
+        })
+      );
+      
+      const profileMap = new Map(profileResults.map(p => [p.id, p]));
+      const candidateProfileMap = new Map(candidateProfileResults.map(cp => [cp.user_id, cp]));
+      
+      // Create leaderboard entries
+      const iqData: SecurityIQEntry[] = candidateIds.map(cid => {
+        const stats = candidateStats[cid];
+        const profile = profileMap.get(cid);
+        const candidateProfile = candidateProfileMap.get(cid);
+        const displayTitle = (profile as any)?.desired_job_title || candidateProfile?.title || 'Cybersecurity Professional';
+        
+        return {
+          id: cid,
+          user_id: cid,
+          username: profile?.username || 'anonymous',
+          title: displayTitle,
+          streak: streaksMap.get(cid) || 0,
+          total_correct: stats.total_correct,
+          total_attempts: stats.total_attempts,
+          accuracy: Math.round((stats.total_correct / stats.total_attempts) * 100),
+          rank: 0
+        };
+      });
+      
+      // Sort by streak first, then accuracy, then total correct
+      iqData.sort((a, b) => {
+        if (b.streak !== a.streak) return b.streak - a.streak;
+        if (b.accuracy !== a.accuracy) return b.accuracy - a.accuracy;
+        return b.total_correct - a.total_correct;
+      });
+      
+      // Assign ranks
+      iqData.forEach((entry, index) => {
+        entry.rank = index + 1;
+      });
+      
+      setSecurityIQLeaderboard(iqData.slice(0, 20));
+    } catch (error) {
+      console.error("Error fetching Security IQ leaderboard:", error);
+      setSecurityIQLeaderboard([]);
+    }
+  };
+
   const topThree = leaderboard.slice(0, 3);
   const communityTopThree = [...leaderboard].sort((a, b) => b.community_points - a.community_points).slice(0, 3);
   const restOfLeaderboard = leaderboard.slice(3);
@@ -227,7 +344,7 @@ const Leaderboard = () => {
         </div>
 
         <Tabs defaultValue="professional" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-8">
+          <TabsList className="grid w-full grid-cols-3 mb-8">
             <TabsTrigger value="professional" className="flex items-center gap-2">
               <Target className="h-4 w-4" />
               <span className="hidden sm:inline">Professional XP</span>
@@ -237,6 +354,11 @@ const Leaderboard = () => {
               <Users className="h-4 w-4" />
               <span className="hidden sm:inline">Community Leaders</span>
               <span className="sm:hidden">Community</span>
+            </TabsTrigger>
+            <TabsTrigger value="securityiq" className="flex items-center gap-2">
+              <Shield className="h-4 w-4" />
+              <span className="hidden sm:inline">Security IQ</span>
+              <span className="sm:hidden">IQ</span>
             </TabsTrigger>
           </TabsList>
 
@@ -480,6 +602,167 @@ const Leaderboard = () => {
                 </Table>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          {/* Security IQ Tab */}
+          <TabsContent value="securityiq" className="space-y-8">
+            {securityIQLeaderboard.length === 0 ? (
+              <Card>
+                <CardContent className="py-12 text-center">
+                  <Shield className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <p className="text-muted-foreground">No Security IQ challenges completed yet. Be the first!</p>
+                </CardContent>
+              </Card>
+            ) : (
+              <>
+                {/* Top 3 with Podium */}
+                {securityIQLeaderboard.length >= 3 && (
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 md:mb-16 max-w-4xl mx-auto">
+                    {/* 1st Place - Cyan */}
+                    <div className="flex flex-col items-center justify-start animate-slide-up md:order-2">
+                      <Link to={`/profiles/${securityIQLeaderboard[0]?.user_id}`} className="w-full">
+                        <Card className="w-full border-2 border-cyan-500 bg-gradient-to-b from-cyan-300 to-cyan-500 shadow-xl md:transform md:scale-110 hover:scale-105 md:hover:scale-[1.15] transition-transform cursor-pointer">
+                          <CardContent className="pt-4 md:pt-6 text-center">
+                            <div className="bg-cyan-600 w-16 h-16 md:w-24 md:h-24 rounded-full mx-auto mb-2 md:mb-3 flex items-center justify-center">
+                              <Shield className="h-8 w-8 md:h-12 md:w-12 text-white" />
+                            </div>
+                            <h3 className="font-bold text-base md:text-xl text-white mb-1">@{securityIQLeaderboard[0]?.username}</h3>
+                            <p className="text-xs md:text-sm text-cyan-100 mb-2 line-clamp-1">{securityIQLeaderboard[0]?.title}</p>
+                            <Badge className="bg-cyan-700 text-xs mb-2">IQ Champion</Badge>
+                            <div className="flex items-center justify-center gap-3 mt-3">
+                              <div>
+                                <div className="flex items-center gap-1 text-white">
+                                  <Flame className="h-5 w-5" />
+                                  <span className="text-2xl font-bold">{securityIQLeaderboard[0]?.streak}</span>
+                                </div>
+                                <p className="text-xs text-cyan-100">streak</p>
+                              </div>
+                              <div>
+                                <p className="text-2xl font-bold text-white">{securityIQLeaderboard[0]?.accuracy}%</p>
+                                <p className="text-xs text-cyan-100">accuracy</p>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </Link>
+                    </div>
+
+                    {/* 2nd Place */}
+                    <div className="flex flex-col items-center justify-end animate-slide-up md:order-1" style={{ animationDelay: '0.1s' }}>
+                      <Link to={`/profiles/${securityIQLeaderboard[1]?.user_id}`} className="w-full">
+                        <Card className="w-full border-2 border-cyan-400 bg-gradient-to-b from-cyan-200 to-cyan-300 shadow-lg hover:scale-105 transition-transform cursor-pointer">
+                          <CardContent className="pt-4 md:pt-6 text-center">
+                            <div className="bg-cyan-400 w-14 h-14 md:w-20 md:h-20 rounded-full mx-auto mb-2 md:mb-3 flex items-center justify-center">
+                              <Shield className="h-7 w-7 md:h-10 md:w-10 text-white" />
+                            </div>
+                            <h3 className="font-bold text-sm md:text-lg text-gray-800 mb-1">@{securityIQLeaderboard[1]?.username}</h3>
+                            <p className="text-xs md:text-sm text-gray-600 mb-2 line-clamp-1">{securityIQLeaderboard[1]?.title}</p>
+                            <Badge className="bg-cyan-500 text-xs mb-2">2nd Place</Badge>
+                            <div className="flex items-center justify-center gap-3 mt-2">
+                              <div>
+                                <div className="flex items-center gap-1 text-gray-800">
+                                  <Flame className="h-4 w-4" />
+                                  <span className="text-xl font-bold">{securityIQLeaderboard[1]?.streak}</span>
+                                </div>
+                                <p className="text-xs text-gray-600">streak</p>
+                              </div>
+                              <div>
+                                <p className="text-xl font-bold text-gray-800">{securityIQLeaderboard[1]?.accuracy}%</p>
+                                <p className="text-xs text-gray-600">accuracy</p>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </Link>
+                    </div>
+
+                    {/* 3rd Place */}
+                    <div className="flex flex-col items-center justify-end animate-slide-up md:order-3" style={{ animationDelay: '0.2s' }}>
+                      <Link to={`/profiles/${securityIQLeaderboard[2]?.user_id}`} className="w-full">
+                        <Card className="w-full border-2 border-cyan-300 bg-gradient-to-b from-cyan-100 to-cyan-200 shadow-lg hover:scale-105 transition-transform cursor-pointer">
+                          <CardContent className="pt-4 md:pt-6 text-center">
+                            <div className="bg-cyan-300 w-14 h-14 md:w-20 md:h-20 rounded-full mx-auto mb-2 md:mb-3 flex items-center justify-center">
+                              <Shield className="h-7 w-7 md:h-10 md:w-10 text-white" />
+                            </div>
+                            <h3 className="font-bold text-sm md:text-lg text-gray-800 mb-1">@{securityIQLeaderboard[2]?.username}</h3>
+                            <p className="text-xs md:text-sm text-gray-600 mb-2 line-clamp-1">{securityIQLeaderboard[2]?.title}</p>
+                            <Badge className="bg-cyan-400 text-xs mb-2">3rd Place</Badge>
+                            <div className="flex items-center justify-center gap-3 mt-2">
+                              <div>
+                                <div className="flex items-center gap-1 text-gray-800">
+                                  <Flame className="h-4 w-4" />
+                                  <span className="text-xl font-bold">{securityIQLeaderboard[2]?.streak}</span>
+                                </div>
+                                <p className="text-xs text-gray-600">streak</p>
+                              </div>
+                              <div>
+                                <p className="text-xl font-bold text-gray-800">{securityIQLeaderboard[2]?.accuracy}%</p>
+                                <p className="text-xs text-gray-600">accuracy</p>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </Link>
+                    </div>
+                  </div>
+                )}
+
+                {/* Full Security IQ Leaderboard */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-base md:text-lg">
+                      <Shield className="h-5 w-5 text-primary" />
+                      Security IQ Rankings
+                    </CardTitle>
+                    <CardDescription className="text-xs md:text-sm">Top performers in daily security challenges</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead className="w-12 text-xs md:text-sm">Rank</TableHead>
+                          <TableHead className="text-xs md:text-sm">Username</TableHead>
+                          <TableHead className="hidden md:table-cell text-xs md:text-sm">Title</TableHead>
+                          <TableHead className="text-center text-xs md:text-sm">
+                            <div className="flex items-center justify-center gap-1">
+                              <Flame className="h-4 w-4 text-orange-500" />
+                              Streak
+                            </div>
+                          </TableHead>
+                          <TableHead className="text-center text-xs md:text-sm">Accuracy</TableHead>
+                          <TableHead className="text-center text-xs md:text-sm">Correct</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {securityIQLeaderboard.map((entry) => (
+                          <TableRow key={entry.id} className="hover:bg-muted/50 cursor-pointer" onClick={() => window.location.href = `/profiles/${entry.user_id}`}>
+                            <TableCell className="font-medium text-xs md:text-sm">#{entry.rank}</TableCell>
+                            <TableCell className="font-semibold text-xs md:text-sm">
+                              <Link to={`/profiles/${entry.user_id}`} className="hover:underline">
+                                @{entry.username}
+                              </Link>
+                            </TableCell>
+                            <TableCell className="hidden md:table-cell text-xs md:text-sm">{entry.title}</TableCell>
+                            <TableCell className="text-center">
+                              <div className="flex items-center justify-center gap-1">
+                                {entry.streak > 0 && <Flame className="h-4 w-4 text-orange-500" />}
+                                <span className="font-bold text-xs md:text-sm">{entry.streak}</span>
+                              </div>
+                            </TableCell>
+                            <TableCell className="text-center font-bold text-xs md:text-sm">
+                              {entry.accuracy}%
+                            </TableCell>
+                            <TableCell className="text-center font-bold text-primary text-xs md:text-sm">
+                              {entry.total_correct}/{entry.total_attempts}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </CardContent>
+                </Card>
+              </>
+            )}
           </TabsContent>
         </Tabs>
       </main>

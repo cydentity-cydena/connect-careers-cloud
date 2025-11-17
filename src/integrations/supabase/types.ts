@@ -2678,6 +2678,33 @@ export type Database = {
         }
         Relationships: []
       }
+      security_iq_attempts: {
+        Row: {
+          candidate_id: string
+          challenge_date: string
+          created_at: string
+          id: string
+          score: number
+          selected_answer: number
+        }
+        Insert: {
+          candidate_id: string
+          challenge_date: string
+          created_at?: string
+          id?: string
+          score: number
+          selected_answer: number
+        }
+        Update: {
+          candidate_id?: string
+          challenge_date?: string
+          created_at?: string
+          id?: string
+          score?: number
+          selected_answer?: number
+        }
+        Relationships: []
+      }
       skill_pathways: {
         Row: {
           category: string
@@ -3191,6 +3218,10 @@ export type Database = {
       calculate_level_from_xp: { Args: { xp_amount: number }; Returns: number }
       calculate_profile_completion: {
         Args: { user_id: string }
+        Returns: number
+      }
+      calculate_security_iq_streak: {
+        Args: { p_candidate_id: string }
         Returns: number
       }
       check_and_award_achievements: {
