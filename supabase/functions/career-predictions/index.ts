@@ -101,13 +101,15 @@ serve(async (req) => {
             
 For each path provide:
 - role: exact job title
-- probability: realistic % chance based on their current skills (be honest, not overly optimistic)
+- probability: realistic % chance as a whole number 0-100 (e.g., 75 not 0.75)
 - timeline: months to achieve this role
 - salary_range: realistic UK GBP range (e.g., "£60k-£90k")
 - required_skills: array of specific skills they need to develop
 - required_certs: array of certifications they should obtain
 - description: 2-3 sentences explaining why this path fits
 - next_steps: array of 3-4 specific actionable steps
+
+IMPORTANT: probability must be a whole number between 0-100 (e.g., 75 means 75% chance, NOT 0.75)
 
 Consider:
 - Their current experience level
@@ -203,6 +205,14 @@ Return your response as a JSON object with a "paths" array containing exactly 3 
     }
 
     const careerPaths = JSON.parse(toolCall.function.arguments);
+    
+    // Normalize probability values (convert 0.75 to 75 if needed)
+    if (careerPaths.paths) {
+      careerPaths.paths = careerPaths.paths.map((path: any) => ({
+        ...path,
+        probability: path.probability < 1 ? Math.round(path.probability * 100) : Math.round(path.probability)
+      }));
+    }
 
     return new Response(JSON.stringify(careerPaths), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
