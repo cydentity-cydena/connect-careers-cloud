@@ -38,6 +38,7 @@ import StaffFunnel from "./pages/StaffFunnel";
 import UserManagement from "./pages/admin/UserManagement";
 import Integrations from "./pages/Integrations";
 import SkillsAssessment from "./pages/SkillsAssessment";
+import PartnerAnalytics from "./pages/admin/PartnerAnalytics";
 
 import HRReady from "./pages/HRReady";
 import RoleManagement from "./pages/admin/RoleManagement";
@@ -114,6 +115,7 @@ const App = () => (
               <Route path="/admin/pods" element={<ProtectedRoute><PodManagement /></ProtectedRoute>} />
               <Route path="/admin/verification-review" element={<ProtectedRoute><VerificationReview /></ProtectedRoute>} />
               <Route path="/admin/allowed-signups" element={<ProtectedRoute><AllowedSignups /></ProtectedRoute>} />
+              <Route path="/admin/partner-analytics" element={<ProtectedRoute><PartnerAnalytics /></ProtectedRoute>} />
               
               {/* Standalone Presentation */}
               <Route path="/employer-pitch-deck" element={<EmployerPitchDeck />} />
