@@ -7,9 +7,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Shield, Loader2, QrCode, Key, CheckCircle } from "lucide-react";
+import { Shield, Loader2, QrCode, Key, CheckCircle, Copy, Download } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import QRCode from "qrcode";
+import { generateBackupCodes, getRemainingBackupCodes } from "@/lib/backupCodes";
 
 const SecuritySettings = () => {
   const navigate = useNavigate();
@@ -21,6 +22,9 @@ const SecuritySettings = () => {
   const [factorId, setFactorId] = useState("");
   const [verificationCode, setVerificationCode] = useState("");
   const [verifying, setVerifying] = useState(false);
+  const [backupCodes, setBackupCodes] = useState<string[]>([]);
+  const [showBackupCodes, setShowBackupCodes] = useState(false);
+  const [remainingCodes, setRemainingCodes] = useState(0);
 
   useEffect(() => {
     checkAuth();
@@ -45,6 +49,15 @@ const SecuritySettings = () => {
     
     const totpFactor = data?.totp?.find((f) => f.status === "verified");
     setMfaEnabled(!!totpFactor);
+    
+    // Check remaining backup codes
+    if (totpFactor) {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const count = await getRemainingBackupCodes(user.id);
+        setRemainingCodes(count);
+      }
+    }
   };
 
   const handleEnrollMFA = async () => {
@@ -98,7 +111,15 @@ const SecuritySettings = () => {
 
       if (error) throw error;
 
-      toast.success("MFA enabled successfully!");
+      // Generate backup codes
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const codes = await generateBackupCodes(user.id);
+        setBackupCodes(codes);
+        setShowBackupCodes(true);
+      }
+
+      toast.success("MFA enabled successfully! Please save your backup codes.");
       setMfaEnabled(true);
       setEnrolling(false);
       setVerificationCode("");
@@ -168,7 +189,78 @@ const SecuritySettings = () => {
             </div>
           </CardHeader>
           <CardContent className="space-y-6">
-            {mfaEnabled ? (
+            {showBackupCodes ? (
+              <div className="space-y-6">
+                <Alert className="border-yellow-500/50 bg-yellow-500/10">
+                  <Key className="h-4 w-4 text-yellow-500" />
+                  <AlertDescription className="text-yellow-500">
+                    <strong>Important:</strong> Save these backup codes now. They won't be shown again and can be used if you lose access to your authenticator app.
+                  </AlertDescription>
+                </Alert>
+
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-semibold">Your Backup Codes</h3>
+                    <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {
+                          navigator.clipboard.writeText(backupCodes.join('\n'));
+                          toast.success('Backup codes copied to clipboard');
+                        }}
+                      >
+                        <Copy className="h-4 w-4 mr-2" />
+                        Copy All
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {
+                          const blob = new Blob([backupCodes.join('\n')], { type: 'text/plain' });
+                          const url = URL.createObjectURL(blob);
+                          const a = document.createElement('a');
+                          a.href = url;
+                          a.download = 'cydena-backup-codes.txt';
+                          a.click();
+                          toast.success('Backup codes downloaded');
+                        }}
+                      >
+                        <Download className="h-4 w-4 mr-2" />
+                        Download
+                      </Button>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3 p-4 bg-muted/50 rounded-lg border">
+                    {backupCodes.map((code, index) => (
+                      <div key={index} className="flex items-center gap-2 font-mono text-sm">
+                        <span className="text-muted-foreground">{index + 1}.</span>
+                        <code className="bg-background px-2 py-1 rounded">{code}</code>
+                      </div>
+                    ))}
+                  </div>
+
+                  <Alert>
+                    <Shield className="h-4 w-4" />
+                    <AlertDescription>
+                      Each backup code can only be used once. Store them securely in a password manager or safe location.
+                    </AlertDescription>
+                  </Alert>
+
+                  <Button
+                    onClick={() => {
+                      setShowBackupCodes(false);
+                      setBackupCodes([]);
+                      checkMFAStatus();
+                    }}
+                    className="w-full"
+                  >
+                    I've Saved My Backup Codes
+                  </Button>
+                </div>
+              </div>
+            ) : mfaEnabled ? (
               <div className="space-y-4">
                 <Alert className="border-green-500/50 bg-green-500/10">
                   <CheckCircle className="h-4 w-4 text-green-500" />
@@ -176,6 +268,14 @@ const SecuritySettings = () => {
                     Two-factor authentication is enabled and protecting your account
                   </AlertDescription>
                 </Alert>
+                {remainingCodes > 0 && (
+                  <Alert>
+                    <Key className="h-4 w-4" />
+                    <AlertDescription>
+                      You have {remainingCodes} unused backup code{remainingCodes !== 1 ? 's' : ''} remaining.
+                    </AlertDescription>
+                  </Alert>
+                )}
                 <Alert variant="destructive">
                   <Shield className="h-4 w-4" />
                   <AlertDescription>

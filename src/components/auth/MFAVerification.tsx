@@ -19,8 +19,8 @@ export const MFAVerification = ({ onCancel }: MFAVerificationProps) => {
   const handleVerify = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!code || code.length !== 6) {
-      toast.error("Please enter a valid 6-digit code");
+    if (!code || (code.length !== 6 && code.length !== 8)) {
+      toast.error("Please enter a valid 6-digit code or 8-character backup code");
       return;
     }
 
@@ -34,21 +34,39 @@ export const MFAVerification = ({ onCancel }: MFAVerificationProps) => {
         throw new Error("No MFA factor found");
       }
 
-      const challenge = await supabase.auth.mfa.challenge({ 
-        factorId: totpFactor.id 
-      });
-      if (challenge.error) throw challenge.error;
+      // Check if it's a backup code (8 characters) or regular TOTP (6 digits)
+      if (code.length === 8) {
+        // Verify backup code
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) throw new Error("User not found");
 
-      const verify = await supabase.auth.mfa.verify({
-        factorId: totpFactor.id,
-        challengeId: challenge.data.id,
-        code: code,
-      });
+        const { verifyBackupCode } = await import("@/lib/backupCodes");
+        const isValid = await verifyBackupCode(user.id, code);
+        
+        if (!isValid) {
+          throw new Error("Invalid or already used backup code");
+        }
 
-      if (verify.error) throw verify.error;
+        toast.success("Backup code verified successfully!");
+        navigate("/dashboard");
+      } else {
+        // Regular TOTP verification
+        const challenge = await supabase.auth.mfa.challenge({ 
+          factorId: totpFactor.id 
+        });
+        if (challenge.error) throw challenge.error;
 
-      toast.success("Verification successful!");
-      navigate("/dashboard");
+        const verify = await supabase.auth.mfa.verify({
+          factorId: totpFactor.id,
+          challengeId: challenge.data.id,
+          code: code,
+        });
+
+        if (verify.error) throw verify.error;
+
+        toast.success("Verification successful!");
+        navigate("/dashboard");
+      }
     } catch (error: any) {
       console.error("MFA verification error:", error);
       toast.error(error.message || "Invalid verification code");
@@ -65,25 +83,28 @@ export const MFAVerification = ({ onCancel }: MFAVerificationProps) => {
           Enter Verification Code
         </h3>
         <p className="text-sm text-muted-foreground">
-          Open your authenticator app and enter the 6-digit code
+          Enter the 6-digit code from your authenticator app, or use a backup code
         </p>
       </div>
       
       <form onSubmit={handleVerify} className="space-y-6">
         <div className="space-y-2">
           <Label htmlFor="mfa-code" className="text-sm font-medium">
-            Verification Code
+            Authentication Code
           </Label>
           <Input
             id="mfa-code"
             type="text"
-            maxLength={6}
-            placeholder="000000"
+            maxLength={8}
+            placeholder="000000 or backup code"
             value={code}
-            onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
+            onChange={(e) => setCode(e.target.value.replace(/[^A-Z0-9]/gi, "").toUpperCase())}
             autoFocus
             className="text-center text-2xl tracking-widest font-mono h-14"
           />
+          <p className="text-xs text-muted-foreground text-center">
+            6-digit app code or 8-character backup code
+          </p>
         </div>
         
         <div className="flex gap-3">
