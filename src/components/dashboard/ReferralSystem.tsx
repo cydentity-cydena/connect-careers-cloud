@@ -142,13 +142,13 @@ export const ReferralSystem = () => {
             <p className="text-xs text-muted-foreground">Bonus when they complete profile</p>
           </div>
 
-          <div className="p-3 bg-accent/50 rounded-lg border border-accent">
+          <div className="p-3 bg-primary/10 rounded-lg border border-primary/30">
             <div className="flex items-center gap-2 mb-1">
-              <Gift className="h-4 w-4 text-accent-foreground" />
-              <p className="text-sm font-medium">Their Bonus</p>
+              <Gift className="h-4 w-4 text-primary" />
+              <p className="text-sm font-medium text-foreground">Their Bonus</p>
             </div>
-            <p className="text-2xl font-bold text-accent-foreground">+25 XP</p>
-            <p className="text-xs text-muted-foreground">Welcome bonus for joining</p>
+            <p className="text-2xl font-bold text-primary">+25 XP</p>
+            <p className="text-xs text-foreground/70">Welcome bonus for joining</p>
           </div>
         </div>
 
