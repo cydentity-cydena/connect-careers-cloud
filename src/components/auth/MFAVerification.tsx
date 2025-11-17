@@ -58,17 +58,22 @@ export const MFAVerification = ({ onCancel }: MFAVerificationProps) => {
   };
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center gap-2 mb-4">
-        <Shield className="h-5 w-5 text-primary" />
-        <h3 className="text-lg font-semibold">Two-Factor Authentication</h3>
+    <div className="space-y-6">
+      <div className="space-y-2">
+        <h3 className="text-lg font-semibold flex items-center gap-2">
+          <Shield className="h-5 w-5 text-primary" />
+          Enter Verification Code
+        </h3>
+        <p className="text-sm text-muted-foreground">
+          Open your authenticator app and enter the 6-digit code
+        </p>
       </div>
-      <p className="text-sm text-muted-foreground mb-4">
-        Enter the 6-digit code from your authenticator app
-      </p>
-      <form onSubmit={handleVerify} className="space-y-4">
+      
+      <form onSubmit={handleVerify} className="space-y-6">
         <div className="space-y-2">
-          <Label htmlFor="mfa-code">Verification Code</Label>
+          <Label htmlFor="mfa-code" className="text-sm font-medium">
+            Verification Code
+          </Label>
           <Input
             id="mfa-code"
             type="text"
@@ -77,14 +82,16 @@ export const MFAVerification = ({ onCancel }: MFAVerificationProps) => {
             value={code}
             onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
             autoFocus
+            className="text-center text-2xl tracking-widest font-mono h-14"
           />
         </div>
-        <div className="flex gap-2">
-          <Button type="submit" disabled={verifying} className="flex-1">
+        
+        <div className="flex gap-3">
+          <Button type="submit" disabled={verifying} className="flex-1 h-11">
             {verifying && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
-            Verify
+            Verify & Continue
           </Button>
-          <Button type="button" variant="outline" onClick={onCancel}>
+          <Button type="button" variant="outline" onClick={onCancel} className="h-11">
             Cancel
           </Button>
         </div>
