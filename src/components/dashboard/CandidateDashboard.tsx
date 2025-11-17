@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { User, Briefcase, FileText, TrendingUp, CheckCircle, ArrowRight, Eye, Bug } from "lucide-react";
 import { ProfileStrengthMeter } from "@/components/gamification/ProfileStrengthMeter";
+import { AchievementBadges } from "@/components/gamification/AchievementBadges";
 import { XPSystemInfo } from "@/components/gamification/XPSystemInfo";
 import { RecentPointsFeed } from "@/components/rewards/RecentPointsFeed";
 import { ProfileViewsNotification } from "./ProfileViewsNotification";
@@ -422,6 +423,10 @@ const CandidateDashboard = () => {
       )}
 
       <ApplicationTracker />
+
+      {userId && (
+        <AchievementBadges userId={userId} />
+      )}
 
       {userId && (
         <BoostYourScore />

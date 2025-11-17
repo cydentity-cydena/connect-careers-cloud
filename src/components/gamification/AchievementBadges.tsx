@@ -49,10 +49,11 @@ export const AchievementBadges = ({ userId }: AchievementBadgesProps) => {
 
   const loadAchievements = async () => {
     try {
-      // Get all achievements
+      // Get all achievements, excluding CTF category
       const { data: allAchievements } = await supabase
         .from('achievements')
         .select('*')
+        .neq('category', 'ctf')
         .order('xp_reward', { ascending: false });
 
       // Get user's earned achievements
