@@ -4,7 +4,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Briefcase, MapPin, DollarSign, Clock, Search } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Briefcase, MapPin, DollarSign, Clock, Search, Info } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import SEO from "@/components/SEO";
 import Schema from "@/components/Schema";
@@ -161,6 +162,13 @@ const Jobs = () => {
             />
           </div>
         </div>
+
+        <Alert className="mb-6 border-primary/20 bg-primary/5">
+          <Info className="h-4 w-4 text-primary" />
+          <AlertDescription className="text-foreground ml-2">
+            This is an example job post. Real job posts coming soon with key partners.
+          </AlertDescription>
+        </Alert>
 
         {/* Jobs Grid */}
         {loading ? (
