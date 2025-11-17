@@ -3,8 +3,8 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const SENDGRID_API_KEY = Deno.env.get("SENDGRID_API_KEY");
 const SENDGRID_API_URL = "https://api.sendgrid.com/v3/mail/send";
-const SENDGRID_FROM_EMAIL = "contact@cydena.com";
-const SENDGRID_FROM_NAME = "Cydena";
+const SENDGRID_FROM_EMAIL = Deno.env.get("SENDGRID_FROM_EMAIL") || "contact@cydena.com";
+const SENDGRID_FROM_NAME = Deno.env.get("SENDGRID_FROM_NAME") || "Cydena";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
