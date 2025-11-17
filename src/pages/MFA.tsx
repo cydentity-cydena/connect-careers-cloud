@@ -34,7 +34,7 @@ const MFA = () => {
             <div className="mt-6 pt-6 border-t border-border">
               <div className="flex items-start gap-2 text-sm text-muted-foreground mb-3">
                 <Shield className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                <p>Lost access to your device? Contact support or visit Security Settings for help.</p>
+                <p>Lost access to your device? Use a backup code or visit Security Settings for help.</p>
               </div>
               <Button 
                 variant="ghost" 
