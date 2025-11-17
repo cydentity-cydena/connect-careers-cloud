@@ -3,8 +3,11 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const SENDGRID_API_KEY = Deno.env.get("SENDGRID_API_KEY");
 const SENDGRID_API_URL = "https://api.sendgrid.com/v3/mail/send";
-const SENDGRID_FROM_EMAIL = Deno.env.get("SENDGRID_FROM_EMAIL") || "noreply@cydena.com";
-const SENDGRID_FROM_NAME = Deno.env.get("SENDGRID_FROM_NAME") || "Cydena";
+const RAW_FROM_EMAIL = Deno.env.get("SENDGRID_FROM_EMAIL") || "notifications@cydena.app";
+const SENDGRID_FROM_NAME = Deno.env.get("SENDGRID_FROM_NAME") || "Cydena Updates";
+// Normalize possible "Name <email@domain>" values into just the email address
+const _normalizedFrom = (RAW_FROM_EMAIL.match(/<([^>]+)>/)?.[1] || RAW_FROM_EMAIL).trim();
+const SENDGRID_FROM_EMAIL = _normalizedFrom.includes("@") ? _normalizedFrom : "notifications@cydena.app";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -54,6 +57,7 @@ const handler = async (req: Request): Promise<Response> => {
     const candidateProfiles = profiles.filter(p => candidateIds.has(p.id));
 
     console.log(`Sending daily challenge notification to ${candidateProfiles.length} candidates`);
+    console.log("Using SendGrid from:", SENDGRID_FROM_EMAIL, "name:", SENDGRID_FROM_NAME);
 
     if (!SENDGRID_API_KEY) {
       throw new Error("SENDGRID_API_KEY is not configured");
