@@ -103,7 +103,7 @@ For each path provide:
 - role: exact job title
 - probability: realistic % chance based on their current skills (be honest, not overly optimistic)
 - timeline: months to achieve this role
-- salary_range: realistic USD range (e.g., "$80k-$120k")
+- salary_range: realistic UK GBP range (e.g., "£60k-£90k")
 - required_skills: array of specific skills they need to develop
 - required_certs: array of certifications they should obtain
 - description: 2-3 sentences explaining why this path fits
