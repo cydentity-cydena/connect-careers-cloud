@@ -83,13 +83,6 @@ export type Database = {
             foreignKeyName: "activity_feed_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
-            referencedRelation: "ctf_leaderboard"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "activity_feed_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -284,13 +277,6 @@ export type Database = {
             foreignKeyName: "candidate_notes_created_by_fkey"
             columns: ["created_by"]
             isOneToOne: false
-            referencedRelation: "ctf_leaderboard"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "candidate_notes_created_by_fkey"
-            columns: ["created_by"]
-            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -360,21 +346,7 @@ export type Database = {
             foreignKeyName: "candidate_pipeline_candidate_id_fkey"
             columns: ["candidate_id"]
             isOneToOne: false
-            referencedRelation: "ctf_leaderboard"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "candidate_pipeline_candidate_id_fkey"
-            columns: ["candidate_id"]
-            isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "candidate_pipeline_moved_by_fkey"
-            columns: ["moved_by"]
-            isOneToOne: false
-            referencedRelation: "ctf_leaderboard"
             referencedColumns: ["id"]
           },
           {
@@ -639,13 +611,6 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: [
-          {
-            foreignKeyName: "candidate_verifications_candidate_id_fkey"
-            columns: ["candidate_id"]
-            isOneToOne: true
-            referencedRelation: "ctf_leaderboard"
-            referencedColumns: ["id"]
-          },
           {
             foreignKeyName: "candidate_verifications_candidate_id_fkey"
             columns: ["candidate_id"]
@@ -1009,13 +974,6 @@ export type Database = {
             foreignKeyName: "conversation_archives_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
-            referencedRelation: "ctf_leaderboard"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "conversation_archives_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -1056,13 +1014,6 @@ export type Database = {
           verified_at?: string | null
         }
         Relationships: [
-          {
-            foreignKeyName: "course_completions_candidate_id_fkey"
-            columns: ["candidate_id"]
-            isOneToOne: false
-            referencedRelation: "ctf_leaderboard"
-            referencedColumns: ["id"]
-          },
           {
             foreignKeyName: "course_completions_candidate_id_fkey"
             columns: ["candidate_id"]
@@ -1108,86 +1059,6 @@ export type Database = {
           transaction_type?: string
         }
         Relationships: []
-      }
-      ctf_challenges: {
-        Row: {
-          category: string
-          created_at: string
-          description: string
-          difficulty: string
-          flag: string
-          hints: Json | null
-          id: string
-          is_active: boolean | null
-          points: number
-          title: string
-          updated_at: string
-        }
-        Insert: {
-          category: string
-          created_at?: string
-          description: string
-          difficulty: string
-          flag: string
-          hints?: Json | null
-          id?: string
-          is_active?: boolean | null
-          points: number
-          title: string
-          updated_at?: string
-        }
-        Update: {
-          category?: string
-          created_at?: string
-          description?: string
-          difficulty?: string
-          flag?: string
-          hints?: Json | null
-          id?: string
-          is_active?: boolean | null
-          points?: number
-          title?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      ctf_submissions: {
-        Row: {
-          candidate_id: string
-          challenge_id: string
-          id: string
-          is_correct: boolean
-          points_awarded: number | null
-          submitted_at: string
-          submitted_flag: string
-        }
-        Insert: {
-          candidate_id: string
-          challenge_id: string
-          id?: string
-          is_correct: boolean
-          points_awarded?: number | null
-          submitted_at?: string
-          submitted_flag: string
-        }
-        Update: {
-          candidate_id?: string
-          challenge_id?: string
-          id?: string
-          is_correct?: boolean
-          points_awarded?: number | null
-          submitted_at?: string
-          submitted_flag?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "ctf_submissions_challenge_id_fkey"
-            columns: ["challenge_id"]
-            isOneToOne: false
-            referencedRelation: "ctf_challenges"
-            referencedColumns: ["id"]
-          },
-        ]
       }
       custom_assessments: {
         Row: {
@@ -1266,13 +1137,6 @@ export type Database = {
           sender_id?: string
         }
         Relationships: [
-          {
-            foreignKeyName: "direct_messages_deleted_by_fkey"
-            columns: ["deleted_by"]
-            isOneToOne: false
-            referencedRelation: "ctf_leaderboard"
-            referencedColumns: ["id"]
-          },
           {
             foreignKeyName: "direct_messages_deleted_by_fkey"
             columns: ["deleted_by"]
@@ -1887,13 +1751,6 @@ export type Database = {
             foreignKeyName: "pipeline_candidates_profile_id_fkey"
             columns: ["profile_id"]
             isOneToOne: false
-            referencedRelation: "ctf_leaderboard"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "pipeline_candidates_profile_id_fkey"
-            columns: ["profile_id"]
-            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -1928,13 +1785,6 @@ export type Database = {
           to_stage?: string
         }
         Relationships: [
-          {
-            foreignKeyName: "pipeline_stage_history_moved_by_fkey"
-            columns: ["moved_by"]
-            isOneToOne: false
-            referencedRelation: "ctf_leaderboard"
-            referencedColumns: ["id"]
-          },
           {
             foreignKeyName: "pipeline_stage_history_moved_by_fkey"
             columns: ["moved_by"]
@@ -2151,13 +2001,6 @@ export type Database = {
             columns: ["post_id"]
             isOneToOne: false
             referencedRelation: "activity_feed"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "post_comments_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "ctf_leaderboard"
             referencedColumns: ["id"]
           },
           {
@@ -2756,13 +2599,6 @@ export type Database = {
             foreignKeyName: "skills_assessments_candidate_id_fkey"
             columns: ["candidate_id"]
             isOneToOne: false
-            referencedRelation: "ctf_leaderboard"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "skills_assessments_candidate_id_fkey"
-            columns: ["candidate_id"]
-            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -2977,13 +2813,6 @@ export type Database = {
             foreignKeyName: "verification_evidence_verified_by_fkey"
             columns: ["verified_by"]
             isOneToOne: false
-            referencedRelation: "ctf_leaderboard"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "verification_evidence_verified_by_fkey"
-            columns: ["verified_by"]
-            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -3135,18 +2964,7 @@ export type Database = {
       }
     }
     Views: {
-      ctf_leaderboard: {
-        Row: {
-          avatar_url: string | null
-          challenges_solved: number | null
-          full_name: string | null
-          id: string | null
-          last_submission: string | null
-          total_points: number | null
-          username: string | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
       award_community_points: {
