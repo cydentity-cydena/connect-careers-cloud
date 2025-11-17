@@ -478,7 +478,7 @@ function BadgeCard({
               />
             </svg>
             
-            {/* Center icon with glow */}
+            {/* Center icon with glow - Custom Cyber Ribbon */}
             <div className="absolute inset-0 flex items-center justify-center">
               <div className={`relative ${isUnlocked ? 'group-hover:scale-110' : ''} transition-transform duration-300`}>
                 {isUnlocked && (
@@ -486,12 +486,65 @@ function BadgeCard({
                     background: getRarityStrokeColor(badge.rarity)
                   }} />
                 )}
-                <Award 
-                  className={`h-10 w-10 relative z-10 ${isUnlocked ? 'text-foreground' : 'text-muted-foreground'}`}
+                <svg 
+                  viewBox="0 0 48 48" 
+                  className={`h-11 w-11 relative z-10`}
                   style={isUnlocked ? {
                     filter: `drop-shadow(0 0 8px ${getRarityStrokeColor(badge.rarity)})`
                   } : {}}
-                />
+                >
+                  <defs>
+                    <linearGradient id={`ribbon-grad-${badge.id}`} x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor={isUnlocked ? getRarityStrokeColor(badge.rarity) : '#64748b'} stopOpacity="0.9" />
+                      <stop offset="100%" stopColor={isUnlocked ? getRarityStrokeColor(badge.rarity) : '#64748b'} stopOpacity="0.6" />
+                    </linearGradient>
+                  </defs>
+                  
+                  {/* Main ribbon body - angular cyber shape */}
+                  <path 
+                    d="M24 8 L32 12 L32 20 L28 22 L28 40 L24 36 L20 40 L20 22 L16 20 L16 12 Z" 
+                    fill={`url(#ribbon-grad-${badge.id})`}
+                    stroke={isUnlocked ? getRarityStrokeColor(badge.rarity) : '#64748b'}
+                    strokeWidth="1"
+                    opacity={isUnlocked ? '1' : '0.5'}
+                  />
+                  
+                  {/* Inner detail lines */}
+                  <path 
+                    d="M24 10 L30 13 L30 19 L24 22 L18 19 L18 13 Z" 
+                    fill="none"
+                    stroke={isUnlocked ? getRarityStrokeColor(badge.rarity) : '#64748b'}
+                    strokeWidth="0.5"
+                    opacity="0.6"
+                  />
+                  
+                  {/* Center circle */}
+                  <circle 
+                    cx="24" 
+                    cy="16" 
+                    r="4" 
+                    fill={isUnlocked ? getRarityStrokeColor(badge.rarity) : '#64748b'}
+                    opacity={isUnlocked ? '0.8' : '0.4'}
+                  />
+                  
+                  {/* Ribbon tails with cyber cuts */}
+                  <path 
+                    d="M22 36 L20 40 L24 38 L24 36 Z" 
+                    fill={isUnlocked ? getRarityStrokeColor(badge.rarity) : '#64748b'}
+                    opacity={isUnlocked ? '0.7' : '0.3'}
+                  />
+                  <path 
+                    d="M26 36 L28 40 L24 38 L24 36 Z" 
+                    fill={isUnlocked ? getRarityStrokeColor(badge.rarity) : '#64748b'}
+                    opacity={isUnlocked ? '0.7' : '0.3'}
+                  />
+                  
+                  {/* Tech accents - small lines */}
+                  <line x1="20" y1="14" x2="18" y2="14" stroke={isUnlocked ? getRarityStrokeColor(badge.rarity) : '#64748b'} strokeWidth="1" opacity="0.8" />
+                  <line x1="28" y1="14" x2="30" y2="14" stroke={isUnlocked ? getRarityStrokeColor(badge.rarity) : '#64748b'} strokeWidth="1" opacity="0.8" />
+                  <line x1="20" y1="18" x2="18" y2="18" stroke={isUnlocked ? getRarityStrokeColor(badge.rarity) : '#64748b'} strokeWidth="1" opacity="0.8" />
+                  <line x1="28" y1="18" x2="30" y2="18" stroke={isUnlocked ? getRarityStrokeColor(badge.rarity) : '#64748b'} strokeWidth="1" opacity="0.8" />
+                </svg>
               </div>
             </div>
             
