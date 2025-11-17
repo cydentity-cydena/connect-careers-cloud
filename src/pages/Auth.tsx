@@ -68,6 +68,13 @@ const Auth = () => {
     const searchParams = new URLSearchParams(window.location.search);
     const founding200Param = searchParams.get('founding200');
     const modeParam = searchParams.get('mode');
+    const refParam = searchParams.get('ref');
+    
+    // Store referral code if present
+    if (refParam && modeParam !== 'signin') {
+      localStorage.setItem('referral_code', refParam);
+      console.log('Stored referral code:', refParam);
+    }
     
     if (founding200Param === 'true') {
       setIsFounding200(true);
@@ -271,6 +278,24 @@ const Auth = () => {
       if (!data.success) throw new Error(data.error || 'Signup failed');
 
       console.log('Signup successful!');
+
+      // Track referral if code exists
+      const referralCode = localStorage.getItem('referral_code');
+      if (referralCode && data.userId) {
+        try {
+          await supabase.functions.invoke('track-referral', {
+            body: {
+              referralCode,
+              newUserId: data.userId
+            }
+          });
+          localStorage.removeItem('referral_code');
+          console.log('Referral tracked successfully');
+        } catch (error) {
+          console.error('Error tracking referral:', error);
+          // Don't fail signup if referral tracking fails
+        }
+      }
 
       // Show verification message and redirect to MFA setup after email verification
       toast.success(
