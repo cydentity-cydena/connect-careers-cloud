@@ -13,6 +13,7 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [hasMFA, setHasMFA] = useState(false);
   const [mfaChecked, setMfaChecked] = useState(false);
+  const [needsMfaVerify, setNeedsMfaVerify] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
@@ -21,17 +22,29 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
       setIsAuthenticated(!!session);
       
       const isSecuritySettings = location.pathname === '/security-settings' || location.pathname === '/security';
-      if (session && !isSecuritySettings) {
-        // Check MFA status for all routes except security settings
+      const isMfaRoute = location.pathname === '/mfa';
+
+      if (session && !(isSecuritySettings || isMfaRoute)) {
+        // Check MFA setup
         const { data: factors } = await supabase.auth.mfa.listFactors();
-        const hasVerifiedMFA = factors?.totp?.some((f) => f.status === "verified");
+        const hasVerifiedMFA = factors?.totp?.some((f) => f.status === 'verified');
         setHasMFA(!!hasVerifiedMFA);
-        
+
         if (!hasVerifiedMFA) {
-          toast.warning("Two-factor authentication setup is required to access your account.");
+          // No MFA configured at all → require setup
+          toast.warning('Two-factor authentication setup is required to access your account.');
+        } else {
+          // MFA configured → verify AAL level and require challenge if needed
+          const { data: aalData } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+          const isAAL2 = aalData?.currentLevel === 'aal2';
+          setNeedsMfaVerify(!isAAL2);
+          if (!isAAL2) {
+            toast.message('Please complete two-factor verification to continue.');
+          }
         }
       } else {
-        setHasMFA(true); // Allow access to security settings page
+        // Allow access to security and MFA routes regardless of current AAL
+        setHasMFA(true);
       }
       
       setMfaChecked(true);
@@ -66,7 +79,12 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     return <Navigate to="/auth" state={{ from: location }} replace />;
   }
 
-  // Redirect to MFA setup if not configured (except on security settings page)
+  // Redirect if MFA configured but current session isn't verified at AAL2
+  if (mfaChecked && hasMFA && needsMfaVerify && location.pathname !== '/mfa') {
+    return <Navigate to="/mfa" state={{ from: location }} replace />;
+  }
+
+  // Redirect to MFA setup if not configured (except on security settings or MFA page)
   if (mfaChecked && !hasMFA && location.pathname !== '/security-settings') {
     return <Navigate to="/security-settings" state={{ from: location }} replace />;
   }
