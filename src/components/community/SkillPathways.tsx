@@ -290,12 +290,14 @@ export const SkillPathways = () => {
                   </div>
                 )}
 
-                <Alert className="mb-3">
-                  <Info className="h-4 w-4" />
-                  <AlertDescription className="text-sm">
-                    No courses configured for this pathway yet. Check back soon for updates!
-                  </AlertDescription>
-                </Alert>
+                {(!pathwayCourses[pathway.id] || pathwayCourses[pathway.id].length === 0) && (
+                  <Alert className="mb-3">
+                    <Info className="h-4 w-4" />
+                    <AlertDescription className="text-sm">
+                      No courses configured for this pathway yet. Check back soon for updates!
+                    </AlertDescription>
+                  </Alert>
+                )}
 
                 <Button 
                   className="w-full" 
