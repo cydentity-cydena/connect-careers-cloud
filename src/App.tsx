@@ -39,6 +39,7 @@ import UserManagement from "./pages/admin/UserManagement";
 import Integrations from "./pages/Integrations";
 import SkillsAssessment from "./pages/SkillsAssessment";
 import PartnerAnalytics from "./pages/admin/PartnerAnalytics";
+import CTF from "./pages/CTF";
 
 import HRReady from "./pages/HRReady";
 import RoleManagement from "./pages/admin/RoleManagement";
@@ -83,6 +84,7 @@ const App = () => (
               <Route path="/jobs" element={<ProtectedRoute><Jobs /></ProtectedRoute>} />
               <Route path="/jobs/:id" element={<ProtectedRoute><JobDetail /></ProtectedRoute>} />
               <Route path="/training" element={<ProtectedRoute><Training /></ProtectedRoute>} />
+              <Route path="/ctf" element={<ProtectedRoute><CTF /></ProtectedRoute>} />
               <Route path="/certifications-catalog" element={<ProtectedRoute><CertificationCatalog /></ProtectedRoute>} />
               <Route path="/pricing" element={<Pricing />} />
               <Route path="/faq" element={<ProtectedRoute><FAQ /></ProtectedRoute>} />
