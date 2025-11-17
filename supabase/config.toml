@@ -48,3 +48,6 @@ verify_jwt = true
 
 [functions.track-referral]
 verify_jwt = false
+
+[functions.career-predictions]
+verify_jwt = true

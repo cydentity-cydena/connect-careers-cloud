@@ -18,6 +18,8 @@ import { HRReadyCTA } from "./HRReadyCTA";
 import { BadgeSelector } from "@/components/badges/BadgeSelector";
 import { CertificationManager } from "@/components/certifications/CertificationManager";
 import { ReferralSystem } from "./ReferralSystem";
+import { SkillGenomeCard } from "./SkillGenomeCard";
+import { CareerPathsAI } from "./CareerPathsAI";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 
@@ -259,6 +261,18 @@ const CandidateDashboard = () => {
 
       {/* Profile Views */}
       {userId && <ProfileViewsNotification />}
+
+      {/* AI-Powered Features */}
+      <div className="space-y-6">
+        <div className="flex items-center gap-2">
+          <div className="h-1 w-1 rounded-full bg-primary animate-pulse" />
+          <h2 className="text-2xl font-bold">AI-Powered Insights</h2>
+          <div className="h-1 w-1 rounded-full bg-primary animate-pulse" />
+        </div>
+        
+        {userId && <SkillGenomeCard />}
+        {userId && <CareerPathsAI />}
+      </div>
 
       {/* Multiple Resumes - Full Width */}
       {userId && <MultipleResumesManager />}
