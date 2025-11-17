@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Shield } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import Footer from "@/components/Footer";
+import Navigation from "@/components/Navigation";
 
 const MFA = () => {
   const navigate = useNavigate();
@@ -12,22 +13,40 @@ const MFA = () => {
   const from = (location.state as any)?.from?.pathname || "/dashboard";
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-gradient-to-b from-background via-background to-background/95 flex flex-col">
       <SEO title="Two-Factor Verification | Cydena" description="Verify your sign-in with a 6-digit code" />
-      <div className="flex-1 flex items-center justify-center px-4">
-        <Card className="w-full max-w-md p-6 shadow-xl">
-          <div className="flex items-center gap-2 mb-4">
-            <Shield className="h-5 w-5 text-primary" />
-            <h1 className="text-xl font-semibold">Verify your identity</h1>
+      <Navigation />
+      <div className="flex-1 flex items-center justify-center px-4 py-12">
+        <div className="w-full max-w-md">
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-4">
+              <Shield className="h-8 w-8 text-primary" />
+            </div>
+            <h1 className="text-3xl font-bold mb-2">Verify Your Identity</h1>
+            <p className="text-muted-foreground">
+              Two-factor authentication adds an extra layer of security to your account
+            </p>
           </div>
-          <MFAVerification onCancel={() => navigate(from)} />
-          <div className="mt-4 text-sm text-muted-foreground">
-            Lost access? You can disable or reset MFA from Security Settings.
-          </div>
-          <div className="mt-2">
-            <Button variant="link" onClick={() => navigate("/security-settings")}>Go to Security Settings</Button>
-          </div>
-        </Card>
+          
+          <Card className="p-8 shadow-2xl border-border/50 backdrop-blur-sm bg-card/50">
+            <MFAVerification onCancel={() => navigate(from)} />
+            
+            <div className="mt-6 pt-6 border-t border-border">
+              <div className="flex items-start gap-2 text-sm text-muted-foreground mb-3">
+                <Shield className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                <p>Lost access? You can disable or reset MFA from Security Settings.</p>
+              </div>
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={() => navigate("/security-settings")}
+                className="w-full"
+              >
+                Go to Security Settings
+              </Button>
+            </div>
+          </Card>
+        </div>
       </div>
       <Footer />
     </div>
