@@ -38,40 +38,44 @@ export function ProfileBadgeDisplay({ userId, size = 'md' }: ProfileBadgeDisplay
       case 'legendary':
         return {
           stroke: '#fbbf24',
-          glow: 'drop-shadow-[0_0_8px_rgba(251,191,36,0.6)]',
-          bg: 'from-yellow-500/20 to-orange-500/20'
+          glow: 'drop-shadow-[0_0_6px_rgba(251,191,36,0.8)] drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]',
+          innerGlow: 'rgba(251,191,36,0.15)',
+          iconColor: 'text-yellow-400'
         };
       case 'epic':
         return {
           stroke: '#a855f7',
-          glow: 'drop-shadow-[0_0_8px_rgba(168,85,247,0.6)]',
-          bg: 'from-purple-500/20 to-pink-500/20'
+          glow: 'drop-shadow-[0_0_6px_rgba(168,85,247,0.8)] drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]',
+          innerGlow: 'rgba(168,85,247,0.15)',
+          iconColor: 'text-purple-400'
         };
       case 'rare':
         return {
           stroke: '#3b82f6',
-          glow: 'drop-shadow-[0_0_8px_rgba(59,130,246,0.6)]',
-          bg: 'from-blue-500/20 to-cyan-500/20'
+          glow: 'drop-shadow-[0_0_6px_rgba(59,130,246,0.8)] drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]',
+          innerGlow: 'rgba(59,130,246,0.15)',
+          iconColor: 'text-blue-400'
         };
       default:
         return {
           stroke: '#6b7280',
-          glow: 'drop-shadow-[0_0_4px_rgba(107,114,128,0.4)]',
-          bg: 'from-gray-500/20 to-gray-600/20'
+          glow: 'drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]',
+          innerGlow: 'rgba(107,114,128,0.15)',
+          iconColor: 'text-gray-400'
         };
     }
   };
 
   const sizeClasses = {
-    sm: 'h-12 w-12',
-    md: 'h-16 w-16',
-    lg: 'h-20 w-20'
+    sm: 'h-10 w-10',
+    md: 'h-14 w-14',
+    lg: 'h-16 w-16'
   };
 
   const iconSizes = {
-    sm: 'h-5 w-5',
-    md: 'h-7 w-7',
-    lg: 'h-9 w-9'
+    sm: 'h-4 w-4',
+    md: 'h-5 w-5',
+    lg: 'h-6 w-6'
   };
 
   const styles = getRarityStyles(profileBadge.rarity);
@@ -81,25 +85,34 @@ export function ProfileBadgeDisplay({ userId, size = 'md' }: ProfileBadgeDisplay
       <Tooltip>
         <TooltipTrigger asChild>
           <div className={`relative ${sizeClasses[size]} cursor-help group`}>
+            {/* Background circle for better contrast */}
+            <div className="absolute inset-0 bg-background/95 backdrop-blur-sm rounded-full border border-border" />
+            
+            {/* Hexagon badge */}
             <svg
               viewBox="0 0 100 100"
-              className={`absolute inset-0 w-full h-full ${styles.glow} transition-all duration-300 group-hover:scale-110`}
+              className={`absolute inset-0 w-full h-full ${styles.glow} transition-all duration-300 group-hover:scale-105`}
             >
-              <polygon
-                points="50,5 90,25 90,75 50,95 10,75 10,25"
-                fill="url(#hexGradient)"
-                stroke={styles.stroke}
-                strokeWidth="2"
-              />
               <defs>
-                <linearGradient id="hexGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor={styles.stroke} stopOpacity="0.2" />
-                  <stop offset="100%" stopColor={styles.stroke} stopOpacity="0.05" />
+                <linearGradient id={`hexGradient-${userId}`} x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor={styles.stroke} stopOpacity="0.25" />
+                  <stop offset="100%" stopColor={styles.stroke} stopOpacity="0.08" />
                 </linearGradient>
               </defs>
+              <polygon
+                points="50,8 88,28 88,72 50,92 12,72 12,28"
+                fill={`url(#hexGradient-${userId})`}
+                stroke={styles.stroke}
+                strokeWidth="2.5"
+                className="transition-all duration-300"
+              />
             </svg>
+            
+            {/* Icon */}
             <div className="absolute inset-0 flex items-center justify-center">
-              <Award className={`${iconSizes[size]} text-white z-10`} style={{ filter: 'drop-shadow(0 0 4px rgba(255,255,255,0.5))' }} />
+              <Award 
+                className={`${iconSizes[size]} ${styles.iconColor} z-10 drop-shadow-[0_0_3px_rgba(255,255,255,0.4)] transition-all duration-300 group-hover:scale-110`}
+              />
             </div>
           </div>
         </TooltipTrigger>
@@ -107,12 +120,14 @@ export function ProfileBadgeDisplay({ userId, size = 'md' }: ProfileBadgeDisplay
           <div className="space-y-2">
             <p className="font-semibold">{profileBadge.name}</p>
             <p className="text-sm text-muted-foreground">{profileBadge.description}</p>
-            <Badge variant="secondary" className="text-xs capitalize">
-              {profileBadge.rarity}
-            </Badge>
-            <Badge variant="outline" className="text-xs capitalize ml-2">
-              {profileBadge.category}
-            </Badge>
+            <div className="flex gap-2">
+              <Badge variant="secondary" className="text-xs capitalize">
+                {profileBadge.rarity}
+              </Badge>
+              <Badge variant="outline" className="text-xs capitalize">
+                {profileBadge.category}
+              </Badge>
+            </div>
           </div>
         </TooltipContent>
       </Tooltip>
