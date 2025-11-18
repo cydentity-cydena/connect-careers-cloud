@@ -62,3 +62,9 @@ verify_jwt = false
 
 [functions.generate-security-iq-challenge]
 verify_jwt = false
+
+[functions.generate-mfa-backup-codes]
+verify_jwt = true
+
+[functions.send-password-reset]
+verify_jwt = false

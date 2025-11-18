@@ -1,15 +1,26 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.58.0";
+import { z } from "https://esm.sh/zod@3.22.4";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-interface PasswordResetRequest {
-  email: string;
-  redirectTo: string;
-}
+const PasswordResetSchema = z.object({
+  email: z.string().email('Invalid email address').max(255, 'Email too long'),
+  redirectTo: z.string().url('Invalid URL').refine(
+    (url) => {
+      const supabaseUrl = Deno.env.get('SUPABASE_URL');
+      const siteUrl = Deno.env.get('SITE_URL');
+      if (!supabaseUrl) return false;
+      
+      // Allow same-origin redirects only
+      return url.startsWith(supabaseUrl) || (siteUrl && url.startsWith(siteUrl));
+    },
+    { message: 'Redirect URL must be to this site' }
+  )
+});
 
 const handler = async (req: Request): Promise<Response> => {
   if (req.method === "OPTIONS") {
@@ -17,7 +28,9 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { email, redirectTo }: PasswordResetRequest = await req.json();
+    const body = await req.json();
+    const validated = PasswordResetSchema.parse(body);
+    const { email, redirectTo } = validated;
     
     console.log("Processing password reset for:", email);
 
@@ -37,7 +50,11 @@ const handler = async (req: Request): Promise<Response> => {
 
     if (error) {
       console.error("Error generating reset link:", error);
-      throw error;
+      // Return success to prevent email enumeration
+      return new Response(
+        JSON.stringify({ message: 'If this email exists, a reset link has been sent' }),
+        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
 
     // Send email via SendGrid
@@ -120,26 +137,33 @@ const handler = async (req: Request): Promise<Response> => {
     if (!emailResponse.ok) {
       const errorText = await emailResponse.text();
       console.error("SendGrid error:", errorText);
-      throw new Error(`Failed to send email: ${errorText}`);
+      // Don't expose email sending errors to client
+      return new Response(
+        JSON.stringify({ message: 'If this email exists, a reset link has been sent' }),
+        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
 
-    console.log("Password reset email sent successfully to:", email);
+    console.log("Password reset email sent successfully");
 
     return new Response(
-      JSON.stringify({ success: true, message: "Password reset email sent" }),
+      JSON.stringify({ message: "If this email exists, a reset link has been sent" }),
       {
         status: 200,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       }
     );
-  } catch (error: any) {
-    console.error("Error in send-password-reset:", error);
+  } catch (error) {
+    console.error("Error in password reset:", error);
+    
+    // Return safe error message to client
+    const safeMessage = error instanceof z.ZodError 
+      ? 'Invalid request data'
+      : 'An error occurred processing your request';
+    
     return new Response(
-      JSON.stringify({ error: error.message }),
-      {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      }
+      JSON.stringify({ error: safeMessage }),
+      { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
 };

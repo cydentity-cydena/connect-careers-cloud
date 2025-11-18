@@ -1,85 +1,25 @@
 import { supabase } from "@/integrations/supabase/client";
 
-// Generate a random backup code
-function generateCode(): string {
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  let code = '';
-  for (let i = 0; i < 8; i++) {
-    code += characters.charAt(Math.floor(Math.random() * characters.length));
-  }
-  return code;
-}
-
-// Secure hash function using bcrypt-compatible algorithm
-// Uses Web Crypto API with PBKDF2 since bcrypt is not available in browser
-async function hashCode(code: string): Promise<string> {
-  const encoder = new TextEncoder();
-  const salt = crypto.getRandomValues(new Uint8Array(16));
-  
-  // Use PBKDF2 with 100,000 iterations for strong password hashing
-  const keyMaterial = await crypto.subtle.importKey(
-    'raw',
-    encoder.encode(code),
-    'PBKDF2',
-    false,
-    ['deriveBits']
-  );
-  
-  const derivedBits = await crypto.subtle.deriveBits(
-    {
-      name: 'PBKDF2',
-      salt: salt,
-      iterations: 100000,
-      hash: 'SHA-256'
-    },
-    keyMaterial,
-    256
-  );
-  
-  // Combine salt and hash for storage
-  const hashArray = new Uint8Array(derivedBits);
-  const combined = new Uint8Array(salt.length + hashArray.length);
-  combined.set(salt);
-  combined.set(hashArray, salt.length);
-  
-  // Convert to base64 for storage
-  return btoa(String.fromCharCode(...combined));
-}
-
-// Generate backup codes for a user
+// Generate backup codes for a user using secure server-side generation
 export async function generateBackupCodes(userId: string): Promise<string[]> {
-  const codes: string[] = [];
-  const codeHashes: string[] = [];
-
-  // Generate 8 backup codes
-  for (let i = 0; i < 8; i++) {
-    const code = generateCode();
-    codes.push(code);
-    codeHashes.push(await hashCode(code));
+  const { data: { session } } = await supabase.auth.getSession();
+  
+  if (!session) {
+    throw new Error('No active session');
   }
 
-  // Delete any existing backup codes for this user
-  await supabase
-    .from('mfa_backup_codes')
-    .delete()
-    .eq('user_id', userId);
+  const { data, error } = await supabase.functions.invoke('generate-mfa-backup-codes', {
+    headers: {
+      Authorization: `Bearer ${session.access_token}`
+    }
+  });
 
-  // Store hashed codes in database
-  const { error } = await supabase
-    .from('mfa_backup_codes')
-    .insert(
-      codeHashes.map(hash => ({
-        user_id: userId,
-        code_hash: hash,
-      }))
-    );
-
-  if (error) {
-    console.error('Error storing backup codes:', error);
+  if (error || !data?.codes) {
+    console.error('Error generating backup codes:', error);
     throw new Error('Failed to generate backup codes');
   }
 
-  return codes;
+  return data.codes;
 }
 
 // Verify a backup code against stored hash
