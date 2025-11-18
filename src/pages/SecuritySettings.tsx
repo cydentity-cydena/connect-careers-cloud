@@ -86,36 +86,25 @@ const SecuritySettings = () => {
 
       if (data) {
         setFactorId(data.id);
-        setSecret(data.totp.secret);
-        
-        // Generate QR code image from the otpauth:// URI
+        const totpSecret = data.totp.secret;
         const otpauthUri = data.totp.qr_code;
-        console.log('OTP Auth URI received:', !!otpauthUri);
-        console.log('Secret received:', !!data.totp.secret);
         
-        if (otpauthUri) {
-          try {
-            // Generate QR code with higher quality settings
-            const qrCodeDataUrl = await QRCode.toDataURL(otpauthUri, {
-              errorCorrectionLevel: 'H',
-              type: 'image/png',
-              margin: 1,
-              width: 300,
-              color: {
-                dark: '#000000',
-                light: '#FFFFFF'
-              }
-            });
-            console.log('QR Code generated successfully');
-            setQrCode(qrCodeDataUrl);
-          } catch (err) {
-            console.error('Error generating QR code:', err);
-            // Don't throw - still allow manual entry
-            setQrCode(''); // Set to empty string to show manual entry
-          }
+        setSecret(totpSecret);
+        
+        // Generate QR code
+        if (otpauthUri && totpSecret) {
+          // Use setTimeout to ensure state updates are processed
+          setTimeout(async () => {
+            try {
+              const qrDataUrl = await QRCode.toDataURL(otpauthUri);
+              setQrCode(qrDataUrl);
+            } catch (error) {
+              console.error('QR code generation failed:', error);
+              setQrCode(''); // Show manual entry
+            }
+          }, 100);
         } else {
-          console.error('No otpauth URI provided by Supabase');
-          setQrCode(''); // Set to empty string to show manual entry
+          setQrCode('');
         }
       }
     } catch (error: any) {
