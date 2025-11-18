@@ -89,21 +89,19 @@ const SecuritySettings = () => {
       if (data) {
         setFactorId(data.id);
         const totpSecret = data.totp.secret;
-        const otpauthUri = data.totp.qr_code;
         
         setSecret(totpSecret);
         
-        // Generate QR code with simplest settings
-        if (otpauthUri) {
-          try {
-            // Use default settings - let library auto-detect optimal size
-            const qrDataUrl = await QRCode.toDataURL(otpauthUri);
-            setQrCode(qrDataUrl);
-          } catch (error) {
-            console.error('QR generation error:', error);
-            setQrCode('');
-          }
-        } else {
+        // Generate simpler otpauth URI manually to avoid size issues
+        const { data: { user } } = await supabase.auth.getUser();
+        const userEmail = user?.email || 'user';
+        const simpleUri = `otpauth://totp/Cydena:${encodeURIComponent(userEmail)}?secret=${totpSecret}&issuer=Cydena`;
+        
+        try {
+          const qrDataUrl = await QRCode.toDataURL(simpleUri);
+          setQrCode(qrDataUrl);
+        } catch (error) {
+          console.error('QR generation error:', error);
           setQrCode('');
         }
       }
