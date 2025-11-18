@@ -1420,6 +1420,51 @@ export type Database = {
         }
         Relationships: []
       }
+      featured_members: {
+        Row: {
+          achievements_highlighted: Json | null
+          created_at: string | null
+          feature_date: string
+          id: string
+          is_active: boolean | null
+          spotlight_text: string | null
+          user_id: string
+        }
+        Insert: {
+          achievements_highlighted?: Json | null
+          created_at?: string | null
+          feature_date?: string
+          id?: string
+          is_active?: boolean | null
+          spotlight_text?: string | null
+          user_id: string
+        }
+        Update: {
+          achievements_highlighted?: Json | null
+          created_at?: string | null
+          feature_date?: string
+          id?: string
+          is_active?: boolean | null
+          spotlight_text?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "featured_members_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "ctf_leaderboard"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "featured_members_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       featured_training_partners: {
         Row: {
           amount_paid: number | null
@@ -3145,6 +3190,60 @@ export type Database = {
         }
         Relationships: []
       }
+      weekly_challenges: {
+        Row: {
+          challenge_type: string
+          created_at: string | null
+          created_by: string | null
+          description: string
+          end_date: string
+          id: string
+          is_active: boolean | null
+          metadata: Json | null
+          start_date: string
+          title: string
+        }
+        Insert: {
+          challenge_type?: string
+          created_at?: string | null
+          created_by?: string | null
+          description: string
+          end_date: string
+          id?: string
+          is_active?: boolean | null
+          metadata?: Json | null
+          start_date?: string
+          title: string
+        }
+        Update: {
+          challenge_type?: string
+          created_at?: string | null
+          created_by?: string | null
+          description?: string
+          end_date?: string
+          id?: string
+          is_active?: boolean | null
+          metadata?: Json | null
+          start_date?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "weekly_challenges_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "ctf_leaderboard"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "weekly_challenges_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       work_history: {
         Row: {
           candidate_id: string
@@ -3203,10 +3302,20 @@ export type Database = {
       }
     }
     Functions: {
-      award_community_points: {
-        Args: { p_candidate_id: string; p_code: string; p_meta?: Json }
-        Returns: Json
-      }
+      award_community_points:
+        | {
+            Args: { p_candidate_id: string; p_code: string; p_meta?: Json }
+            Returns: Json
+          }
+        | {
+            Args: {
+              p_activity_type: string
+              p_metadata?: Json
+              p_points: number
+              p_user_id: string
+            }
+            Returns: undefined
+          }
       award_points: {
         Args: { p_candidate_id: string; p_code: string; p_meta?: Json }
         Returns: {
@@ -3231,6 +3340,10 @@ export type Database = {
       check_badge_unlock: {
         Args: { p_badge_id: string; p_user_id: string }
         Returns: boolean
+      }
+      check_community_achievements: {
+        Args: { p_user_id: string }
+        Returns: undefined
       }
       check_founding_200_availability: { Args: never; Returns: boolean }
       count_monthly_assessments: {
