@@ -93,19 +93,20 @@ const SecuritySettings = () => {
         
         setSecret(totpSecret);
         
-        // Generate QR code with async/await
+        // Generate QR code with optimized settings
         if (otpauthUri) {
           try {
-            console.log('Generating QR code...');
-            const qrDataUrl = await QRCode.toDataURL(otpauthUri);
-            console.log('QR code generated successfully');
+            const qrDataUrl = await QRCode.toDataURL(otpauthUri, {
+              errorCorrectionLevel: 'L',
+              margin: 1,
+              width: 256
+            });
             setQrCode(qrDataUrl);
           } catch (error) {
             console.error('QR generation error:', error);
             setQrCode('');
           }
         } else {
-          console.error('No otpauth URI');
           setQrCode('');
         }
       }
