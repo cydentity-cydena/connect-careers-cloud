@@ -85,11 +85,7 @@ const SecuritySettings = () => {
       if (error) throw error;
 
       if (data) {
-        console.log('MFA enrollment data received:', {
-          hasSecret: !!data.totp.secret,
-          hasQrCode: !!data.totp.qr_code,
-          qrCodePrefix: data.totp.qr_code?.substring(0, 20)
-        });
+        console.log('MFA enrollment data received');
         
         setFactorId(data.id);
         const totpSecret = data.totp.secret;
@@ -97,20 +93,19 @@ const SecuritySettings = () => {
         
         setSecret(totpSecret);
         
-        // Generate QR code immediately
+        // Generate QR code with async/await
         if (otpauthUri) {
-          console.log('Starting QR code generation...');
-          QRCode.toDataURL(otpauthUri)
-            .then(qrDataUrl => {
-              console.log('QR code generated successfully, length:', qrDataUrl?.length);
-              setQrCode(qrDataUrl);
-            })
-            .catch(error => {
-              console.error('QR generation failed with error:', error);
-              setQrCode('');
-            });
+          try {
+            console.log('Generating QR code...');
+            const qrDataUrl = await QRCode.toDataURL(otpauthUri);
+            console.log('QR code generated successfully');
+            setQrCode(qrDataUrl);
+          } catch (error) {
+            console.error('QR generation error:', error);
+            setQrCode('');
+          }
         } else {
-          console.error('No otpauth URI provided');
+          console.error('No otpauth URI');
           setQrCode('');
         }
       }
