@@ -4,9 +4,13 @@ import { ActivityFeed } from '@/components/community/ActivityFeed';
 import { SkillPathways } from '@/components/community/SkillPathways';
 import { CreatePostDialog } from '@/components/community/CreatePostDialog';
 import { GenerateContentButton } from '@/components/community/GenerateContentButton';
+import { WeeklyChallenges } from '@/components/community/WeeklyChallenges';
+import { FeaturedMembers } from '@/components/community/FeaturedMembers';
+import { CommunityAchievements } from '@/components/community/CommunityAchievements';
+import { XPNotification } from '@/components/community/XPNotification';
 import Navigation from '@/components/Navigation';
 import SEO from '@/components/SEO';
-import { TrendingUp, Map, Users } from 'lucide-react';
+import { TrendingUp, Map, Users, Trophy } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
 const Community = () => {
@@ -114,7 +118,7 @@ const Community = () => {
         </header>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 lg:w-auto lg:inline-flex mb-8">
+          <TabsList className="grid w-full grid-cols-3 lg:w-auto lg:inline-flex mb-8">
             <TabsTrigger value="feed" className="flex items-center gap-2">
               <TrendingUp className="h-4 w-4" />
               <span>Activity Feed</span>
@@ -123,9 +127,19 @@ const Community = () => {
               <Map className="h-4 w-4" />
               <span>Skill Pathways</span>
             </TabsTrigger>
+            <TabsTrigger value="achievements" className="flex items-center gap-2">
+              <Trophy className="h-4 w-4" />
+              <span>Achievements</span>
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="feed" className="space-y-6">
+            {/* Weekly Challenges */}
+            <WeeklyChallenges />
+            
+            {/* Featured Members */}
+            <FeaturedMembers />
+            
             <div className="grid lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2">
                 <ActivityFeed limit={20} />
@@ -161,7 +175,20 @@ const Community = () => {
             </div>
             <SkillPathways />
           </TabsContent>
+          
+          <TabsContent value="achievements" className="space-y-6">
+            <div className="bg-card border rounded-lg p-4 sm:p-6 mb-6">
+              <h2 className="text-xl sm:text-2xl font-bold mb-2 break-words">Community Achievements</h2>
+              <p className="text-sm sm:text-base text-muted-foreground break-words">
+                Earn badges and XP by participating in the community. Complete challenges, help others, and level up!
+              </p>
+            </div>
+            <CommunityAchievements />
+          </TabsContent>
         </Tabs>
+        
+        {/* XP Notification System */}
+        <XPNotification />
       </div>
     </div>
   );
