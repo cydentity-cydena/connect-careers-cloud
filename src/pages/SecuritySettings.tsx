@@ -85,9 +85,22 @@ const SecuritySettings = () => {
         setFactorId(data.id);
         setSecret(data.totp.secret);
         
-        // Generate QR code
-        const qrCodeUrl = data.totp.qr_code;
-        setQrCode(qrCodeUrl);
+        // Generate QR code image from the otpauth:// URI
+        const otpauthUri = data.totp.qr_code;
+        try {
+          const qrCodeDataUrl = await QRCode.toDataURL(otpauthUri, {
+            width: 256,
+            margin: 2,
+            color: {
+              dark: '#000000',
+              light: '#FFFFFF'
+            }
+          });
+          setQrCode(qrCodeDataUrl);
+        } catch (err) {
+          console.error('Error generating QR code:', err);
+          toast.error('Failed to generate QR code. Please use manual entry.');
+        }
       }
     } catch (error: any) {
       console.error("Error enrolling MFA:", error);
@@ -302,10 +315,23 @@ const SecuritySettings = () => {
                       </Label>
                       <div className="flex items-center gap-2">
                         <Key className="h-4 w-4 text-muted-foreground" />
-                        <code className="text-sm bg-muted px-2 py-1 rounded">
+                        <code className="text-sm bg-muted px-2 py-1 rounded flex-1">
                           {secret}
                         </code>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            navigator.clipboard.writeText(secret);
+                            toast.success('Secret code copied to clipboard');
+                          }}
+                        >
+                          <Copy className="h-4 w-4" />
+                        </Button>
                       </div>
+                      <p className="text-xs text-muted-foreground">
+                        Use this code if you can't scan the QR code
+                      </p>
                     </div>
                   </div>
                 )}
