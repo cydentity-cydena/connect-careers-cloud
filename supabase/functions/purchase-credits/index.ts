@@ -1,14 +1,17 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.38.4";
+import { z } from "https://esm.sh/zod@3.22.4";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-interface PurchaseRequest {
-  package: 'starter' | 'professional' | 'enterprise';
-}
+const PurchaseSchema = z.object({
+  package: z.enum(['starter', 'professional', 'enterprise'], {
+    errorMap: () => ({ message: 'Package must be one of: starter, professional, enterprise' })
+  })
+});
 
 const CREDIT_PACKAGES = {
   starter: { credits: 5, price: 49.99 },
@@ -37,11 +40,10 @@ serve(async (req) => {
     }
 
     const employerId = user.id;
-    const { package: packageType }: PurchaseRequest = await req.json();
-
-    if (!CREDIT_PACKAGES[packageType]) {
-      throw new Error('Invalid package type');
-    }
+    
+    // Validate input with Zod
+    const body = await req.json();
+    const { package: packageType } = PurchaseSchema.parse(body);
 
     const pkg = CREDIT_PACKAGES[packageType];
     console.log('Credit purchase:', { employerId, packageType, credits: pkg.credits, price: pkg.price });

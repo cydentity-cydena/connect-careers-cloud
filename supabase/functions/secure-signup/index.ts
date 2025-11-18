@@ -100,6 +100,18 @@ serve(async (req) => {
 
     // Validate professional email for employers and recruiters
     const publicEmailDomains = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'aol.com', 'icloud.com', 'mail.com', 'protonmail.com', 'live.com', 'msn.com'];
+    
+    // For OAuth completions, verify role matches email domain
+    if (isOAuthCompletion && (role === 'employer' || role === 'recruiter')) {
+      const emailDomain = email.split('@')[1]?.toLowerCase();
+      
+      if (publicEmailDomains.includes(emailDomain)) {
+        console.error('OAuth user attempted to claim employer/recruiter role with personal email:', email);
+        throw new Error('Employer and recruiter accounts require a professional company email address. Please use a different authentication method or contact support.');
+      }
+      
+      console.log('OAuth role validated against email domain:', { email, role });
+    }
     if (role === 'employer' || role === 'recruiter') {
       const emailDomain = email.split('@')[1]?.toLowerCase();
       if (publicEmailDomains.includes(emailDomain)) {
