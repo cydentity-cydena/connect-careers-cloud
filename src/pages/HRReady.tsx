@@ -105,6 +105,46 @@ const HRReady = () => {
     return paths;
   };
 
+  const handleIdFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+    
+    try {
+      const paths = await uploadFiles(files, "identity");
+      setIdFiles(files);
+      toast({
+        title: "Files uploaded",
+        description: `${files.length} ID document(s) uploaded successfully`,
+      });
+    } catch (error: any) {
+      toast({
+        title: "Upload failed",
+        description: error.message,
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleRtwFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+    
+    try {
+      const paths = await uploadFiles(files, "rtw");
+      setRtwFiles(files);
+      toast({
+        title: "Files uploaded",
+        description: `${files.length} RTW document(s) uploaded successfully`,
+      });
+    } catch (error: any) {
+      toast({
+        title: "Upload failed",
+        description: error.message,
+        variant: "destructive"
+      });
+    }
+  };
+
   const submitRequest = async (type: "identity" | "rtw", files: FileList | null, notes: string) => {
     if (!userId) return;
     if (!files || files.length === 0) {
@@ -234,7 +274,7 @@ const HRReady = () => {
               <div className="space-y-3">
                 <div className="space-y-1.5">
                   <Label htmlFor="id-docs">Document(s)</Label>
-                  <Input id="id-docs" type="file" multiple onChange={(e) => setIdFiles(e.target.files)} />
+                  <Input id="id-docs" type="file" multiple onChange={handleIdFileChange} />
                 </div>
                 <div className="space-y-1.5">
                   <Label htmlFor="id-notes">Notes (optional)</Label>
@@ -257,7 +297,7 @@ const HRReady = () => {
               <div className="space-y-3">
                 <div className="space-y-1.5">
                   <Label htmlFor="rtw-docs">Document(s)</Label>
-                  <Input id="rtw-docs" type="file" multiple onChange={(e) => setRtwFiles(e.target.files)} />
+                  <Input id="rtw-docs" type="file" multiple onChange={handleRtwFileChange} />
                 </div>
                 <div className="space-y-1.5">
                   <Label htmlFor="rtw-notes">Notes (optional)</Label>
