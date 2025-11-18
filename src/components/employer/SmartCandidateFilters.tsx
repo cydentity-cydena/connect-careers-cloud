@@ -237,6 +237,18 @@ export const SmartCandidateFilters = ({
             </div>
           </div>
 
+          {/* Location Filter */}
+          <div className="space-y-3">
+            <Label className="text-sm font-semibold">Location</Label>
+            <Input
+              placeholder="e.g., London, Manchester, Remote"
+              value={currentFilters.location}
+              onChange={(e) =>
+                onFilterChange({ ...currentFilters, location: e.target.value })
+              }
+            />
+          </div>
+
           {/* Quick Filters */}
           <div className="flex flex-wrap gap-4">
             <div className="flex items-center space-x-2">

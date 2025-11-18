@@ -27,6 +27,7 @@ interface CandidateProfile {
   experience: string;
   avatar: string;
   locked: boolean;
+  location?: string;
 }
 
 const Profiles = () => {
@@ -163,15 +164,19 @@ const Profiles = () => {
         .select('candidate_id, skills(name, category)')
         .in('candidate_id', candidateIds);
 
-      // Fetch HR-Ready statuses
+      // Fetch HR-Ready statuses and location
       const { data: verData } = await supabase
         .from('candidate_verifications')
-        .select('candidate_id, hr_ready')
+        .select('candidate_id, hr_ready, logistics_location')
         .in('candidate_id', candidateIds);
       
       const verMap: Record<string, boolean> = {};
+      const locationMap: Record<string, string> = {};
       verData?.forEach(v => {
         verMap[v.candidate_id] = v.hr_ready || false;
+        if (v.logistics_location) {
+          locationMap[v.candidate_id] = v.logistics_location;
+        }
       });
       setVerificationStatuses(verMap);
 
@@ -233,7 +238,8 @@ const Profiles = () => {
           specializations,
           experience: `${candidateProfile?.years_experience || 0} years`,
           avatar: "🔒",
-          locked: isAdminOrStaff ? false : index > 2 // Admins see all profiles as unlocked
+          locked: isAdminOrStaff ? false : index > 2, // Admins see all profiles as unlocked
+          location: locationMap[entry.candidate_id]
         };
       });
 
@@ -277,8 +283,11 @@ const Profiles = () => {
         candidate.certifications.some(c => c.toLowerCase().includes(cert.toLowerCase()))
       );
 
+    const matchesLocation = !advancedFilters.location || 
+      (candidate.location && candidate.location.toLowerCase().includes(advancedFilters.location.toLowerCase()));
+
     return matchesSearch && matchesSpecialization && matchesHRReady && 
-           matchesExperience && matchesMustHaveSkills && matchesCertifications;
+           matchesExperience && matchesMustHaveSkills && matchesCertifications && matchesLocation;
   });
 
   const getRankBadgeColor = (rank: number) => {
