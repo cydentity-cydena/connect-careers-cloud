@@ -93,14 +93,15 @@ const SecuritySettings = () => {
         
         setSecret(totpSecret);
         
-        // Generate QR code with settings optimized for large data
+        // Generate QR code with maximum capacity settings
         if (otpauthUri) {
           try {
             const qrDataUrl = await QRCode.toDataURL(otpauthUri, {
               errorCorrectionLevel: 'L',
               type: 'image/png',
               margin: 1,
-              width: 300,
+              width: 400,
+              version: 10, // Higher version = more data capacity
               color: {
                 dark: '#000000',
                 light: '#FFFFFF'
