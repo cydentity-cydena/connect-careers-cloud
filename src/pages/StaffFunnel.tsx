@@ -86,6 +86,7 @@ export default function StaffFunnel() {
   const [editingNotes, setEditingNotes] = useState<{ candidateId: string; pipelineId: string; notes: string | null; sourceTable: string } | null>(null);
   const [notesValue, setNotesValue] = useState<string>("");
   const [savingNotes, setSavingNotes] = useState(false);
+  const [showAllHRReady, setShowAllHRReady] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
@@ -744,26 +745,29 @@ export default function StaffFunnel() {
         </AlertDialog>
 
         {/* HR-Ready Pool - Curated Candidates */}
-        {filteredCandidates.filter(c => c.stage === 'published' && c.verification?.hr_ready).length > 0 && (
-          <Card className="p-6 mb-6 bg-gradient-to-br from-green-500/10 via-emerald-500/10 to-teal-500/10 border-green-500/30">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-full bg-green-500/20 flex items-center justify-center">
-                  <ShieldCheck className="h-5 w-5 text-green-600 dark:text-green-400" />
+        {(() => {
+          const hrReadyCandidates = filteredCandidates.filter(c => c.stage === 'published' && c.verification?.hr_ready);
+          const displayedCandidates = showAllHRReady ? hrReadyCandidates : hrReadyCandidates.slice(0, 6);
+          const hasMore = hrReadyCandidates.length > 6;
+          
+          return hrReadyCandidates.length > 0 && (
+            <Card className="p-6 mb-6 bg-gradient-to-br from-green-500/10 via-emerald-500/10 to-teal-500/10 border-green-500/30">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-full bg-green-500/20 flex items-center justify-center">
+                    <ShieldCheck className="h-5 w-5 text-green-600 dark:text-green-400" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-semibold">HR-Ready Pool</h2>
+                    <p className="text-sm text-muted-foreground">Curated candidates verified and ready for interviews</p>
+                  </div>
                 </div>
-                <div>
-                  <h2 className="text-xl font-semibold">HR-Ready Pool</h2>
-                  <p className="text-sm text-muted-foreground">Curated candidates verified and ready for interviews</p>
-                </div>
+                <Badge variant="default" className="bg-green-600 text-white text-lg px-4 py-1">
+                  {hrReadyCandidates.length}
+                </Badge>
               </div>
-              <Badge variant="default" className="bg-green-600 text-white text-lg px-4 py-1">
-                {filteredCandidates.filter(c => c.stage === 'published' && c.verification?.hr_ready).length}
-              </Badge>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filteredCandidates
-                .filter(c => c.stage === 'published' && c.verification?.hr_ready)
-                .map((candidate) => {
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+                {displayedCandidates.map((candidate) => {
                   const badgeItems: BadgeItem[] = [
                     {
                       label: 'ID',
@@ -889,9 +893,21 @@ export default function StaffFunnel() {
                     </Card>
                   );
                 })}
-            </div>
-          </Card>
-        )}
+              </div>
+              {hasMore && (
+                <div className="flex justify-center pt-2">
+                  <Button 
+                    variant="outline" 
+                    onClick={() => setShowAllHRReady(!showAllHRReady)}
+                    className="text-green-600 border-green-600/30 hover:bg-green-500/10"
+                  >
+                    {showAllHRReady ? 'Show Less' : `View All ${hrReadyCandidates.length} Candidates`}
+                  </Button>
+                </div>
+              )}
+            </Card>
+          );
+        })()}
 
         {/* Kanban Board */}
         <div className="overflow-x-auto pb-4">
