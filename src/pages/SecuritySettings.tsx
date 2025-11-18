@@ -308,9 +308,9 @@ const SecuritySettings = () => {
                   </AlertDescription>
                 </Alert>
 
-                {qrCode && (
+                {qrCode ? (
                   <div className="flex flex-col items-center space-y-4">
-                    <img src={qrCode} alt="MFA QR Code" className="w-64 h-64" />
+                    <img src={qrCode} alt="MFA QR Code" className="w-64 h-64 border-4 border-muted rounded-lg" />
                     
                     <div className="w-full max-w-sm space-y-2">
                       <Label className="text-sm text-muted-foreground">
@@ -318,7 +318,7 @@ const SecuritySettings = () => {
                       </Label>
                       <div className="flex items-center gap-2">
                         <Key className="h-4 w-4 text-muted-foreground" />
-                        <code className="text-sm bg-muted px-2 py-1 rounded flex-1">
+                        <code className="text-sm bg-muted px-2 py-1 rounded flex-1 break-all">
                           {secret}
                         </code>
                         <Button
@@ -336,6 +336,11 @@ const SecuritySettings = () => {
                         Use this code if you can't scan the QR code
                       </p>
                     </div>
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center justify-center py-8">
+                    <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
+                    <p className="text-sm text-muted-foreground">Generating QR code...</p>
                   </div>
                 )}
 
