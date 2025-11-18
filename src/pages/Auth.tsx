@@ -61,6 +61,8 @@ const Auth = () => {
   const [isFounding200, setIsFounding200] = useState(false);
   const [mfaRequired, setMfaRequired] = useState(false);
   const [mfaCode, setMfaCode] = useState("");
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
   const oauthProfileStarted = useRef(false);
 
   useEffect(() => {
@@ -345,6 +347,34 @@ const Auth = () => {
     }
   };
 
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    try {
+      const emailValidation = emailSchema.safeParse(resetEmail);
+      if (!emailValidation.success) {
+        toast.error(emailValidation.error.errors[0].message);
+        return;
+      }
+
+      const { error } = await supabase.auth.resetPasswordForEmail(resetEmail.trim().toLowerCase(), {
+        redirectTo: `${window.location.origin}/auth?mode=reset`,
+      });
+
+      if (error) throw error;
+
+      toast.success("Password reset email sent! Check your inbox.");
+      setShowForgotPassword(false);
+      setResetEmail("");
+    } catch (error: any) {
+      console.error("Password reset error:", error);
+      toast.error(error.message || "Failed to send reset email");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -478,6 +508,50 @@ const Auth = () => {
                     setEmail("");
                     setPassword("");
                   }} />
+                ) : showForgotPassword ? (
+                  <form onSubmit={handleForgotPassword} className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="reset-email">Email</Label>
+                      <Input
+                        id="reset-email"
+                        type="email"
+                        placeholder="you@example.com"
+                        value={resetEmail}
+                        onChange={(e) => setResetEmail(e.target.value)}
+                        required
+                        disabled={isLoading}
+                      />
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="flex-1"
+                        onClick={() => {
+                          setShowForgotPassword(false);
+                          setResetEmail("");
+                        }}
+                        disabled={isLoading}
+                      >
+                        Back
+                      </Button>
+                      <Button
+                        type="submit"
+                        variant="hero"
+                        className="flex-1"
+                        disabled={isLoading}
+                      >
+                        {isLoading ? (
+                          <>
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                            Sending...
+                          </>
+                        ) : (
+                          "Send Reset Link"
+                        )}
+                      </Button>
+                    </div>
+                  </form>
                 ) : (
                   <form onSubmit={handleSignIn} className="space-y-4">
                     <div className="space-y-2">
@@ -492,7 +566,17 @@ const Auth = () => {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="signin-password">Password</Label>
+                      <div className="flex items-center justify-between">
+                        <Label htmlFor="signin-password">Password</Label>
+                        <Button
+                          type="button"
+                          variant="link"
+                          className="h-auto p-0 text-sm"
+                          onClick={() => setShowForgotPassword(true)}
+                        >
+                          Forgot password?
+                        </Button>
+                      </div>
                       <Input
                         id="signin-password"
                         type="password"
