@@ -93,16 +93,11 @@ const SecuritySettings = () => {
         
         setSecret(totpSecret);
         
-        // Generate QR code using canvas method for better handling
+        // Generate QR code with simplest settings
         if (otpauthUri) {
-          const canvas = document.createElement('canvas');
           try {
-            await QRCode.toCanvas(canvas, otpauthUri, {
-              errorCorrectionLevel: 'L',
-              margin: 1,
-              width: 256,
-            });
-            const qrDataUrl = canvas.toDataURL('image/png');
+            // Use default settings - let library auto-detect optimal size
+            const qrDataUrl = await QRCode.toDataURL(otpauthUri);
             setQrCode(qrDataUrl);
           } catch (error) {
             console.error('QR generation error:', error);
