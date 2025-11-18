@@ -5,6 +5,7 @@ const SENDGRID_API_KEY = Deno.env.get("SENDGRID_API_KEY");
 const SENDGRID_API_URL = "https://api.sendgrid.com/v3/mail/send";
 const SENDGRID_FROM_EMAIL = Deno.env.get("SENDGRID_FROM_EMAIL") || "contact@cydena.com";
 const SENDGRID_FROM_NAME = Deno.env.get("SENDGRID_FROM_NAME") || "Cydena";
+const APP_URL = Deno.env.get("APP_URL") || "https://cydena.com";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -113,7 +114,7 @@ const handler = async (req: Request): Promise<Response> => {
                               <table width="100%" cellpadding="0" cellspacing="0" style="margin: 30px 0;">
                                 <tr>
                                   <td align="center">
-                                    <a href="https://cydena.com/dashboard" 
+                                    <a href="${APP_URL}/dashboard" 
                                        style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #ffffff; text-decoration: none; padding: 16px 40px; border-radius: 6px; font-weight: 600; font-size: 16px;">
                                       Take Today's Challenge
                                     </a>
