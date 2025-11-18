@@ -82,7 +82,7 @@ export const FeaturedMembers = () => {
                 </Avatar>
                 <div className="flex-1">
                   <CardTitle className="text-base flex items-center gap-2">
-                    {member.profiles.full_name || member.profiles.username}
+                    @{member.profiles.username}
                     <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
                   </CardTitle>
                   {member.profiles.desired_job_title && (
