@@ -46,7 +46,7 @@ const Privacy = () => {
               <div className="bg-muted/50 p-4 rounded-lg space-y-2 mt-4">
                 <p><strong>Registered Company Name:</strong> Cydena Ltd</p>
                 <p><strong>Company Number:</strong> 16779531 (registered in Wales)</p>
-                <p><strong>Registered Office:</strong> [Your registered office address]</p>
+                <p><strong>Registered Office:</strong> 2 Fitzhamon Road, Porthcawl</p>
                 <p><strong>Email:</strong> privacy@cydena.com</p>
                 <p><strong>Data Protection Officer:</strong> dpo@cydena.com</p>
               </div>
@@ -459,7 +459,7 @@ const Privacy = () => {
                   <p className="font-semibold text-foreground">Postal Address</p>
                   <p>
                     Cydena Ltd<br/>
-                    [Registered Office Address]<br/>
+                    2 Fitzhamon Road, Porthcawl<br/>
                     Company Number: 16779531 (Wales)
                   </p>
                 </div>
