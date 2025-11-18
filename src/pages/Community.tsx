@@ -61,13 +61,19 @@ const Community = () => {
 
     const roles = data?.map(r => r.role) || [];
     
+    // Admins and staff always have access, regardless of other roles
+    if (roles.includes('admin') || roles.includes('staff')) {
+      setIsAdmin(roles.includes('admin'));
+      setIsAuthorized(true);
+      return;
+    }
+    
     // Redirect employers and recruiters away from community
     if (roles.includes('employer') || roles.includes('recruiter')) {
       window.location.href = '/dashboard';
       return;
     }
 
-    setIsAdmin(roles.includes('admin'));
     setIsAuthorized(true);
   };
 
