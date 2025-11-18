@@ -10,6 +10,7 @@ import { PostReactions } from './PostReactions';
 import { EditPostDialog } from './EditPostDialog';
 import { formatDistanceToNow } from 'date-fns';
 import { useToast } from '@/hooks/use-toast';
+import ReactMarkdown from 'react-markdown';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -327,9 +328,9 @@ export const ActivityFeed = ({ limit = 20 }: { limit?: number }) => {
                   
                   <h4 className="font-medium mb-1">{activity.title}</h4>
                   {activity.description && (
-                    <p className="text-sm text-muted-foreground whitespace-pre-line">
-                      {activity.description}
-                    </p>
+                    <div className="text-sm text-muted-foreground prose prose-sm max-w-none dark:prose-invert prose-p:my-2 prose-ul:my-1 prose-ol:my-1 prose-li:my-0.5">
+                      <ReactMarkdown>{activity.description}</ReactMarkdown>
+                    </div>
                   )}
                   
                   {activity.metadata && (
