@@ -8,7 +8,6 @@ import { debounce } from 'lodash';
 type Mention = {
   id: string;
   username: string;
-  full_name: string | null;
   avatar_url: string | null;
 };
 
@@ -46,8 +45,8 @@ export const MentionTextarea = ({
       
       const { data } = await supabase
         .from('profiles')
-        .select('id, username, full_name, avatar_url')
-        .or(`username.ilike.%${search}%,full_name.ilike.%${search}%`)
+        .select('id, username, avatar_url')
+        .ilike('username', `%${search}%`)
         .not('username', 'is', null)
         .limit(5);
 
@@ -185,14 +184,7 @@ export const MentionTextarea = ({
                         {candidate.username?.[0]?.toUpperCase() || 'U'}
                       </AvatarFallback>
                     </Avatar>
-                    <div>
-                      <div className="font-medium">@{candidate.username}</div>
-                      {candidate.full_name && (
-                        <div className="text-xs text-muted-foreground">
-                          {candidate.full_name}
-                        </div>
-                      )}
-                    </div>
+                    <div className="font-medium">@{candidate.username}</div>
                   </CommandItem>
                 ))}
               </CommandGroup>
