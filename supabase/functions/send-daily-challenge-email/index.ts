@@ -113,7 +113,7 @@ const handler = async (req: Request): Promise<Response> => {
                               <table width="100%" cellpadding="0" cellspacing="0" style="margin: 30px 0;">
                                 <tr>
                                   <td align="center">
-                                    <a href="${Deno.env.get("VITE_SUPABASE_URL")?.replace('/supabase/', '/')}/dashboard" 
+                                    <a href="https://cydena.com/dashboard" 
                                        style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #ffffff; text-decoration: none; padding: 16px 40px; border-radius: 6px; font-weight: 600; font-size: 16px;">
                                       Take Today's Challenge
                                     </a>
