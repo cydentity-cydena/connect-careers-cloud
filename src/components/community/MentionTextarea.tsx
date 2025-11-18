@@ -184,7 +184,9 @@ export const MentionTextarea = ({
                         {candidate.username?.[0]?.toUpperCase() || 'U'}
                       </AvatarFallback>
                     </Avatar>
-                    <div className="font-medium">@{candidate.username}</div>
+                    <div>
+                      <div className="font-medium">@{candidate.username}</div>
+                    </div>
                   </CommandItem>
                 ))}
               </CommandGroup>
