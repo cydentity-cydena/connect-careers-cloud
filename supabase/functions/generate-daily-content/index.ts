@@ -22,6 +22,10 @@ serve(async (req) => {
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
+    // Parse request body for optional topic
+    const body = await req.json().catch(() => ({}));
+    const { topic } = body;
+
     // Authorization check: Verify user is admin
     const authHeader = req.headers.get('Authorization');
     if (!authHeader) {
@@ -74,7 +78,45 @@ serve(async (req) => {
       console.error("Failed to fetch news, continuing without context:", e);
     }
 
-    console.log("Generating daily cybersecurity content...");
+    console.log("Generating cybersecurity content...", topic ? `Topic: ${topic}` : "General content");
+
+    // Build the user prompt based on whether a topic is provided
+    let userPrompt = '';
+    if (topic) {
+      userPrompt = `Generate a community post about this specific topic: "${topic}"
+
+${newsContext ? `For context, here are recent cybersecurity headlines:\n${newsContext}\n\n` : ''}
+
+Create engaging, professional content that:
+- Provides actionable insights or advice related to "${topic}"
+- Includes relevant technical details when appropriate
+- Offers practical takeaways for cybersecurity professionals
+- References any breaking news or incidents if relevant
+
+Choose the most appropriate format:
+1. Daily Security Tip (practical advice based on the topic)
+2. Industry News Insight (analyze the incident or trend)
+3. Threat Analysis (technical breakdown and mitigation)
+4. Best Practice Guide (recommendations related to the topic)
+5. Incident Response (lessons learned and prevention)
+
+Format as JSON with: { "title": "...", "description": "...", "activity_type": "daily_content", "tags": ["tag1", "tag2", "tag3"] }
+Keep title under 100 chars, description 250-500 chars. Use 3-4 relevant tags like "security-incident", "cloudflare", "outage", "ddos", "ransomware", etc.`;
+    } else {
+      userPrompt = `Generate a community post for today based on recent cybersecurity news or best practices.
+
+${newsContext ? `Recent cybersecurity headlines:\n${newsContext}\n\nUse these headlines as inspiration but create original, actionable content. Focus on what professionals can learn or do.` : 'Create original content about a relevant cybersecurity topic.'}
+
+Choose one of these formats:
+1. Daily Security Tip (practical advice based on current threats)
+2. Industry News Insight (analyze trends or recent incidents)
+3. Certification Spotlight (highlight a relevant certification)
+4. Career Growth Tip (professional development)
+5. Tool Recommendation (useful security tool)
+
+Format as JSON with: { "title": "...", "description": "...", "activity_type": "daily_content", "tags": ["tag1", "tag2"] }
+Keep title under 100 chars, description 200-400 chars. Use 2-3 relevant tags.`;
+    }
 
     // Generate content using Lovable AI with real news context
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
@@ -92,19 +134,7 @@ serve(async (req) => {
           },
           {
             role: "user",
-            content: `Generate a community post for today based on recent cybersecurity news or best practices.
-
-${newsContext ? `Recent cybersecurity headlines:\n${newsContext}\n\nUse these headlines as inspiration but create original, actionable content. Focus on what professionals can learn or do.` : 'Create original content about a relevant cybersecurity topic.'}
-
-Choose one of these formats:
-1. Daily Security Tip (practical advice based on current threats)
-2. Industry News Insight (analyze trends or recent incidents)
-3. Certification Spotlight (highlight a relevant certification)
-4. Career Growth Tip (professional development)
-5. Tool Recommendation (useful security tool)
-
-Format as JSON with: { "title": "...", "description": "...", "activity_type": "daily_content", "tags": ["tag1", "tag2"] }
-Keep title under 100 chars, description 200-400 chars. Use 2-3 relevant tags.`
+            content: userPrompt
           }
         ],
       }),
