@@ -28,40 +28,43 @@ export function SecurityIQ() {
   }, []);
 
   const loadTodayChallenge = async () => {
-    // Mock challenge for demo
-    setChallenge({
-      question: "What does the principle of 'least privilege' mean in cybersecurity?",
-      options: [
-        "Users should have maximum access to complete their work efficiently",
-        "Users should only have the minimum access necessary to perform their job",
-        "Only privileged users should have access to sensitive data",
-        "Access should be granted based on seniority level"
-      ],
-      correctAnswer: 1,
-      explanation: "The principle of least privilege means users should only be granted the minimum level of access necessary to complete their job functions. This reduces the attack surface and limits potential damage from compromised accounts.",
-      category: "Access Control"
-    });
-    
-    // Check if user already answered today
-    const today = new Date().toISOString().split('T')[0];
-    const { data: { user } } = await supabase.auth.getUser();
-    
-    if (user) {
-      const { data } = await supabase
-        .from('security_iq_attempts')
-        .select('*')
-        .eq('candidate_id', user.id)
-        .eq('challenge_date', today)
-        .single();
+    try {
+      // Fetch today's challenge from edge function
+      const { data: challengeData, error: challengeError } = await supabase.functions.invoke(
+        'generate-security-iq-challenge'
+      );
       
-      if (data) {
-        setHasAnswered(true);
-        setSelectedAnswer(data.selected_answer);
-        setTodayScore(data.score);
+      if (challengeError) {
+        console.error('Error fetching challenge:', challengeError);
+        throw challengeError;
       }
+      
+      setChallenge(challengeData);
+      
+      // Check if user already answered today
+      const today = new Date().toISOString().split('T')[0];
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (user) {
+        const { data } = await supabase
+          .from('security_iq_attempts')
+          .select('*')
+          .eq('candidate_id', user.id)
+          .eq('challenge_date', today)
+          .single();
+        
+        if (data) {
+          setHasAnswered(true);
+          setSelectedAnswer(data.selected_answer);
+          setTodayScore(data.score);
+        }
+      }
+    } catch (error) {
+      console.error('Error loading challenge:', error);
+      toast.error("Failed to load today's challenge");
+    } finally {
+      setLoading(false);
     }
-    
-    setLoading(false);
   };
 
   const loadUserStats = async () => {
