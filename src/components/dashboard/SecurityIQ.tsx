@@ -39,6 +39,20 @@ export function SecurityIQ() {
         throw challengeError;
       }
       
+      // Validate challenge data has all required fields
+      if (!challengeData || 
+          !challengeData.question || 
+          !Array.isArray(challengeData.options) || 
+          challengeData.options.length !== 4 ||
+          challengeData.correctAnswer === undefined ||
+          !challengeData.explanation ||
+          !challengeData.category) {
+        console.error('Invalid challenge data received:', challengeData);
+        toast.error("Failed to load challenge - invalid data");
+        setLoading(false);
+        return;
+      }
+      
       setChallenge(challengeData);
       
       // Check if user already answered today
