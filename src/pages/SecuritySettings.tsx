@@ -17,7 +17,7 @@ const SecuritySettings = () => {
   const [loading, setLoading] = useState(true);
   const [mfaEnabled, setMfaEnabled] = useState(false);
   const [enrolling, setEnrolling] = useState(false);
-  const [qrCode, setQrCode] = useState("");
+  const [qrCode, setQrCode] = useState<string | null>(null);
   const [secret, setSecret] = useState("");
   const [factorId, setFactorId] = useState("");
   const [verificationCode, setVerificationCode] = useState("");
@@ -62,6 +62,9 @@ const SecuritySettings = () => {
 
   const handleEnrollMFA = async () => {
     setEnrolling(true);
+    setQrCode(null); // Reset to loading state
+    setSecret("");
+    
     try {
       // Clear any previous in-progress TOTP factor to avoid name conflicts
       const { data: factorsData, error: factorsError } = await supabase.auth.mfa.listFactors();
@@ -87,22 +90,32 @@ const SecuritySettings = () => {
         
         // Generate QR code image from the otpauth:// URI
         const otpauthUri = data.totp.qr_code;
-        console.log('OTP Auth URI:', otpauthUri);
+        console.log('OTP Auth URI received:', !!otpauthUri);
+        console.log('Secret received:', !!data.totp.secret);
         
         if (otpauthUri) {
           try {
-            // Simplified QR code generation
-            const qrCodeDataUrl = await QRCode.toDataURL(otpauthUri);
+            // Generate QR code with higher quality settings
+            const qrCodeDataUrl = await QRCode.toDataURL(otpauthUri, {
+              errorCorrectionLevel: 'H',
+              type: 'image/png',
+              margin: 1,
+              width: 300,
+              color: {
+                dark: '#000000',
+                light: '#FFFFFF'
+              }
+            });
             console.log('QR Code generated successfully');
             setQrCode(qrCodeDataUrl);
           } catch (err) {
             console.error('Error generating QR code:', err);
-            console.error('Error details:', JSON.stringify(err, null, 2));
-            toast.error('Failed to generate QR code. Please use manual entry.');
+            // Don't throw - still allow manual entry
+            setQrCode(''); // Set to empty string to show manual entry
           }
         } else {
-          console.error('No otpauth URI provided');
-          toast.error('No QR code URI available. Please use manual entry.');
+          console.error('No otpauth URI provided by Supabase');
+          setQrCode(''); // Set to empty string to show manual entry
         }
       }
     } catch (error: any) {
@@ -139,7 +152,7 @@ const SecuritySettings = () => {
       setMfaEnabled(true);
       setEnrolling(false);
       setVerificationCode("");
-      setQrCode("");
+      setQrCode(null);
       setSecret("");
     } catch (error: any) {
       console.error("Error verifying MFA:", error);
@@ -308,7 +321,12 @@ const SecuritySettings = () => {
                   </AlertDescription>
                 </Alert>
 
-                {qrCode ? (
+                {qrCode === null ? (
+                  <div className="flex flex-col items-center justify-center py-8">
+                    <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
+                    <p className="text-sm text-muted-foreground">Generating QR code...</p>
+                  </div>
+                ) : qrCode ? (
                   <div className="flex flex-col items-center space-y-4">
                     <img src={qrCode} alt="MFA QR Code" className="w-64 h-64 border-4 border-muted rounded-lg" />
                     
@@ -338,9 +356,36 @@ const SecuritySettings = () => {
                     </div>
                   </div>
                 ) : (
-                  <div className="flex flex-col items-center justify-center py-8">
-                    <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
-                    <p className="text-sm text-muted-foreground">Generating QR code...</p>
+                  <div className="w-full max-w-sm space-y-4 mx-auto">
+                    <Alert className="border-yellow-500/50 bg-yellow-500/10">
+                      <AlertDescription className="text-yellow-600 dark:text-yellow-500">
+                        QR code generation failed. Please use manual entry instead.
+                      </AlertDescription>
+                    </Alert>
+                    <div className="space-y-2">
+                      <Label className="text-sm font-semibold">
+                        Manual Setup Code:
+                      </Label>
+                      <div className="flex items-center gap-2">
+                        <Key className="h-4 w-4 text-muted-foreground" />
+                        <code className="text-sm bg-muted px-2 py-1 rounded flex-1 break-all font-mono">
+                          {secret}
+                        </code>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            navigator.clipboard.writeText(secret);
+                            toast.success('Secret code copied to clipboard');
+                          }}
+                        >
+                          <Copy className="h-4 w-4" />
+                        </Button>
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        Enter this code in your authenticator app to set up 2FA
+                      </p>
+                    </div>
                   </div>
                 )}
 
@@ -366,7 +411,7 @@ const SecuritySettings = () => {
                     onClick={() => {
                       setEnrolling(false);
                       setVerificationCode("");
-                      setQrCode("");
+                      setQrCode(null);
                       setSecret("");
                     }}
                   >
