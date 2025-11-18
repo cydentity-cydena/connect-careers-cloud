@@ -57,18 +57,17 @@ const Community = () => {
     const { data } = await supabase
       .from('user_roles')
       .select('role')
-      .eq('user_id', user.id)
-      .maybeSingle();
+      .eq('user_id', user.id);
 
-    const userRole = data?.role;
+    const roles = data?.map(r => r.role) || [];
     
     // Redirect employers and recruiters away from community
-    if (userRole === 'employer' || userRole === 'recruiter') {
+    if (roles.includes('employer') || roles.includes('recruiter')) {
       window.location.href = '/dashboard';
       return;
     }
 
-    setIsAdmin(userRole === 'admin');
+    setIsAdmin(roles.includes('admin'));
     setIsAuthorized(true);
   };
 
