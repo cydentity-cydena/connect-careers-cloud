@@ -87,19 +87,22 @@ const SecuritySettings = () => {
         
         // Generate QR code image from the otpauth:// URI
         const otpauthUri = data.totp.qr_code;
-        try {
-          const qrCodeDataUrl = await QRCode.toDataURL(otpauthUri, {
-            width: 256,
-            margin: 2,
-            color: {
-              dark: '#000000',
-              light: '#FFFFFF'
-            }
-          });
-          setQrCode(qrCodeDataUrl);
-        } catch (err) {
-          console.error('Error generating QR code:', err);
-          toast.error('Failed to generate QR code. Please use manual entry.');
+        console.log('OTP Auth URI:', otpauthUri);
+        
+        if (otpauthUri) {
+          try {
+            // Simplified QR code generation
+            const qrCodeDataUrl = await QRCode.toDataURL(otpauthUri);
+            console.log('QR Code generated successfully');
+            setQrCode(qrCodeDataUrl);
+          } catch (err) {
+            console.error('Error generating QR code:', err);
+            console.error('Error details:', JSON.stringify(err, null, 2));
+            toast.error('Failed to generate QR code. Please use manual entry.');
+          }
+        } else {
+          console.error('No otpauth URI provided');
+          toast.error('No QR code URI available. Please use manual entry.');
         }
       }
     } catch (error: any) {
