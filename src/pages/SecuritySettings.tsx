@@ -62,17 +62,19 @@ const SecuritySettings = () => {
 
   const handleEnrollMFA = async () => {
     setEnrolling(true);
-    setQrCode(null); // Reset to loading state
+    setQrCode(null);
     setSecret("");
     
     try {
-      // Clear any previous in-progress TOTP factor to avoid name conflicts
+      // Clear ALL existing TOTP factors (both pending and verified) to avoid limits
       const { data: factorsData, error: factorsError } = await supabase.auth.mfa.listFactors();
       if (factorsError) throw factorsError;
 
-      const pendingTotp = factorsData?.totp?.find((f) => f.status !== "verified");
-      if (pendingTotp) {
-        await supabase.auth.mfa.unenroll({ factorId: pendingTotp.id });
+      // Unenroll all existing TOTP factors
+      if (factorsData?.totp && factorsData.totp.length > 0) {
+        for (const factor of factorsData.totp) {
+          await supabase.auth.mfa.unenroll({ factorId: factor.id });
+        }
       }
 
       const friendlyName = `Cydena ${new Date().toISOString()}`;
@@ -85,17 +87,28 @@ const SecuritySettings = () => {
       if (error) throw error;
 
       if (data) {
-        console.log('MFA enrollment data received');
-        
         setFactorId(data.id);
         const totpSecret = data.totp.secret;
         const otpauthUri = data.totp.qr_code;
         
         setSecret(totpSecret);
         
-        // Skip QR code generation, use manual entry only
-        setQrCode('');
-        setEnrolling(true);
+        // Generate QR code with smaller size to handle data
+        if (otpauthUri) {
+          try {
+            const qrDataUrl = await QRCode.toDataURL(otpauthUri, {
+              errorCorrectionLevel: 'L',
+              margin: 1,
+              width: 200
+            });
+            setQrCode(qrDataUrl);
+          } catch (error) {
+            console.error('QR generation error:', error);
+            setQrCode('');
+          }
+        } else {
+          setQrCode('');
+        }
       }
     } catch (error: any) {
       console.error("Error enrolling MFA:", error);
