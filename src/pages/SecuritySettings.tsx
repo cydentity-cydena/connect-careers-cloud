@@ -93,20 +93,16 @@ const SecuritySettings = () => {
         
         setSecret(totpSecret);
         
-        // Generate QR code with maximum capacity settings
+        // Generate QR code using canvas method for better handling
         if (otpauthUri) {
+          const canvas = document.createElement('canvas');
           try {
-            const qrDataUrl = await QRCode.toDataURL(otpauthUri, {
+            await QRCode.toCanvas(canvas, otpauthUri, {
               errorCorrectionLevel: 'L',
-              type: 'image/png',
               margin: 1,
-              width: 400,
-              version: 10, // Higher version = more data capacity
-              color: {
-                dark: '#000000',
-                light: '#FFFFFF'
-              }
+              width: 256,
             });
+            const qrDataUrl = canvas.toDataURL('image/png');
             setQrCode(qrDataUrl);
           } catch (error) {
             console.error('QR generation error:', error);
