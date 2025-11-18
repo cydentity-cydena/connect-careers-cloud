@@ -42,8 +42,12 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Send email via SendGrid
     const SENDGRID_API_KEY = Deno.env.get("SENDGRID_API_KEY");
-    const SENDGRID_FROM_EMAIL = Deno.env.get("SENDGRID_FROM_EMAIL");
+    const SENDGRID_FROM_EMAIL = Deno.env.get("SENDGRID_FROM_EMAIL") || Deno.env.get("cydenaemail");
     const SENDGRID_FROM_NAME = Deno.env.get("SENDGRID_FROM_NAME") || "Cydena";
+    
+    if (!SENDGRID_FROM_EMAIL) {
+      throw new Error("SENDGRID_FROM_EMAIL is not configured");
+    }
 
     const emailResponse = await fetch("https://api.sendgrid.com/v3/mail/send", {
       method: "POST",
