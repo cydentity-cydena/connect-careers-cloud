@@ -91,18 +91,16 @@ const SecuritySettings = () => {
         
         setSecret(totpSecret);
         
-        // Generate QR code
-        if (otpauthUri && totpSecret) {
-          // Use setTimeout to ensure state updates are processed
-          setTimeout(async () => {
-            try {
-              const qrDataUrl = await QRCode.toDataURL(otpauthUri);
+        // Generate QR code immediately
+        if (otpauthUri) {
+          QRCode.toDataURL(otpauthUri)
+            .then(qrDataUrl => {
               setQrCode(qrDataUrl);
-            } catch (error) {
-              console.error('QR code generation failed:', error);
-              setQrCode(''); // Show manual entry
-            }
-          }, 100);
+            })
+            .catch(error => {
+              console.error('QR generation failed:', error);
+              setQrCode('');
+            });
         } else {
           setQrCode('');
         }
