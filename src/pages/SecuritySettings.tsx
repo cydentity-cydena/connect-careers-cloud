@@ -93,22 +93,9 @@ const SecuritySettings = () => {
         
         setSecret(totpSecret);
         
-        // Generate QR code with optimized settings
-        if (otpauthUri) {
-          try {
-            const qrDataUrl = await QRCode.toDataURL(otpauthUri, {
-              errorCorrectionLevel: 'L',
-              margin: 1,
-              width: 256
-            });
-            setQrCode(qrDataUrl);
-          } catch (error) {
-            console.error('QR generation error:', error);
-            setQrCode('');
-          }
-        } else {
-          setQrCode('');
-        }
+        // Skip QR code generation, use manual entry only
+        setQrCode('');
+        setEnrolling(true);
       }
     } catch (error: any) {
       console.error("Error enrolling MFA:", error);
