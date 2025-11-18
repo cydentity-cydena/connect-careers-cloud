@@ -95,8 +95,8 @@ export const CreatePostDialog = () => {
 
       if (error) throw error;
 
-      // Send announcement emails for release notes and bug fixes if user is admin
-      if (isAdmin && (activityType === 'release' || activityType === 'bug_fix')) {
+      // Send announcement emails for all admin posts
+      if (isAdmin) {
         try {
           await supabase.functions.invoke('send-announcement-email', {
             body: {
