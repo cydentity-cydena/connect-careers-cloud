@@ -57,5 +57,8 @@ verify_jwt = false
 [functions.send-announcement-email]
 verify_jwt = false
 
+[functions.send-comment-notification]
+verify_jwt = false
+
 [functions.generate-security-iq-challenge]
 verify_jwt = false
