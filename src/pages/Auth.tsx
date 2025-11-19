@@ -268,15 +268,21 @@ const Auth = () => {
       console.log('Starting secure signup process...');
       
       // Call secure-signup edge function
+      const signupBody: any = {
+        email: email.trim().toLowerCase(),
+        password,
+        fullName: fullName.trim(),
+        role: userRole,
+        isFounding200: isFounding200,
+      };
+      
+      // Only include username if it's provided
+      if (username.trim()) {
+        signupBody.username = username.trim().toLowerCase();
+      }
+      
       const { data, error: functionError } = await supabase.functions.invoke('secure-signup', {
-        body: {
-          email: email.trim().toLowerCase(),
-          password,
-          fullName: fullName.trim(),
-          username: username.trim().toLowerCase(),
-          role: userRole,
-          isFounding200: isFounding200,
-        },
+        body: signupBody,
       });
 
       if (functionError) {
