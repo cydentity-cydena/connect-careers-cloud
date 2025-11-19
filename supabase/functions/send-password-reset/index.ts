@@ -12,11 +12,11 @@ const PasswordResetSchema = z.object({
   redirectTo: z.string().url('Invalid URL').refine(
     (url) => {
       const supabaseUrl = Deno.env.get('SUPABASE_URL');
-      const siteUrl = Deno.env.get('SITE_URL');
+      const appUrl = Deno.env.get('APP_URL');
       if (!supabaseUrl) return false;
       
       // Allow same-origin redirects only
-      return url.startsWith(supabaseUrl) || (siteUrl && url.startsWith(siteUrl));
+      return url.startsWith(supabaseUrl) || (appUrl && url.startsWith(appUrl));
     },
     { message: 'Redirect URL must be to this site' }
   )
