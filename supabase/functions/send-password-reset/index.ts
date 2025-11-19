@@ -14,17 +14,16 @@ const PasswordResetSchema = z.object({
       const supabaseUrl = Deno.env.get('SUPABASE_URL');
       const appUrl = Deno.env.get('APP_URL');
       
-      console.log('Validation check:', {
-        redirectTo: url,
-        supabaseUrl,
-        appUrl
-      });
-      
       if (!supabaseUrl) return false;
       
-      // Allow Supabase URLs, APP_URL, and any lovable.app domain
-      return url.startsWith(supabaseUrl) || 
-             (appUrl && url.startsWith(appUrl)) ||
+      // Extract origin from URLs for comparison
+      const redirectOrigin = new URL(url).origin;
+      const supabaseOrigin = new URL(supabaseUrl).origin;
+      const appOrigin = appUrl ? new URL(appUrl).origin : null;
+      
+      // Allow same origin as Supabase, APP_URL origin, or any lovable.app domain
+      return redirectOrigin === supabaseOrigin || 
+             (appOrigin && redirectOrigin === appOrigin) ||
              url.includes('.lovable.app');
     },
     { message: 'Redirect URL must be to this site' }
