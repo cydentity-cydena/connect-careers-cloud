@@ -110,10 +110,18 @@ const handler = async (req: Request): Promise<Response> => {
                     </p>
                     
                     <div style="text-align: center; margin: 30px 0;">
+                      <!--[if mso]>
+                      <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="${data.properties.action_link}" style="height:48px;v-text-anchor:middle;width:200px;" arcsize="13%" stroke="f" fillcolor="#667eea">
+                        <w:anchorlock/>
+                        <center style="color:#ffffff;font-family:sans-serif;font-size:16px;font-weight:bold;">Reset Password</center>
+                      </v:roundrect>
+                      <![endif]-->
+                      <!--[if !mso]><!-->
                       <a href="${data.properties.action_link}" 
-                         style="display: inline-block; padding: 14px 32px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #ffffff; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 16px;">
+                         style="display: inline-block; padding: 14px 32px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #ffffff; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 16px; mso-hide: all;">
                         Reset Password
                       </a>
+                      <!--<![endif]-->
                     </div>
                     
                     <p style="font-size: 14px; line-height: 1.6; color: #666666; margin: 30px 0 0 0; padding-top: 30px; border-top: 1px solid #eeeeee;">
@@ -121,11 +129,13 @@ const handler = async (req: Request): Promise<Response> => {
                     </p>
                     
                     <p style="font-size: 14px; line-height: 1.6; color: #666666; margin: 20px 0 0 0;">
-                      If the button doesn't work, copy and paste this link into your browser:
+                      If the button above doesn't work, click this link or copy and paste it into your browser:
                     </p>
                     
-                    <p style="font-size: 13px; line-height: 1.6; color: #667eea; word-break: break-all; margin: 10px 0 0 0;">
-                      ${data.properties.action_link}
+                    <p style="font-size: 13px; line-height: 1.6; margin: 10px 0 0 0;">
+                      <a href="${data.properties.action_link}" style="color: #667eea; word-break: break-all; text-decoration: underline;">
+                        ${data.properties.action_link}
+                      </a>
                     </p>
                   </div>
                   

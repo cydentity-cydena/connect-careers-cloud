@@ -9,9 +9,10 @@ import { useNavigate } from "react-router-dom";
 
 interface MFAVerificationProps {
   onCancel: () => void;
+  onSuccess?: () => void | Promise<void>;
 }
 
-export const MFAVerification = ({ onCancel }: MFAVerificationProps) => {
+export const MFAVerification = ({ onCancel, onSuccess }: MFAVerificationProps) => {
   const navigate = useNavigate();
   const [code, setCode] = useState("");
   const [verifying, setVerifying] = useState(false);
@@ -48,7 +49,11 @@ export const MFAVerification = ({ onCancel }: MFAVerificationProps) => {
         }
 
         toast.success("Backup code verified successfully!");
-        navigate("/dashboard");
+        if (onSuccess) {
+          await onSuccess();
+        } else {
+          navigate("/dashboard");
+        }
       } else {
         // Regular TOTP verification
         const challenge = await supabase.auth.mfa.challenge({ 
@@ -65,7 +70,11 @@ export const MFAVerification = ({ onCancel }: MFAVerificationProps) => {
         if (verify.error) throw verify.error;
 
         toast.success("Verification successful!");
-        navigate("/dashboard");
+        if (onSuccess) {
+          await onSuccess();
+        } else {
+          navigate("/dashboard");
+        }
       }
     } catch (error: any) {
       console.error("MFA verification error:", error);
