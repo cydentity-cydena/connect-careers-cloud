@@ -20,6 +20,9 @@ type Comment = {
     avatar_url: string | null;
     full_name: string | null;
   };
+  user_roles?: {
+    role: string;
+  }[];
 };
 
 const commentSchema = z.object({
@@ -126,6 +129,9 @@ export const PostComments = ({ postId }: { postId: string }) => {
             username,
             avatar_url,
             full_name
+          ),
+          user_roles!user_roles_user_id_fkey (
+            role
           )
         `)
         .eq('post_id', postId)
@@ -471,7 +477,9 @@ export const PostComments = ({ postId }: { postId: string }) => {
                     <div className="bg-muted rounded-lg px-3 py-2">
                       <div className="flex items-center justify-between gap-2 mb-1">
                         <span className="font-semibold text-xs">
-                          @{comment.profiles?.username || 'Anonymous'}
+                          @{comment.user_roles?.some(role => role.role === 'admin') 
+                            ? 'admin' 
+                            : (comment.profiles?.username || 'Anonymous')}
                         </span>
                         <span className="text-xs text-muted-foreground">
                           {formatDistanceToNow(new Date(comment.created_at), { addSuffix: true })}
