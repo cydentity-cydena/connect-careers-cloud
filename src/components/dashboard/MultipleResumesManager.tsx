@@ -135,12 +135,23 @@ export const MultipleResumesManager = () => {
 
   const handleDownload = async (resumeUrl: string, resumeName: string) => {
     try {
+      console.log("Downloading resume:", resumeUrl);
+      
       // Get signed URL for download
       const { data, error } = await supabase.storage
         .from("resumes")
         .createSignedUrl(resumeUrl, 60); // 60 seconds expiry
 
-      if (error) throw error;
+      if (error) {
+        console.error("Storage error:", error);
+        throw error;
+      }
+
+      if (!data?.signedUrl) {
+        throw new Error("No signed URL returned from storage");
+      }
+
+      console.log("Got signed URL, initiating download");
 
       // Create a temporary link and trigger download
       const link = document.createElement('a');
@@ -149,26 +160,38 @@ export const MultipleResumesManager = () => {
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+      
       toast.success("Resume downloaded");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error downloading resume:", error);
-      toast.error("Failed to download resume");
+      toast.error(`Failed to download resume: ${error.message || 'Unknown error'}`);
     }
   };
 
   const handleView = async (resumeUrl: string) => {
     try {
+      console.log("Viewing resume:", resumeUrl);
+      
       // Get signed URL for viewing
       const { data, error } = await supabase.storage
         .from("resumes")
         .createSignedUrl(resumeUrl, 300); // 5 minutes expiry
 
-      if (error) throw error;
+      if (error) {
+        console.error("Storage error:", error);
+        throw error;
+      }
 
+      if (!data?.signedUrl) {
+        throw new Error("No signed URL returned from storage");
+      }
+
+      console.log("Got signed URL, opening in new tab");
       window.open(data.signedUrl, '_blank');
-    } catch (error) {
+      toast.success("Resume opened");
+    } catch (error: any) {
       console.error("Error viewing resume:", error);
-      toast.error("Failed to view resume");
+      toast.error(`Failed to view resume: ${error.message || 'Unknown error'}`);
     }
   };
 
