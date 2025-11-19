@@ -112,7 +112,13 @@ const SecuritySettings = () => {
       }
     } catch (error: any) {
       console.error("Error enrolling MFA:", error);
-      toast.error(error.message || "Failed to enroll MFA");
+      
+      // Handle AAL2 requirement - user needs to re-authenticate with existing MFA
+      if (error.message?.includes("AAL2") || error.message?.includes("assurance level")) {
+        toast.error("Please verify with your existing MFA device first, then try adding a new device");
+      } else {
+        toast.error(error.message || "Failed to enroll MFA");
+      }
       setEnrolling(false);
     }
   };
