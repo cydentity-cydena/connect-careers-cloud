@@ -66,6 +66,7 @@ const Auth = () => {
   const [isPasswordResetMode, setIsPasswordResetMode] = useState(false);
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showMfaForReset, setShowMfaForReset] = useState(false);
   const oauthProfileStarted = useRef(false);
 
   useEffect(() => {
@@ -435,7 +436,16 @@ const Auth = () => {
         password: newPassword
       });
 
-      if (error) throw error;
+      if (error) {
+        // If AAL2 is required, show MFA verification prompt
+        if (error.message?.includes("AAL2") || error.message?.includes("assurance level")) {
+          setIsLoading(false);
+          setShowMfaForReset(true);
+          toast.info("Please verify your identity with your authenticator app first");
+          return;
+        }
+        throw error;
+      }
 
       toast.success("Password updated successfully!");
       
@@ -443,10 +453,39 @@ const Auth = () => {
       setNewPassword("");
       setConfirmPassword("");
       setIsPasswordResetMode(false);
+      setShowMfaForReset(false);
       navigate("/dashboard");
     } catch (error: any) {
       console.error("Password update error:", error);
       toast.error(error.message || "Failed to update password");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleMfaVerifiedForReset = async () => {
+    // After MFA is verified, try password reset again
+    setShowMfaForReset(false);
+    
+    // Small delay to ensure session is updated
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    setIsLoading(true);
+    try {
+      const { error } = await supabase.auth.updateUser({
+        password: newPassword
+      });
+
+      if (error) throw error;
+
+      toast.success("Password updated successfully!");
+      setNewPassword("");
+      setConfirmPassword("");
+      setIsPasswordResetMode(false);
+      navigate("/dashboard");
+    } catch (error: any) {
+      console.error("Password update error:", error);
+      toast.error(error.message || "Failed to update password. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -576,6 +615,26 @@ const Auth = () => {
           </CardHeader>
           <CardContent>
             {isPasswordResetMode ? (
+              showMfaForReset ? (
+                <div className="space-y-4">
+                  <Alert>
+                    <Shield className="h-4 w-4" />
+                    <AlertTitle>MFA Verification Required</AlertTitle>
+                    <AlertDescription>
+                      To reset your password, please verify your identity with your authenticator app.
+                    </AlertDescription>
+                  </Alert>
+                  <MFAVerification 
+                    onCancel={() => {
+                      setShowMfaForReset(false);
+                      setIsPasswordResetMode(false);
+                      setNewPassword("");
+                      setConfirmPassword("");
+                    }}
+                    onSuccess={handleMfaVerifiedForReset}
+                  />
+                </div>
+              ) : (
               <form onSubmit={handlePasswordReset} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="new-password">New Password</Label>
@@ -620,6 +679,7 @@ const Auth = () => {
                   )}
                 </Button>
               </form>
+              )
             ) : (
             <Tabs defaultValue="signin" className="w-full">
               <TabsList className="grid w-full grid-cols-2">
