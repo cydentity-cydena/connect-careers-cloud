@@ -721,10 +721,14 @@ export default function ProfileDetail() {
                         <div>
                           <p className="text-sm font-semibold mb-2">Specializations:</p>
                           <SpecializationBadges 
-                            specializations={detectSpecializations(
-                              candidateProfile.candidate_skills,
-                              candidateProfile.certifications
-                            )} 
+                            specializations={
+                              candidateProfile.specializations && candidateProfile.specializations.length > 0
+                                ? candidateProfile.specializations
+                                : detectSpecializations(
+                                    candidateProfile.candidate_skills,
+                                    candidateProfile.certifications
+                                  )
+                            } 
                             showAll
                           />
                         </div>
