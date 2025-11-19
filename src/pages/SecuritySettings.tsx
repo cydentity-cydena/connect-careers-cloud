@@ -299,72 +299,6 @@ const SecuritySettings = () => {
                   </Button>
                 </div>
               </div>
-            ) : mfaEnabled ? (
-              <div className="space-y-4">
-                <Alert className="border-green-500/50 bg-green-500/10">
-                  <CheckCircle className="h-4 w-4 text-green-500" />
-                  <AlertDescription className="text-green-500">
-                    Two-factor authentication is enabled and protecting your account
-                  </AlertDescription>
-                </Alert>
-                
-                {/* Enrolled Devices */}
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-sm font-semibold">Enrolled Devices ({enrolledDevices.length})</h3>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={handleEnrollMFA}
-                    >
-                      Add New Device
-                    </Button>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    {enrolledDevices.map((device) => (
-                      <div
-                        key={device.id}
-                        className="flex items-center justify-between p-3 border rounded-lg bg-card"
-                      >
-                        <div className="flex items-center gap-3">
-                          <Shield className="h-4 w-4 text-primary" />
-                          <div>
-                            <p className="text-sm font-medium">{device.friendly_name}</p>
-                            <p className="text-xs text-muted-foreground">
-                              Added: {new Date(device.created_at).toLocaleDateString()}
-                            </p>
-                          </div>
-                        </div>
-                        {enrolledDevices.length > 1 && (
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={() => handleRemoveDevice(device.id, device.friendly_name)}
-                          >
-                            Remove
-                          </Button>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {remainingCodes > 0 && (
-                  <Alert>
-                    <Key className="h-4 w-4" />
-                    <AlertDescription>
-                      You have {remainingCodes} unused backup code{remainingCodes !== 1 ? 's' : ''} remaining.
-                    </AlertDescription>
-                  </Alert>
-                )}
-                <Alert variant="destructive">
-                  <Shield className="h-4 w-4" />
-                  <AlertDescription>
-                    MFA is mandatory for all users on this cybersecurity platform and cannot be disabled.
-                  </AlertDescription>
-                </Alert>
-              </div>
             ) : enrolling ? (
               <div className="space-y-6">
                 <Alert>
@@ -471,6 +405,72 @@ const SecuritySettings = () => {
                     Cancel
                   </Button>
                 </div>
+              </div>
+            ) : mfaEnabled ? (
+              <div className="space-y-4">
+                <Alert className="border-green-500/50 bg-green-500/10">
+                  <CheckCircle className="h-4 w-4 text-green-500" />
+                  <AlertDescription className="text-green-500">
+                    Two-factor authentication is enabled and protecting your account
+                  </AlertDescription>
+                </Alert>
+                
+                {/* Enrolled Devices */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-sm font-semibold">Enrolled Devices ({enrolledDevices.length})</h3>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={handleEnrollMFA}
+                    >
+                      Add New Device
+                    </Button>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    {enrolledDevices.map((device) => (
+                      <div
+                        key={device.id}
+                        className="flex items-center justify-between p-3 border rounded-lg bg-card"
+                      >
+                        <div className="flex items-center gap-3">
+                          <Shield className="h-4 w-4 text-primary" />
+                          <div>
+                            <p className="text-sm font-medium">{device.friendly_name}</p>
+                            <p className="text-xs text-muted-foreground">
+                              Added: {new Date(device.created_at).toLocaleDateString()}
+                            </p>
+                          </div>
+                        </div>
+                        {enrolledDevices.length > 1 && (
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => handleRemoveDevice(device.id, device.friendly_name)}
+                          >
+                            Remove
+                          </Button>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {remainingCodes > 0 && (
+                  <Alert>
+                    <Key className="h-4 w-4" />
+                    <AlertDescription>
+                      You have {remainingCodes} unused backup code{remainingCodes !== 1 ? 's' : ''} remaining.
+                    </AlertDescription>
+                  </Alert>
+                )}
+                <Alert variant="destructive">
+                  <Shield className="h-4 w-4" />
+                  <AlertDescription>
+                    MFA is mandatory for all users on this cybersecurity platform and cannot be disabled.
+                  </AlertDescription>
+                </Alert>
               </div>
             ) : (
               <div className="space-y-4">
