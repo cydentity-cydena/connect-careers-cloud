@@ -30,6 +30,9 @@ interface Job {
   remote_allowed: boolean | null;
   created_at: string;
   description: string;
+  must_haves: string[] | null;
+  required_certifications: string[] | null;
+  years_experience_min: number | null;
 }
 
 interface CompanyVerification {
@@ -42,9 +45,16 @@ const Jobs = () => {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
   const [verifiedCompanies, setVerifiedCompanies] = useState<CompanyVerification>({});
+  const [candidateProfile, setCandidateProfile] = useState<{
+    skills: string[];
+    certifications: string[];
+    yearsExperience: number;
+    clearance: string | null;
+  } | null>(null);
 
   useEffect(() => {
     loadJobs();
+    loadCandidateProfile();
   }, []);
 
   const loadJobs = async () => {
@@ -63,6 +73,9 @@ const Jobs = () => {
           required_clearance,
           remote_allowed,
           created_at,
+          must_haves,
+          required_certifications,
+          years_experience_min,
           company:companies(name, created_by)
         `)
         .eq("is_active", true)
@@ -95,6 +108,84 @@ const Jobs = () => {
     }
   };
 
+  const loadCandidateProfile = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      // Fetch candidate skills
+      const { data: skillsData } = await supabase
+        .from("candidate_skills")
+        .select("skills(name)")
+        .eq("candidate_id", user.id);
+
+      const skills = skillsData?.map(s => s.skills?.name).filter(Boolean) || [];
+
+      // Fetch candidate certifications
+      const { data: certsData } = await supabase
+        .from("certifications")
+        .select("name")
+        .eq("candidate_id", user.id);
+
+      const certifications = certsData?.map(c => c.name) || [];
+
+      // Fetch candidate profile for years of experience and clearance
+      const { data: profileData } = await supabase
+        .from("candidate_profiles")
+        .select("years_experience, security_clearance")
+        .eq("user_id", user.id)
+        .single();
+
+      setCandidateProfile({
+        skills,
+        certifications,
+        yearsExperience: profileData?.years_experience || 0,
+        clearance: profileData?.security_clearance || null
+      });
+    } catch (error) {
+      console.error("Error loading candidate profile:", error);
+    }
+  };
+
+  const candidateQualifiesForJob = (job: Job): boolean => {
+    // If no candidate profile loaded, show all jobs (guest viewing)
+    if (!candidateProfile) return true;
+
+    // Check years of experience requirement
+    if (job.years_experience_min && candidateProfile.yearsExperience < job.years_experience_min) {
+      return false;
+    }
+
+    // Check security clearance requirement
+    if (job.required_clearance && job.required_clearance !== candidateProfile.clearance) {
+      return false;
+    }
+
+    // Check must-have skills/requirements
+    if (job.must_haves && job.must_haves.length > 0) {
+      const hasMustHaves = job.must_haves.every(mustHave => 
+        candidateProfile.skills.some(skill => 
+          skill.toLowerCase().includes(mustHave.toLowerCase()) ||
+          mustHave.toLowerCase().includes(skill.toLowerCase())
+        )
+      );
+      if (!hasMustHaves) return false;
+    }
+
+    // Check required certifications
+    if (job.required_certifications && job.required_certifications.length > 0) {
+      const hasRequiredCerts = job.required_certifications.every(reqCert =>
+        candidateProfile.certifications.some(cert =>
+          cert.toLowerCase().includes(reqCert.toLowerCase()) ||
+          reqCert.toLowerCase().includes(cert.toLowerCase())
+        )
+      );
+      if (!hasRequiredCerts) return false;
+    }
+
+    return true;
+  };
+
   const formatSalary = (min: number | null, max: number | null) => {
     if (!min && !max) return "Competitive";
     if (min && max) return `£${(min / 1000).toFixed(0)}k - £${(max / 1000).toFixed(0)}k`;
@@ -116,15 +207,17 @@ const Jobs = () => {
     return `${Math.floor(diffDays / 30)} months ago`;
   };
 
-  const filteredJobs = jobs.filter(
-    (job) =>
-      job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      job.company.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (job.location && job.location.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      (job.required_skills && job.required_skills.some((skill) =>
-        skill.toLowerCase().includes(searchQuery.toLowerCase())
-      ))
-  );
+  const filteredJobs = jobs
+    .filter(candidateQualifiesForJob) // Filter out jobs candidate doesn't qualify for
+    .filter(
+      (job) =>
+        job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        job.company.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (job.location && job.location.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (job.required_skills && job.required_skills.some((skill) =>
+          skill.toLowerCase().includes(searchQuery.toLowerCase())
+        ))
+    );
 
   return (
     <div className="min-h-screen bg-background">
@@ -169,6 +262,15 @@ const Jobs = () => {
             This is an example job post. Real job posts coming soon with key partners.
           </AlertDescription>
         </Alert>
+
+        {candidateProfile && (
+          <Alert className="mb-6 border-accent/20 bg-accent/5">
+            <Info className="h-4 w-4 text-accent" />
+            <AlertDescription className="text-foreground ml-2">
+              Intelligent Matching Active: You only see jobs matching your qualifications (skills, certifications, experience). No more spray-and-pray applications!
+            </AlertDescription>
+          </Alert>
+        )}
 
         {/* Jobs Grid */}
         {loading ? (
