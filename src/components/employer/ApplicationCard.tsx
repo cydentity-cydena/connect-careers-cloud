@@ -264,53 +264,53 @@ export const ApplicationCard = ({ application, onStageChange, onToggleStar, onAd
           </div>
 
           {/* Verification Status Badges */}
-          <div className="py-1">
+          <div className="py-2">
             <BadgesRow 
               items={getVerificationBadges()} 
               showHrReady={application.candidate_verifications?.hr_ready || false}
             />
           </div>
 
-          <div className="space-y-2.5 pt-1">
-            <div className="flex flex-wrap gap-2 items-center">
+          <div className="space-y-2.5">
+            <div className="flex flex-wrap gap-1.5 items-center">
               {/* Years of Experience Badge */}
               {application.candidate_profile?.years_experience !== undefined && (
-                <Badge variant="secondary" className="text-xs px-2.5 py-1 font-medium">
-                  <Briefcase className="h-3.5 w-3.5 mr-1.5" />
-                  {application.candidate_profile.years_experience} yrs
+                <Badge variant="secondary" className="text-xs px-2 py-0.5 font-medium flex items-center gap-1">
+                  <Briefcase className="h-3 w-3 flex-shrink-0" />
+                  <span className="whitespace-nowrap">{application.candidate_profile.years_experience} yrs</span>
                 </Badge>
               )}
               
               {/* Notes indicator - More prominent */}
               {application.status_notes && (
-                <Badge variant="secondary" className="text-xs px-2.5 py-1 font-medium bg-amber-100 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400">
-                  <StickyNote className="h-3.5 w-3.5 mr-1.5" />
-                  Notes
+                <Badge variant="secondary" className="text-xs px-2 py-0.5 font-medium bg-amber-100 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 flex items-center gap-1">
+                  <StickyNote className="h-3 w-3 flex-shrink-0" />
+                  <span className="whitespace-nowrap">Notes</span>
                 </Badge>
               )}
             </div>
 
             {/* Location if available */}
             {(application.candidate_verifications?.logistics_location || application.profile.location) && (
-              <div className="flex items-center gap-2 text-xs text-muted-foreground/90">
+              <div className="flex items-center gap-1.5 text-xs text-muted-foreground/90">
                 <MapPin className="h-3.5 w-3.5 flex-shrink-0" />
                 <span className="truncate font-medium">{application.candidate_verifications?.logistics_location || application.profile.location}</span>
               </div>
             )}
 
             {/* Applied date */}
-            <div className="flex items-center gap-2 text-xs text-muted-foreground/80">
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground/80">
               <Calendar className="h-3.5 w-3.5 flex-shrink-0" />
               <span className="truncate">{formatDistanceToNow(new Date(application.applied_at), { addSuffix: true })}</span>
             </div>
           </div>
 
-          <div className="flex gap-2 pt-2 min-w-0">
+          <div className="grid grid-cols-3 gap-1.5 pt-3">
             {application.candidate_profile?.resume_url && (
               <Button
                 variant="outline"
                 size="sm"
-                className="flex-1 h-10 text-xs font-medium px-2"
+                className="h-9 text-xs font-medium px-1.5 flex items-center justify-center gap-1"
                 onClick={async (e) => {
                   e.stopPropagation();
                   const { createClient } = await import('@supabase/supabase-js');
@@ -324,34 +324,36 @@ export const ApplicationCard = ({ application, onStageChange, onToggleStar, onAd
                   window.open(data.publicUrl, '_blank');
                 }}
               >
-                <Download className="h-4 w-4 mr-1.5" />
-                <span className="truncate">CV</span>
+                <Download className="h-3.5 w-3.5 flex-shrink-0" />
+                <span className="hidden sm:inline">CV</span>
               </Button>
             )}
             <Button
               variant="outline"
               size="sm"
-              className="flex-1 h-10 text-xs font-medium px-2"
+              className="h-9 text-xs font-medium px-1.5 flex items-center justify-center gap-1"
               onClick={(e) => {
                 e.stopPropagation();
                 window.location.href = `/profiles/${application.candidate_id}`;
               }}
             >
-              <Eye className="h-4 w-4 mr-1.5" />
-              <span className="truncate">View</span>
+              <Eye className="h-3.5 w-3.5 flex-shrink-0" />
+              <span>View</span>
             </Button>
             <Button
               variant="default"
               size="sm"
-              className="flex-1 h-10 text-xs font-medium px-2"
+              className="h-9 text-xs font-medium px-1.5 flex items-center justify-center gap-1 col-span-1"
               onClick={(e) => {
                 e.stopPropagation();
                 setShowMessageDialog(true);
               }}
             >
-              <MessageSquare className="h-4 w-4 mr-1.5" />
-              <span className="truncate">Message</span>
+              <MessageSquare className="h-3.5 w-3.5 flex-shrink-0" />
+              <span className="hidden sm:inline">Message</span>
             </Button>
+          </div>
+          <div className="pt-2">
             <PushCandidateButton 
               candidateId={application.candidate_id}
               candidateName={application.profile.full_name}
