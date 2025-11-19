@@ -19,6 +19,7 @@ const Profile = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
+  const [userRoles, setUserRoles] = useState<string[]>([]);
 
   const [fullName, setFullName] = useState('');
   const [username, setUsername] = useState('');
@@ -74,6 +75,16 @@ const Profile = () => {
         setLocation(profile.location ?? '');
         setAvatarUrl(profile.avatar_url ?? '');
         setDesiredJobTitle(profile.desired_job_title ?? '');
+      }
+
+      // Load user roles
+      const { data: rolesData } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', session.user.id);
+      
+      if (rolesData) {
+        setUserRoles(rolesData.map(r => r.role));
       }
 
       // Load candidate profile
@@ -642,7 +653,9 @@ const Profile = () => {
                       </div>
                       <div className="text-center space-y-1">
                         <p className="text-sm font-medium">{fullName || 'Your Name'}</p>
-                        <p className="text-xs text-muted-foreground">@{username || 'username'}</p>
+                        <p className="text-xs text-muted-foreground">
+                          @{userRoles.includes('admin') ? 'admin' : (username || 'username')}
+                        </p>
                       </div>
                       <Button
                         type="button"
