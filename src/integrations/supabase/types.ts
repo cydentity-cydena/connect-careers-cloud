@@ -3435,6 +3435,7 @@ export type Database = {
         | "interview"
         | "offer"
         | "system"
+        | "comment"
       pipeline_stage:
         | "applied"
         | "screening"
@@ -3599,6 +3600,7 @@ export const Constants = {
         "interview",
         "offer",
         "system",
+        "comment",
       ],
       pipeline_stage: [
         "applied",
