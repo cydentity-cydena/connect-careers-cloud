@@ -113,17 +113,22 @@ serve(async (req) => {
         );
       }
 
-      // Deduct credits
-      const { error: deductError } = await supabaseClient
-        .from('employer_credits')
-        .update({ 
-          credits: availableCredits - CREDITS_PER_ASSESSMENT,
-        })
-        .eq('employer_id', user.id);
+      // Deduct credits using RPC to ensure atomicity
+      const { error: deductError } = await supabaseClient.rpc('deduct_credits', {
+        p_employer_id: user.id,
+        p_amount: CREDITS_PER_ASSESSMENT
+      });
 
       if (deductError) {
         console.error('[CREATE-ASSESSMENT] Credit deduction error:', deductError);
-        throw new Error('Failed to deduct credits');
+        return new Response(
+          JSON.stringify({
+            success: false,
+            error: 'Failed to deduct credits',
+            message: deductError.message
+          }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
+        );
       }
 
       console.log(`[CREATE-ASSESSMENT] Deducted ${CREDITS_PER_ASSESSMENT} credits`);
