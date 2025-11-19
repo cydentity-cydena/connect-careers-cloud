@@ -46,17 +46,25 @@ export const AssignPodToEmployer = ({ podId, open, onOpenChange }: AssignPodToEm
   const { data: employers, isLoading: loadingEmployers } = useQuery({
     queryKey: ["employers-recruiters", searchTerm],
     queryFn: async () => {
+      // First get all employer and recruiter user IDs
+      const { data: userRoles, error: rolesError } = await supabase
+        .from("user_roles")
+        .select("user_id, role")
+        .in("role", ["employer", "recruiter"]);
+
+      if (rolesError) throw rolesError;
+      
+      const employerIds = userRoles?.map(r => r.user_id) || [];
+      
+      if (employerIds.length === 0) {
+        return [];
+      }
+
+      // Now get profiles for employers/recruiters
       let query = supabase
         .from("profiles")
-        .select(`
-          id,
-          full_name,
-          username,
-          avatar_url,
-          email,
-          user_roles!inner(role)
-        `)
-        .or("user_roles.role.eq.employer,user_roles.role.eq.recruiter");
+        .select("id, full_name, username, avatar_url, email")
+        .in("id", employerIds);
 
       if (searchTerm) {
         query = query.or(`full_name.ilike.%${searchTerm}%,username.ilike.%${searchTerm}%,email.ilike.%${searchTerm}%`);
