@@ -51,9 +51,10 @@ export const UpgradeTierDialog = ({
     );
   }
 
+  const UNLOCK_PACK_50_PRICE = 249; // Actual Stripe price for 50 unlock pack
   const monthlySavings = comparison.upgrade.perUnlock === 0 
-    ? (8 * 50) // Enterprise: save £8 per unlock if buying 50 overages
-    : (comparison.current.price + (8 * 50)) - comparison.upgrade.price;
+    ? UNLOCK_PACK_50_PRICE // Enterprise: save cost of 50 unlock pack
+    : (comparison.current.price + UNLOCK_PACK_50_PRICE) - comparison.upgrade.price;
   const additionalUnlocks = comparison.upgrade.allocation === 999999 
     ? 'Unlimited' 
     : comparison.upgrade.allocation - comparison.current.allocation;
@@ -102,11 +103,11 @@ export const UpgradeTierDialog = ({
                   </div>
                   <div className="flex justify-between">
                     <span>50 unlock pack:</span>
-                    <span>£400</span>
+                    <span>£{UNLOCK_PACK_50_PRICE}</span>
                   </div>
                   <div className="flex justify-between font-bold text-foreground pt-2 border-t">
                     <span>Total:</span>
-                    <span>£{comparison.current.price + 400}</span>
+                    <span>£{comparison.current.price + UNLOCK_PACK_50_PRICE}</span>
                   </div>
                 </div>
               </div>
