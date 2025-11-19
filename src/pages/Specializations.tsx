@@ -83,19 +83,20 @@ const Specializations = () => {
       .filter(([_, isSelected]) => isSelected)
       .map(([spec]) => spec as Specialization);
 
+    console.log('Saving specializations:', selectedSpecs);
+
     // Save to candidate_profiles
     const { error } = await supabase
       .from('candidate_profiles')
-      .upsert({
-        user_id: userId,
-        specializations: selectedSpecs
-      }, {
-        onConflict: 'user_id'
-      });
+      .update({
+        specializations: selectedSpecs,
+        updated_at: new Date().toISOString()
+      })
+      .eq('user_id', userId);
 
     if (error) {
       toast.error('Failed to save specializations');
-      console.error(error);
+      console.error('Save error:', error);
       return;
     }
 
