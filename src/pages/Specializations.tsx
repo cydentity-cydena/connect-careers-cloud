@@ -85,14 +85,16 @@ const Specializations = () => {
 
     console.log('Saving specializations:', selectedSpecs);
 
-    // Save to candidate_profiles
+    // Save to candidate_profiles using upsert
     const { error } = await supabase
       .from('candidate_profiles')
-      .update({
+      .upsert({
+        user_id: userId,
         specializations: selectedSpecs,
         updated_at: new Date().toISOString()
-      })
-      .eq('user_id', userId);
+      }, {
+        onConflict: 'user_id'
+      });
 
     if (error) {
       toast.error('Failed to save specializations');
