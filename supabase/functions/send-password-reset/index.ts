@@ -13,10 +13,19 @@ const PasswordResetSchema = z.object({
     (url) => {
       const supabaseUrl = Deno.env.get('SUPABASE_URL');
       const appUrl = Deno.env.get('APP_URL');
+      
+      console.log('Validation check:', {
+        redirectTo: url,
+        supabaseUrl,
+        appUrl
+      });
+      
       if (!supabaseUrl) return false;
       
-      // Allow same-origin redirects only
-      return url.startsWith(supabaseUrl) || (appUrl && url.startsWith(appUrl));
+      // Allow Supabase URLs, APP_URL, and any lovable.app domain
+      return url.startsWith(supabaseUrl) || 
+             (appUrl && url.startsWith(appUrl)) ||
+             url.includes('.lovable.app');
     },
     { message: 'Redirect URL must be to this site' }
   )
