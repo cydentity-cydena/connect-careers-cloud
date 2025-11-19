@@ -17,6 +17,7 @@ import { TeamMembersView } from "@/components/team/TeamMembersView";
 import { CreateCustomAssessmentDialog } from "@/components/assessments/CreateCustomAssessmentDialog";
 import { CustomAssessmentsList } from "@/components/assessments/CustomAssessmentsList";
 import { AssessmentQuotaDisplay } from "@/components/assessments/AssessmentQuotaDisplay";
+import { AssignedPods } from "@/components/employer/AssignedPods";
 
 const RecruiterDashboard = () => {
   const navigate = useNavigate();
@@ -146,7 +147,7 @@ const RecruiterDashboard = () => {
       )}
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full max-w-5xl grid-cols-9">
+        <TabsList className="grid w-full max-w-6xl grid-cols-10">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="analytics">Analytics</TabsTrigger>
           <TabsTrigger value="pipeline">Pipeline</TabsTrigger>
@@ -154,6 +155,7 @@ const RecruiterDashboard = () => {
           <TabsTrigger value="jobs">Jobs</TabsTrigger>
           <TabsTrigger value="clients">Clients</TabsTrigger>
           <TabsTrigger value="placements">Placements</TabsTrigger>
+          <TabsTrigger value="pods">Pods</TabsTrigger>
           <TabsTrigger value="team">Team</TabsTrigger>
           <TabsTrigger value="assessments">Assessments</TabsTrigger>
         </TabsList>
@@ -471,6 +473,10 @@ const RecruiterDashboard = () => {
 
         <TabsContent value="team" className="mt-6">
           <TeamMembersView role="recruiter" />
+        </TabsContent>
+
+        <TabsContent value="pods" className="mt-6">
+          <AssignedPods />
         </TabsContent>
 
         <TabsContent value="assessments" className="mt-6 space-y-6">
