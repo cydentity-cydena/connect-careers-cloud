@@ -24,6 +24,20 @@ export const AddCandidatesToPod = ({ podId, open, onOpenChange }: AddCandidatesT
   const { data: candidates, isLoading } = useQuery({
     queryKey: ["available-candidates", podId, searchTerm],
     queryFn: async () => {
+      // First get all candidate user IDs
+      const { data: candidateRoles, error: rolesError } = await supabase
+        .from("user_roles")
+        .select("user_id")
+        .eq("role", "candidate");
+
+      if (rolesError) throw rolesError;
+      
+      const candidateIds = candidateRoles?.map(r => r.user_id) || [];
+      
+      if (candidateIds.length === 0) {
+        return [];
+      }
+
       // Get candidates who are not already in this pod
       const { data: existingMembers } = await supabase
         .from("pod_members")
@@ -31,17 +45,19 @@ export const AddCandidatesToPod = ({ podId, open, onOpenChange }: AddCandidatesT
         .eq("pod_id", podId);
 
       const existingIds = existingMembers?.map(m => m.candidate_id) || [];
+      
+      // Filter out candidates already in pod
+      const availableCandidateIds = candidateIds.filter(id => !existingIds.includes(id));
+      
+      if (availableCandidateIds.length === 0) {
+        return [];
+      }
 
+      // Now get profiles for available candidates
       let query = supabase
         .from("profiles")
-        .select(`
-          id,
-          full_name,
-          username,
-          avatar_url,
-          user_roles!inner(role)
-        `)
-        .eq("user_roles.role", "candidate");
+        .select("id, full_name, username, avatar_url")
+        .in("id", availableCandidateIds);
 
       if (searchTerm) {
         query = query.or(`full_name.ilike.%${searchTerm}%,username.ilike.%${searchTerm}%`);
@@ -51,8 +67,7 @@ export const AddCandidatesToPod = ({ podId, open, onOpenChange }: AddCandidatesT
 
       if (error) throw error;
 
-      // Filter out existing members
-      return data?.filter(c => !existingIds.includes(c.id)) || [];
+      return data || [];
     },
     enabled: open,
   });
