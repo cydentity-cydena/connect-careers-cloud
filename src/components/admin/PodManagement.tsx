@@ -8,15 +8,20 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { Plus, Users, UserPlus, Building2 } from "lucide-react";
+import { Plus, Users, UserPlus, Building2, Pencil, Trash2 } from "lucide-react";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { AddCandidatesToPod } from "./AddCandidatesToPod";
 import { AssignPodToEmployer } from "./AssignPodToEmployer";
 import { PodMembers } from "./PodMembers";
 
 export const PodManagement = () => {
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [newPodName, setNewPodName] = useState("");
   const [newPodDescription, setNewPodDescription] = useState("");
+  const [editPodName, setEditPodName] = useState("");
+  const [editPodDescription, setEditPodDescription] = useState("");
   const [selectedPodId, setSelectedPodId] = useState<string | null>(null);
   const [addCandidatesOpen, setAddCandidatesOpen] = useState(false);
   const [assignEmployerOpen, setAssignEmployerOpen] = useState(false);
@@ -84,6 +89,65 @@ export const PodManagement = () => {
       toast.error("Failed to update pod: " + error.message);
     },
   });
+
+  const editPodMutation = useMutation({
+    mutationFn: async () => {
+      if (!selectedPodId) throw new Error("No pod selected");
+      
+      const { error } = await supabase
+        .from("candidate_pods")
+        .update({
+          name: editPodName,
+          description: editPodDescription,
+        })
+        .eq("id", selectedPodId);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Pod updated successfully");
+      setEditDialogOpen(false);
+      setSelectedPodId(null);
+      setEditPodName("");
+      setEditPodDescription("");
+      queryClient.invalidateQueries({ queryKey: ["candidate-pods"] });
+    },
+    onError: (error) => {
+      toast.error("Failed to update pod: " + error.message);
+    },
+  });
+
+  const deletePodMutation = useMutation({
+    mutationFn: async (podId: string) => {
+      const { error } = await supabase
+        .from("candidate_pods")
+        .delete()
+        .eq("id", podId);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Pod deleted successfully");
+      setDeleteDialogOpen(false);
+      setSelectedPodId(null);
+      queryClient.invalidateQueries({ queryKey: ["candidate-pods"] });
+    },
+    onError: (error) => {
+      toast.error("Failed to delete pod: " + error.message);
+    },
+  });
+
+  const handleEditClick = (pod: any) => {
+    setSelectedPodId(pod.id);
+    setEditPodName(pod.name);
+    setEditPodDescription(pod.description || "");
+    setEditDialogOpen(true);
+  };
+
+  const handleDeleteClick = (podId: string) => {
+    setSelectedPodId(podId);
+    setDeleteDialogOpen(true);
+  };
 
   if (isLoading) {
     return <div className="text-center p-8">Loading pods...</div>;
@@ -155,15 +219,31 @@ export const PodManagement = () => {
                   </CardTitle>
                   <CardDescription>{pod.description || "No description"}</CardDescription>
                 </div>
-                <Button
-                  variant={pod.is_active ? "outline" : "default"}
-                  size="sm"
-                  onClick={() =>
-                    togglePodStatusMutation.mutate({ podId: pod.id, isActive: pod.is_active })
-                  }
-                >
-                  {pod.is_active ? "Deactivate" : "Activate"}
-                </Button>
+                <div className="flex gap-2">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleEditClick(pod)}
+                  >
+                    <Pencil className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleDeleteClick(pod.id)}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant={pod.is_active ? "outline" : "default"}
+                    size="sm"
+                    onClick={() =>
+                      togglePodStatusMutation.mutate({ podId: pod.id, isActive: pod.is_active })
+                    }
+                  >
+                    {pod.is_active ? "Deactivate" : "Activate"}
+                  </Button>
+                </div>
               </div>
             </CardHeader>
             <CardContent>
@@ -247,6 +327,76 @@ export const PodManagement = () => {
           />
         </>
       )}
+
+      {/* Edit Pod Dialog */}
+      <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit Pod</DialogTitle>
+            <DialogDescription>
+              Update the pod's name and description
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="edit-pod-name">Pod Name</Label>
+              <Input
+                id="edit-pod-name"
+                placeholder="e.g., Senior Penetration Testers"
+                value={editPodName}
+                onChange={(e) => setEditPodName(e.target.value)}
+              />
+            </div>
+            <div>
+              <Label htmlFor="edit-pod-description">Description</Label>
+              <Textarea
+                id="edit-pod-description"
+                placeholder="Describe this pod..."
+                value={editPodDescription}
+                onChange={(e) => setEditPodDescription(e.target.value)}
+              />
+            </div>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                onClick={() => setEditDialogOpen(false)}
+                className="flex-1"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={() => editPodMutation.mutate()}
+                disabled={!editPodName || editPodMutation.isPending}
+                className="flex-1"
+              >
+                {editPodMutation.isPending ? "Updating..." : "Update Pod"}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently delete this pod and remove all member assignments. 
+              This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => selectedPodId && deletePodMutation.mutate(selectedPodId)}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {deletePodMutation.isPending ? "Deleting..." : "Delete Pod"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
