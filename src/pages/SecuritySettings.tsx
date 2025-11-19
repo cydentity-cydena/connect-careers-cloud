@@ -25,6 +25,7 @@ const SecuritySettings = () => {
   const [backupCodes, setBackupCodes] = useState<string[]>([]);
   const [showBackupCodes, setShowBackupCodes] = useState(false);
   const [remainingCodes, setRemainingCodes] = useState(0);
+  const [enrolledDevices, setEnrolledDevices] = useState<any[]>([]);
 
   useEffect(() => {
     checkAuth();
@@ -47,11 +48,12 @@ const SecuritySettings = () => {
       return;
     }
     
-    const totpFactor = data?.totp?.find((f) => f.status === "verified");
-    setMfaEnabled(!!totpFactor);
+    const verifiedFactors = data?.totp?.filter((f) => f.status === "verified") || [];
+    setEnrolledDevices(verifiedFactors);
+    setMfaEnabled(verifiedFactors.length > 0);
     
     // Check remaining backup codes
-    if (totpFactor) {
+    if (verifiedFactors.length > 0) {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
         const count = await getRemainingBackupCodes(user.id);
@@ -66,18 +68,21 @@ const SecuritySettings = () => {
     setSecret("");
     
     try {
-      // Clear ALL existing TOTP factors (both pending and verified) to avoid limits
+      // Only clear pending (unverified) TOTP factors, keep verified ones
       const { data: factorsData, error: factorsError } = await supabase.auth.mfa.listFactors();
       if (factorsError) throw factorsError;
 
-      // Unenroll all existing TOTP factors
-      if (factorsData?.totp && factorsData.totp.length > 0) {
-        for (const factor of factorsData.totp) {
-          await supabase.auth.mfa.unenroll({ factorId: factor.id });
-        }
+      // Unenroll only pending TOTP factors
+      const pendingFactors = factorsData?.totp?.filter(f => f.status !== "verified") || [];
+      for (const factor of pendingFactors) {
+        await supabase.auth.mfa.unenroll({ factorId: factor.id });
       }
 
-      const friendlyName = `Cydena ${new Date().toISOString()}`;
+      const deviceName = enrolledDevices.length === 0 
+        ? "Primary Device" 
+        : `Device ${enrolledDevices.length + 1}`;
+      const friendlyName = `${deviceName} - ${new Date().toLocaleDateString()}`;
+      
       const { data, error } = await supabase.auth.mfa.enroll({
         factorType: "totp",
         issuer: "Cydena",
@@ -171,6 +176,24 @@ const SecuritySettings = () => {
 
   const handleDisableMFA = async () => {
     toast.error("Two-factor authentication is mandatory for all users on this security platform and cannot be disabled.");
+  };
+
+  const handleRemoveDevice = async (factorId: string, deviceName: string) => {
+    if (enrolledDevices.length === 1) {
+      toast.error("Cannot remove your only MFA device. Two-factor authentication is mandatory.");
+      return;
+    }
+
+    try {
+      const { error } = await supabase.auth.mfa.unenroll({ factorId });
+      if (error) throw error;
+      
+      toast.success(`Removed device: ${deviceName}`);
+      await checkMFAStatus();
+    } catch (error: any) {
+      console.error("Error removing MFA device:", error);
+      toast.error(error.message || "Failed to remove device");
+    }
   };
 
   if (loading) {
@@ -284,6 +307,49 @@ const SecuritySettings = () => {
                     Two-factor authentication is enabled and protecting your account
                   </AlertDescription>
                 </Alert>
+                
+                {/* Enrolled Devices */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-sm font-semibold">Enrolled Devices ({enrolledDevices.length})</h3>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={handleEnrollMFA}
+                    >
+                      Add New Device
+                    </Button>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    {enrolledDevices.map((device) => (
+                      <div
+                        key={device.id}
+                        className="flex items-center justify-between p-3 border rounded-lg bg-card"
+                      >
+                        <div className="flex items-center gap-3">
+                          <Shield className="h-4 w-4 text-primary" />
+                          <div>
+                            <p className="text-sm font-medium">{device.friendly_name}</p>
+                            <p className="text-xs text-muted-foreground">
+                              Added: {new Date(device.created_at).toLocaleDateString()}
+                            </p>
+                          </div>
+                        </div>
+                        {enrolledDevices.length > 1 && (
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => handleRemoveDevice(device.id, device.friendly_name)}
+                          >
+                            Remove
+                          </Button>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
                 {remainingCodes > 0 && (
                   <Alert>
                     <Key className="h-4 w-4" />
