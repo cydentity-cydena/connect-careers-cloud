@@ -717,22 +717,25 @@ export default function ProfileDetail() {
                     </CardHeader>
                     <CardContent className="space-y-4">
                       {/* Specialization Badges */}
-                      {candidateProfile.candidate_skills && candidateProfile.certifications && (
-                        <div>
-                          <p className="text-sm font-semibold mb-2">Specializations:</p>
-                          <SpecializationBadges 
-                            specializations={
-                              candidateProfile.specializations && candidateProfile.specializations.length > 0
-                                ? candidateProfile.specializations
-                                : detectSpecializations(
-                                    candidateProfile.candidate_skills,
-                                    candidateProfile.certifications
-                                  )
-                            } 
-                            showAll
-                          />
-                        </div>
-                      )}
+                      {candidateProfile.candidate_skills && candidateProfile.certifications && (() => {
+                        const savedSpecs = candidateProfile.specializations;
+                        const autoDetected = detectSpecializations(
+                          candidateProfile.candidate_skills,
+                          candidateProfile.certifications
+                        );
+                        const specsToShow = savedSpecs && savedSpecs.length > 0 ? savedSpecs : autoDetected;
+                        console.log('Specializations debug:', { savedSpecs, autoDetected, specsToShow });
+                        
+                        return (
+                          <div>
+                            <p className="text-sm font-semibold mb-2">Specializations:</p>
+                            <SpecializationBadges 
+                              specializations={specsToShow} 
+                              showAll
+                            />
+                          </div>
+                        );
+                      })()}
                       
                       {/* Skills List */}
                       <div>
