@@ -85,7 +85,7 @@ export const UpgradeTierDialog = ({
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span>Annual allocation:</span>
+                  <span>Monthly allocation:</span>
                   <span className="font-semibold">{comparison.current.allocation} unlocks</span>
                 </div>
                 <div className="flex justify-between text-sm">
@@ -132,7 +132,7 @@ export const UpgradeTierDialog = ({
                   <Check className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
                   <div>
                     <div className="font-semibold">
-                      {comparison.upgrade.allocation === 999999 ? 'Unlimited' : comparison.upgrade.allocation} annual unlocks
+                      {comparison.upgrade.allocation === 999999 ? 'Unlimited' : comparison.upgrade.allocation} unlocks/month
                     </div>
                     <div className="text-sm text-muted-foreground">
                       {typeof additionalUnlocks === 'number' ? `+${additionalUnlocks}` : additionalUnlocks} more than {currentTier}
