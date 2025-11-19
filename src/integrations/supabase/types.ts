@@ -3350,6 +3350,10 @@ export type Database = {
         Args: { p_user_id: string }
         Returns: number
       }
+      deduct_credits: {
+        Args: { p_amount: number; p_employer_id: string }
+        Returns: undefined
+      }
       generate_invitation_token: { Args: never; Returns: string }
       generate_referral_code: { Args: { p_user_id: string }; Returns: string }
       get_assessment_quota: {
