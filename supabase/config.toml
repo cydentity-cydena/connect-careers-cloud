@@ -68,3 +68,6 @@ verify_jwt = true
 
 [functions.send-password-reset]
 verify_jwt = false
+
+[functions.create-custom-assessment]
+verify_jwt = true
