@@ -68,7 +68,7 @@ const HRReady = () => {
           setNoticeDays(verif.logistics_notice_days || 30);
           setLocation(verif.logistics_location || "");
           setSalaryBand(verif.logistics_salary_band || "");
-          setCommuteRadius(verif.logistics_commute_radius_km || 20);
+          setCommuteRadius(verif.logistics_commute_radius_km || 15);
         }
       } catch (e) {
         console.error(e);
@@ -182,10 +182,10 @@ const HRReady = () => {
       return;
     }
     
-    if (commuteRadius < 0 || commuteRadius > 500) {
+    if (commuteRadius < 0 || commuteRadius > 300) {
       toast({ 
         title: "Invalid commute radius", 
-        description: "Commute radius must be between 0 and 500 km",
+        description: "Commute radius must be between 0 and 300 miles",
         variant: "destructive" 
       });
       return;
@@ -380,15 +380,15 @@ const HRReady = () => {
                 </div>
 
                 <div className="space-y-1.5">
-                  <Label htmlFor="commute">Commute Radius (km)</Label>
+                  <Label htmlFor="commute">Commute Radius (miles)</Label>
                   <Input 
                     id="commute"
                     type="number" 
                     min="0" 
-                    max="500"
+                    max="300"
                     value={commuteRadius}
-                    onChange={(e) => setCommuteRadius(Math.min(500, Math.max(0, parseInt(e.target.value) || 0)))}
-                    placeholder="20"
+                    onChange={(e) => setCommuteRadius(Math.min(300, Math.max(0, parseInt(e.target.value) || 0)))}
+                    placeholder="15"
                   />
                   <p className="text-xs text-muted-foreground">Maximum distance willing to commute</p>
                 </div>
