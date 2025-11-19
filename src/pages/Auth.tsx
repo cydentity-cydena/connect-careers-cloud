@@ -63,6 +63,9 @@ const Auth = () => {
   const [mfaCode, setMfaCode] = useState("");
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
+  const [isPasswordResetMode, setIsPasswordResetMode] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const oauthProfileStarted = useRef(false);
 
   useEffect(() => {
@@ -71,6 +74,11 @@ const Auth = () => {
     const founding200Param = searchParams.get('founding200');
     const modeParam = searchParams.get('mode');
     const refParam = searchParams.get('ref');
+    
+    // Check if this is a password reset flow
+    if (modeParam === 'reset') {
+      setIsPasswordResetMode(true);
+    }
     
     // Store referral code if present
     if (refParam && modeParam !== 'signin') {
@@ -88,6 +96,15 @@ const Auth = () => {
     // Check if user is already logged in and has a role
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (session) {
+        // Don't redirect if we're in password reset mode
+        const searchParams = new URLSearchParams(window.location.search);
+        const modeParam = searchParams.get('mode');
+        
+        if (modeParam === 'reset') {
+          // Stay on this page to allow password reset
+          return;
+        }
+        
         // Check if user has a role assigned
         const { data: roleData } = await supabase
           .from('user_roles')
@@ -111,6 +128,15 @@ const Auth = () => {
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN' && session) {
+        // Don't redirect if we're in password reset mode
+        const searchParams = new URLSearchParams(window.location.search);
+        const modeParam = searchParams.get('mode');
+        
+        if (modeParam === 'reset') {
+          // Stay on this page to allow password reset
+          return;
+        }
+        
         // Check if user has a role assigned
         const { data: roleData } = await supabase
           .from('user_roles')
@@ -384,6 +410,48 @@ const Auth = () => {
     }
   };
 
+  const handlePasswordReset = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Validate passwords
+    try {
+      passwordSchema.parse(newPassword);
+    } catch (error: any) {
+      if (error instanceof z.ZodError) {
+        toast.error(error.errors[0].message);
+        return;
+      }
+    }
+
+    if (newPassword !== confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const { error } = await supabase.auth.updateUser({
+        password: newPassword
+      });
+
+      if (error) throw error;
+
+      toast.success("Password updated successfully!");
+      
+      // Clear the form and redirect
+      setNewPassword("");
+      setConfirmPassword("");
+      setIsPasswordResetMode(false);
+      navigate("/dashboard");
+    } catch (error: any) {
+      console.error("Password update error:", error);
+      toast.error(error.message || "Failed to update password");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -498,12 +566,61 @@ const Auth = () => {
         <div className="max-w-md mx-auto">
         <Card className="border-border shadow-card animate-slide-up">
           <CardHeader>
-            <CardTitle>Welcome to Cydena</CardTitle>
+            <CardTitle>{isPasswordResetMode ? "Reset Your Password" : "Welcome to Cydena"}</CardTitle>
             <CardDescription>
-              Sign in to your cybersecurity career dashboard or create your free account
+              {isPasswordResetMode 
+                ? "Enter your new password below" 
+                : "Sign in to your cybersecurity career dashboard or create your free account"
+              }
             </CardDescription>
           </CardHeader>
           <CardContent>
+            {isPasswordResetMode ? (
+              <form onSubmit={handlePasswordReset} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="new-password">New Password</Label>
+                  <Input
+                    id="new-password"
+                    type="password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    required
+                    disabled={isLoading}
+                    placeholder="Enter new password"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Must be at least 12 characters with uppercase, lowercase, number, and special character
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="confirm-password">Confirm Password</Label>
+                  <Input
+                    id="confirm-password"
+                    type="password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    required
+                    disabled={isLoading}
+                    placeholder="Confirm new password"
+                  />
+                </div>
+                <Button
+                  type="submit"
+                  variant="hero"
+                  className="w-full"
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      Updating Password...
+                    </>
+                  ) : (
+                    "Update Password"
+                  )}
+                </Button>
+              </form>
+            ) : (
             <Tabs defaultValue="signin" className="w-full">
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="signin">Sign In</TabsTrigger>
@@ -819,6 +936,7 @@ const Auth = () => {
                 </form>
               </TabsContent>
             </Tabs>
+            )}
           </CardContent>
         </Card>
         </div>
