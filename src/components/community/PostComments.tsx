@@ -117,7 +117,7 @@ export const PostComments = ({ postId }: { postId: string }) => {
 
   const loadComments = async () => {
     try {
-      const { data, error } = await supabase
+      const { data: commentsData, error } = await supabase
         .from('post_comments')
         .select(`
           id,
@@ -129,17 +129,30 @@ export const PostComments = ({ postId }: { postId: string }) => {
             username,
             avatar_url,
             full_name
-          ),
-          user_roles!user_roles_user_id_fkey (
-            role
           )
         `)
         .eq('post_id', postId)
         .order('created_at', { ascending: true });
 
       if (error) throw error;
-      setComments(data as any || []);
-      setCommentCount(data?.length || 0);
+
+      // Fetch user roles separately for each comment
+      const commentsWithRoles = await Promise.all(
+        (commentsData || []).map(async (comment) => {
+          const { data: roles } = await supabase
+            .from('user_roles')
+            .select('role')
+            .eq('user_id', comment.user_id);
+          
+          return {
+            ...comment,
+            user_roles: roles || []
+          };
+        })
+      );
+
+      setComments(commentsWithRoles as any);
+      setCommentCount(commentsWithRoles?.length || 0);
     } catch (error) {
       console.error('Error loading comments:', error);
     }
