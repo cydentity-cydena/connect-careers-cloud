@@ -100,7 +100,7 @@ export const CertificationManager = () => {
 
   return (
     <>
-      <ScrollArea className="max-h-[600px]">
+      <ScrollArea className="h-[600px]">
         <div className="space-y-4 pr-4">
           {certifications.map((cert) => (
           <Card key={cert.id}>
