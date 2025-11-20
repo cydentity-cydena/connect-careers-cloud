@@ -212,9 +212,18 @@ export function CandidateVerificationReview() {
 
       if (error) throw error;
 
+      // Create notification for candidate
+      await supabase.from('notifications').insert({
+        user_id: request.candidate_id,
+        type: 'system',
+        title: `${request.verification_type.toUpperCase()} Verification Rejected`,
+        message: `Your ${request.verification_type} verification has been rejected. Reason: ${rejectionReason}`,
+        link: '/dashboard',
+      });
+
       toast({
         title: "Verification rejected",
-        description: `${request.verification_type.toUpperCase()} verification rejected`,
+        description: `${request.verification_type.toUpperCase()} verification rejected and candidate notified`,
       });
 
       queryClient.invalidateQueries({ queryKey: ['verification-requests'] });
