@@ -130,11 +130,11 @@ const Navigation = () => {
           {/* Desktop Navigation */}
           <TooltipProvider>
             <div className="hidden lg:flex items-center gap-4 xl:gap-6">
-              {!isLoading && navLinks.map((link) => (
+              {navLinks.map((link) => (
                 <Link
                   key={link.to}
                   to={link.to}
-                  className={`text-sm font-semibold transition-all duration-200 whitespace-nowrap ${
+                  className={`text-sm font-semibold transition-colors duration-150 whitespace-nowrap ${
                     location.pathname === link.to 
                       ? "text-accent" 
                       : "text-foreground/80 hover:text-primary"
@@ -265,12 +265,12 @@ const Navigation = () => {
                   
                   {/* Mobile Navigation Links */}
                   <div className="flex flex-col gap-3 pt-4 border-t border-border">
-                    {!isLoading && navLinks.map((link) => (
+                    {navLinks.map((link) => (
                       <Link
                         key={link.to}
                         to={link.to}
                         onClick={handleNavClick}
-                        className={`text-base font-semibold transition-all duration-200 py-2 px-1 rounded ${
+                        className={`text-base font-semibold transition-colors duration-150 py-2 px-1 rounded ${
                           location.pathname === link.to 
                             ? "text-accent bg-accent/10" 
                             : "text-foreground/80 hover:text-primary hover:bg-muted/50"
