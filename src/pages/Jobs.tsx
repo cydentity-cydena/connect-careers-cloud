@@ -45,6 +45,7 @@ const Jobs = () => {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
   const [verifiedCompanies, setVerifiedCompanies] = useState<CompanyVerification>({});
+  const [isAdmin, setIsAdmin] = useState(false);
   const [candidateProfile, setCandidateProfile] = useState<{
     skills: string[];
     certifications: string[];
@@ -55,6 +56,7 @@ const Jobs = () => {
   useEffect(() => {
     loadJobs();
     loadCandidateProfile();
+    checkAdminRole();
   }, []);
 
   const loadJobs = async () => {
@@ -147,7 +149,27 @@ const Jobs = () => {
     }
   };
 
+  const checkAdminRole = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data: roles } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", user.id);
+
+      const hasAdminRole = roles?.some(r => r.role === 'admin') || false;
+      setIsAdmin(hasAdminRole);
+    } catch (error) {
+      console.error("Error checking admin role:", error);
+    }
+  };
+
   const candidateQualifiesForJob = (job: Job): boolean => {
+    // Admins can see all jobs
+    if (isAdmin) return true;
+    
     // If no candidate profile loaded, show all jobs (guest viewing)
     if (!candidateProfile) return true;
 
@@ -263,7 +285,7 @@ const Jobs = () => {
           </AlertDescription>
         </Alert>
 
-        {candidateProfile && (
+        {candidateProfile && !isAdmin && (
           <Alert className="mb-6 border-accent/20 bg-accent/5">
             <Info className="h-4 w-4 text-accent" />
             <AlertDescription className="text-foreground ml-2">
