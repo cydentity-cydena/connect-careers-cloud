@@ -35,6 +35,9 @@ type Activity = {
     avatar_url: string | null;
     full_name: string | null;
   };
+  user_roles?: {
+    role: string;
+  }[];
 };
 
 const getActivityIcon = (type: string) => {
@@ -128,7 +131,7 @@ export const ActivityFeed = ({ limit = 20 }: { limit?: number }) => {
 
   const loadActivities = async () => {
     try {
-      const { data, error } = await supabase
+      const { data: activitiesData, error } = await supabase
         .from('activity_feed')
         .select(`
           id,
@@ -149,7 +152,25 @@ export const ActivityFeed = ({ limit = 20 }: { limit?: number }) => {
         .limit(limit);
 
       if (error) throw error;
-      setActivities(data as any || []);
+
+      // Fetch user roles separately for each activity
+      const activitiesWithRoles = await Promise.all(
+        (activitiesData || []).map(async (activity) => {
+          if (!activity.user_id) return activity;
+          
+          const { data: roles } = await supabase
+            .from('user_roles')
+            .select('role')
+            .eq('user_id', activity.user_id);
+          
+          return {
+            ...activity,
+            user_roles: roles || []
+          };
+        })
+      );
+
+      setActivities(activitiesWithRoles as any);
     } catch (error) {
       console.error('Error loading activities:', error);
     } finally {
@@ -287,7 +308,11 @@ export const ActivityFeed = ({ limit = 20 }: { limit?: number }) => {
                   <div className="flex items-start justify-between gap-2 mb-2">
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="font-semibold">
-                        {activity.user_id === null ? 'Cydena AI' : `@${activity.profiles?.username || 'Anonymous'}`}
+                        {activity.user_id === null 
+                          ? 'Cydena AI' 
+                          : `@${activity.user_roles?.some(role => role.role === 'admin') 
+                              ? 'admin' 
+                              : (activity.profiles?.username || 'Anonymous')}`}
                       </span>
                       <Badge 
                         variant="secondary" 
