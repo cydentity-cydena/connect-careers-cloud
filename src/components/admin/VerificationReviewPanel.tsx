@@ -220,6 +220,25 @@ export function VerificationReviewPanel() {
                         <p className="text-sm mt-1">{request.additional_info}</p>
                       </div>
                     )}
+                    {request.document_urls && Array.isArray(request.document_urls) && request.document_urls.length > 0 && (
+                      <div>
+                        <p className="font-medium text-muted-foreground text-sm mb-2">Supporting Documents</p>
+                        <div className="flex flex-wrap gap-2">
+                          {request.document_urls.map((url: string, idx: number) => (
+                            <Button
+                              key={idx}
+                              size="sm"
+                              variant="outline"
+                              onClick={() => window.open(url, '_blank')}
+                              className="text-xs"
+                            >
+                              <ExternalLink className="h-3 w-3 mr-1" />
+                              Document {idx + 1}
+                            </Button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                     <div className="flex gap-2 pt-2">
                       <Button
                         size="sm"
