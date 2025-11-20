@@ -7,7 +7,8 @@ export type Specialization =
   | 'grc-compliance'
   | 'application-security'
   | 'network-security'
-  | 'threat-intelligence';
+  | 'threat-intelligence'
+  | 'operational-technology';
 
 export interface SpecializationBadge {
   id: Specialization;
@@ -74,6 +75,14 @@ export const SPECIALIZATIONS: SpecializationBadge[] = [
     color: 'bg-indigo-500/10 text-indigo-600 border-indigo-500/20',
     keywords: ['threat intelligence', 'cti', 'osint', 'mitre att&ck', 'indicators of compromise', 'ioc'],
     certKeywords: ['gcti', 'ctia', 'cyberthreat', 'cyberintel', 'osint']
+  },
+  {
+    id: 'operational-technology',
+    label: 'Operational Technology',
+    icon: '⚙️',
+    color: 'bg-yellow-500/10 text-yellow-600 border-yellow-500/20',
+    keywords: ['operational technology', 'ot', 'scada', 'ics', 'industrial control systems', 'plc', 'hmi', 'dcs', 'modbus', 'dnp3', 'ot security', 'critical infrastructure'],
+    certKeywords: ['gicsp', 'grid', 'ics', 'scada', 'ot security', 'industrial cybersecurity', 'iec 62443', 'nist 800-82']
   }
 ];
 
