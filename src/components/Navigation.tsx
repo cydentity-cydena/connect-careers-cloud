@@ -134,10 +134,10 @@ const Navigation = () => {
                 <Link
                   key={link.to}
                   to={link.to}
-                  className={`text-sm font-medium transition-colors whitespace-nowrap ${
+                  className={`text-sm font-semibold transition-all duration-200 whitespace-nowrap ${
                     location.pathname === link.to 
-                      ? "text-accent hover:text-accent/80 font-semibold" 
-                      : "hover:text-primary"
+                      ? "text-accent" 
+                      : "text-foreground/80 hover:text-primary"
                   }`}
                 >
                   {link.label}
@@ -270,10 +270,10 @@ const Navigation = () => {
                         key={link.to}
                         to={link.to}
                         onClick={handleNavClick}
-                        className={`text-base font-medium transition-colors py-2 px-1 rounded ${
+                        className={`text-base font-semibold transition-all duration-200 py-2 px-1 rounded ${
                           location.pathname === link.to 
-                            ? "text-accent hover:text-accent/80 font-semibold bg-accent/10" 
-                            : "hover:text-primary hover:bg-muted/50"
+                            ? "text-accent bg-accent/10" 
+                            : "text-foreground/80 hover:text-primary hover:bg-muted/50"
                         }`}
                       >
                         {link.label}
