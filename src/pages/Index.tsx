@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Shield, Users, Briefcase, TrendingUp, ArrowRight, Clock, DollarSign, Target, CheckCircle, GraduationCap, Eye, Award, Filter } from "lucide-react";
+import { Shield, Users, Briefcase, TrendingUp, ArrowRight, Clock, DollarSign, Target, CheckCircle, GraduationCap, Eye, Award, Filter, BarChart3, BadgeCheck } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import SEO from "@/components/SEO";
 import Schema from "@/components/Schema";
@@ -199,6 +199,26 @@ const Index = () => {
               <h3 className="text-base md:text-lg lg:text-xl font-semibold mb-2 md:mb-3">ATS & Webhook Integration</h3>
               <p className="text-xs md:text-sm lg:text-base text-muted-foreground leading-relaxed">
                 Push candidates to Workday and SAP SuccessFactors. Automate workflows with webhooks
+              </p>
+            </div>
+
+            <div className="bg-gradient-card backdrop-blur-sm border border-border rounded-lg p-5 md:p-6 lg:p-8 hover:scale-105 transition-transform animate-slide-up" style={{animationDelay: '0.25s'}}>
+              <div className="bg-accent/10 w-11 h-11 md:w-12 md:h-12 lg:w-14 lg:h-14 rounded-lg flex items-center justify-center mb-3 md:mb-4 lg:mb-6 flex-shrink-0">
+                <BarChart3 className="h-5 w-5 md:h-6 md:w-6 lg:h-7 lg:w-7 text-accent" />
+              </div>
+              <h3 className="text-base md:text-lg lg:text-xl font-semibold mb-2 md:mb-3">Analytics & Insights</h3>
+              <p className="text-xs md:text-sm lg:text-base text-muted-foreground leading-relaxed">
+                Track hiring metrics, time-to-hire, and pipeline performance. Data-driven decisions for better recruitment outcomes.
+              </p>
+            </div>
+
+            <div className="bg-gradient-card backdrop-blur-sm border border-border rounded-lg p-5 md:p-6 lg:p-8 hover:scale-105 transition-transform animate-slide-up" style={{animationDelay: '0.3s'}}>
+              <div className="bg-primary/10 w-11 h-11 md:w-12 md:h-12 lg:w-14 lg:h-14 rounded-lg flex items-center justify-center mb-3 md:mb-4 lg:mb-6 flex-shrink-0">
+                <BadgeCheck className="h-5 w-5 md:h-6 md:w-6 lg:h-7 lg:w-7 text-primary" />
+              </div>
+              <h3 className="text-base md:text-lg lg:text-xl font-semibold mb-2 md:mb-3">Skills Verification</h3>
+              <p className="text-xs md:text-sm lg:text-base text-muted-foreground leading-relaxed">
+                Pre-validated technical skills and certifications. Reduce interview time with candidates who've proven their expertise.
               </p>
             </div>
           </div>
