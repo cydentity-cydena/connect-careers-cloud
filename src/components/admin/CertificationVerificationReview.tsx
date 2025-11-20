@@ -118,7 +118,25 @@ export function CertificationVerificationReview() {
         return;
       }
 
-      toast.success('Certification rejected');
+      // Get certification details to notify candidate
+      const { data: cert } = await supabase
+        .from('certifications')
+        .select('candidate_id, name')
+        .eq('id', certId)
+        .single();
+
+      if (cert) {
+        // Create notification for candidate
+        await supabase.from('notifications').insert({
+          user_id: cert.candidate_id,
+          type: 'system',
+          title: 'Certification Verification Rejected',
+          message: `Your certification "${cert.name}" verification has been rejected. Reason: ${reason}`,
+          link: '/dashboard',
+        });
+      }
+
+      toast.success('Certification rejected and candidate notified');
       
       // Small delay to ensure database transaction is committed
       setTimeout(() => {
