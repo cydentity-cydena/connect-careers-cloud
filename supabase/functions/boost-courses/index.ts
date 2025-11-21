@@ -46,11 +46,12 @@ Deno.serve(async (req) => {
       .select('skill_id, skills(name)')
       .eq('candidate_id', user.id);
 
-    // Get completed courses to filter out
+    // Get verified completed courses to filter out (not pending/rejected)
     const { data: completedData } = await supabase
       .from('course_completions')
       .select('partner_course_id')
-      .eq('candidate_id', user.id);
+      .eq('candidate_id', user.id)
+      .eq('status', 'VERIFIED');
 
     const completedCourseIds = completedData?.map(c => c.partner_course_id) || [];
 
