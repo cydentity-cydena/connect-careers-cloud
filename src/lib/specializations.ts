@@ -8,7 +8,13 @@ export type Specialization =
   | 'application-security'
   | 'network-security'
   | 'threat-intelligence'
-  | 'operational-technology';
+  | 'operational-technology'
+  | 'soc-red-blue-team'
+  | 'operational-security'
+  | 'security-architecture'
+  | 'data-privacy'
+  | 'cyber-defence'
+  | 'emerging-technology';
 
 export interface SpecializationBadge {
   id: Specialization;
@@ -83,6 +89,54 @@ export const SPECIALIZATIONS: SpecializationBadge[] = [
     color: 'bg-yellow-500/10 text-yellow-600 border-yellow-500/20',
     keywords: ['operational technology', 'ot', 'scada', 'ics', 'industrial control systems', 'plc', 'hmi', 'dcs', 'modbus', 'dnp3', 'ot security', 'critical infrastructure'],
     certKeywords: ['gicsp', 'grid', 'ics', 'scada', 'ot security', 'industrial cybersecurity', 'iec 62443', 'nist 800-82']
+  },
+  {
+    id: 'soc-red-blue-team',
+    label: 'SOC (Red/Blue Teaming)',
+    icon: '🔒',
+    color: 'bg-rose-500/10 text-rose-600 border-rose-500/20',
+    keywords: ['soc', 'security operations', 'red team', 'blue team', 'purple team', 'security monitoring', 'threat hunting', 'detection engineering', 'siem'],
+    certKeywords: ['gcih', 'gcia', 'gcfa', 'btl1', 'btl2', 'crto', 'crtp', 'oscp', 'security+', 'cysa+']
+  },
+  {
+    id: 'operational-security',
+    label: 'Operational Security',
+    icon: '⚙️',
+    color: 'bg-amber-500/10 text-amber-600 border-amber-500/20',
+    keywords: ['operational security', 'opsec', 'security operations', 'change management', 'patch management', 'vulnerability management', 'security monitoring'],
+    certKeywords: ['security+', 'casp+', 'cissp', 'cism', 'sans', 'itil']
+  },
+  {
+    id: 'security-architecture',
+    label: 'Security Architecture & Engineering',
+    icon: '🏗️',
+    color: 'bg-teal-500/10 text-teal-600 border-teal-500/20',
+    keywords: ['security architecture', 'security design', 'cyber engineering', 'secure design', 'zero trust', 'defense in depth', 'security framework'],
+    certKeywords: ['cissp', 'ccsp', 'togaf', 'sabsa', 'cism', 'casp+', 'sans architect']
+  },
+  {
+    id: 'data-privacy',
+    label: 'Data Privacy & Protection',
+    icon: '🛡️',
+    color: 'bg-violet-500/10 text-violet-600 border-violet-500/20',
+    keywords: ['data privacy', 'data protection', 'gdpr', 'dpa', 'sox', 'privacy', 'data governance', 'personal data'],
+    certKeywords: ['cipp', 'cipm', 'cipt', 'cdpse', 'gdpr', 'privacy professional']
+  },
+  {
+    id: 'cyber-defence',
+    label: 'Cyber Defence & National Security',
+    icon: '🛡️',
+    color: 'bg-sky-500/10 text-sky-600 border-sky-500/20',
+    keywords: ['cyber defence', 'national security', 'modaf', 'secure by design', 'hmc cesg', 'rmads', 'hmg ia', 'government security'],
+    certKeywords: ['sc clearance', 'dv clearance', 'cesg', 'ncsc', 'cissp', 'check']
+  },
+  {
+    id: 'emerging-technology',
+    label: 'Emerging Technology',
+    icon: '🤖',
+    color: 'bg-fuchsia-500/10 text-fuchsia-600 border-fuchsia-500/20',
+    keywords: ['ai security', 'machine learning', 'ml', 'artificial intelligence', 'robotics', 'automation', 'digital transformation', 'iot security'],
+    certKeywords: ['ai security', 'ml engineer', 'iot security', 'automation']
   }
 ];
 
