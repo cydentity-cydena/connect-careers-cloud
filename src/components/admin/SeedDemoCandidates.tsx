@@ -120,7 +120,7 @@ export const SeedDemoCandidates = () => {
         <div className="mt-6 pt-6 border-t">
           <h3 className="text-sm font-semibold mb-2">Quick Test Accounts</h3>
           <p className="text-xs text-muted-foreground mb-4">
-            Create/restore the two main test accounts for employer and recruiter testing
+            Create/restore test accounts for employer and recruiter testing
           </p>
           
           <Button 
@@ -158,10 +158,19 @@ export const SeedDemoCandidates = () => {
               )}
               {testAccountsResults.results?.recruiter && (
                 <div className="p-2 bg-muted rounded">
-                  <p className="font-medium">Recruiter Account:</p>
+                  <p className="font-medium">Recruiter Account 1:</p>
                   <p>{testAccountsResults.results.recruiter.email}</p>
                   <p className="text-muted-foreground">
                     {testAccountsResults.results.recruiter.success ? '✓ Created' : '✗ Failed'}
+                  </p>
+                </div>
+              )}
+              {testAccountsResults.results?.recruiter2 && (
+                <div className="p-2 bg-muted rounded">
+                  <p className="font-medium">Recruiter Account 2:</p>
+                  <p>{testAccountsResults.results.recruiter2.email}</p>
+                  <p className="text-muted-foreground">
+                    {testAccountsResults.results.recruiter2.success ? '✓ Created' : '✗ Failed'}
                   </p>
                 </div>
               )}

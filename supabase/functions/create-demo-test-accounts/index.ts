@@ -56,7 +56,8 @@ serve(async (req) => {
     console.log('Creating demo test accounts...');
     const results = {
       employer: null as any,
-      recruiter: null as any
+      recruiter: null as any,
+      recruiter2: null as any
     };
 
     // Create employer account: sarah.thompson.employer0@cydena.demo
@@ -229,6 +230,90 @@ serve(async (req) => {
       console.error('Error creating recruiter:', error);
       results.recruiter = {
         email: 'patricia.evans.recruiter0@cydena.demo',
+        success: false,
+        error: error.message
+      };
+    }
+
+    // Create second recruiter account: james.evans.recruiter0@cydena.demo
+    try {
+      const recruiterEmail = 'james.evans.recruiter0@cydena.demo';
+      const recruiterPassword = 'Demo123!';
+      
+      console.log(`Creating recruiter account: ${recruiterEmail}`);
+      
+      // Check if account exists
+      const { data: existingProf } = await supabaseAdmin
+        .from('profiles')
+        .select('id')
+        .eq('email', recruiterEmail)
+        .maybeSingle();
+
+      let recruiterId: string;
+
+      if (existingProf?.id) {
+        console.log('Recruiter account already exists, updating...');
+        recruiterId = existingProf.id;
+      } else {
+        const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
+          email: recruiterEmail,
+          password: recruiterPassword,
+          email_confirm: true,
+          user_metadata: { full_name: 'James Evans' }
+        });
+
+        if (authError) {
+          throw new Error(`Failed to create recruiter auth: ${authError.message}`);
+        }
+
+        recruiterId = authData!.user.id;
+      }
+
+      // Update profile
+      await supabaseAdmin.from('profiles').update({
+        full_name: 'James Evans',
+        username: 'james_evans_recruiter',
+        location: 'Birmingham',
+        bio: 'Senior recruiter focused on security engineering and penetration testing roles.'
+      }).eq('id', recruiterId);
+
+      // Ensure recruiter role
+      await supabaseAdmin.from('user_roles').upsert({
+        user_id: recruiterId,
+        role: 'recruiter'
+      }, { onConflict: 'user_id,role' });
+
+      // Create a test client
+      const { data: existingClient } = await supabaseAdmin
+        .from('clients')
+        .select('id')
+        .eq('recruiter_id', recruiterId)
+        .eq('company_name', 'SecureNet Solutions')
+        .maybeSingle();
+
+      if (!existingClient) {
+        await supabaseAdmin.from('clients').insert({
+          recruiter_id: recruiterId,
+          company_name: 'SecureNet Solutions',
+          contact_name: 'Emma Davis',
+          contact_email: 'emma.davis@securenet.com',
+          industry: 'Cybersecurity',
+          status: 'active',
+          notes: 'Test client for second demo recruiter account'
+        });
+      }
+
+      results.recruiter2 = {
+        email: recruiterEmail,
+        password: recruiterPassword,
+        success: true,
+        userId: recruiterId
+      };
+
+    } catch (error: any) {
+      console.error('Error creating second recruiter:', error);
+      results.recruiter2 = {
+        email: 'james.evans.recruiter0@cydena.demo',
         success: false,
         error: error.message
       };
