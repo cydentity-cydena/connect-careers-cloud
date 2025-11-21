@@ -3422,7 +3422,13 @@ export type Database = {
         | "training"
         | "ctf"
       app_role: "candidate" | "employer" | "admin" | "recruiter" | "staff"
-      ats_provider: "workday" | "greenhouse" | "lever" | "bamboohr" | "webhook"
+      ats_provider:
+        | "workday"
+        | "greenhouse"
+        | "lever"
+        | "bamboohr"
+        | "webhook"
+        | "bullhorn"
       candidate_activation_status:
         | "unclaimed"
         | "invited"
@@ -3586,7 +3592,14 @@ export const Constants = {
         "ctf",
       ],
       app_role: ["candidate", "employer", "admin", "recruiter", "staff"],
-      ats_provider: ["workday", "greenhouse", "lever", "bamboohr", "webhook"],
+      ats_provider: [
+        "workday",
+        "greenhouse",
+        "lever",
+        "bamboohr",
+        "webhook",
+        "bullhorn",
+      ],
       candidate_activation_status: [
         "unclaimed",
         "invited",

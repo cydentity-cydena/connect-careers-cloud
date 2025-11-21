@@ -57,6 +57,9 @@ Deno.serve(async (req) => {
       case 'bamboohr':
         result = await pushToBambooHR(atsConnection, candidateData);
         break;
+      case 'bullhorn':
+        result = await pushToBullhorn(atsConnection, candidateData);
+        break;
       default:
         throw new Error(`Unsupported ATS provider: ${atsConnection.provider}`);
     }
@@ -270,6 +273,80 @@ async function pushToBambooHR(connection: any, candidateData: any) {
       success: response.ok,
       data: responseData,
       error: response.ok ? null : responseData.message || 'BambooHR API error',
+    };
+  } catch (error: any) {
+    return { success: false, error: error.message };
+  }
+}
+
+async function pushToBullhorn(connection: any, candidateData: any) {
+  try {
+    const { client_id, client_secret, username, password, api_url } = connection.credentials;
+    
+    // First, authenticate to get access token
+    const authResponse = await fetch(`${api_url || 'https://rest.bullhornstaffing.com/rest-services'}/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        client_id,
+        client_secret,
+        username,
+        password,
+        grant_type: 'password',
+      }),
+    });
+
+    if (!authResponse.ok) {
+      const authError = await authResponse.json();
+      throw new Error(`Bullhorn authentication failed: ${authError.error_description || 'Unknown error'}`);
+    }
+
+    const authData = await authResponse.json();
+    const accessToken = authData.access_token;
+    const restUrl = authData.restUrl;
+
+    // Format candidate data for Bullhorn
+    const bullhornPayload = {
+      firstName: candidateData.profile.full_name?.split(' ')[0] || '',
+      lastName: candidateData.profile.full_name?.split(' ').slice(1).join(' ') || '',
+      email: candidateData.profile.email,
+      phone: candidateData.candidate_profile?.phone,
+      address: {
+        address1: candidateData.profile.location || '',
+      },
+      description: candidateData.profile.bio,
+      status: 'Active',
+      // Work history
+      employmentPreference: candidateData.candidate_profile?.work_mode_preference,
+      // Skills as comma-separated
+      skillList: candidateData.skills.map((s: any) => s.skills?.name).filter(Boolean).join(', '),
+      // Education
+      educationDegree: candidateData.education[0]?.degree || '',
+      // Certifications in custom field or notes
+      customText1: candidateData.certifications.map((c: any) => c.name).join(', '),
+      // Desired title
+      occupation: candidateData.candidate_profile?.title,
+      // Experience years
+      yearsExperience: candidateData.candidate_profile?.years_experience,
+    };
+
+    const response = await fetch(`${restUrl}/entity/Candidate`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'BhRestToken': accessToken,
+      },
+      body: JSON.stringify(bullhornPayload),
+    });
+
+    const responseData = await response.json();
+    
+    return {
+      success: response.ok,
+      data: responseData,
+      error: response.ok ? null : responseData.message || 'Bullhorn API error',
     };
   } catch (error: any) {
     return { success: false, error: error.message };
