@@ -148,6 +148,56 @@ export function AddATSDialog({ open, onOpenChange }: AddATSDialogProps) {
             </div>
           </>
         );
+      case "bullhorn":
+        return (
+          <>
+            <div className="space-y-2">
+              <Label>Client ID</Label>
+              <Input
+                placeholder="Your Bullhorn Client ID"
+                value={credentials.client_id || ""}
+                onChange={(e) => setCredentials({ ...credentials, client_id: e.target.value })}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Client Secret</Label>
+              <Input
+                type="password"
+                placeholder="Your Bullhorn Client Secret"
+                value={credentials.client_secret || ""}
+                onChange={(e) => setCredentials({ ...credentials, client_secret: e.target.value })}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Username</Label>
+              <Input
+                placeholder="Your Bullhorn username"
+                value={credentials.username || ""}
+                onChange={(e) => setCredentials({ ...credentials, username: e.target.value })}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Password</Label>
+              <Input
+                type="password"
+                placeholder="Your Bullhorn password"
+                value={credentials.password || ""}
+                onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>API URL (Optional)</Label>
+              <Input
+                placeholder="https://rest.bullhornstaffing.com/rest-services"
+                value={credentials.api_url || ""}
+                onChange={(e) => setCredentials({ ...credentials, api_url: e.target.value })}
+              />
+              <p className="text-xs text-muted-foreground">
+                Leave blank to use default Bullhorn API URL
+              </p>
+            </div>
+          </>
+        );
       default:
         return null;
     }
@@ -175,6 +225,7 @@ export function AddATSDialog({ open, onOpenChange }: AddATSDialogProps) {
                 <SelectItem value="greenhouse">Greenhouse</SelectItem>
                 <SelectItem value="lever">Lever</SelectItem>
                 <SelectItem value="bamboohr">BambooHR</SelectItem>
+                <SelectItem value="bullhorn">Bullhorn</SelectItem>
               </SelectContent>
             </Select>
           </div>
