@@ -33,15 +33,48 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log("Sending announcement emails for post:", postId);
 
-    // Get all candidate profiles with their roles
+    // Get only candidate user IDs (exclude employers and recruiters)
+    const { data: candidateRoles, error: rolesError } = await supabaseClient
+      .from("user_roles")
+      .select("user_id")
+      .eq("role", "candidate");
+
+    if (rolesError) {
+      console.error("Error fetching candidate roles:", rolesError);
+      throw new Error("Failed to fetch candidate roles");
+    }
+
+    // Get employer and recruiter IDs to exclude
+    const { data: excludedRoles, error: excludedError } = await supabaseClient
+      .from("user_roles")
+      .select("user_id")
+      .in("role", ["employer", "recruiter"]);
+
+    if (excludedError) {
+      console.error("Error fetching excluded roles:", excludedError);
+      throw new Error("Failed to fetch excluded roles");
+    }
+
+    const candidateIds = candidateRoles?.map(r => r.user_id) || [];
+    const excludedIds = new Set(excludedRoles?.map(r => r.user_id) || []);
+    
+    // Filter out any candidates who are also employers/recruiters
+    const filteredCandidateIds = candidateIds.filter(id => !excludedIds.has(id));
+
+    if (filteredCandidateIds.length === 0) {
+      console.error("No candidate-only users found");
+      throw new Error("No candidates found");
+    }
+
+    // Get candidate profiles
     const { data: candidates, error: candidatesError } = await supabaseClient
       .from("profiles")
       .select("id, full_name, username")
-      .not("id", "is", null);
+      .in("id", filteredCandidateIds);
 
     if (candidatesError || !candidates || candidates.length === 0) {
-      console.error("Error fetching candidates:", candidatesError);
-      throw new Error("No candidates found");
+      console.error("Error fetching candidate profiles:", candidatesError);
+      throw new Error("No candidate profiles found");
     }
 
     // Get emails from auth.users using service role
