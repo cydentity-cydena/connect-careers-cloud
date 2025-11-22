@@ -33,15 +33,40 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log("Sending announcement emails for post:", postId);
 
-    // Get all user emails (excluding the admin who posted)
-    const { data: users, error: usersError } = await supabaseClient
+    // Get all candidate profiles with their roles
+    const { data: candidates, error: candidatesError } = await supabaseClient
       .from("profiles")
-      .select("email, full_name, username")
-      .not("email", "is", null);
+      .select("id, full_name, username")
+      .not("id", "is", null);
 
-    if (usersError || !users || users.length === 0) {
-      console.error("Error fetching users:", usersError);
-      throw new Error("No users found");
+    if (candidatesError || !candidates || candidates.length === 0) {
+      console.error("Error fetching candidates:", candidatesError);
+      throw new Error("No candidates found");
+    }
+
+    // Get emails from auth.users using service role
+    const { data: { users: authUsers }, error: authError } = await supabaseClient.auth.admin.listUsers();
+    
+    if (authError || !authUsers) {
+      console.error("Error fetching auth users:", authError);
+      throw new Error("Failed to fetch user emails");
+    }
+
+    // Create a map of user_id to email
+    const emailMap = new Map(authUsers.map(user => [user.id, user.email]));
+
+    // Combine profile data with emails
+    const users = candidates
+      .map(candidate => ({
+        email: emailMap.get(candidate.id),
+        full_name: candidate.full_name,
+        username: candidate.username,
+      }))
+      .filter(user => user.email); // Only include users with valid emails
+
+    if (users.length === 0) {
+      console.error("No users with valid emails found");
+      throw new Error("No users with emails found");
     }
 
     if (!SENDGRID_API_KEY) {
