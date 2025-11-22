@@ -33,49 +33,54 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log("Sending announcement emails for post:", postId);
 
-    // Get only candidate user IDs (exclude employers and recruiters)
-    const { data: candidateRoles, error: rolesError } = await supabaseClient
+    // Get users who should NOT receive community emails (employers and recruiters without admin/staff)
+    const { data: excludedUsers, error: excludedError } = await supabaseClient
       .from("user_roles")
-      .select("user_id")
-      .eq("role", "candidate");
-
-    if (rolesError) {
-      console.error("Error fetching candidate roles:", rolesError);
-      throw new Error("Failed to fetch candidate roles");
-    }
-
-    // Get employer and recruiter IDs to exclude
-    const { data: excludedRoles, error: excludedError } = await supabaseClient
-      .from("user_roles")
-      .select("user_id")
-      .in("role", ["employer", "recruiter"]);
+      .select("user_id, role");
 
     if (excludedError) {
-      console.error("Error fetching excluded roles:", excludedError);
-      throw new Error("Failed to fetch excluded roles");
+      console.error("Error fetching user roles:", excludedError);
+      throw new Error("Failed to fetch user roles");
     }
 
-    const candidateIds = candidateRoles?.map(r => r.user_id) || [];
-    const excludedIds = new Set(excludedRoles?.map(r => r.user_id) || []);
-    
-    // Filter out any candidates who are also employers/recruiters
-    const filteredCandidateIds = candidateIds.filter(id => !excludedIds.has(id));
+    // Build a map of user_id to their roles
+    const userRolesMap = new Map<string, Set<string>>();
+    excludedUsers?.forEach(row => {
+      if (!userRolesMap.has(row.user_id)) {
+        userRolesMap.set(row.user_id, new Set());
+      }
+      userRolesMap.get(row.user_id)!.add(row.role);
+    });
 
-    if (filteredCandidateIds.length === 0) {
-      console.error("No candidate-only users found");
-      throw new Error("No candidates found");
-    }
+    // Filter logic matching Community.tsx access rules:
+    // - Exclude if user has employer OR recruiter role
+    // - UNLESS they also have admin OR staff role
+    const excludedUserIds = new Set<string>();
+    userRolesMap.forEach((roles, userId) => {
+      const hasAdminOrStaff = roles.has('admin') || roles.has('staff');
+      const hasEmployerOrRecruiter = roles.has('employer') || roles.has('recruiter');
+      
+      if (hasEmployerOrRecruiter && !hasAdminOrStaff) {
+        excludedUserIds.add(userId);
+      }
+    });
 
-    // Get candidate profiles
-    const { data: candidates, error: candidatesError } = await supabaseClient
+    console.log(`Excluding ${excludedUserIds.size} employer/recruiter users`);
+
+    // Get all profiles except excluded ones
+    const { data: allProfiles, error: profilesError } = await supabaseClient
       .from("profiles")
-      .select("id, full_name, username")
-      .in("id", filteredCandidateIds);
+      .select("id, full_name, username");
 
-    if (candidatesError || !candidates || candidates.length === 0) {
-      console.error("Error fetching candidate profiles:", candidatesError);
-      throw new Error("No candidate profiles found");
+    if (profilesError || !allProfiles) {
+      console.error("Error fetching profiles:", profilesError);
+      throw new Error("Failed to fetch profiles");
     }
+
+    // Filter out excluded users
+    const eligibleProfiles = allProfiles.filter(p => !excludedUserIds.has(p.id));
+
+    console.log(`Found ${eligibleProfiles.length} eligible recipients (from ${allProfiles.length} total profiles)`);
 
     // Get emails from auth.users using service role
     const { data: { users: authUsers }, error: authError } = await supabaseClient.auth.admin.listUsers();
@@ -89,11 +94,11 @@ const handler = async (req: Request): Promise<Response> => {
     const emailMap = new Map(authUsers.map(user => [user.id, user.email]));
 
     // Combine profile data with emails
-    const users = candidates
-      .map(candidate => ({
-        email: emailMap.get(candidate.id),
-        full_name: candidate.full_name,
-        username: candidate.username,
+    const users = eligibleProfiles
+      .map(profile => ({
+        email: emailMap.get(profile.id),
+        full_name: profile.full_name,
+        username: profile.username,
       }))
       .filter(user => user.email); // Only include users with valid emails
 
