@@ -67,40 +67,26 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log(`Excluding ${excludedUserIds.size} employer/recruiter users`);
 
-    // Get all profiles except excluded ones
+    // Get all profiles except excluded ones (with email directly from profiles)
     const { data: allProfiles, error: profilesError } = await supabaseClient
       .from("profiles")
-      .select("id, full_name, username");
+      .select("id, full_name, username, email");
 
     if (profilesError || !allProfiles) {
       console.error("Error fetching profiles:", profilesError);
       throw new Error("Failed to fetch profiles");
     }
 
-    // Filter out excluded users
-    const eligibleProfiles = allProfiles.filter(p => !excludedUserIds.has(p.id));
-
-    console.log(`Found ${eligibleProfiles.length} eligible recipients (from ${allProfiles.length} total profiles)`);
-
-    // Get emails from auth.users using service role
-    const { data: { users: authUsers }, error: authError } = await supabaseClient.auth.admin.listUsers();
-    
-    if (authError || !authUsers) {
-      console.error("Error fetching auth users:", authError);
-      throw new Error("Failed to fetch user emails");
-    }
-
-    // Create a map of user_id to email
-    const emailMap = new Map(authUsers.map(user => [user.id, user.email]));
-
-    // Combine profile data with emails
-    const users = eligibleProfiles
+    // Filter out excluded users and those without emails
+    const users = allProfiles
+      .filter(p => !excludedUserIds.has(p.id) && p.email)
       .map(profile => ({
-        email: emailMap.get(profile.id),
+        email: profile.email,
         full_name: profile.full_name,
         username: profile.username,
-      }))
-      .filter(user => user.email); // Only include users with valid emails
+      }));
+
+    console.log(`Found ${users.length} eligible recipients with emails (from ${allProfiles.length} total profiles)`);
 
     if (users.length === 0) {
       console.error("No users with valid emails found");
