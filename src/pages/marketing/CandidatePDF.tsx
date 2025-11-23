@@ -11,17 +11,19 @@ const CandidatePDF = () => {
       />
       
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 p-8 print:p-6">
+      <div className="bg-gradient-to-r from-[hsl(189,97%,55%)] to-[hsl(263,70%,50%)] text-white p-8 print:p-6">
         <div className="max-w-4xl mx-auto">
-          <img 
-            src="/logos/cydena-main-logo.png" 
-            alt="Cydena" 
-            className="h-12 mb-6"
-          />
-          <h1 className="text-4xl font-bold mb-3 text-gray-900 print:text-3xl">
+          <div className="inline-block bg-white/95 px-4 py-2 rounded-lg mb-6">
+            <img 
+              src="/logos/cydena-main-logo.png" 
+              alt="Cydena" 
+              className="h-10"
+            />
+          </div>
+          <h1 className="text-4xl font-bold mb-3 print:text-3xl">
             Accelerate Your Cybersecurity Career
           </h1>
-          <p className="text-lg text-gray-600">
+          <p className="text-lg opacity-90">
             Get verified, get noticed, get hired faster
           </p>
         </div>
