@@ -5,13 +5,22 @@ import { Shield, Award, TrendingUp, Users, Lock, CheckCircle } from "lucide-reac
 const CandidatePDF = () => {
   return (
     <div className="min-h-screen bg-white print:bg-white">
+      <style>{`
+        @media print {
+          .print-gradient {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            color-adjust: exact !important;
+          }
+        }
+      `}</style>
       <SEO 
         title="Cydena for Candidates - Your Career Acceleration Platform"
         description="Transform your cybersecurity career with verified credentials, skill validation, and direct access to top employers."
       />
       
       {/* Header */}
-      <div className="bg-gradient-to-r from-[hsl(189,97%,55%)] to-[hsl(263,70%,50%)] text-white p-8 print:p-6 print:bg-gradient-to-r print:from-[hsl(189,97%,55%)] print:to-[hsl(263,70%,50%)]">
+      <div className="print-gradient bg-gradient-to-r from-[hsl(189,97%,55%)] to-[hsl(263,70%,50%)] text-white p-8 print:p-6 print:text-white">
         <div className="max-w-4xl mx-auto">
           <div className="inline-block bg-white/95 px-4 py-2 rounded-lg mb-6 print:mb-4">
             <img 
@@ -212,7 +221,7 @@ const CandidatePDF = () => {
         </div>
 
         {/* CTA */}
-        <div className="bg-gradient-to-r from-[hsl(189,97%,55%)] to-[hsl(263,70%,50%)] text-white rounded-lg p-8 text-center print:bg-white print:text-gray-900 print:border-4 print:border-[hsl(189,97%,55%)] print:p-6 print:break-inside-avoid">
+        <div className="print-gradient bg-gradient-to-r from-[hsl(189,97%,55%)] to-[hsl(263,70%,50%)] text-white rounded-lg p-8 text-center print:text-white print:p-6 print:break-inside-avoid">
           <h2 className="text-2xl font-bold mb-3 print:text-xl print:mb-2">
             Ready to Accelerate Your Career?
           </h2>
