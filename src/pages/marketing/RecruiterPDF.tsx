@@ -14,7 +14,7 @@ const RecruiterPDF = () => {
       <div className="bg-gradient-to-r from-purple-600 to-purple-700 text-white p-12 print:p-8">
         <div className="max-w-4xl mx-auto">
           <img 
-            src="/logos/cydena-logo-white.png" 
+            src="/logos/cydena-main-logo.png" 
             alt="Cydena" 
             className="h-12 mb-6"
           />
