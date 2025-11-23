@@ -147,7 +147,7 @@ const CandidatePDF = () => {
           <div className="space-y-4 print:space-y-3">
             <div className="border-l-4 border-[hsl(189,97%,55%)] pl-4 print:pl-3">
               <p className="text-gray-700 italic mb-2">
-                "I was HR-Ready verified in 3 days and had my first employer interview within a week. 
+                "I was HR-Ready verified in less than 48 hours and had my first employer interview within a week. 
                 The pre-verification made all the difference."
               </p>
               <p className="text-sm text-gray-600 font-semibold">
