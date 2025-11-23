@@ -229,8 +229,13 @@ Deno.serve(async (req) => {
       }
     }
 
-    // Insert completion
-    const { data: completion, error: insertError } = await supabase
+    // Insert completion using service role to bypass RLS
+    const serviceClient = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    );
+
+    const { data: completion, error: insertError } = await serviceClient
       .from('course_completions')
       .insert({
         candidate_id: user.id,
