@@ -364,7 +364,7 @@ const Profiles = () => {
             <div className="mb-8">
               <h1 className="text-4xl font-bold mb-2">Verified Cybersecurity Professionals</h1>
               <p className="text-muted-foreground mb-4">
-                Browse pre-screened security talent
+                Browse pre-screened security talent. Use <strong>Security Clearance filters</strong> to find candidates with government vetting (DV/SC/SV) - a rare and valuable qualification separate from HR-Ready status.
               </p>
               
               {/* HR-Ready Filter */}
@@ -481,6 +481,12 @@ const Profiles = () => {
                         <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
                       )}
                       <HRReadyBadge isReady={verificationStatuses[candidate.id]} size="sm" />
+                      {/* Security Clearance & Premium Qualifications - Displayed prominently */}
+                      <HighValueBadges 
+                        clearanceLevel={candidate.clearanceLevel}
+                        pciQsaStatus={candidate.pciQsaStatus}
+                        certifications={candidate.certifications}
+                      />
                     </div>
                     <p className="text-sm text-muted-foreground mb-2">
                       {candidate.title}
@@ -496,13 +502,6 @@ const Profiles = () => {
                 </div>
 
                 <div className="space-y-3">
-                  {/* High-Value Badges */}
-                  <HighValueBadges 
-                    clearanceLevel={candidate.clearanceLevel}
-                    pciQsaStatus={candidate.pciQsaStatus}
-                    certifications={candidate.certifications}
-                  />
-
                   {/* Specializations */}
                   {candidate.specializations.length > 0 && (
                     <div>

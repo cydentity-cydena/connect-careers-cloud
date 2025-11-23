@@ -257,9 +257,10 @@ export const SmartCandidateFilters = ({
 
           {/* Clearance & Special Qualifications */}
           <div className="space-y-3">
-            <Label className="text-sm font-semibold">Security Clearance</Label>
+            <Label className="text-sm font-semibold">Security Clearance (Premium Filter)</Label>
+            <p className="text-xs text-muted-foreground">Filter candidates by government security clearance level</p>
             <div className="flex flex-wrap gap-2">
-              {['DV', 'SC', 'CTC', 'BPSS'].map((level) => (
+              {['DV', 'SC', 'SV', 'CTC', 'BPSS'].map((level) => (
                 <Badge
                   key={level}
                   variant={currentFilters.clearance.includes(level) ? 'default' : 'outline'}
