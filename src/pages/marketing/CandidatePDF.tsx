@@ -210,14 +210,14 @@ const CandidatePDF = () => {
         </div>
 
         {/* CTA */}
-        <div className="bg-gradient-to-r from-primary to-primary/80 text-white rounded-lg p-8 text-center print:border-2 print:border-primary">
-          <h2 className="text-3xl font-bold mb-4">
+        <div className="bg-gradient-to-r from-primary to-primary/80 text-white rounded-lg p-8 text-center print:bg-white print:text-gray-900 print:border-4 print:border-primary print:rounded-lg">
+          <h2 className="text-3xl font-bold mb-4 print:text-2xl">
             Ready to Accelerate Your Career?
           </h2>
-          <p className="text-xl mb-6 opacity-90">
+          <p className="text-xl mb-6 opacity-90 print:opacity-100 print:text-lg">
             Join hundreds of verified cybersecurity professionals getting hired faster
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <div className="flex flex-col gap-3 justify-center items-center mb-6">
             <div className="text-lg font-semibold">
               👉 Visit: <span className="underline">cydena.com</span>
             </div>
@@ -225,7 +225,7 @@ const CandidatePDF = () => {
               ✉️ Email: <span className="underline">contact@cydena.com</span>
             </div>
           </div>
-          <p className="mt-6 text-sm opacity-75">
+          <p className="text-sm opacity-75 print:opacity-100">
             Free to join • Get verified in 48 hours • Start getting discovered
           </p>
         </div>
