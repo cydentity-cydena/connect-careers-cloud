@@ -51,8 +51,16 @@ export function HRReadyCTA({ userId }: HRReadyCTAProps) {
               <Shield className="h-6 w-6 text-primary-foreground" />
             </div>
             <div className="flex-1">
-              <div className="flex items-center gap-2 mb-2">
+              <div className="flex items-center justify-between gap-2 mb-2">
                 <h3 className="font-bold text-lg">You are HR-Ready! ✓</h3>
+                <Button 
+                  onClick={() => navigate('/hr-ready')} 
+                  variant="outline"
+                  size="sm"
+                  className="gap-2"
+                >
+                  Update Documents <ArrowRight className="h-3 w-3" />
+                </Button>
               </div>
               <p className="text-sm text-muted-foreground mb-4">
                 Your profile shows priority HR-Ready badges. Employers can hire you with confidence, knowing you're verified and ready.
