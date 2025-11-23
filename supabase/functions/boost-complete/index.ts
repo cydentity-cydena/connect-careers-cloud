@@ -168,12 +168,15 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Auto-verify OpenBadge if valid URL provided
+    // Auto-verify OpenBadge if valid URL provided, screenshots go to manual review
     let status = 'PENDING';
     let awardedPoints = null;
     let validationMessage = null;
     
-    if (proofType === 'openbadge' && proofUrl) {
+    if (proofType === 'screenshot') {
+      status = 'PENDING';
+      validationMessage = 'Screenshot submitted - pending manual review';
+    } else if (proofType === 'openbadge' && proofUrl) {
       console.log(`Validating OpenBadge URL: ${proofUrl}`);
       
       try {
