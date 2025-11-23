@@ -11,30 +11,28 @@ const CandidatePDF = () => {
       />
       
       {/* Header */}
-      <div className="bg-gradient-to-r from-[hsl(189,97%,55%)] to-[hsl(263,70%,50%)] text-white p-12 print:p-8">
+      <div className="bg-white border-b border-gray-200 p-8 print:p-6">
         <div className="max-w-4xl mx-auto">
-          <div className="inline-block bg-white/95 px-4 py-2 rounded-lg mb-6">
-            <img 
-              src="/logos/cydena-main-logo.png" 
-              alt="Cydena" 
-              className="h-10"
-            />
-          </div>
-          <h1 className="text-5xl font-bold mb-4 print:text-4xl">
+          <img 
+            src="/logos/cydena-main-logo.png" 
+            alt="Cydena" 
+            className="h-12 mb-6"
+          />
+          <h1 className="text-4xl font-bold mb-3 text-gray-900 print:text-3xl">
             Accelerate Your Cybersecurity Career
           </h1>
-          <p className="text-xl opacity-90 print:text-lg">
+          <p className="text-lg text-gray-600">
             Get verified, get noticed, get hired faster
           </p>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="max-w-4xl mx-auto p-12 print:p-8">
+      <div className="max-w-4xl mx-auto p-8 print:p-6">
         
         {/* Problem Statement */}
-        <div className="mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+        <div className="mb-10 print:mb-8">
+          <h2 className="text-2xl font-bold text-gray-900 mb-3 print:text-xl">
             Are You Invisible to Employers?
           </h2>
           <p className="text-lg text-gray-700 leading-relaxed mb-4">
@@ -48,20 +46,20 @@ const CandidatePDF = () => {
         </div>
 
         {/* Value Propositions */}
-        <div className="mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-6">
+        <div className="mb-10 print:mb-8 print:break-inside-avoid">
+          <h2 className="text-2xl font-bold text-gray-900 mb-5 print:text-xl">
             Why Top Cybersecurity Professionals Choose Cydena
           </h2>
           
-          <div className="space-y-6">
-            <div className="flex gap-4">
+          <div className="space-y-5 print:space-y-4">
+            <div className="flex gap-4 print:break-inside-avoid">
               <div className="flex-shrink-0">
-                <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
-                  <Shield className="w-6 h-6 text-primary" />
+                <div className="w-10 h-10 bg-[hsl(189,97%,55%)]/10 rounded-lg flex items-center justify-center print:w-8 print:h-8">
+                  <Shield className="w-5 h-5 text-[hsl(189,97%,55%)] print:w-4 print:h-4" />
                 </div>
               </div>
               <div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">
+                <h3 className="text-lg font-bold text-gray-900 mb-2 print:text-base print:mb-1">
                   Get HR-Ready Verification
                 </h3>
                 <p className="text-gray-700 leading-relaxed">
@@ -71,14 +69,14 @@ const CandidatePDF = () => {
               </div>
             </div>
 
-            <div className="flex gap-4">
+            <div className="flex gap-4 print:break-inside-avoid">
               <div className="flex-shrink-0">
-                <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
-                  <Award className="w-6 h-6 text-primary" />
+                <div className="w-10 h-10 bg-[hsl(189,97%,55%)]/10 rounded-lg flex items-center justify-center print:w-8 print:h-8">
+                  <Award className="w-5 h-5 text-[hsl(189,97%,55%)] print:w-4 print:h-4" />
                 </div>
               </div>
               <div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">
+                <h3 className="text-lg font-bold text-gray-900 mb-2 print:text-base print:mb-1">
                   Showcase Verified Credentials
                 </h3>
                 <p className="text-gray-700 leading-relaxed">
@@ -88,14 +86,14 @@ const CandidatePDF = () => {
               </div>
             </div>
 
-            <div className="flex gap-4">
+            <div className="flex gap-4 print:break-inside-avoid">
               <div className="flex-shrink-0">
-                <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
-                  <TrendingUp className="w-6 h-6 text-primary" />
+                <div className="w-10 h-10 bg-[hsl(189,97%,55%)]/10 rounded-lg flex items-center justify-center print:w-8 print:h-8">
+                  <TrendingUp className="w-5 h-5 text-[hsl(189,97%,55%)] print:w-4 print:h-4" />
                 </div>
               </div>
               <div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">
+                <h3 className="text-lg font-bold text-gray-900 mb-2 print:text-base print:mb-1">
                   Build Your Skill Genome
                 </h3>
                 <p className="text-gray-700 leading-relaxed">
@@ -105,14 +103,14 @@ const CandidatePDF = () => {
               </div>
             </div>
 
-            <div className="flex gap-4">
+            <div className="flex gap-4 print:break-inside-avoid">
               <div className="flex-shrink-0">
-                <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
-                  <Users className="w-6 h-6 text-primary" />
+                <div className="w-10 h-10 bg-[hsl(189,97%,55%)]/10 rounded-lg flex items-center justify-center print:w-8 print:h-8">
+                  <Users className="w-5 h-5 text-[hsl(189,97%,55%)] print:w-4 print:h-4" />
                 </div>
               </div>
               <div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">
+                <h3 className="text-lg font-bold text-gray-900 mb-2 print:text-base print:mb-1">
                   Join the Elite Community
                 </h3>
                 <p className="text-gray-700 leading-relaxed">
@@ -122,14 +120,14 @@ const CandidatePDF = () => {
               </div>
             </div>
 
-            <div className="flex gap-4">
+            <div className="flex gap-4 print:break-inside-avoid">
               <div className="flex-shrink-0">
-                <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
-                  <Lock className="w-6 h-6 text-primary" />
+                <div className="w-10 h-10 bg-[hsl(189,97%,55%)]/10 rounded-lg flex items-center justify-center print:w-8 print:h-8">
+                  <Lock className="w-5 h-5 text-[hsl(189,97%,55%)] print:w-4 print:h-4" />
                 </div>
               </div>
               <div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">
+                <h3 className="text-lg font-bold text-gray-900 mb-2 print:text-base print:mb-1">
                   Control Your Privacy
                 </h3>
                 <p className="text-gray-700 leading-relaxed">
@@ -142,12 +140,12 @@ const CandidatePDF = () => {
         </div>
 
         {/* Social Proof */}
-        <div className="bg-gray-50 rounded-lg p-8 mb-12 print:border print:border-gray-200">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
+        <div className="bg-gray-50 rounded-lg p-6 mb-8 print:p-5 print:mb-6 print:border print:border-gray-200 print:break-inside-avoid">
+          <h2 className="text-xl font-bold text-gray-900 mb-4 text-center print:text-lg print:mb-3">
             What Our Members Say
           </h2>
-          <div className="space-y-6">
-            <div className="border-l-4 border-primary pl-4">
+          <div className="space-y-4 print:space-y-3">
+            <div className="border-l-4 border-[hsl(189,97%,55%)] pl-4 print:pl-3">
               <p className="text-gray-700 italic mb-2">
                 "I was HR-Ready verified in 3 days and had my first employer interview within a week. 
                 The pre-verification made all the difference."
@@ -156,7 +154,7 @@ const CandidatePDF = () => {
                 - Security Analyst, Founding 200 Member
               </p>
             </div>
-            <div className="border-l-4 border-primary pl-4">
+            <div className="border-l-4 border-[hsl(189,97%,55%)] pl-4 print:pl-3">
               <p className="text-gray-700 italic mb-2">
                 "Instead of applying to hundreds of jobs, employers found me. Being verified gave them 
                 confidence to reach out directly."
@@ -169,40 +167,40 @@ const CandidatePDF = () => {
         </div>
 
         {/* How It Works */}
-        <div className="mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-6">
+        <div className="mb-8 print:mb-6 print:break-before-page">
+          <h2 className="text-2xl font-bold text-gray-900 mb-5 print:text-xl print:mb-4">
             Get Started in 3 Simple Steps
           </h2>
           
-          <div className="space-y-4">
-            <div className="flex items-start gap-4">
-              <div className="flex-shrink-0 w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center font-bold">
+          <div className="space-y-4 print:space-y-3">
+            <div className="flex items-start gap-4 print:break-inside-avoid">
+              <div className="flex-shrink-0 w-8 h-8 bg-[hsl(189,97%,55%)] text-white rounded-full flex items-center justify-center font-bold text-sm print:w-7 print:h-7 print:text-xs">
                 1
               </div>
               <div>
-                <h3 className="font-bold text-gray-900 mb-1">Create Your Profile</h3>
+                <h3 className="font-bold text-gray-900 mb-1 print:text-sm">Create Your Profile</h3>
                 <p className="text-gray-700">
                   Add your experience, certifications, and skills. Our AI helps optimize your profile for maximum visibility.
                 </p>
               </div>
             </div>
-            <div className="flex items-start gap-4">
-              <div className="flex-shrink-0 w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center font-bold">
+            <div className="flex items-start gap-4 print:break-inside-avoid">
+              <div className="flex-shrink-0 w-8 h-8 bg-[hsl(189,97%,55%)] text-white rounded-full flex items-center justify-center font-bold text-sm print:w-7 print:h-7 print:text-xs">
                 2
               </div>
               <div>
-                <h3 className="font-bold text-gray-900 mb-1">Get Verified</h3>
+                <h3 className="font-bold text-gray-900 mb-1 print:text-sm">Get Verified</h3>
                 <p className="text-gray-700">
                   Submit identity, right-to-work, and clearance verification. Our team reviews within 48 hours.
                 </p>
               </div>
             </div>
-            <div className="flex items-start gap-4">
-              <div className="flex-shrink-0 w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center font-bold">
+            <div className="flex items-start gap-4 print:break-inside-avoid">
+              <div className="flex-shrink-0 w-8 h-8 bg-[hsl(189,97%,55%)] text-white rounded-full flex items-center justify-center font-bold text-sm print:w-7 print:h-7 print:text-xs">
                 3
               </div>
               <div>
-                <h3 className="font-bold text-gray-900 mb-1">Get Discovered</h3>
+                <h3 className="font-bold text-gray-900 mb-1 print:text-sm">Get Discovered</h3>
                 <p className="text-gray-700">
                   Employers search for verified candidates like you. Respond to opportunities or apply to curated roles.
                 </p>
@@ -212,32 +210,32 @@ const CandidatePDF = () => {
         </div>
 
         {/* CTA */}
-        <div className="bg-gradient-to-r from-[hsl(189,97%,55%)] to-[hsl(263,70%,50%)] text-white rounded-lg p-8 text-center print:bg-white print:text-gray-900 print:border-4 print:border-[hsl(189,97%,55%)] print:rounded-lg">
-          <h2 className="text-3xl font-bold mb-4 print:text-2xl">
+        <div className="bg-gradient-to-r from-[hsl(189,97%,55%)] to-[hsl(263,70%,50%)] text-white rounded-lg p-8 text-center print:bg-white print:text-gray-900 print:border-4 print:border-[hsl(189,97%,55%)] print:p-6 print:break-inside-avoid">
+          <h2 className="text-2xl font-bold mb-3 print:text-xl print:mb-2">
             Ready to Accelerate Your Career?
           </h2>
-          <p className="text-xl mb-6 opacity-90 print:opacity-100 print:text-lg">
+          <p className="text-lg mb-5 opacity-90 print:opacity-100 print:text-base print:mb-4">
             Join hundreds of verified cybersecurity professionals getting hired faster
           </p>
-          <div className="flex flex-col gap-3 justify-center items-center mb-6">
-            <div className="text-lg font-semibold">
+          <div className="flex flex-col gap-2 justify-center items-center mb-4 print:gap-1.5 print:mb-3">
+            <div className="text-base font-semibold print:text-sm">
               👉 Visit: <span className="underline">cydena.com</span>
             </div>
-            <div className="text-lg font-semibold">
+            <div className="text-base font-semibold print:text-sm">
               ✉️ Email: <span className="underline">contact@cydena.com</span>
             </div>
           </div>
-          <p className="text-sm opacity-75 print:opacity-100">
+          <p className="text-sm opacity-75 print:opacity-100 print:text-xs">
             Free to join • Get verified in 48 hours • Start getting discovered
           </p>
         </div>
       </div>
 
       {/* Footer */}
-      <div className="bg-gray-100 p-8 mt-12 print:border-t print:bg-white">
+      <div className="bg-gray-100 p-6 mt-8 print:border-t print:bg-white print:p-4 print:mt-6">
         <div className="max-w-4xl mx-auto text-center text-gray-600">
-          <p className="mb-2 font-semibold">Cydena - The Verified Cybersecurity Talent Platform</p>
-          <p className="text-sm">www.cydena.com | contact@cydena.com</p>
+          <p className="mb-1 font-semibold text-sm print:text-xs">Cydena - The Verified Cybersecurity Talent Platform</p>
+          <p className="text-xs print:text-[10px]">www.cydena.com | contact@cydena.com</p>
         </div>
       </div>
 
