@@ -76,6 +76,7 @@ const Navigation = () => {
     { to: "/leaderboard", label: "Leaderboard" },
     { to: "/profiles", label: "Profiles" },
     { to: "/jobs", label: "Jobs" },
+    { to: "/hr-ready", label: "HR-Ready", showForRoles: ["candidate"] },
     { to: "/career-assistant", label: "AI Assistant", showForRoles: ["candidate"] },
     { to: "/training", label: "Training" },
     { to: "/certifications-catalog", label: "Certifications" },
