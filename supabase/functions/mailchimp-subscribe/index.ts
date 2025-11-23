@@ -1,0 +1,115 @@
+import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+};
+
+interface SubscribeRequest {
+  email: string;
+  firstName?: string;
+  lastName?: string;
+  userType: 'candidate' | 'employer' | 'recruiter';
+}
+
+serve(async (req) => {
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { headers: corsHeaders });
+  }
+
+  try {
+    const { email, firstName, lastName, userType }: SubscribeRequest = await req.json();
+
+    // Validate input
+    if (!email || !email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid email address' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    if (email.length > 255) {
+      return new Response(
+        JSON.stringify({ error: 'Email too long' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const apiKey = Deno.env.get('MAILCHIMP_API_KEY');
+    const audienceId = Deno.env.get('MAILCHIMP_AUDIENCE_ID');
+
+    if (!apiKey || !audienceId) {
+      console.error('Missing Mailchimp configuration');
+      return new Response(
+        JSON.stringify({ error: 'Service configuration error' }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Extract datacenter from API key (e.g., us1, us2, etc.)
+    const datacenter = apiKey.split('-')[1];
+    if (!datacenter) {
+      console.error('Invalid Mailchimp API key format');
+      return new Response(
+        JSON.stringify({ error: 'Service configuration error' }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const url = `https://${datacenter}.api.mailchimp.com/3.0/lists/${audienceId}/members`;
+
+    const memberData = {
+      email_address: email.trim().toLowerCase(),
+      status: 'subscribed',
+      merge_fields: {
+        ...(firstName && { FNAME: firstName.trim().substring(0, 100) }),
+        ...(lastName && { LNAME: lastName.trim().substring(0, 100) }),
+      },
+      tags: [userType.toUpperCase()],
+    };
+
+    console.log('Subscribing to Mailchimp:', { email: memberData.email_address, userType });
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Basic ${btoa(`anystring:${apiKey}`)}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(memberData),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      // If user already subscribed, treat as success
+      if (data.title === 'Member Exists') {
+        console.log('User already subscribed:', email);
+        return new Response(
+          JSON.stringify({ success: true, message: 'Already subscribed' }),
+          { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+
+      console.error('Mailchimp API error:', data);
+      return new Response(
+        JSON.stringify({ error: 'Failed to subscribe' }),
+        { status: response.status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    console.log('Successfully subscribed:', email);
+
+    return new Response(
+      JSON.stringify({ success: true, message: 'Successfully subscribed!' }),
+      { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+
+  } catch (error) {
+    console.error('Error in mailchimp-subscribe function:', error);
+    return new Response(
+      JSON.stringify({ error: 'Internal server error' }),
+      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  }
+});

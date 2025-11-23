@@ -1,6 +1,7 @@
 import SEO from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Users, DollarSign, Clock, Award, BarChart, CheckCircle } from "lucide-react";
+import { MailchimpSignup } from "@/components/marketing/MailchimpSignup";
 
 const RecruiterPDF = () => {
   return (
@@ -321,6 +322,15 @@ const RecruiterPDF = () => {
               </p>
             </div>
           </div>
+        </div>
+
+        {/* Email Signup Section */}
+        <div className="mb-6 print:hidden">
+          <MailchimpSignup 
+            userType="recruiter"
+            title="Partner with Cydena"
+            description="Access pre-verified cybersecurity talent and increase your placement success. Get updates on our recruiter partnership program."
+          />
         </div>
 
         {/* CTA */}
