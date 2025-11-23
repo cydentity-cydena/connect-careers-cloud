@@ -5,36 +5,45 @@ import { Clock, Shield, Target, TrendingUp, Users, Zap } from "lucide-react";
 const EmployerPDF = () => {
   return (
     <div className="min-h-screen bg-white print:bg-white">
+      <style>{`
+        @media print {
+          .print-gradient {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            color-adjust: exact !important;
+          }
+        }
+      `}</style>
       <SEO 
         title="Cydena for Employers - Hire Verified Cybersecurity Talent"
         description="Reduce time-to-hire by 60% with pre-verified, HR-ready cybersecurity professionals."
       />
       
       {/* Header */}
-      <div className="bg-gradient-to-r from-[hsl(189,97%,55%)] to-[hsl(263,70%,50%)] text-white p-12 print:p-8">
+      <div className="print-gradient bg-gradient-to-r from-[hsl(189,97%,55%)] to-[hsl(263,70%,50%)] text-white p-8 print:p-6 print:text-white">
         <div className="max-w-4xl mx-auto">
-          <div className="inline-block bg-white/95 px-4 py-2 rounded-lg mb-6">
+          <div className="inline-block bg-white/95 px-4 py-2 rounded-lg mb-6 print:mb-4">
             <img 
               src="/logos/cydena-main-logo.png" 
               alt="Cydena" 
-              className="h-10"
+              className="h-10 print:h-8"
             />
           </div>
-          <h1 className="text-5xl font-bold mb-4 print:text-4xl">
+          <h1 className="text-4xl font-bold mb-3 print:text-3xl print:mb-2">
             Hire Verified Cybersecurity Talent 60% Faster
           </h1>
-          <p className="text-xl opacity-90 print:text-lg">
+          <p className="text-lg opacity-90 print:text-base">
             Pre-vetted, HR-ready candidates with verified credentials and security clearances
           </p>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="max-w-4xl mx-auto p-12 print:p-8">
+      <div className="max-w-4xl mx-auto p-6 print:p-5">
         
         {/* Problem Statement */}
-        <div className="mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+        <div className="mb-8 print:mb-6">
+          <h2 className="text-2xl font-bold text-gray-900 mb-3 print:text-xl">
             The Cost of Traditional Cybersecurity Hiring
           </h2>
           <div className="bg-red-50 border-l-4 border-red-500 p-6 mb-6 print:border print:border-red-200">
@@ -64,12 +73,12 @@ const EmployerPDF = () => {
         </div>
 
         {/* Value Propositions */}
-        <div className="mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-6">
+        <div className="mb-8 print:mb-6">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4 print:text-xl">
             The Cydena Advantage
           </h2>
           
-          <div className="space-y-6">
+          <div className="space-y-5 print:space-y-4">
             <div className="flex gap-4">
               <div className="flex-shrink-0">
                 <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
@@ -173,8 +182,8 @@ const EmployerPDF = () => {
         </div>
 
         {/* ROI Calculator */}
-        <div className="bg-blue-50 rounded-lg p-8 mb-12 print:border print:border-blue-200">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
+        <div className="bg-blue-50 rounded-lg p-6 mb-8 print:p-5 print:mb-6 print:border print:border-blue-200">
+          <h2 className="text-xl font-bold text-gray-900 mb-4 text-center print:text-lg">
             Calculate Your Savings
           </h2>
           <div className="grid grid-cols-2 gap-6">
@@ -201,11 +210,11 @@ const EmployerPDF = () => {
         </div>
 
         {/* Social Proof */}
-        <div className="mb-12">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
+        <div className="mb-8 print:mb-6">
+          <h2 className="text-xl font-bold text-gray-900 mb-4 text-center print:text-lg">
             Trusted by Leading Organizations
           </h2>
-          <div className="space-y-6">
+          <div className="space-y-5 print:space-y-4">
             <div className="border-l-4 border-blue-600 pl-4">
               <p className="text-gray-700 italic mb-2">
                 "We reduced our time-to-hire for senior security roles from 4 months to 6 weeks. The pre-verification 
@@ -228,8 +237,8 @@ const EmployerPDF = () => {
         </div>
 
         {/* Pricing Overview */}
-        <div className="mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-6">
+        <div className="mb-8 print:mb-6">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4 print:text-xl">
             Transparent Pricing Plans
           </h2>
           
@@ -273,7 +282,7 @@ const EmployerPDF = () => {
         </div>
 
         {/* CTA */}
-        <div className="bg-gradient-to-r from-[hsl(189,97%,55%)] to-[hsl(263,70%,50%)] text-white rounded-lg p-8 text-center print:bg-white print:text-gray-900 print:border-4 print:border-[hsl(189,97%,55%)] print:rounded-lg">
+        <div className="print-gradient bg-gradient-to-r from-[hsl(189,97%,55%)] to-[hsl(263,70%,50%)] text-white rounded-lg p-8 text-center print:text-white print:p-6 print:break-inside-avoid">
           <h2 className="text-3xl font-bold mb-4 print:text-2xl">
             Ready to Transform Your Hiring?
           </h2>
@@ -282,10 +291,10 @@ const EmployerPDF = () => {
           </p>
           <div className="flex flex-col gap-3 justify-center items-center mb-6">
             <div className="text-lg font-semibold">
-              👉 Visit: <span className="underline">cydena.com/employer-pitch</span>
+              👉 Visit: <a href="https://cydena.com/employer-pitch" target="_blank" rel="noopener noreferrer" className="underline hover:opacity-80">cydena.com/employer-pitch</a>
             </div>
             <div className="text-lg font-semibold">
-              ✉️ Email: <span className="underline">contact@cydena.com</span>
+              ✉️ Email: <a href="mailto:contact@cydena.com" className="underline hover:opacity-80">contact@cydena.com</a>
             </div>
           </div>
           <p className="text-sm opacity-75 print:opacity-100">
@@ -295,10 +304,10 @@ const EmployerPDF = () => {
       </div>
 
       {/* Footer */}
-      <div className="bg-gray-100 p-8 mt-12 print:border-t print:bg-white">
+      <div className="bg-gray-100 p-4 mt-6 print:p-3 print:mt-4 print:hidden">
         <div className="max-w-4xl mx-auto text-center text-gray-600">
-          <p className="mb-2 font-semibold">Cydena - The Verified Cybersecurity Talent Platform</p>
-          <p className="text-sm">www.cydena.com | contact@cydena.com</p>
+          <p className="mb-1 font-semibold text-sm">Cydena - The Verified Cybersecurity Talent Platform</p>
+          <p className="text-xs">www.cydena.com | contact@cydena.com</p>
         </div>
       </div>
 
