@@ -355,14 +355,6 @@ const RecruiterPDF = () => {
         </div>
       </div>
 
-      {/* Footer */}
-      <div className="bg-gray-100 p-4 mt-6 print:p-3 print:mt-4 print:hidden">
-        <div className="max-w-4xl mx-auto text-center text-gray-600">
-          <p className="mb-1 font-semibold text-sm">Cydena - The Verified Cybersecurity Talent Platform</p>
-          <p className="text-xs">www.cydena.com | contact@cydena.com</p>
-        </div>
-      </div>
-
       {/* Print Button */}
       <div className="print:hidden fixed bottom-8 right-8">
         <Button 
