@@ -53,12 +53,12 @@ serve(async (req) => {
       if (!status && body?.status) status = String(body.status);
     } catch { /* no body */ }
 
-    // Load verification requests (identity/rtw, candidates only)
+    // Load verification requests (identity/rtw/background, candidates only)
     let query = supabaseAdmin
       .from('verification_requests')
-      .select('id,candidate_id,verification_type,status,created_at,reviewed_at,reviewed_by,rejection_reason,document_urls,notes,company_name')
+      .select('id,candidate_id,verification_type,status,created_at,reviewed_at,reviewed_by,rejection_reason,document_urls,notes,company_name,metadata')
       .is('company_name', null)
-      .in('verification_type', ['identity','rtw'])
+      .in('verification_type', ['identity','rtw','background'])
       .order('created_at', { ascending: false });
 
     if (status && ['pending','approved','rejected'].includes(status)) {
