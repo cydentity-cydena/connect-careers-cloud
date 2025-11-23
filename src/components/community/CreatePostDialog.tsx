@@ -95,10 +95,19 @@ export const CreatePostDialog = () => {
 
       if (error) throw error;
 
+      // Check admin status at post time (not from state)
+      const { data: adminCheck } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', user.id)
+        .eq('role', 'admin')
+        .maybeSingle();
+
       // Send announcement emails for all admin posts
-      if (isAdmin) {
+      if (adminCheck) {
+        console.log('Admin detected, sending announcement emails for post:', newPost.id);
         try {
-          await supabase.functions.invoke('send-announcement-email', {
+          const { error: emailError } = await supabase.functions.invoke('send-announcement-email', {
             body: {
               postId: newPost.id,
               activityType,
@@ -106,6 +115,11 @@ export const CreatePostDialog = () => {
               description
             }
           });
+          if (emailError) {
+            console.error('Email function error:', emailError);
+          } else {
+            console.log('Announcement emails sent successfully');
+          }
         } catch (emailError) {
           console.error('Failed to send announcement emails:', emailError);
           // Don't throw - post was created successfully
