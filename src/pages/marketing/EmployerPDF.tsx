@@ -14,7 +14,7 @@ const EmployerPDF = () => {
       <div className="bg-gradient-to-r from-[hsl(189,97%,55%)] to-[hsl(263,70%,50%)] text-white p-12 print:p-8">
         <div className="max-w-4xl mx-auto">
           <img 
-            src="/logos/cydena-main-logo.png" 
+            src="/logos/cydena-logo-white.png" 
             alt="Cydena" 
             className="h-12 mb-6"
           />
