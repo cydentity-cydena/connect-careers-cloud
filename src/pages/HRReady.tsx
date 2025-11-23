@@ -182,18 +182,21 @@ const HRReady = () => {
     
     try {
       const paths = await uploadFiles(files, type);
+      // Map 'clearance' to 'background' for database constraint
+      const dbType = type === "clearance" ? "background" : type;
+      
       const { error } = await supabase
         .from("verification_requests")
         .insert({
           candidate_id: userId,
-          verification_type: type,
+          verification_type: dbType,
           status: "pending",
           document_urls: paths,
           notes: notes || null,
           metadata: metadata || null,
         });
       if (error) throw error;
-      toast({ title: `${type.toUpperCase()} submitted`, description: "We'll review shortly." });
+      toast({ title: `${type === "clearance" ? "Clearance" : type.toUpperCase()} submitted`, description: "We'll review shortly." });
       
       // Clear form
       if (type === "clearance") {
