@@ -39,10 +39,10 @@ const CandidatePDF = () => {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-4xl mx-auto p-8 print:p-6">
+      <div className="max-w-4xl mx-auto p-6 print:p-5">
         
         {/* Problem Statement */}
-        <div className="mb-10 print:mb-8">
+        <div className="mb-8 print:mb-6">
           <h2 className="text-2xl font-bold text-gray-900 mb-3 print:text-xl">
             Are You Invisible to Employers?
           </h2>
@@ -57,12 +57,12 @@ const CandidatePDF = () => {
         </div>
 
         {/* Value Propositions */}
-        <div className="mb-10 print:mb-8 print:break-inside-avoid">
-          <h2 className="text-2xl font-bold text-gray-900 mb-5 print:text-xl">
+        <div className="mb-8 print:mb-6 print:break-inside-avoid">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4 print:text-xl">
             Why Top Cybersecurity Professionals Choose Cydena
           </h2>
           
-          <div className="space-y-5 print:space-y-4">
+          <div className="space-y-4 print:space-y-3">
             <div className="flex gap-4 print:break-inside-avoid">
               <div className="flex-shrink-0">
                 <div className="w-10 h-10 bg-[hsl(189,97%,55%)]/10 rounded-lg flex items-center justify-center print:w-8 print:h-8">
@@ -151,7 +151,7 @@ const CandidatePDF = () => {
         </div>
 
         {/* Social Proof */}
-        <div className="bg-gray-50 rounded-lg p-6 mb-8 print:p-5 print:mb-6 print:border print:border-gray-200 print:break-inside-avoid">
+        <div className="bg-gray-50 rounded-lg p-6 mb-6 print:p-4 print:mb-5 print:border print:border-gray-200 print:break-inside-avoid">
           <h2 className="text-xl font-bold text-gray-900 mb-4 text-center print:text-lg print:mb-3">
             What Our Members Say
           </h2>
@@ -178,12 +178,12 @@ const CandidatePDF = () => {
         </div>
 
         {/* How It Works */}
-        <div className="mb-8 print:mb-6 print:break-before-page">
-          <h2 className="text-2xl font-bold text-gray-900 mb-5 print:text-xl print:mb-4">
+        <div className="mb-6 print:mb-5 print:break-before-page">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4 print:text-xl print:mb-3">
             Get Started in 3 Simple Steps
           </h2>
           
-          <div className="space-y-4 print:space-y-3">
+          <div className="space-y-3 print:space-y-2">
             <div className="flex items-start gap-4 print:break-inside-avoid">
               <div className="flex-shrink-0 w-8 h-8 bg-[hsl(189,97%,55%)] text-white rounded-full flex items-center justify-center font-bold text-sm print:w-7 print:h-7 print:text-xs">
                 1
@@ -243,10 +243,10 @@ const CandidatePDF = () => {
       </div>
 
       {/* Footer */}
-      <div className="bg-gray-100 p-6 mt-8 print:border-t print:bg-white print:p-4 print:mt-6">
+      <div className="bg-gray-100 p-4 mt-6 print:p-3 print:mt-4 print:hidden">
         <div className="max-w-4xl mx-auto text-center text-gray-600">
-          <p className="mb-1 font-semibold text-sm print:text-xs">Cydena - The Verified Cybersecurity Talent Platform</p>
-          <p className="text-xs print:text-[10px]">www.cydena.com | contact@cydena.com</p>
+          <p className="mb-1 font-semibold text-sm">Cydena - The Verified Cybersecurity Talent Platform</p>
+          <p className="text-xs">www.cydena.com | contact@cydena.com</p>
         </div>
       </div>
 
