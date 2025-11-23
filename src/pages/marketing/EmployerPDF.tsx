@@ -11,7 +11,7 @@ const EmployerPDF = () => {
       />
       
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-12 print:p-8">
+      <div className="bg-gradient-to-r from-[hsl(189,97%,55%)] to-[hsl(263,70%,50%)] text-white p-12 print:p-8">
         <div className="max-w-4xl mx-auto">
           <img 
             src="/logos/cydena-main-logo.png" 
@@ -271,7 +271,7 @@ const EmployerPDF = () => {
         </div>
 
         {/* CTA */}
-        <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg p-8 text-center print:bg-white print:text-gray-900 print:border-4 print:border-blue-600 print:rounded-lg">
+        <div className="bg-gradient-to-r from-[hsl(189,97%,55%)] to-[hsl(263,70%,50%)] text-white rounded-lg p-8 text-center print:bg-white print:text-gray-900 print:border-4 print:border-[hsl(189,97%,55%)] print:rounded-lg">
           <h2 className="text-3xl font-bold mb-4 print:text-2xl">
             Ready to Transform Your Hiring?
           </h2>
