@@ -283,7 +283,7 @@ const EmployerPDF = () => {
               👉 Visit: <span className="underline">cydena.com/employer-pitch</span>
             </div>
             <div className="text-lg font-semibold">
-              ✉️ Email: <span className="underline">sales@cydena.com</span>
+              ✉️ Email: <span className="underline">contact@cydena.com</span>
             </div>
           </div>
           <p className="mt-6 text-sm opacity-75">
@@ -296,7 +296,7 @@ const EmployerPDF = () => {
       <div className="bg-gray-100 p-8 mt-12 print:border-t print:bg-white">
         <div className="max-w-4xl mx-auto text-center text-gray-600">
           <p className="mb-2 font-semibold">Cydena - The Verified Cybersecurity Talent Platform</p>
-          <p className="text-sm">www.cydena.com | sales@cydena.com</p>
+          <p className="text-sm">www.cydena.com | contact@cydena.com</p>
         </div>
       </div>
 
