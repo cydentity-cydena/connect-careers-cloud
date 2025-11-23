@@ -27,6 +27,7 @@ import { CandidateAvatar } from "@/components/profiles/CandidateAvatar";
 import { AssessmentResults } from "@/components/profiles/AssessmentResults";
 import { ProfileBadgeDisplay } from "@/components/badges/ProfileBadgeDisplay";
 import { PushCandidateButton } from "@/components/integrations/PushCandidateButton";
+import { HighValueBadges } from "@/components/profiles/HighValueBadges";
 
 export default function ProfileDetail() {
   const { id } = useParams();
@@ -266,7 +267,7 @@ export default function ProfileDetail() {
       // Fetch verification status (publicly visible)
       const { data: verificationData } = await supabase
         .from('candidate_verifications')
-        .select('hr_ready, identity_status, rtw_status, logistics_status, compliance_score')
+        .select('hr_ready, identity_status, rtw_status, logistics_status, compliance_score, clearance_level, pci_qsa_status')
         .eq('candidate_id', id)
         .maybeSingle();
       setVerification(verificationData);
@@ -478,11 +479,16 @@ export default function ProfileDetail() {
                   {candidateProfile?.title && (
                     <p className="text-muted-foreground mb-2">{candidateProfile.title}</p>
                   )}
-                  {verification?.hr_ready && (
-                    <div className="mb-2">
+                  <div className="flex flex-col items-center gap-2 mb-2">
+                    {verification?.hr_ready && (
                       <HRReadyBadge isReady={true} size="md" />
-                    </div>
-                  )}
+                    )}
+                    <HighValueBadges 
+                      clearanceLevel={verification?.clearance_level}
+                      pciQsaStatus={verification?.pci_qsa_status}
+                      certifications={candidateProfile?.certifications?.map((c: any) => c.name) || []}
+                    />
+                  </div>
                   {profile.desired_job_title && (
                     <div className="flex items-center gap-2 justify-center">
                       <Badge variant="secondary" className="text-xs">
