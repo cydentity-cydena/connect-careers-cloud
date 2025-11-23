@@ -256,6 +256,7 @@ export function EditVerificationDrawer({
                   <SelectItem value="">None</SelectItem>
                   <SelectItem value="DV">DV (Developed Vetting)</SelectItem>
                   <SelectItem value="SC">SC (Security Check)</SelectItem>
+                  <SelectItem value="SV">SV (Security Vetting)</SelectItem>
                   <SelectItem value="CTC">CTC (Counter-Terrorist Check)</SelectItem>
                   <SelectItem value="BPSS">BPSS (Baseline Personnel Security Standard)</SelectItem>
                   <SelectItem value="Other">Other</SelectItem>

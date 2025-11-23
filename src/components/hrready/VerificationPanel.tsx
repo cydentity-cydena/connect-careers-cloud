@@ -194,12 +194,18 @@ export function VerificationPanel({ verification, onEdit, showEditButton = false
         </Card>
 
         {/* Clearance & Special Qualifications */}
-        {(verification.clearance_level || verification.pci_qsa_status) && (
-          <Card className="p-4">
+        <Card className="p-4">
             <div className="flex items-start gap-3">
               <Shield className="h-5 w-5 mt-1 text-muted-foreground" />
               <div className="flex-1">
-                <h4 className="font-medium mb-2">Special Qualifications</h4>
+                <div className="flex items-center gap-2 mb-2">
+                  <h4 className="font-medium">Clearance</h4>
+                  {!verification.clearance_level && !verification.pci_qsa_status && (
+                    <Badge variant="outline" className="text-muted-foreground">
+                      Not set
+                    </Badge>
+                  )}
+                </div>
                 
                 {verification.clearance_level && (
                   <div className="mb-3">
@@ -238,7 +244,6 @@ export function VerificationPanel({ verification, onEdit, showEditButton = false
               </div>
             </div>
           </Card>
-        )}
       </div>
     </div>
   );
