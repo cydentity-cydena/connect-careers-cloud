@@ -158,69 +158,77 @@ const CandidatePDF = () => {
           </h2>
           
           <div className="grid md:grid-cols-2 gap-4 print:gap-3">
-            <div className="border-2 border-[hsl(189,97%,55%)] rounded-lg p-4 print:p-3 print:break-inside-avoid">
+            <div className="border-2 border-[hsl(189,97%,55%)] rounded-lg p-4 print:p-3 print:break-inside-avoid flex flex-col">
               <div className="flex items-center gap-3 mb-3 print:mb-2">
                 <div className="w-10 h-10 bg-[hsl(189,97%,55%)]/10 rounded-lg flex items-center justify-center print:w-8 print:h-8">
                   <Award className="w-5 h-5 text-[hsl(189,97%,55%)] print:w-4 print:h-4" />
                 </div>
                 <h3 className="font-bold text-gray-900 text-lg print:text-base">Evidence-Based Profile</h3>
               </div>
-              <img 
-                src="/screenshots/profile-card.png" 
-                alt="Verified profile with HR-Ready badge"
-                className="w-full rounded border border-gray-200 mb-3 print:mb-2"
-              />
+              <div className="h-48 mb-3 print:mb-2 print:h-40">
+                <img 
+                  src="/screenshots/profile-card.png" 
+                  alt="Verified profile with HR-Ready badge"
+                  className="w-full h-full object-cover object-top rounded border border-gray-200"
+                />
+              </div>
               <p className="text-sm text-gray-700 leading-relaxed">
                 Showcase verified certifications, validated skills, and proven training completions. Your profile displays credibility badges that employers trust.
               </p>
             </div>
 
-            <div className="border-2 border-[hsl(189,97%,55%)] rounded-lg p-4 print:p-3 print:break-inside-avoid">
+            <div className="border-2 border-[hsl(189,97%,55%)] rounded-lg p-4 print:p-3 print:break-inside-avoid flex flex-col">
               <div className="flex items-center gap-3 mb-3 print:mb-2">
                 <div className="w-10 h-10 bg-[hsl(189,97%,55%)]/10 rounded-lg flex items-center justify-center print:w-8 print:h-8">
                   <TrendingUp className="w-5 h-5 text-[hsl(189,97%,55%)] print:w-4 print:h-4" />
                 </div>
                 <h3 className="font-bold text-gray-900 text-lg print:text-base">Leaderboard & Rankings</h3>
               </div>
-              <img 
-                src="/screenshots/community-leaders.png" 
-                alt="Community leaderboard"
-                className="w-full rounded border border-gray-200 mb-3 print:mb-2"
-              />
+              <div className="h-48 mb-3 print:mb-2 print:h-40">
+                <img 
+                  src="/screenshots/community-leaders.png" 
+                  alt="Community leaderboard"
+                  className="w-full h-full object-cover object-center rounded border border-gray-200"
+                />
+              </div>
               <p className="text-sm text-gray-700 leading-relaxed">
                 Compete with peers, earn XP through skill validation, and climb the leaderboard. Top performers get featured to employers.
               </p>
             </div>
 
-            <div className="border-2 border-[hsl(189,97%,55%)] rounded-lg p-4 print:p-3 print:break-inside-avoid">
+            <div className="border-2 border-[hsl(189,97%,55%)] rounded-lg p-4 print:p-3 print:break-inside-avoid flex flex-col">
               <div className="flex items-center gap-3 mb-3 print:mb-2">
                 <div className="w-10 h-10 bg-[hsl(189,97%,55%)]/10 rounded-lg flex items-center justify-center print:w-8 print:h-8">
                   <CheckCircle className="w-5 h-5 text-[hsl(189,97%,55%)] print:w-4 print:h-4" />
                 </div>
                 <h3 className="font-bold text-gray-900 text-lg print:text-base">Skills Assessment</h3>
               </div>
-              <img 
-                src="/screenshots/skills-assessment.png" 
-                alt="Technical skills assessment"
-                className="w-full rounded border border-gray-200 mb-3 print:mb-2"
-              />
+              <div className="h-48 mb-3 print:mb-2 print:h-40">
+                <img 
+                  src="/screenshots/skills-assessment.png" 
+                  alt="Technical skills assessment"
+                  className="w-full h-full object-cover object-top rounded border border-gray-200"
+                />
+              </div>
               <p className="text-sm text-gray-700 leading-relaxed">
                 Validate your expertise with professional assessments, earn XP for each completed assessment, and demonstrate continuous learning to employers.
               </p>
             </div>
 
-            <div className="border-2 border-[hsl(189,97%,55%)] rounded-lg p-4 print:p-3 print:break-inside-avoid">
+            <div className="border-2 border-[hsl(189,97%,55%)] rounded-lg p-4 print:p-3 print:break-inside-avoid flex flex-col">
               <div className="flex items-center gap-3 mb-3 print:mb-2">
                 <div className="w-10 h-10 bg-[hsl(189,97%,55%)]/10 rounded-lg flex items-center justify-center print:w-8 print:h-8">
                   <Users className="w-5 h-5 text-[hsl(189,97%,55%)] print:w-4 print:h-4" />
                 </div>
                 <h3 className="font-bold text-gray-900 text-lg print:text-base">Professional Rankings</h3>
               </div>
-              <img 
-                src="/screenshots/leaderboard.png" 
-                alt="Top professionals ranked by XP"
-                className="w-full rounded border border-gray-200 mb-3 print:mb-2"
-              />
+              <div className="h-48 mb-3 print:mb-2 print:h-40">
+                <img 
+                  src="/screenshots/leaderboard.png" 
+                  alt="Top professionals ranked by XP"
+                  className="w-full h-full object-cover object-top rounded border border-gray-200"
+                />
+              </div>
               <p className="text-sm text-gray-700 leading-relaxed">
                 Rankings based on verified certifications, courses, and validated skills. Get featured to employers and join the top performers in the community.
               </p>
