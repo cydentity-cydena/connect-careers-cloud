@@ -28,6 +28,9 @@ const HRReady = () => {
   const [idNotes, setIdNotes] = useState("");
   const [rtwFiles, setRtwFiles] = useState<FileList | null>(null);
   const [rtwNotes, setRtwNotes] = useState("");
+  const [clearanceFiles, setClearanceFiles] = useState<FileList | null>(null);
+  const [clearanceLevel, setClearanceLevel] = useState("");
+  const [clearanceNotes, setClearanceNotes] = useState("");
 
   // Logistics form state
   const [workMode, setWorkMode] = useState("Remote");
@@ -145,12 +148,38 @@ const HRReady = () => {
     }
   };
 
-  const submitRequest = async (type: "identity" | "rtw", files: FileList | null, notes: string) => {
+  const handleClearanceFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+    
+    try {
+      const paths = await uploadFiles(files, "clearance");
+      setClearanceFiles(files);
+      toast({
+        title: "Files uploaded",
+        description: `${files.length} clearance document(s) uploaded successfully`,
+      });
+    } catch (error: any) {
+      toast({
+        title: "Upload failed",
+        description: error.message,
+        variant: "destructive"
+      });
+    }
+  };
+
+  const submitRequest = async (type: "identity" | "rtw" | "clearance", files: FileList | null, notes: string, metadata?: any) => {
     if (!userId) return;
     if (!files || files.length === 0) {
       toast({ title: "Please attach document(s)", variant: "destructive" });
       return;
     }
+    
+    if (type === "clearance" && !metadata?.clearanceLevel) {
+      toast({ title: "Please select a clearance level", variant: "destructive" });
+      return;
+    }
+    
     try {
       const paths = await uploadFiles(files, type);
       const { error } = await supabase
@@ -161,9 +190,17 @@ const HRReady = () => {
           status: "pending",
           document_urls: paths,
           notes: notes || null,
+          metadata: metadata || null,
         });
       if (error) throw error;
       toast({ title: `${type.toUpperCase()} submitted`, description: "We'll review shortly." });
+      
+      // Clear form
+      if (type === "clearance") {
+        setClearanceFiles(null);
+        setClearanceLevel("");
+        setClearanceNotes("");
+      }
     } catch (e: any) {
       toast({ title: "Submission failed", description: e.message, variant: "destructive" });
     }
@@ -311,6 +348,50 @@ const HRReady = () => {
                 </div>
                 <Button onClick={() => submitRequest("rtw", rtwFiles, rtwNotes)} className="w-full">
                   Submit RTW
+                </Button>
+              </div>
+            </Card>
+
+            <Card className="p-5">
+              <h3 className="text-lg font-semibold mb-3">Submit Security Clearance</h3>
+              <div className="space-y-3">
+                <div className="space-y-1.5">
+                  <Label htmlFor="clearance-level">Clearance Level</Label>
+                  <Select value={clearanceLevel} onValueChange={setClearanceLevel}>
+                    <SelectTrigger id="clearance-level">
+                      <SelectValue placeholder="Select your clearance level" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="DV">DV (Developed Vetting)</SelectItem>
+                      <SelectItem value="SC">SC (Security Check)</SelectItem>
+                      <SelectItem value="SV">SV (Security Vetting)</SelectItem>
+                      <SelectItem value="CTC">CTC (Counter-Terrorist Check)</SelectItem>
+                      <SelectItem value="BPSS">BPSS (Baseline Personnel Security Standard)</SelectItem>
+                      <SelectItem value="Other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="clearance-docs">Clearance Certificate</Label>
+                  <Input id="clearance-docs" type="file" multiple onChange={handleClearanceFileChange} />
+                  <p className="text-xs text-muted-foreground">Upload your clearance certificate or approval letter</p>
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="clearance-notes">Notes (optional)</Label>
+                  <Textarea 
+                    id="clearance-notes"
+                    rows={2} 
+                    value={clearanceNotes} 
+                    onChange={(e) => setClearanceNotes(e.target.value)} 
+                    placeholder="Issue date, expiry date, sponsoring organization" 
+                  />
+                </div>
+                <Button 
+                  onClick={() => submitRequest("clearance", clearanceFiles, clearanceNotes, { clearanceLevel })} 
+                  className="w-full"
+                  disabled={!clearanceLevel}
+                >
+                  Submit Clearance
                 </Button>
               </div>
             </Card>
