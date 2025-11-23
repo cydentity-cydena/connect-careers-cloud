@@ -1,7 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Shield, FileCheck, Briefcase, MapPin, Edit } from "lucide-react";
+import { Shield, FileCheck, Briefcase, MapPin, Edit, Star } from "lucide-react";
 import { format } from "date-fns";
 
 interface VerificationPanelProps {
@@ -192,6 +192,53 @@ export function VerificationPanel({ verification, onEdit, showEditButton = false
             </div>
           </div>
         </Card>
+
+        {/* Clearance & Special Qualifications */}
+        {(verification.clearance_level || verification.pci_qsa_status) && (
+          <Card className="p-4">
+            <div className="flex items-start gap-3">
+              <Shield className="h-5 w-5 mt-1 text-muted-foreground" />
+              <div className="flex-1">
+                <h4 className="font-medium mb-2">Special Qualifications</h4>
+                
+                {verification.clearance_level && (
+                  <div className="mb-3">
+                    <div className="flex items-center gap-2 mb-1">
+                      <Badge variant="outline" className="bg-blue-500/10 text-blue-600 border-blue-500/20">
+                        <Shield className="h-3 w-3 mr-1" />
+                        {verification.clearance_level} Clearance
+                      </Badge>
+                    </div>
+                    {verification.clearance_verified_at && (
+                      <p className="text-sm text-muted-foreground">
+                        Verified: {format(new Date(verification.clearance_verified_at), 'MMM dd, yyyy')}
+                      </p>
+                    )}
+                  </div>
+                )}
+
+                {verification.pci_qsa_status === 'active' && (
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <Badge variant="outline" className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20">
+                        <Star className="h-3 w-3 mr-1" />
+                        PCI QSA
+                      </Badge>
+                    </div>
+                    {verification.pci_qsa_company && (
+                      <p className="text-sm text-muted-foreground">Company: {verification.pci_qsa_company}</p>
+                    )}
+                    {verification.pci_qsa_verified_at && (
+                      <p className="text-sm text-muted-foreground">
+                        Verified: {format(new Date(verification.pci_qsa_verified_at), 'MMM dd, yyyy')}
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          </Card>
+        )}
       </div>
     </div>
   );

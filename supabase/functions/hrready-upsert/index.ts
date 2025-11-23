@@ -72,6 +72,18 @@ serve(async (req) => {
       updateData.logistics_expires_at = body.logistics.expiresAt;
     }
 
+    if (body.clearance) {
+      updateData.clearance_level = body.clearance.level;
+      updateData.clearance_verified_at = body.clearance.verifiedAt;
+      updateData.clearance_expires_at = body.clearance.expiresAt;
+    }
+
+    if (body.pciQsa) {
+      updateData.pci_qsa_status = body.pciQsa.status;
+      updateData.pci_qsa_company = body.pciQsa.company;
+      updateData.pci_qsa_verified_at = body.pciQsa.verifiedAt;
+    }
+
     // Upsert the verification
     const { data: verification, error: upsertError } = await supabase
       .from('candidate_verifications')

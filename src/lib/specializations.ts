@@ -4,16 +4,18 @@ export type Specialization =
   | 'cloud-security'
   | 'incident-response'
   | 'penetration-testing'
+  | 'red-team'
+  | 'blue-team'
   | 'grc-compliance'
   | 'application-security'
   | 'network-security'
   | 'threat-intelligence'
   | 'operational-technology'
-  | 'soc-red-blue-team'
   | 'operational-security'
   | 'security-architecture'
   | 'data-privacy'
   | 'cyber-defence'
+  | 'ai-security'
   | 'emerging-technology';
 
 export interface SpecializationBadge {
@@ -47,8 +49,24 @@ export const SPECIALIZATIONS: SpecializationBadge[] = [
     label: 'Penetration Testing',
     icon: '🎯',
     color: 'bg-purple-500/10 text-purple-600 border-purple-500/20',
-    keywords: ['penetration testing', 'pentest', 'ethical hacking', 'metasploit', 'burp suite', 'kali', 'red team'],
-    certKeywords: ['oscp', 'ceh', 'cpent', 'gpen', 'gwapt', 'crto', 'pnpt', 'oswp', 'osep', 'osed', 'oswe', 'gxpn', 'gawn']
+    keywords: ['penetration testing', 'pentest', 'ethical hacking', 'metasploit', 'burp suite', 'kali'],
+    certKeywords: ['oscp', 'ceh', 'cpent', 'gpen', 'gwapt', 'pnpt', 'oswp', 'osep', 'osed', 'oswe', 'gxpn', 'gawn']
+  },
+  {
+    id: 'red-team',
+    label: 'Red Team Operations',
+    icon: '⚔️',
+    color: 'bg-red-500/10 text-red-600 border-red-500/20',
+    keywords: ['red team', 'adversary simulation', 'attack simulation', 'offensive security', 'purple team', 'breach simulation', 'red teaming'],
+    certKeywords: ['crto', 'crtp', 'ccrts', 'ccsas', 'osep', 'osed', 'gxpn', 'red team', 'btl2']
+  },
+  {
+    id: 'blue-team',
+    label: 'Blue Team Defense',
+    icon: '🛡️',
+    color: 'bg-blue-500/10 text-blue-600 border-blue-500/20',
+    keywords: ['blue team', 'defensive security', 'security monitoring', 'threat detection', 'incident response', 'soc analyst', 'defense'],
+    certKeywords: ['btl1', 'btl2', 'gcih', 'gcia', 'gcfa', 'cysa+', 'blue team', 'security+']
   },
   {
     id: 'grc-compliance',
@@ -91,14 +109,6 @@ export const SPECIALIZATIONS: SpecializationBadge[] = [
     certKeywords: ['gicsp', 'grid', 'ics', 'scada', 'ot security', 'industrial cybersecurity', 'iec 62443', 'nist 800-82']
   },
   {
-    id: 'soc-red-blue-team',
-    label: 'SOC (Red/Blue Teaming)',
-    icon: '🔒',
-    color: 'bg-rose-500/10 text-rose-600 border-rose-500/20',
-    keywords: ['soc', 'security operations', 'red team', 'blue team', 'purple team', 'security monitoring', 'threat hunting', 'detection engineering', 'siem'],
-    certKeywords: ['gcih', 'gcia', 'gcfa', 'btl1', 'btl2', 'crto', 'crtp', 'oscp', 'security+', 'cysa+']
-  },
-  {
     id: 'operational-security',
     label: 'Operational Security',
     icon: '⚙️',
@@ -131,12 +141,20 @@ export const SPECIALIZATIONS: SpecializationBadge[] = [
     certKeywords: ['sc clearance', 'dv clearance', 'cesg', 'ncsc', 'cissp', 'check']
   },
   {
-    id: 'emerging-technology',
-    label: 'Emerging Technology',
+    id: 'ai-security',
+    label: 'AI & ML Security',
     icon: '🤖',
     color: 'bg-fuchsia-500/10 text-fuchsia-600 border-fuchsia-500/20',
-    keywords: ['ai security', 'machine learning', 'ml', 'artificial intelligence', 'robotics', 'automation', 'digital transformation', 'iot security'],
-    certKeywords: ['ai security', 'ml engineer', 'iot security', 'automation']
+    keywords: ['ai security', 'machine learning security', 'ml security', 'artificial intelligence security', 'llm security', 'ai red team', 'prompt injection', 'model security'],
+    certKeywords: ['ai security', 'ml security', 'ai red team']
+  },
+  {
+    id: 'emerging-technology',
+    label: 'Emerging Technology',
+    icon: '🔮',
+    color: 'bg-violet-500/10 text-violet-600 border-violet-500/20',
+    keywords: ['blockchain security', 'web3 security', 'quantum security', 'iot security', 'robotics security', 'automation security'],
+    certKeywords: ['blockchain security', 'web3 security', 'iot security']
   }
 ];
 

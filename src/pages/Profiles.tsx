@@ -15,6 +15,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { HRReadyBadge } from "@/components/hrready/HRReadyBadge";
 import { ProfileBadgeDisplay } from "@/components/badges/ProfileBadgeDisplay";
 import { SmartCandidateFilters, FilterCriteria } from "@/components/employer/SmartCandidateFilters";
+import { HighValueBadges } from "@/components/profiles/HighValueBadges";
 
 interface CandidateProfile {
   id: string;
@@ -28,6 +29,8 @@ interface CandidateProfile {
   avatar: string;
   locked: boolean;
   location?: string;
+  clearanceLevel?: string;
+  pciQsaStatus?: string;
 }
 
 const Profiles = () => {
@@ -51,6 +54,9 @@ const Profiles = () => {
     clearance: [],
     location: "",
     remoteOk: false,
+    pciQsaOnly: false,
+    highValueCertsOnly: false,
+    specializations: [],
   });
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
 
@@ -164,18 +170,26 @@ const Profiles = () => {
         .select('candidate_id, skills(name, category)')
         .in('candidate_id', candidateIds);
 
-      // Fetch HR-Ready statuses and location
+      // Fetch HR-Ready statuses, clearance, PCI QSA, and location
       const { data: verData } = await supabase
         .from('candidate_verifications')
-        .select('candidate_id, hr_ready, logistics_location')
+        .select('candidate_id, hr_ready, logistics_location, clearance_level, pci_qsa_status')
         .in('candidate_id', candidateIds);
       
       const verMap: Record<string, boolean> = {};
       const locationMap: Record<string, string> = {};
+      const clearanceMap: Record<string, string> = {};
+      const pciQsaMap: Record<string, string> = {};
       verData?.forEach(v => {
         verMap[v.candidate_id] = v.hr_ready || false;
         if (v.logistics_location) {
           locationMap[v.candidate_id] = v.logistics_location;
+        }
+        if (v.clearance_level) {
+          clearanceMap[v.candidate_id] = v.clearance_level;
+        }
+        if (v.pci_qsa_status) {
+          pciQsaMap[v.candidate_id] = v.pci_qsa_status;
         }
       });
       setVerificationStatuses(verMap);
@@ -238,8 +252,10 @@ const Profiles = () => {
           specializations,
           experience: `${candidateProfile?.years_experience || 0} years`,
           avatar: "🔒",
-          locked: isAdminOrStaff ? false : index > 2, // Admins see all profiles as unlocked
-          location: locationMap[entry.candidate_id]
+          locked: isAdminOrStaff ? false : index > 2,
+          location: locationMap[entry.candidate_id],
+          clearanceLevel: clearanceMap[entry.candidate_id],
+          pciQsaStatus: pciQsaMap[entry.candidate_id]
         };
       });
 
@@ -286,8 +302,24 @@ const Profiles = () => {
     const matchesLocation = !advancedFilters.location || 
       (candidate.location && candidate.location.toLowerCase().includes(advancedFilters.location.toLowerCase()));
 
+    // Clearance filter
+    const matchesClearance = advancedFilters.clearance.length === 0 ||
+      (candidate.clearanceLevel && advancedFilters.clearance.includes(candidate.clearanceLevel));
+
+    // PCI QSA filter
+    const matchesPciQsa = !advancedFilters.pciQsaOnly ||
+      (candidate.pciQsaStatus === 'active');
+
+    // High-value certs filter (CCRTS, CCSAS)
+    const highValueCerts = ['ccrts', 'ccsas', 'crto', 'crtp'];
+    const matchesHighValueCerts = !advancedFilters.highValueCertsOnly ||
+      candidate.certifications.some(cert =>
+        highValueCerts.some(hvc => cert.toLowerCase().includes(hvc))
+      );
+
     return matchesSearch && matchesSpecialization && matchesHRReady && 
-           matchesExperience && matchesMustHaveSkills && matchesCertifications && matchesLocation;
+           matchesExperience && matchesMustHaveSkills && matchesCertifications && 
+           matchesLocation && matchesClearance && matchesPciQsa && matchesHighValueCerts;
   });
 
   const getRankBadgeColor = (rank: number) => {
@@ -464,6 +496,13 @@ const Profiles = () => {
                 </div>
 
                 <div className="space-y-3">
+                  {/* High-Value Badges */}
+                  <HighValueBadges 
+                    clearanceLevel={candidate.clearanceLevel}
+                    pciQsaStatus={candidate.pciQsaStatus}
+                    certifications={candidate.certifications}
+                  />
+
                   {/* Specializations */}
                   {candidate.specializations.length > 0 && (
                     <div>
