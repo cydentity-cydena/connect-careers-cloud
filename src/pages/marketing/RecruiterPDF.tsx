@@ -30,10 +30,10 @@ const RecruiterPDF = () => {
             />
           </div>
           <h1 className="text-4xl font-bold mb-3 print:text-3xl print:mb-2">
-            Scale Your Cybersecurity Recruitment Business
+            Place Verified Cybersecurity Talent with Confidence
           </h1>
           <p className="text-lg opacity-90 print:text-base">
-            Access verified talent, streamline placements, and increase margins
+            Access verified candidates who can prove their capabilities
           </p>
         </div>
       </div>
@@ -47,29 +47,28 @@ const RecruiterPDF = () => {
             The Cybersecurity Recruiter's Dilemma
           </h2>
           <p className="text-lg text-gray-700 leading-relaxed mb-4">
-            You know the challenges all too well:
+            You know the challenges:
           </p>
           <ul className="space-y-3 text-gray-700 mb-6">
             <li className="flex items-start gap-2">
               <span className="text-purple-600 font-bold">•</span>
-              <span>Candidates inflate their qualifications and you only find out after client interviews</span>
+              <span>Candidates inflate qualifications - you discover this only after client interviews</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-purple-600 font-bold">•</span>
-              <span>Security clearance verification delays placements by weeks or months</span>
+              <span>No way to verify security clearances or certifications upfront</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-purple-600 font-bold">•</span>
-              <span>Managing multiple clients and candidates manually is time-consuming and error-prone</span>
+              <span>Clients demand proof of capabilities before interviews</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-purple-600 font-bold">•</span>
-              <span>Competing with in-house recruiters who have access to better talent pools</span>
+              <span>Placements fall through when verification fails</span>
             </li>
           </ul>
           <p className="text-lg text-gray-700 leading-relaxed">
-            <strong>What if you had access to a platform where every candidate is pre-verified, security cleared, 
-            and ready to interview?</strong>
+            <strong>What if every candidate you presented had verified credentials and proven capabilities?</strong>
           </p>
         </div>
 
@@ -327,10 +326,10 @@ const RecruiterPDF = () => {
         {/* CTA */}
         <div className="print-gradient bg-gradient-to-r from-[hsl(189,97%,55%)] to-[hsl(263,70%,50%)] text-white rounded-lg p-8 text-center print:text-white print:p-6 print:break-inside-avoid">
           <h2 className="text-2xl font-bold mb-3 print:text-xl">
-            Ready to Scale Your Placements?
+            Ready to Place with Confidence?
           </h2>
           <p className="text-lg mb-5 opacity-90 print:text-base">
-            Join leading recruitment agencies using Cydena to place more candidates faster
+            Join leading recruiters placing verified candidates with confidence
           </p>
           <div className="flex flex-col gap-3 justify-center items-center mb-6">
             <div className="text-lg font-semibold">

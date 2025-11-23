@@ -30,10 +30,10 @@ const EmployerPDF = () => {
             />
           </div>
           <h1 className="text-4xl font-bold mb-3 print:text-3xl print:mb-2">
-            Hire Verified Cybersecurity Talent 60% Faster
+            Hire with Confidence: Verified Cybersecurity Talent
           </h1>
           <p className="text-lg opacity-90 print:text-base">
-            Pre-vetted, HR-ready candidates with verified credentials and security clearances
+            Pre-verified, HR-ready candidates who can prove their capabilities
           </p>
         </div>
       </div>
@@ -44,31 +44,30 @@ const EmployerPDF = () => {
         {/* Problem Statement */}
         <div className="mb-8 print:mb-6">
           <h2 className="text-2xl font-bold text-gray-900 mb-3 print:text-xl">
-            The Cost of Traditional Cybersecurity Hiring
+            The Challenge of Hiring Cybersecurity Talent
           </h2>
           <div className="bg-red-50 border-l-4 border-red-500 p-6 mb-6 print:border print:border-red-200">
             <ul className="space-y-3 text-gray-700">
               <li className="flex items-start gap-2">
                 <span className="text-red-500 font-bold">•</span>
-                <span><strong>3-6 months</strong> average time-to-hire for security roles</span>
+                <span><strong>Unverified credentials</strong> - candidates claim certifications they don't have</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-red-500 font-bold">•</span>
-                <span><strong>£50,000+</strong> cost per failed hire</span>
+                <span><strong>No proof of capabilities</strong> - resumes don't show what candidates can actually do</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-red-500 font-bold">•</span>
-                <span><strong>200+ applications</strong> to manually screen per role</span>
+                <span><strong>Lengthy verification</strong> - waiting weeks or months to verify credentials and clearances</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-red-500 font-bold">•</span>
-                <span><strong>Weeks of delays</strong> waiting for background checks and clearance verification</span>
+                <span><strong>Compliance risks</strong> - hiring mistakes can lead to security breaches and regulatory issues</span>
               </li>
             </ul>
           </div>
           <p className="text-lg text-gray-700 leading-relaxed">
-            While you're stuck in lengthy hiring processes, competitors are securing top talent and your security 
-            gaps remain unfilled. <strong>There's a better way.</strong>
+            When you can't verify what candidates claim, every hire becomes a risk. <strong>Cydena gives you the confidence to hire.</strong>
           </p>
         </div>
 
@@ -284,10 +283,10 @@ const EmployerPDF = () => {
         {/* CTA */}
         <div className="print-gradient bg-gradient-to-r from-[hsl(189,97%,55%)] to-[hsl(263,70%,50%)] text-white rounded-lg p-8 text-center print:text-white print:p-6 print:break-inside-avoid">
           <h2 className="text-3xl font-bold mb-4 print:text-2xl">
-            Ready to Transform Your Hiring?
+            Ready to Hire with Confidence?
           </h2>
           <p className="text-xl mb-6 opacity-90 print:opacity-100 print:text-lg">
-            Book a demo and see how Cydena can reduce your time-to-hire by 60%
+            Book a demo and discover how verification builds hiring confidence
           </p>
           <div className="flex flex-col gap-3 justify-center items-center mb-6">
             <div className="text-lg font-semibold">
