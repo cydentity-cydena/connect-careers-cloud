@@ -64,11 +64,12 @@ export const MailchimpSignup = ({ userType, title, description }: MailchimpSignu
       setEmail("");
       setFirstName("");
       setLastName("");
-    } catch (error) {
+    } catch (error: any) {
       console.error('Subscription error:', error);
+      const errorMessage = error?.message || "Unable to subscribe at this time. Please try again later.";
       toast({
         title: "Subscription Failed",
-        description: "Please try again later.",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
