@@ -134,6 +134,10 @@ export function CandidateVerificationReview() {
         updateData.rtw_checked_at = new Date().toISOString();
         updateData.rtw_expires_at = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString();
         updateData.rtw_verifier = user?.email || 'staff';
+      } else if (request.verification_type === 'background') {
+        updateData.clearance_level = request.metadata?.clearanceLevel || 'Verified';
+        updateData.clearance_verified_at = new Date().toISOString();
+        updateData.clearance_expires_at = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString();
       }
 
       const { error: verifyError } = await supabase
@@ -247,6 +251,7 @@ export function CandidateVerificationReview() {
   const filteredRequests = allRequests?.filter(r => r.status === activeTab) || [];
   const identityRequests = filteredRequests.filter(r => r.verification_type === 'identity');
   const rtwRequests = filteredRequests.filter(r => r.verification_type === 'rtw');
+  const clearanceRequests = filteredRequests.filter(r => r.verification_type === 'background');
 
   const handlePageChange = (newPage: number, totalPages: number) => {
     setCurrentPage(Math.max(0, Math.min(newPage, totalPages - 1)));
@@ -289,6 +294,12 @@ export function CandidateVerificationReview() {
           <div className="text-sm">
             <p className="font-medium text-muted-foreground">Notes</p>
             <p className="text-sm mt-1">{request.notes}</p>
+          </div>
+        )}
+        {request.metadata?.clearanceLevel && (
+          <div className="text-sm">
+            <p className="font-medium text-muted-foreground">Clearance Level</p>
+            <p className="text-sm mt-1">{request.metadata.clearanceLevel}</p>
           </div>
         )}
         {request.rejection_reason && (
@@ -346,7 +357,7 @@ export function CandidateVerificationReview() {
     </Card>
   );
 
-  const renderVerificationTypeTab = (requests: any[], type: 'identity' | 'rtw') => {
+  const renderVerificationTypeTab = (requests: any[], type: 'identity' | 'rtw' | 'background') => {
     const totalPages = Math.ceil(requests.length / pageSize);
     const startIndex = currentPage * pageSize;
     const endIndex = startIndex + pageSize;
@@ -356,7 +367,7 @@ export function CandidateVerificationReview() {
       <>
         {requests.length === 0 ? (
           <Card className="p-8 text-center text-muted-foreground">
-            No {activeTab} {type === 'identity' ? 'identity' : 'right-to-work'} requests
+            No {activeTab} {type === 'identity' ? 'identity' : type === 'rtw' ? 'right-to-work' : 'security clearance'} requests
           </Card>
         ) : (
           <>
@@ -430,7 +441,7 @@ export function CandidateVerificationReview() {
             <Shield className="h-6 w-6" />
             Identity & RTW Verification Requests
           </h2>
-          <p className="text-muted-foreground">Review candidate document submissions</p>
+          <p className="text-muted-foreground">Review candidate identity, right-to-work, and security clearance submissions</p>
         </div>
         <Button
           variant="outline"
@@ -471,12 +482,15 @@ export function CandidateVerificationReview() {
 
         <TabsContent value={activeTab} className="space-y-4 mt-6">
           <Tabs defaultValue="identity">
-            <TabsList className="grid w-full grid-cols-2">
+            <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="identity">
                 Identity ({identityRequests.length})
               </TabsTrigger>
               <TabsTrigger value="rtw">
                 Right to Work ({rtwRequests.length})
+              </TabsTrigger>
+              <TabsTrigger value="clearance">
+                Security Clearance ({clearanceRequests.length})
               </TabsTrigger>
             </TabsList>
 
@@ -486,6 +500,10 @@ export function CandidateVerificationReview() {
 
             <TabsContent value="rtw" className="space-y-4 mt-4">
               {renderVerificationTypeTab(rtwRequests, 'rtw')}
+            </TabsContent>
+
+            <TabsContent value="clearance" className="space-y-4 mt-4">
+              {renderVerificationTypeTab(clearanceRequests, 'background')}
             </TabsContent>
           </Tabs>
         </TabsContent>
