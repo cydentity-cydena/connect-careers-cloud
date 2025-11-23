@@ -33,7 +33,7 @@ const CandidatePDF = () => {
             Accelerate Your Cybersecurity Career
           </h1>
           <p className="text-lg opacity-90 print:text-base">
-            Get verified, get noticed, get hired faster
+            Get verified, build confidence, prove your capabilities
           </p>
         </div>
       </div>
@@ -226,7 +226,7 @@ const CandidatePDF = () => {
             Ready to Accelerate Your Career?
           </h2>
           <p className="text-lg mb-5 opacity-90 print:opacity-100 print:text-base print:mb-4">
-            Join hundreds of verified cybersecurity professionals getting hired faster
+            Join hundreds of verified cybersecurity professionals building employer confidence
           </p>
           <div className="flex flex-col gap-2 justify-center items-center mb-4 print:gap-1.5 print:mb-3">
             <div className="text-base font-semibold print:text-sm">
@@ -237,7 +237,7 @@ const CandidatePDF = () => {
             </div>
           </div>
           <p className="text-sm opacity-75 print:opacity-100 print:text-xs">
-            Free to join • Get verified in 48 hours • Start getting discovered
+            Free to join • Get verified in 48 hours • Build employer confidence
           </p>
         </div>
       </div>
