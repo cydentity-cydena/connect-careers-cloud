@@ -208,6 +208,75 @@ const CandidatePDF = () => {
           </div>
         </div>
 
+        {/* Platform Screenshots */}
+        <div className="mb-8 print:mb-6 print:break-inside-avoid">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4 print:text-xl">
+            See Cydena in Action
+          </h2>
+          
+          <div className="space-y-6 print:space-y-4">
+            {/* Profile Card */}
+            <div className="print:break-inside-avoid">
+              <h3 className="text-lg font-bold text-gray-900 mb-3 print:text-base print:mb-2">
+                Professional Profile with Verification Badges
+              </h3>
+              <img 
+                src="/screenshots/profile-card.png" 
+                alt="Verified candidate profile showing HR-Ready status"
+                className="w-full border-2 border-gray-200 rounded-lg shadow-md"
+              />
+              <p className="text-sm text-gray-600 mt-2">
+                Stand out with verified credentials and HR-Ready badges that employers trust
+              </p>
+            </div>
+
+            {/* Leaderboard */}
+            <div className="print:break-inside-avoid">
+              <h3 className="text-lg font-bold text-gray-900 mb-3 print:text-base print:mb-2">
+                Community Leaderboard & Rankings
+              </h3>
+              <img 
+                src="/screenshots/community-leaders.png" 
+                alt="Community leaderboard showing top performers"
+                className="w-full border-2 border-gray-200 rounded-lg shadow-md"
+              />
+              <p className="text-sm text-gray-600 mt-2">
+                Compete with peers, earn XP, and get featured to employers
+              </p>
+            </div>
+
+            {/* Professional XP Rankings */}
+            <div className="print:break-inside-avoid print:break-before-page">
+              <h3 className="text-lg font-bold text-gray-900 mb-3 print:text-base print:mb-2">
+                Professional XP Rankings
+              </h3>
+              <img 
+                src="/screenshots/leaderboard.png" 
+                alt="Top professionals ranked by certifications and skills"
+                className="w-full border-2 border-gray-200 rounded-lg shadow-md"
+              />
+              <p className="text-sm text-gray-600 mt-2">
+                Rankings based on verified certifications, courses, and validated skills
+              </p>
+            </div>
+
+            {/* Skills Assessment */}
+            <div className="print:break-inside-avoid">
+              <h3 className="text-lg font-bold text-gray-900 mb-3 print:text-base print:mb-2">
+                Technical Skills Assessment
+              </h3>
+              <img 
+                src="/screenshots/skills-assessment.png" 
+                alt="Technical skills assessment interface"
+                className="w-full border-2 border-gray-200 rounded-lg shadow-md"
+              />
+              <p className="text-sm text-gray-600 mt-2">
+                Validate your expertise with professional assessments and earn XP for your profile
+              </p>
+            </div>
+          </div>
+        </div>
+
         {/* Social Proof */}
         <div className="bg-gray-50 rounded-lg p-6 mb-6 print:p-4 print:mb-5 print:border print:border-gray-200 print:break-inside-avoid">
           <h2 className="text-xl font-bold text-gray-900 mb-4 text-center print:text-lg print:mb-3">
