@@ -219,10 +219,10 @@ const CandidatePDF = () => {
           </p>
           <div className="flex flex-col gap-2 justify-center items-center mb-4 print:gap-1.5 print:mb-3">
             <div className="text-base font-semibold print:text-sm">
-              👉 Visit: <span className="underline">cydena.com</span>
+              👉 Visit: <a href="https://cydena.com" target="_blank" rel="noopener noreferrer" className="underline hover:opacity-80">cydena.com</a>
             </div>
             <div className="text-base font-semibold print:text-sm">
-              ✉️ Email: <span className="underline">contact@cydena.com</span>
+              ✉️ Email: <a href="mailto:contact@cydena.com" className="underline hover:opacity-80">contact@cydena.com</a>
             </div>
           </div>
           <p className="text-sm opacity-75 print:opacity-100 print:text-xs">
