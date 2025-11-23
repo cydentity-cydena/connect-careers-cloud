@@ -150,6 +150,63 @@ const CandidatePDF = () => {
           </div>
         </div>
 
+        {/* Platform Features Showcase */}
+        <div className="mb-8 print:mb-6 print:break-inside-avoid">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4 print:text-xl">
+            Your Complete Career Platform
+          </h2>
+          
+          <div className="grid md:grid-cols-2 gap-4 print:gap-3">
+            <div className="border-2 border-[hsl(189,97%,55%)] rounded-lg p-4 print:p-3">
+              <div className="flex items-center gap-3 mb-3 print:mb-2">
+                <div className="w-10 h-10 bg-[hsl(189,97%,55%)]/10 rounded-lg flex items-center justify-center print:w-8 print:h-8">
+                  <Award className="w-5 h-5 text-[hsl(189,97%,55%)] print:w-4 print:h-4" />
+                </div>
+                <h3 className="font-bold text-gray-900 text-lg print:text-base">Evidence-Based Profile</h3>
+              </div>
+              <p className="text-sm text-gray-700 leading-relaxed">
+                Showcase verified certifications, validated skills, and proven training completions. Your profile displays credibility badges that employers trust.
+              </p>
+            </div>
+
+            <div className="border-2 border-[hsl(189,97%,55%)] rounded-lg p-4 print:p-3">
+              <div className="flex items-center gap-3 mb-3 print:mb-2">
+                <div className="w-10 h-10 bg-[hsl(189,97%,55%)]/10 rounded-lg flex items-center justify-center print:w-8 print:h-8">
+                  <TrendingUp className="w-5 h-5 text-[hsl(189,97%,55%)] print:w-4 print:h-4" />
+                </div>
+                <h3 className="font-bold text-gray-900 text-lg print:text-base">Leaderboard & Rankings</h3>
+              </div>
+              <p className="text-sm text-gray-700 leading-relaxed">
+                Compete with peers, earn XP through skill validation, and climb the leaderboard. Top performers get featured to employers.
+              </p>
+            </div>
+
+            <div className="border-2 border-[hsl(189,97%,55%)] rounded-lg p-4 print:p-3">
+              <div className="flex items-center gap-3 mb-3 print:mb-2">
+                <div className="w-10 h-10 bg-[hsl(189,97%,55%)]/10 rounded-lg flex items-center justify-center print:w-8 print:h-8">
+                  <CheckCircle className="w-5 h-5 text-[hsl(189,97%,55%)] print:w-4 print:h-4" />
+                </div>
+                <h3 className="font-bold text-gray-900 text-lg print:text-base">Daily Security Challenges</h3>
+              </div>
+              <p className="text-sm text-gray-700 leading-relaxed">
+                Solve daily CTF challenges, earn points, and keep your skills sharp. Demonstrate continuous learning to employers.
+              </p>
+            </div>
+
+            <div className="border-2 border-[hsl(189,97%,55%)] rounded-lg p-4 print:p-3">
+              <div className="flex items-center gap-3 mb-3 print:mb-2">
+                <div className="w-10 h-10 bg-[hsl(189,97%,55%)]/10 rounded-lg flex items-center justify-center print:w-8 print:h-8">
+                  <Users className="w-5 h-5 text-[hsl(189,97%,55%)] print:w-4 print:h-4" />
+                </div>
+                <h3 className="font-bold text-gray-900 text-lg print:text-base">Active Community</h3>
+              </div>
+              <p className="text-sm text-gray-700 leading-relaxed">
+                Share insights, get peer endorsements, join skill pathways, and learn from verified professionals in your field.
+              </p>
+            </div>
+          </div>
+        </div>
+
         {/* Social Proof */}
         <div className="bg-gray-50 rounded-lg p-6 mb-6 print:p-4 print:mb-5 print:border print:border-gray-200 print:break-inside-avoid">
           <h2 className="text-xl font-bold text-gray-900 mb-4 text-center print:text-lg print:mb-3">
