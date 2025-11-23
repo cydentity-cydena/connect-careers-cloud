@@ -548,6 +548,9 @@ export type Database = {
         Row: {
           candidate_id: string
           certifications: Json | null
+          clearance_expires_at: string | null
+          clearance_level: string | null
+          clearance_verified_at: string | null
           compliance_score: number | null
           created_at: string | null
           hr_ready: boolean | null
@@ -568,6 +571,9 @@ export type Database = {
           logistics_salary_band: string | null
           logistics_status: string | null
           logistics_work_mode: string | null
+          pci_qsa_company: string | null
+          pci_qsa_status: string | null
+          pci_qsa_verified_at: string | null
           rtw_checked_at: string | null
           rtw_country: string | null
           rtw_expires_at: string | null
@@ -579,6 +585,9 @@ export type Database = {
         Insert: {
           candidate_id: string
           certifications?: Json | null
+          clearance_expires_at?: string | null
+          clearance_level?: string | null
+          clearance_verified_at?: string | null
           compliance_score?: number | null
           created_at?: string | null
           hr_ready?: boolean | null
@@ -599,6 +608,9 @@ export type Database = {
           logistics_salary_band?: string | null
           logistics_status?: string | null
           logistics_work_mode?: string | null
+          pci_qsa_company?: string | null
+          pci_qsa_status?: string | null
+          pci_qsa_verified_at?: string | null
           rtw_checked_at?: string | null
           rtw_country?: string | null
           rtw_expires_at?: string | null
@@ -610,6 +622,9 @@ export type Database = {
         Update: {
           candidate_id?: string
           certifications?: Json | null
+          clearance_expires_at?: string | null
+          clearance_level?: string | null
+          clearance_verified_at?: string | null
           compliance_score?: number | null
           created_at?: string | null
           hr_ready?: boolean | null
@@ -630,6 +645,9 @@ export type Database = {
           logistics_salary_band?: string | null
           logistics_status?: string | null
           logistics_work_mode?: string | null
+          pci_qsa_company?: string | null
+          pci_qsa_status?: string | null
+          pci_qsa_verified_at?: string | null
           rtw_checked_at?: string | null
           rtw_country?: string | null
           rtw_expires_at?: string | null

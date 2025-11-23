@@ -24,6 +24,9 @@ export interface FilterCriteria {
   clearance: string[];
   location: string;
   remoteOk: boolean;
+  pciQsaOnly: boolean;
+  highValueCertsOnly: boolean;
+  specializations: string[];
 }
 
 interface SmartCandidateFiltersProps {
@@ -98,6 +101,9 @@ export const SmartCandidateFilters = ({
       clearance: [],
       location: "",
       remoteOk: false,
+      pciQsaOnly: false,
+      highValueCertsOnly: false,
+      specializations: [],
     });
   };
 
@@ -249,6 +255,28 @@ export const SmartCandidateFilters = ({
             />
           </div>
 
+          {/* Clearance & Special Qualifications */}
+          <div className="space-y-3">
+            <Label className="text-sm font-semibold">Security Clearance</Label>
+            <div className="flex flex-wrap gap-2">
+              {['DV', 'SC', 'CTC', 'BPSS'].map((level) => (
+                <Badge
+                  key={level}
+                  variant={currentFilters.clearance.includes(level) ? 'default' : 'outline'}
+                  className="cursor-pointer"
+                  onClick={() => {
+                    const newClearance = currentFilters.clearance.includes(level)
+                      ? currentFilters.clearance.filter(c => c !== level)
+                      : [...currentFilters.clearance, level];
+                    onFilterChange({ ...currentFilters, clearance: newClearance });
+                  }}
+                >
+                  {level}
+                </Badge>
+              ))}
+            </div>
+          </div>
+
           {/* Quick Filters */}
           <div className="flex flex-wrap gap-4">
             <div className="flex items-center space-x-2">
@@ -274,6 +302,32 @@ export const SmartCandidateFilters = ({
               />
               <Label htmlFor="remote" className="text-sm cursor-pointer">
                 Open to Remote
+              </Label>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="pci-qsa"
+                checked={currentFilters.pciQsaOnly}
+                onCheckedChange={(checked) =>
+                  onFilterChange({ ...currentFilters, pciQsaOnly: !!checked })
+                }
+              />
+              <Label htmlFor="pci-qsa" className="text-sm cursor-pointer">
+                PCI QSA Only
+              </Label>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="high-value-certs"
+                checked={currentFilters.highValueCertsOnly}
+                onCheckedChange={(checked) =>
+                  onFilterChange({ ...currentFilters, highValueCertsOnly: !!checked })
+                }
+              />
+              <Label htmlFor="high-value-certs" className="text-sm cursor-pointer">
+                High-Value Certs (CCRTS/CCSAS)
               </Label>
             </div>
           </div>

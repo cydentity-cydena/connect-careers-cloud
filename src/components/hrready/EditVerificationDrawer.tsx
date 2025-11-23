@@ -44,6 +44,11 @@ export function EditVerificationDrawer({
   const [logisticsNoticeDays, setLogisticsNoticeDays] = useState(verification?.logistics_notice_days || '');
   const [logisticsSalaryBand, setLogisticsSalaryBand] = useState(verification?.logistics_salary_band || '');
 
+  // Clearance & special qualifications state
+  const [clearanceLevel, setClearanceLevel] = useState(verification?.clearance_level || '');
+  const [pciQsaStatus, setPciQsaStatus] = useState(verification?.pci_qsa_status || '');
+  const [pciQsaCompany, setPciQsaCompany] = useState(verification?.pci_qsa_company || '');
+
   const handleSubmit = async () => {
     setLoading(true);
     try {
@@ -68,6 +73,15 @@ export function EditVerificationDrawer({
             noticeDays: parseInt(logisticsNoticeDays) || 0,
             salaryBand: logisticsSalaryBand,
             confirmedAt: new Date().toISOString(),
+          },
+          clearance: {
+            level: clearanceLevel || null,
+            verifiedAt: clearanceLevel ? new Date().toISOString() : null,
+          },
+          pciQsa: {
+            status: pciQsaStatus || null,
+            company: pciQsaCompany || null,
+            verifiedAt: pciQsaStatus === 'active' ? new Date().toISOString() : null,
           },
         },
       });
@@ -103,10 +117,11 @@ export function EditVerificationDrawer({
         </SheetHeader>
 
         <Tabs defaultValue="identity" className="mt-6">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="identity">Identity</TabsTrigger>
             <TabsTrigger value="rtw">Right to Work</TabsTrigger>
             <TabsTrigger value="logistics">Logistics</TabsTrigger>
+            <TabsTrigger value="clearance">Clearance</TabsTrigger>
           </TabsList>
 
           <TabsContent value="identity" className="space-y-4 mt-4">
@@ -228,6 +243,50 @@ export function EditVerificationDrawer({
                 placeholder="e.g., £40k-£60k"
               />
             </div>
+          </TabsContent>
+
+          <TabsContent value="clearance" className="space-y-4 mt-4">
+            <div>
+              <Label>Security Clearance Level</Label>
+              <Select value={clearanceLevel} onValueChange={setClearanceLevel}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select clearance level" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">None</SelectItem>
+                  <SelectItem value="DV">DV (Developed Vetting)</SelectItem>
+                  <SelectItem value="SC">SC (Security Check)</SelectItem>
+                  <SelectItem value="CTC">CTC (Counter-Terrorist Check)</SelectItem>
+                  <SelectItem value="BPSS">BPSS (Baseline Personnel Security Standard)</SelectItem>
+                  <SelectItem value="Other">Other</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Label>PCI QSA Status</Label>
+              <Select value={pciQsaStatus} onValueChange={setPciQsaStatus}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select PCI QSA status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">Not Applicable</SelectItem>
+                  <SelectItem value="active">Active</SelectItem>
+                  <SelectItem value="expired">Expired</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {pciQsaStatus === 'active' && (
+              <div>
+                <Label>PCI QSA Company</Label>
+                <Input 
+                  value={pciQsaCompany} 
+                  onChange={(e) => setPciQsaCompany(e.target.value)}
+                  placeholder="e.g., PCI Security Standards Council certified company"
+                />
+              </div>
+            )}
           </TabsContent>
         </Tabs>
 
