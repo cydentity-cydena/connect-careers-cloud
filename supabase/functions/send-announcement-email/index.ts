@@ -150,7 +150,7 @@ const handler = async (req: Request): Promise<Response> => {
                       
                       ${description ? `
                         <div style="background: #f5f5f5; padding: 20px; border-left: 4px solid #667eea; margin: 20px 0; border-radius: 4px;">
-                          <p style="margin: 0; color: #555;">${description}</p>
+                          <p style="margin: 0; color: #555; white-space: pre-wrap; word-wrap: break-word; line-height: 1.6;">${description.replace(/\n/g, '<br>')}</p>
                         </div>
                       ` : ''}
                       
