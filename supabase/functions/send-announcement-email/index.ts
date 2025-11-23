@@ -155,7 +155,7 @@ const handler = async (req: Request): Promise<Response> => {
                       ` : ''}
                       
                       <div style="text-align: center; margin: 30px 0;">
-                        <a href="${Deno.env.get("SUPABASE_URL")?.replace("supabase.co", "lovable.app") || "https://cydena.lovable.app"}/community" 
+                        <a href="https://app.cydena.com/community" 
                            style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 14px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 16px;">
                           View in Community
                         </a>
