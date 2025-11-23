@@ -39,6 +39,9 @@ import UserManagement from "./pages/admin/UserManagement";
 import Integrations from "./pages/Integrations";
 import SkillsAssessment from "./pages/SkillsAssessment";
 import PartnerAnalytics from "./pages/admin/PartnerAnalytics";
+import CandidatePDF from "./pages/marketing/CandidatePDF";
+import EmployerPDF from "./pages/marketing/EmployerPDF";
+import RecruiterPDF from "./pages/marketing/RecruiterPDF";
 
 import HRReady from "./pages/HRReady";
 import RoleManagement from "./pages/admin/RoleManagement";
@@ -120,6 +123,11 @@ const App = () => (
               
               {/* Standalone Presentation */}
               <Route path="/employer-pitch-deck" element={<EmployerPitchDeck />} />
+              
+              {/* Marketing PDFs */}
+              <Route path="/marketing/candidates" element={<CandidatePDF />} />
+              <Route path="/marketing/employers" element={<EmployerPDF />} />
+              <Route path="/marketing/recruiters" element={<RecruiterPDF />} />
               
               {/* Lead Generation */}
               <Route path="/Early-Access-200" element={<Founding20 />} />
