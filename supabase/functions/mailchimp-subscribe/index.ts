@@ -41,17 +41,19 @@ serve(async (req) => {
     if (!apiKey || !audienceId) {
       console.error('Missing Mailchimp configuration');
       return new Response(
-        JSON.stringify({ error: 'Service configuration error' }),
+        JSON.stringify({ error: 'Mailchimp is not configured. Please contact support.' }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    // Extract datacenter from API key (e.g., us1, us2, etc.)
-    const datacenter = apiKey.split('-')[1];
-    if (!datacenter) {
-      console.error('Invalid Mailchimp API key format');
+    // Extract datacenter from API key (format: key-datacenter, e.g., abc123-us1)
+    const apiKeyParts = apiKey.split('-');
+    const datacenter = apiKeyParts.length > 1 ? apiKeyParts[apiKeyParts.length - 1] : null;
+    
+    if (!datacenter || datacenter.length < 2) {
+      console.error('Invalid Mailchimp API key format - cannot extract datacenter');
       return new Response(
-        JSON.stringify({ error: 'Service configuration error' }),
+        JSON.stringify({ error: 'Invalid Mailchimp API key format. Please check your configuration.' }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
@@ -92,8 +94,19 @@ serve(async (req) => {
       }
 
       console.error('Mailchimp API error:', data);
+      
+      // Provide specific error messages
+      let errorMessage = 'Failed to subscribe to mailing list.';
+      if (data.title === 'API Key Invalid') {
+        errorMessage = 'Mailchimp configuration error. Please contact support.';
+      } else if (data.title === 'Forgotten Email Not Subscribed') {
+        errorMessage = 'This email was previously unsubscribed. Please contact support to resubscribe.';
+      } else if (data.detail) {
+        errorMessage = data.detail;
+      }
+      
       return new Response(
-        JSON.stringify({ error: 'Failed to subscribe' }),
+        JSON.stringify({ error: errorMessage }),
         { status: response.status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
