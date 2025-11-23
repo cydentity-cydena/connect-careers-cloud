@@ -306,31 +306,6 @@ export const SmartCandidateFilters = ({
               </Label>
             </div>
 
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="pci-qsa"
-                checked={currentFilters.pciQsaOnly}
-                onCheckedChange={(checked) =>
-                  onFilterChange({ ...currentFilters, pciQsaOnly: !!checked })
-                }
-              />
-              <Label htmlFor="pci-qsa" className="text-sm cursor-pointer">
-                PCI QSA Only
-              </Label>
-            </div>
-
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="high-value-certs"
-                checked={currentFilters.highValueCertsOnly}
-                onCheckedChange={(checked) =>
-                  onFilterChange({ ...currentFilters, highValueCertsOnly: !!checked })
-                }
-              />
-              <Label htmlFor="high-value-certs" className="text-sm cursor-pointer">
-                High-Value Certs (CCRTS/CCSAS)
-              </Label>
-            </div>
           </div>
         </div>
       </Card>
