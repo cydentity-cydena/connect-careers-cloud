@@ -13,11 +13,13 @@ const EmployerPDF = () => {
       {/* Header */}
       <div className="bg-gradient-to-r from-[hsl(189,97%,55%)] to-[hsl(263,70%,50%)] text-white p-12 print:p-8">
         <div className="max-w-4xl mx-auto">
-          <img 
-            src="/logos/cydena-main-logo.png" 
-            alt="Cydena" 
-            className="h-12 mb-6"
-          />
+          <div className="inline-block bg-white/95 px-4 py-2 rounded-lg mb-6">
+            <img 
+              src="/logos/cydena-main-logo.png" 
+              alt="Cydena" 
+              className="h-10"
+            />
+          </div>
           <h1 className="text-5xl font-bold mb-4 print:text-4xl">
             Hire Verified Cybersecurity Talent 60% Faster
           </h1>
