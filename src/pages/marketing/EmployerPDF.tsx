@@ -239,102 +239,93 @@ const EmployerPDF = () => {
         {/* Pricing Overview */}
         <div className="mb-8 print:mb-6">
           <h2 className="text-2xl font-bold text-gray-900 mb-4 print:text-xl">
-            Two Ways to Hire
+            Simple Subscription Pricing
           </h2>
-          <p className="text-gray-600 mb-6">Choose the hiring model that fits your needs</p>
+          <p className="text-gray-600 mb-6">Choose the tier that matches your hiring volume</p>
           
-          {/* Service Models */}
-          <div className="grid md:grid-cols-2 gap-6 mb-8">
-            <div className="border-2 border-blue-600 rounded-lg p-6">
-              <div className="bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-semibold inline-block mb-3">
-                SELF-SERVICE
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Platform Subscriptions</h3>
-              <p className="text-sm text-gray-600 mb-4">
-                Browse, filter, and hire independently using our platform. Perfect for companies with in-house recruiters.
-              </p>
-              <div className="space-y-2 text-sm text-gray-700">
-                <div className="flex items-start gap-2">
-                  <Shield className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
-                  <span>Annual unlock allocations (10-100 depending on tier)</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <Shield className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
-                  <span>Direct candidate messaging</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <Shield className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
-                  <span>Full platform access and advanced filters</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <Shield className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
-                  <span>£8 per unlock after allocation used</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="border-2 border-purple-600 rounded-lg p-6 bg-purple-50">
-              <div className="bg-purple-600 text-white px-3 py-1 rounded-full text-xs font-semibold inline-block mb-3">
-                MANAGED SERVICE
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Full Recruitment Support</h3>
-              <p className="text-sm text-gray-600 mb-4">
-                We handle everything from candidate curation to offer negotiation. Ideal for high-priority roles.
-              </p>
-              <div className="space-y-2 text-sm text-gray-700 mb-4">
-                <div className="flex items-start gap-2">
-                  <Users className="w-4 h-4 text-purple-600 shrink-0 mt-0.5" />
-                  <span>Dedicated recruiter for your role</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <Users className="w-4 h-4 text-purple-600 shrink-0 mt-0.5" />
-                  <span>Candidate screening & curation</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <Users className="w-4 h-4 text-purple-600 shrink-0 mt-0.5" />
-                  <span>Interview coordination</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <Users className="w-4 h-4 text-purple-600 shrink-0 mt-0.5" />
-                  <span>90-day placement guarantee</span>
-                </div>
-              </div>
-              <div className="bg-white rounded p-3 border border-purple-200">
-                <div className="text-2xl font-bold text-purple-600 mb-1">10-12%</div>
-                <p className="text-xs text-gray-600">of first year salary (success fee only)</p>
-                <p className="text-xs text-purple-600 font-semibold mt-1">50% less than traditional agencies</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Subscription Tiers */}
-          <h3 className="text-lg font-bold text-gray-900 mb-4">Self-Service Subscription Tiers</h3>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="border border-gray-200 rounded-lg p-4">
-              <h4 className="font-bold text-gray-900 mb-1">Starter</h4>
-              <div className="text-2xl font-bold text-blue-600 mb-2">£99<span className="text-sm text-gray-600">/mo</span></div>
-              <ul className="space-y-1 text-xs text-gray-700">
+          <div className="grid grid-cols-3 gap-4 mb-6">
+            <div className="border-2 border-gray-200 rounded-lg p-5">
+              <h3 className="text-lg font-bold text-gray-900 mb-2">Starter</h3>
+              <div className="text-3xl font-bold text-blue-600 mb-3">£99<span className="text-base text-gray-600">/mo</span></div>
+              <ul className="space-y-1.5 text-sm text-gray-700">
                 <li>• 10 unlocks/year</li>
-                <li>• 1 seat</li>
+                <li>• 1 team seat</li>
                 <li>• Basic filters</li>
+                <li>• Email support</li>
               </ul>
             </div>
-            <div className="border-2 border-blue-600 rounded-lg p-4">
-              <div className="text-xs font-semibold text-blue-600 mb-1">MOST POPULAR</div>
-              <h4 className="font-bold text-gray-900 mb-1">Growth</h4>
-              <div className="text-2xl font-bold text-blue-600 mb-2">£299<span className="text-sm text-gray-600">/mo</span></div>
-              <ul className="space-y-1 text-xs text-gray-700">
+            
+            <div className="border-2 border-blue-600 rounded-lg p-5 relative">
+              <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-semibold">
+                MOST POPULAR
+              </div>
+              <h3 className="text-lg font-bold text-gray-900 mb-2">Growth</h3>
+              <div className="text-3xl font-bold text-blue-600 mb-3">£299<span className="text-base text-gray-600">/mo</span></div>
+              <ul className="space-y-1.5 text-sm text-gray-700">
                 <li>• 30 unlocks/year</li>
-                <li>• 5 seats</li>
+                <li>• 5 team seats</li>
                 <li>• Advanced filters</li>
+                <li>• Priority support</li>
                 <li>• ATS integration</li>
               </ul>
             </div>
+            
+            <div className="border-2 border-gray-200 rounded-lg p-5">
+              <h3 className="text-lg font-bold text-gray-900 mb-2">Scale</h3>
+              <div className="text-3xl font-bold text-blue-600 mb-3">£599<span className="text-base text-gray-600">/mo</span></div>
+              <ul className="space-y-1.5 text-sm text-gray-700">
+                <li>• 100 unlocks/year</li>
+                <li>• 10 team seats</li>
+                <li>• All features</li>
+                <li>• Dedicated support</li>
+                <li>• Custom assessments</li>
+              </ul>
+            </div>
           </div>
           
-          <p className="text-xs text-gray-500 mt-4 text-center">
-            * Scale tier (£599/mo, 100 unlocks/year, 10 seats) and Enterprise options available
-          </p>
+          <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+            <p className="text-sm text-gray-700 text-center">
+              <strong>Additional unlocks:</strong> £8 each after your annual allocation is used • 
+              <strong> Enterprise:</strong> Custom pricing for high-volume needs
+            </p>
+          </div>
+        </div>
+
+        {/* Recruiter Partnership */}
+        <div className="mb-8 print:mb-6">
+          <div className="border-2 border-purple-600 rounded-lg p-6 bg-purple-50">
+            <div className="text-center mb-4">
+              <div className="inline-block bg-purple-600 text-white px-3 py-1 rounded-full text-xs font-semibold mb-2">
+                FOR RECRUITERS
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Partner With Cydena</h3>
+              <p className="text-sm text-gray-600">
+                Access our verified candidate pool for your placements
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4 mb-4">
+              <div>
+                <h4 className="font-semibold text-sm text-gray-900 mb-2">What You Get:</h4>
+                <ul className="space-y-1 text-xs text-gray-700">
+                  <li>• Pre-verified candidate pool</li>
+                  <li>• Client management tools</li>
+                  <li>• Placement tracking</li>
+                  <li>• No verification overhead</li>
+                </ul>
+              </div>
+              <div className="bg-white rounded p-3 border border-purple-200">
+                <p className="text-xs text-gray-600 mb-2">Partnership Model:</p>
+                <div className="text-2xl font-bold text-purple-600 mb-1">2-3%</div>
+                <p className="text-xs text-gray-600">platform fee on placements</p>
+                <p className="text-xs text-purple-600 font-semibold mt-1">You keep 97-98%</p>
+              </div>
+            </div>
+            
+            <p className="text-xs text-gray-600 text-center">
+              Contact us to discuss partnership opportunities
+            </p>
+          </div>
         </div>
 
         {/* Email Signup Section */}

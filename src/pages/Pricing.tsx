@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Check, ArrowRight, DollarSign, Users, Zap, Sparkles } from "lucide-react";
+import { Check, ArrowRight, DollarSign, Users, Zap, Sparkles, Shield } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useSubscription } from "@/hooks/useSubscription";
 import { supabase } from "@/integrations/supabase/client";
@@ -102,101 +102,34 @@ const Pricing = () => {
         </div>
 
         <div className="space-y-16">
-          {/* Two Service Models */}
-          <div className="grid md:grid-cols-2 gap-6">
-            <Card className="border-2 border-primary">
-              <CardHeader>
-                <Badge className="w-fit mb-2">Self-Service Platform</Badge>
-                <CardTitle className="text-2xl">Subscription Access</CardTitle>
-                <CardDescription className="text-base">
-                  Browse, search, and hire independently with our platform tools
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <h4 className="font-semibold">What&apos;s Included:</h4>
-                  <ul className="space-y-1 text-sm text-muted-foreground">
-                    <li className="flex gap-2">
-                      <Check className="h-4 w-4 text-primary shrink-0 mt-0.5" />
-                      <span>Annual unlock allocation (10-100 depending on tier)</span>
-                    </li>
-                    <li className="flex gap-2">
-                      <Check className="h-4 w-4 text-primary shrink-0 mt-0.5" />
-                      <span>Full platform access and advanced filters</span>
-                    </li>
-                    <li className="flex gap-2">
-                      <Check className="h-4 w-4 text-primary shrink-0 mt-0.5" />
-                      <span>Direct candidate messaging</span>
-                    </li>
-                    <li className="flex gap-2">
-                      <Check className="h-4 w-4 text-primary shrink-0 mt-0.5" />
-                      <span>Pipeline management tools</span>
-                    </li>
-                    <li className="flex gap-2">
-                      <Check className="h-4 w-4 text-primary shrink-0 mt-0.5" />
-                      <span>£8 per unlock after allocation used</span>
-                    </li>
-                  </ul>
+          {/* Value Props */}
+          <Card>
+            <CardHeader className="text-center">
+              <CardTitle className="text-2xl">Verified Talent, Transparent Pricing</CardTitle>
+              <CardDescription>
+                Access pre-verified, HR-ready cybersecurity professionals. No agency fees.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid md:grid-cols-3 gap-4 text-center">
+                <div className="p-4 border rounded-lg">
+                  <Shield className="h-8 w-8 mx-auto mb-2 text-primary" />
+                  <h4 className="font-semibold mb-1">Pre-Verified</h4>
+                  <p className="text-sm text-muted-foreground">Identity, clearances, certifications checked</p>
                 </div>
-                <div className="pt-4 border-t">
-                  <p className="text-sm font-semibold text-primary">Perfect for: Companies with in-house recruiters</p>
+                <div className="p-4 border rounded-lg">
+                  <Users className="h-8 w-8 mx-auto mb-2 text-primary" />
+                  <h4 className="font-semibold mb-1">Pay for Value</h4>
+                  <p className="text-sm text-muted-foreground">Only unlock who you contact</p>
                 </div>
-              </CardContent>
-            </Card>
-
-            <Card className="border-2 border-purple-500 bg-gradient-to-br from-purple-50/50 to-background">
-              <CardHeader>
-                <Badge className="w-fit mb-2 bg-purple-600">Managed Service</Badge>
-                <CardTitle className="text-2xl">Full Recruitment Support</CardTitle>
-                <CardDescription className="text-base">
-                  We handle the entire recruitment process for you
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <h4 className="font-semibold">What&apos;s Included:</h4>
-                  <ul className="space-y-1 text-sm text-muted-foreground">
-                    <li className="flex gap-2">
-                      <Check className="h-4 w-4 text-purple-600 shrink-0 mt-0.5" />
-                      <span>Dedicated recruiter assigned to your role</span>
-                    </li>
-                    <li className="flex gap-2">
-                      <Check className="h-4 w-4 text-purple-600 shrink-0 mt-0.5" />
-                      <span>Candidate curation and pre-screening</span>
-                    </li>
-                    <li className="flex gap-2">
-                      <Check className="h-4 w-4 text-purple-600 shrink-0 mt-0.5" />
-                      <span>Interview coordination and scheduling</span>
-                    </li>
-                    <li className="flex gap-2">
-                      <Check className="h-4 w-4 text-purple-600 shrink-0 mt-0.5" />
-                      <span>Offer negotiation support</span>
-                    </li>
-                    <li className="flex gap-2">
-                      <Check className="h-4 w-4 text-purple-600 shrink-0 mt-0.5" />
-                      <span>90-day placement guarantee</span>
-                    </li>
-                  </ul>
+                <div className="p-4 border rounded-lg">
+                  <Zap className="h-8 w-8 mx-auto mb-2 text-primary" />
+                  <h4 className="font-semibold mb-1">70% Savings</h4>
+                  <p className="text-sm text-muted-foreground">vs traditional recruitment agencies</p>
                 </div>
-                <div className="pt-4 border-t">
-                  <div className="text-2xl font-bold mb-1">10-12%</div>
-                  <p className="text-sm text-muted-foreground">of first year salary (success fee only)</p>
-                  <p className="text-xs text-purple-600 font-semibold mt-2">50% less than traditional agencies (20-25%)</p>
-                </div>
-                <div className="pt-2">
-                  <p className="text-sm font-semibold text-purple-600">Perfect for: High-priority roles or companies without recruiters</p>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          <div className="text-center">
-            <h3 className="text-xl font-semibold mb-2">Need Managed Recruitment?</h3>
-            <p className="text-muted-foreground mb-4">Contact us to discuss your hiring needs and get a custom quote</p>
-            <Button variant="outline" size="lg" onClick={() => navigate('/contact')}>
-              Get a Quote for Managed Service
-            </Button>
-          </div>
+              </div>
+            </CardContent>
+          </Card>
 
           <div className="mb-6">
             <h3 className="text-2xl font-bold text-center mb-6">Self-Service Subscription Tiers</h3>
@@ -376,6 +309,60 @@ const Pricing = () => {
             </Card>
           </div>
         </div>
+
+        {/* Recruiter Partnership Section */}
+        <Card className="border-2 border-purple-500 bg-gradient-to-br from-purple-50/30 to-background mt-16">
+          <CardHeader className="text-center">
+            <Badge className="w-fit mx-auto mb-2 bg-purple-600">For Recruiters</Badge>
+            <CardTitle className="text-2xl">Partner With Cydena</CardTitle>
+            <CardDescription className="text-base">
+              Use our verified candidate pool for your placements. We handle verification, you handle recruiting.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="max-w-3xl mx-auto">
+            <div className="grid md:grid-cols-2 gap-6 mb-6">
+              <div className="space-y-3">
+                <h4 className="font-semibold">What You Get:</h4>
+                <ul className="space-y-2 text-sm text-muted-foreground">
+                  <li className="flex gap-2">
+                    <Check className="h-4 w-4 text-purple-600 shrink-0 mt-0.5" />
+                    <span>Access to pre-verified candidate pool</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <Check className="h-4 w-4 text-purple-600 shrink-0 mt-0.5" />
+                    <span>Client management tools</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <Check className="h-4 w-4 text-purple-600 shrink-0 mt-0.5" />
+                    <span>Placement tracking & reporting</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <Check className="h-4 w-4 text-purple-600 shrink-0 mt-0.5" />
+                    <span>No verification overhead</span>
+                  </li>
+                </ul>
+              </div>
+              <div className="space-y-3">
+                <h4 className="font-semibold">Partnership Model:</h4>
+                <div className="bg-white rounded-lg p-4 border border-purple-200">
+                  <p className="text-sm text-muted-foreground mb-3">
+                    Subscription access + small platform fee on your placements
+                  </p>
+                  <div className="text-2xl font-bold text-purple-600 mb-1">2-3%</div>
+                  <p className="text-xs text-muted-foreground">platform fee on successful placements</p>
+                </div>
+                <p className="text-xs text-purple-600 font-semibold">
+                  You keep 97-98% of your placement fee
+                </p>
+              </div>
+            </div>
+            <div className="text-center pt-4 border-t">
+              <Button size="lg" onClick={() => navigate('/contact')} className="bg-purple-600 hover:bg-purple-700">
+                Become a Partner Recruiter
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
 
         <div className="text-center mt-16">
           <p className="text-muted-foreground mb-4">Questions about pricing?</p>
