@@ -364,7 +364,7 @@ const Pricing = () => {
                 </ul>
                 <div className="bg-white rounded-lg p-3 border border-orange-200">
                   <div className="text-2xl font-bold text-orange-600 mb-1">8-10%</div>
-                  <p className="text-xs text-muted-foreground">success fee (still 50% less than agencies)</p>
+                  <p className="text-xs text-muted-foreground">success fee for complex or urgent roles</p>
                 </div>
               </div>
             </div>
