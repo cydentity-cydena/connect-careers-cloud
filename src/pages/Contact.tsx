@@ -256,6 +256,19 @@ const Contact = () => {
                       partners@cydena.com
                     </a>
                   </div>
+
+                  <div>
+                    <h3 className="font-semibold mb-1">Recruiters</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Partnership inquiries for recruitment agencies
+                    </p>
+                    <a
+                      href="mailto:recruiters@cydena.com"
+                      className="text-sm text-primary hover:underline"
+                    >
+                      recruiters@cydena.com
+                    </a>
+                  </div>
                 </CardContent>
               </Card>
 
