@@ -310,8 +310,74 @@ const Pricing = () => {
           </div>
         </div>
 
+        {/* Expert Assist Add-On */}
+        <Card className="border border-orange-200 bg-gradient-to-br from-orange-50/30 to-background mt-8">
+          <CardHeader className="text-center">
+            <Badge className="w-fit mx-auto mb-2 bg-orange-600">Optional Add-On</Badge>
+            <CardTitle className="text-xl">Expert Assist Service</CardTitle>
+            <CardDescription className="text-base">
+              Need specialist help with a complex or urgent cybersecurity role?
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="max-w-2xl mx-auto">
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="space-y-3">
+                <h4 className="font-semibold text-sm">When You Need It:</h4>
+                <ul className="space-y-1.5 text-sm text-muted-foreground">
+                  <li className="flex gap-2">
+                    <Check className="h-4 w-4 text-orange-600 shrink-0 mt-0.5" />
+                    <span>Executive security roles (CISO, Director)</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <Check className="h-4 w-4 text-orange-600 shrink-0 mt-0.5" />
+                    <span>Niche specializations (OT security, crypto)</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <Check className="h-4 w-4 text-orange-600 shrink-0 mt-0.5" />
+                    <span>Urgent critical hires</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <Check className="h-4 w-4 text-orange-600 shrink-0 mt-0.5" />
+                    <span>First-time hiring for security roles</span>
+                  </li>
+                </ul>
+              </div>
+              <div className="space-y-3">
+                <h4 className="font-semibold text-sm">What We Do:</h4>
+                <ul className="space-y-1.5 text-sm text-muted-foreground mb-4">
+                  <li className="flex gap-2">
+                    <Check className="h-4 w-4 text-orange-600 shrink-0 mt-0.5" />
+                    <span>Candidate shortlisting & screening</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <Check className="h-4 w-4 text-orange-600 shrink-0 mt-0.5" />
+                    <span>Technical assessment guidance</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <Check className="h-4 w-4 text-orange-600 shrink-0 mt-0.5" />
+                    <span>Interview coordination</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <Check className="h-4 w-4 text-orange-600 shrink-0 mt-0.5" />
+                    <span>Offer negotiation support</span>
+                  </li>
+                </ul>
+                <div className="bg-white rounded-lg p-3 border border-orange-200">
+                  <div className="text-2xl font-bold text-orange-600 mb-1">8-10%</div>
+                  <p className="text-xs text-muted-foreground">success fee (still 50% less than agencies)</p>
+                </div>
+              </div>
+            </div>
+            <div className="text-center pt-4 border-t border-orange-100 mt-4">
+              <p className="text-xs text-muted-foreground">
+                Contact us to discuss your role and get expert assistance
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Recruiter Partnership Section */}
-        <Card className="border-2 border-purple-500 bg-gradient-to-br from-purple-50/30 to-background mt-16">
+        <Card className="border-2 border-purple-500 bg-gradient-to-br from-purple-50/30 to-background mt-8">
           <CardHeader className="text-center">
             <Badge className="w-fit mx-auto mb-2 bg-purple-600">For Recruiters</Badge>
             <CardTitle className="text-2xl">Partner With Cydena</CardTitle>
