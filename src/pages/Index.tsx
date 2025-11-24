@@ -364,7 +364,7 @@ const Index = () => {
                     </li>
                     <li className="flex gap-3">
                       <span className="font-bold text-primary">2.</span>
-                      <span>Get HR-Ready verified - submit identity & right-to-work once in a secure environment</span>
+                      <span>Get HR-Ready verified - submit identity, right-to-work & security clearance once in a secure environment</span>
                     </li>
                     <li className="flex gap-3">
                       <span className="font-bold text-primary">3.</span>
@@ -390,7 +390,7 @@ const Index = () => {
                     </li>
                     <li className="flex gap-3">
                       <span className="font-bold text-secondary">2.</span>
-                      <span>Filter by HR-Ready candidates - identity & RTW pre-verified</span>
+                      <span>Filter by HR-Ready candidates - identity, RTW & security clearance pre-verified</span>
                     </li>
                     <li className="flex gap-3">
                       <span className="font-bold text-secondary">3.</span>
