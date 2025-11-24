@@ -250,8 +250,9 @@ const EmployerPDF = () => {
               <ul className="space-y-1.5 text-sm text-gray-700">
                 <li>• 10 unlocks/year</li>
                 <li>• 1 team seat</li>
-                <li>• Basic filters</li>
-                <li>• Email support</li>
+                <li>• Advanced filters</li>
+                <li>• ATS integration</li>
+                <li>• Pipeline management</li>
               </ul>
             </div>
             
@@ -264,9 +265,9 @@ const EmployerPDF = () => {
               <ul className="space-y-1.5 text-sm text-gray-700">
                 <li>• 30 unlocks/year</li>
                 <li>• 5 team seats</li>
-                <li>• Advanced filters</li>
+                <li>• Pipeline management</li>
                 <li>• Priority support</li>
-                <li>• ATS integration</li>
+                <li>• All Starter features</li>
               </ul>
             </div>
             
@@ -276,7 +277,7 @@ const EmployerPDF = () => {
               <ul className="space-y-1.5 text-sm text-gray-700">
                 <li>• 100 unlocks/year</li>
                 <li>• 10 team seats</li>
-                <li>• All features</li>
+                <li>• Pipeline management</li>
                 <li>• Dedicated support</li>
                 <li>• Custom assessments</li>
               </ul>
