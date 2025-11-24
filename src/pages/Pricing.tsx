@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -369,9 +369,14 @@ const Pricing = () => {
               </div>
             </div>
             <div className="text-center pt-4 border-t border-orange-100 mt-4">
-              <p className="text-xs text-muted-foreground">
+              <p className="text-sm text-muted-foreground mb-3">
                 Contact us to discuss your role and get expert assistance
               </p>
+              <Link to="/contact?subject=Expert%20Assist%20Inquiry">
+                <Button variant="outline" className="border-orange-300 hover:bg-orange-50">
+                  Contact for Expert Assist
+                </Button>
+              </Link>
             </div>
           </CardContent>
         </Card>
