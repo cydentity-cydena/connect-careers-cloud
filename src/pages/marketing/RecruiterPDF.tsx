@@ -258,31 +258,6 @@ const RecruiterPDF = () => {
           </div>
         </div>
 
-        {/* Social Proof */}
-        <div className="bg-purple-50 rounded-lg p-6 mb-8 print:p-5 print:mb-6 print:border print:border-purple-200">
-          <h2 className="text-xl font-bold text-gray-900 mb-4 text-center print:text-lg">
-            Success Stories
-          </h2>
-          <div className="space-y-5 print:space-y-4">
-            <div className="border-l-4 border-purple-600 pl-4">
-              <p className="text-gray-700 italic mb-2">
-                "We doubled our placement rate in the first quarter after joining Cydena. The pre-verification 
-                eliminated 90% of our candidate drop-offs due to clearance issues."
-              </p>
-              <p className="text-sm text-gray-600 font-semibold">
-                - Director, Cybersecurity Recruitment Agency
-              </p>
-            </div>
-            <div className="border-l-4 border-purple-600 pl-4">
-              <p className="text-gray-700 italic mb-2">
-                "Our clients now specifically ask for Cydena-verified candidates. It's become our competitive advantage."
-              </p>
-              <p className="text-sm text-gray-600 font-semibold">
-                - Senior Recruiter, IT Staffing Firm
-              </p>
-            </div>
-          </div>
-        </div>
 
         {/* Pricing */}
         <div className="mb-8 print:mb-6">
