@@ -36,35 +36,20 @@ export function HireConfirmationDialog({
   const handleConfirmHire = async () => {
     setProcessing(true);
     try {
-      // Call edge function to create payment session
-      const { data, error } = await supabase.functions.invoke('create-hire-payment', {
-        body: {
-          application_id: applicationId,
-          candidate_id: candidateId,
-          job_id: jobId,
-          position_title: positionTitle,
-        },
-      });
+      // Update application status to hired
+      const { error } = await supabase
+        .from('applications')
+        .update({ stage: 'hired' })
+        .eq('id', applicationId);
 
       if (error) throw error;
 
-      if (data?.url) {
-        // Update application status to hired
-        await supabase
-          .from('applications')
-          .update({ stage: 'hired' })
-          .eq('id', applicationId);
-
-        // Open payment page in new tab
-        window.open(data.url, '_blank');
-        
-        toast.success('Hire confirmed! Complete payment to finalize.');
-        setOpen(false);
-        onHireComplete?.();
-      }
+      toast.success('Candidate marked as hired successfully!');
+      setOpen(false);
+      onHireComplete?.();
     } catch (error: any) {
-      console.error('Error creating hire payment:', error);
-      toast.error(error.message || 'Failed to process hire confirmation');
+      console.error('Error confirming hire:', error);
+      toast.error(error.message || 'Failed to confirm hire');
     } finally {
       setProcessing(false);
     }
@@ -91,20 +76,14 @@ export function HireConfirmationDialog({
         
         <div className="space-y-4 py-4">
           <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
-            <h4 className="font-semibold text-lg mb-2">Pay-Per-Hire Option</h4>
-            <div className="space-y-2 text-sm">
-              <p className="text-muted-foreground">
-                Success fee: <span className="text-2xl font-bold text-primary ml-2">£999</span>
-              </p>
-              <p className="text-muted-foreground">
-                Only pay when you successfully hire. No monthly fees, no risk.
-              </p>
-            </div>
+            <p className="text-gray-700">
+              This will mark {candidateName} as successfully hired for the position of {positionTitle}.
+            </p>
           </div>
 
           <div className="bg-muted/50 rounded-lg p-4 text-sm space-y-2">
-            <p>✓ One-time payment - no subscriptions</p>
-            <p>✓ Risk-free - pay only on successful hire</p>
+            <p>✓ Application status will be updated to "Hired"</p>
+            <p>✓ You can track this placement in your dashboard</p>
           </div>
         </div>
 
@@ -128,7 +107,7 @@ export function HireConfirmationDialog({
               </>
             ) : (
               <>
-                Confirm & Pay £999
+                Confirm Hire
               </>
             )}
           </Button>
