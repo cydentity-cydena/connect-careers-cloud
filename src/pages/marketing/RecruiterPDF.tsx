@@ -287,41 +287,62 @@ const RecruiterPDF = () => {
         {/* Pricing */}
         <div className="mb-8 print:mb-6">
           <h2 className="text-2xl font-bold text-gray-900 mb-4 print:text-xl">
-            Recruiter Pricing
+            Partnership Model
           </h2>
           
-          <div className="border-2 border-purple-600 rounded-lg p-8">
-            <div className="flex items-center justify-between mb-6">
+          <div className="border-2 border-purple-600 rounded-lg p-8 bg-purple-50">
+            <div className="mb-6">
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">Recruiter Pro Partnership</h3>
+              <p className="text-gray-600">Platform access + small fee on successful placements</p>
+            </div>
+            
+            <div className="grid md:grid-cols-2 gap-6 mb-6">
               <div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">Recruiter Pro</h3>
-                <p className="text-gray-600">Everything you need to scale your placements</p>
+                <h4 className="font-semibold text-gray-900 mb-3">Platform Access</h4>
+                <div className="bg-white rounded-lg p-4 border border-purple-200 mb-3">
+                  <div className="text-3xl font-bold text-purple-600 mb-1">£399<span className="text-lg text-gray-600">/mo</span></div>
+                  <p className="text-sm text-gray-600">Subscription includes:</p>
+                </div>
+                <ul className="space-y-1.5 text-sm text-gray-700">
+                  <li>✓ 75 candidate unlocks/year</li>
+                  <li>✓ Unlimited client accounts</li>
+                  <li>✓ Advanced search & filters</li>
+                  <li>✓ Placement tracking dashboard</li>
+                  <li>✓ 3 team seats included</li>
+                  <li>✓ API access & white-label options</li>
+                </ul>
               </div>
-              <div className="text-right">
-                <div className="text-4xl font-bold text-purple-600">£399<span className="text-xl text-gray-600">/mo</span></div>
+              
+              <div>
+                <h4 className="font-semibold text-gray-900 mb-3">Partnership Fee</h4>
+                <div className="bg-white rounded-lg p-4 border border-purple-200 mb-3">
+                  <div className="text-3xl font-bold text-purple-600 mb-1">2-3%</div>
+                  <p className="text-sm text-gray-600">of successful placements</p>
+                </div>
+                <div className="bg-white rounded-lg p-4 border border-purple-200">
+                  <p className="text-sm text-gray-700 mb-2">
+                    <strong>You keep 97-98%</strong> of your placement fee
+                  </p>
+                  <p className="text-xs text-gray-600">
+                    Example: £10,000 placement = £200-300 platform fee
+                  </p>
+                </div>
+                <p className="text-xs text-purple-600 font-semibold mt-3">
+                  Much lower than competing platforms while providing verified candidates
+                </p>
               </div>
             </div>
-            <div className="grid md:grid-cols-2 gap-4">
-              <ul className="space-y-2 text-gray-700">
-                <li>✓ 75 candidate unlocks/year</li>
-                <li>✓ Unlimited client accounts</li>
-                <li>✓ Advanced search & filters</li>
-                <li>✓ Placement tracking dashboard</li>
-                <li>✓ 3 team seats included</li>
-              </ul>
-              <ul className="space-y-2 text-gray-700">
-                <li>✓ Client reporting tools</li>
-                <li>✓ API access</li>
-                <li>✓ Priority support</li>
-                <li>✓ White-label options</li>
-                <li>✓ Quarterly business reviews</li>
-              </ul>
-            </div>
-            <div className="mt-6 pt-6 border-t border-gray-200">
+            
+            <div className="pt-4 border-t border-purple-200">
               <p className="text-center text-sm text-gray-600">
-                <strong>Enterprise plans available</strong> for larger recruitment firms and staffing companies
+                <strong>Why this model?</strong> You focus on relationships and placements, we handle verification infrastructure. Win-win partnership.
               </p>
             </div>
           </div>
+          
+          <p className="text-sm text-gray-600 mt-4 text-center">
+            Enterprise plans available for larger recruitment firms • Custom pricing for high-volume partners
+          </p>
         </div>
 
         {/* Email Signup Section */}
