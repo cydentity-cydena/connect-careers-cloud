@@ -291,6 +291,46 @@ const EmployerPDF = () => {
           </div>
         </div>
 
+        {/* Expert Assist Add-On */}
+        <div className="mb-6 print:mb-5">
+          <div className="border border-orange-300 rounded-lg p-5 bg-orange-50">
+            <div className="text-center mb-3">
+              <div className="inline-block bg-orange-600 text-white px-3 py-1 rounded-full text-xs font-semibold mb-1">
+                OPTIONAL ADD-ON
+              </div>
+              <h3 className="text-lg font-bold text-gray-900 mb-1">Expert Assist Service</h3>
+              <p className="text-xs text-gray-600">
+                Need specialist help with a complex or urgent role?
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <h4 className="font-semibold text-xs text-gray-900 mb-1.5">When You Need It:</h4>
+                <ul className="space-y-0.5 text-xs text-gray-700">
+                  <li>• Executive roles (CISO, Director)</li>
+                  <li>• Niche specializations</li>
+                  <li>• Urgent critical hires</li>
+                  <li>• First-time security hiring</li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-semibold text-xs text-gray-900 mb-1.5">What We Do:</h4>
+                <ul className="space-y-0.5 text-xs text-gray-700 mb-2">
+                  <li>• Candidate shortlisting</li>
+                  <li>• Technical assessment</li>
+                  <li>• Interview coordination</li>
+                  <li>• Offer negotiation</li>
+                </ul>
+                <div className="bg-white rounded p-2 border border-orange-200">
+                  <div className="text-xl font-bold text-orange-600">8-10%</div>
+                  <p className="text-xs text-gray-600">success fee</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Recruiter Partnership */}
         <div className="mb-8 print:mb-6">
           <div className="border-2 border-purple-600 rounded-lg p-6 bg-purple-50">
