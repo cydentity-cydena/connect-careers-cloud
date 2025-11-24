@@ -28,7 +28,7 @@ export const ROICalculator = () => {
       <CardHeader>
         <CardTitle>ROI Calculator</CardTitle>
         <CardDescription>
-          See how much you could save compared to traditional recruitment agencies
+          See how much you could save with direct access to verified talent
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">

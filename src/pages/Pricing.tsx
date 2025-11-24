@@ -125,7 +125,7 @@ const Pricing = () => {
                 <div className="p-4 border rounded-lg">
                   <Zap className="h-8 w-8 mx-auto mb-2 text-primary" />
                   <h4 className="font-semibold mb-1">70% Savings</h4>
-                  <p className="text-sm text-muted-foreground">vs traditional recruitment agencies</p>
+                  <p className="text-sm text-muted-foreground">compared to hidden hiring costs</p>
                 </div>
               </div>
             </CardContent>
