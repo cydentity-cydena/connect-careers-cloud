@@ -433,6 +433,9 @@ const Pricing = () => {
                 <p className="text-xs text-purple-600 font-semibold">
                   You keep 97-98% of your placement fee
                 </p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Example: £50k salary = £7,500 placement = £150-225 platform fee
+                </p>
               </div>
             </div>
             <div className="text-center pt-4 border-t">
