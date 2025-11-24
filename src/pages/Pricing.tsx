@@ -304,10 +304,6 @@ const Pricing = () => {
                     <Check className="h-5 w-5 text-primary shrink-0" />
                     <span>Volume discounts</span>
                   </li>
-                  <li className="flex gap-2">
-                    <Check className="h-5 w-5 text-primary shrink-0" />
-                    <span>White-label options</span>
-                  </li>
                 </ul>
               </CardContent>
               <CardFooter>
