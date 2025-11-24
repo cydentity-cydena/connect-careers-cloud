@@ -181,60 +181,6 @@ const EmployerPDF = () => {
           </div>
         </div>
 
-        {/* ROI Calculator */}
-        <div className="bg-blue-50 rounded-lg p-6 mb-8 print:p-5 print:mb-6 print:border print:border-blue-200">
-          <h2 className="text-xl font-bold text-gray-900 mb-4 text-center print:text-lg">
-            Calculate Your Savings
-          </h2>
-          <div className="grid grid-cols-2 gap-6">
-            <div className="text-center">
-              <div className="text-4xl font-bold text-blue-600 mb-2">60%</div>
-              <p className="text-gray-700">Faster Time-to-Hire</p>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-blue-600 mb-2">70%</div>
-              <p className="text-gray-700">Lower Recruitment Costs</p>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-blue-600 mb-2">85%</div>
-              <p className="text-gray-700">Candidate Quality Match</p>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-blue-600 mb-2">40%</div>
-              <p className="text-gray-700">Reduction in Failed Hires</p>
-            </div>
-          </div>
-          <p className="text-center text-gray-600 mt-6 text-sm">
-            * Based on average metrics from employers using Cydena vs traditional hiring methods
-          </p>
-        </div>
-
-        {/* Social Proof */}
-        <div className="mb-8 print:mb-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-4 text-center print:text-lg">
-            Trusted by Leading Organizations
-          </h2>
-          <div className="space-y-5 print:space-y-4">
-            <div className="border-l-4 border-blue-600 pl-4">
-              <p className="text-gray-700 italic mb-2">
-                "We reduced our time-to-hire for senior security roles from 4 months to 6 weeks. The pre-verification 
-                was a game-changer for our compliance requirements."
-              </p>
-              <p className="text-sm text-gray-600 font-semibold">
-                - CISO, Financial Services Company
-              </p>
-            </div>
-            <div className="border-l-4 border-blue-600 pl-4">
-              <p className="text-gray-700 italic mb-2">
-                "Finding candidates with active SC clearance used to take months. With Cydena, we identified 
-                three qualified candidates in the first week."
-              </p>
-              <p className="text-sm text-gray-600 font-semibold">
-                - Talent Acquisition Manager, Defence Contractor
-              </p>
-            </div>
-          </div>
-        </div>
 
         {/* Pricing Overview */}
         <div className="mb-8 print:mb-6">
@@ -318,10 +264,10 @@ const EmployerPDF = () => {
               <div>
                 <h4 className="font-semibold text-xs text-gray-900 mb-1.5">What We Do:</h4>
                 <ul className="space-y-0.5 text-xs text-gray-700 mb-2">
+                  <li>• Deep market expertise</li>
                   <li>• Candidate shortlisting</li>
-                  <li>• Technical assessment</li>
-                  <li>• Interview coordination</li>
-                  <li>• Offer negotiation</li>
+                  <li>• Skills & experience matching</li>
+                  <li>• Targeted candidate sourcing</li>
                 </ul>
                 <div className="bg-white rounded p-2 border border-orange-200">
                   <div className="text-xl font-bold text-orange-600">8-10%</div>
