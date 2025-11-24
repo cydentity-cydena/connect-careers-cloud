@@ -307,6 +307,7 @@ const RecruiterPDF = () => {
                   <li>✓ 75 candidate unlocks/year</li>
                   <li>✓ Unlimited client accounts</li>
                   <li>✓ Advanced search & filters</li>
+                  <li>✓ Pipeline management</li>
                   <li>✓ Placement tracking dashboard</li>
                   <li>✓ 3 team seats included</li>
                   <li>✓ API access & white-label options</li>
