@@ -174,7 +174,7 @@ const EmployerPDF = () => {
                   security engineer to enterprises building large teams.
                 </p>
                 <p className="text-sm text-blue-600 font-semibold mt-2">
-                  → 70% lower cost than traditional recruitment agencies
+                  → Transparent pricing with predictable costs
                 </p>
               </div>
             </div>

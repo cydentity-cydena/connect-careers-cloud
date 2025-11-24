@@ -130,7 +130,7 @@ export default function ROICalculator() {
     <>
       <SEO 
         title="ROI Calculator - See Your Hiring Savings | Cydena"
-        description="Calculate how much you can save by hiring verified cybersecurity talent directly on Cydena vs traditional recruitment agencies. Compare costs and see your ROI."
+        description="Calculate how much you can save by hiring verified cybersecurity talent directly on Cydena. Compare costs and see your ROI."
       />
       <Navigation />
       
