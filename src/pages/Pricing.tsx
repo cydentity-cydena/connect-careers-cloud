@@ -173,11 +173,15 @@ const Pricing = () => {
                   </li>
                   <li className="flex gap-2">
                     <Check className="h-5 w-5 text-primary shrink-0" />
-                    <span>Evidence profiles</span>
+                    <span>Advanced filters</span>
                   </li>
                   <li className="flex gap-2">
                     <Check className="h-5 w-5 text-primary shrink-0" />
-                    <span>Pipeline tools</span>
+                    <span>ATS integration</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <Check className="h-5 w-5 text-primary shrink-0" />
+                    <span>Pipeline management</span>
                   </li>
                   <li className="flex gap-2">
                     <Check className="h-5 w-5 text-primary shrink-0" />
@@ -235,6 +239,10 @@ const Pricing = () => {
                   </li>
                   <li className="flex gap-2">
                     <Check className="h-5 w-5 text-primary shrink-0" />
+                    <span>Pipeline management</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <Check className="h-5 w-5 text-primary shrink-0" />
                     <span>All Starter features</span>
                   </li>
                   <li className="flex gap-2">
@@ -279,6 +287,10 @@ const Pricing = () => {
                   <li className="flex gap-2">
                     <Check className="h-5 w-5 text-primary shrink-0" />
                     <span className="font-semibold">Custom unlocks</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <Check className="h-5 w-5 text-primary shrink-0" />
+                    <span>Pipeline management</span>
                   </li>
                   <li className="flex gap-2">
                     <Check className="h-5 w-5 text-primary shrink-0" />
