@@ -102,33 +102,105 @@ const Pricing = () => {
         </div>
 
         <div className="space-y-16">
-          <Card>
-            <CardHeader className="text-center">
-              <CardTitle className="text-2xl">Additional Unlocks</CardTitle>
-              <CardDescription>
-                Need more unlocks? Available at £8 each for all tiers. Enterprise plans can be customized to your needs.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid md:grid-cols-3 gap-4 text-center">
-                <div className="p-4 border rounded-lg">
-                  <DollarSign className="h-8 w-8 mx-auto mb-2 text-primary" />
-                  <h4 className="font-semibold mb-1">Transparent</h4>
-                  <p className="text-sm text-muted-foreground">No hidden fees</p>
+          {/* Two Service Models */}
+          <div className="grid md:grid-cols-2 gap-6">
+            <Card className="border-2 border-primary">
+              <CardHeader>
+                <Badge className="w-fit mb-2">Self-Service Platform</Badge>
+                <CardTitle className="text-2xl">Subscription Access</CardTitle>
+                <CardDescription className="text-base">
+                  Browse, search, and hire independently with our platform tools
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <h4 className="font-semibold">What&apos;s Included:</h4>
+                  <ul className="space-y-1 text-sm text-muted-foreground">
+                    <li className="flex gap-2">
+                      <Check className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                      <span>Annual unlock allocation (10-100 depending on tier)</span>
+                    </li>
+                    <li className="flex gap-2">
+                      <Check className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                      <span>Full platform access and advanced filters</span>
+                    </li>
+                    <li className="flex gap-2">
+                      <Check className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                      <span>Direct candidate messaging</span>
+                    </li>
+                    <li className="flex gap-2">
+                      <Check className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                      <span>Pipeline management tools</span>
+                    </li>
+                    <li className="flex gap-2">
+                      <Check className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                      <span>£8 per unlock after allocation used</span>
+                    </li>
+                  </ul>
                 </div>
-                <div className="p-4 border rounded-lg">
-                  <Users className="h-8 w-8 mx-auto mb-2 text-primary" />
-                  <h4 className="font-semibold mb-1">Pay for Value</h4>
-                  <p className="text-sm text-muted-foreground">Only unlock who you contact</p>
+                <div className="pt-4 border-t">
+                  <p className="text-sm font-semibold text-primary">Perfect for: Companies with in-house recruiters</p>
                 </div>
-                <div className="p-4 border rounded-lg">
-                  <Zap className="h-8 w-8 mx-auto mb-2 text-primary" />
-                  <h4 className="font-semibold mb-1">Scale Efficiently</h4>
-                  <p className="text-sm text-muted-foreground">Custom solutions for high-volume</p>
+              </CardContent>
+            </Card>
+
+            <Card className="border-2 border-purple-500 bg-gradient-to-br from-purple-50/50 to-background">
+              <CardHeader>
+                <Badge className="w-fit mb-2 bg-purple-600">Managed Service</Badge>
+                <CardTitle className="text-2xl">Full Recruitment Support</CardTitle>
+                <CardDescription className="text-base">
+                  We handle the entire recruitment process for you
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <h4 className="font-semibold">What&apos;s Included:</h4>
+                  <ul className="space-y-1 text-sm text-muted-foreground">
+                    <li className="flex gap-2">
+                      <Check className="h-4 w-4 text-purple-600 shrink-0 mt-0.5" />
+                      <span>Dedicated recruiter assigned to your role</span>
+                    </li>
+                    <li className="flex gap-2">
+                      <Check className="h-4 w-4 text-purple-600 shrink-0 mt-0.5" />
+                      <span>Candidate curation and pre-screening</span>
+                    </li>
+                    <li className="flex gap-2">
+                      <Check className="h-4 w-4 text-purple-600 shrink-0 mt-0.5" />
+                      <span>Interview coordination and scheduling</span>
+                    </li>
+                    <li className="flex gap-2">
+                      <Check className="h-4 w-4 text-purple-600 shrink-0 mt-0.5" />
+                      <span>Offer negotiation support</span>
+                    </li>
+                    <li className="flex gap-2">
+                      <Check className="h-4 w-4 text-purple-600 shrink-0 mt-0.5" />
+                      <span>90-day placement guarantee</span>
+                    </li>
+                  </ul>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+                <div className="pt-4 border-t">
+                  <div className="text-2xl font-bold mb-1">10-12%</div>
+                  <p className="text-sm text-muted-foreground">of first year salary (success fee only)</p>
+                  <p className="text-xs text-purple-600 font-semibold mt-2">50% less than traditional agencies (20-25%)</p>
+                </div>
+                <div className="pt-2">
+                  <p className="text-sm font-semibold text-purple-600">Perfect for: High-priority roles or companies without recruiters</p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="text-center">
+            <h3 className="text-xl font-semibold mb-2">Need Managed Recruitment?</h3>
+            <p className="text-muted-foreground mb-4">Contact us to discuss your hiring needs and get a custom quote</p>
+            <Button variant="outline" size="lg" onClick={() => navigate('/contact')}>
+              Get a Quote for Managed Service
+            </Button>
+          </div>
+
+          <div className="mb-6">
+            <h3 className="text-2xl font-bold text-center mb-6">Self-Service Subscription Tiers</h3>
+          </div>
 
           <div className="grid md:grid-cols-3 gap-8">
             <Card>
@@ -160,11 +232,11 @@ const Pricing = () => {
                   </li>
                   <li className="flex gap-2">
                     <Check className="h-5 w-5 text-primary shrink-0" />
-                    <span>10 unlocks/month</span>
+                    <span>10 unlocks/year included</span>
                   </li>
                   <li className="flex gap-2">
                     <Check className="h-5 w-5 text-primary shrink-0" />
-                    <span>£8 per extra unlock</span>
+                    <span>£8 per additional unlock</span>
                   </li>
                   <li className="flex gap-2">
                     <Check className="h-5 w-5 text-primary shrink-0" />
@@ -222,11 +294,11 @@ const Pricing = () => {
                   </li>
                   <li className="flex gap-2">
                     <Check className="h-5 w-5 text-primary shrink-0" />
-                    <span>30 unlocks/month</span>
+                    <span>30 unlocks/year included</span>
                   </li>
                   <li className="flex gap-2">
                     <Check className="h-5 w-5 text-primary shrink-0" />
-                    <span>£8 per extra unlock</span>
+                    <span>£8 per additional unlock</span>
                   </li>
                   <li className="flex gap-2">
                     <Check className="h-5 w-5 text-primary shrink-0" />
