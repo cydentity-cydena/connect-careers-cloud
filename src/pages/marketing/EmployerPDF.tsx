@@ -194,24 +194,24 @@ const EmployerPDF = () => {
 
 
         {/* Platform Screenshots */}
-        <div className="mb-8 print:mb-6 print-page-break">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4 print:text-xl">
+        <div className="mb-8 print:mb-4 print-page-break">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4 print:text-xl print:mb-3">
             Platform Features in Action
           </h2>
-          <p className="text-gray-600 mb-6">See how Cydena's platform streamlines your hiring process</p>
+          <p className="text-gray-600 mb-6 print:mb-3">See how Cydena's platform streamlines your hiring process</p>
           
-          <div className="grid grid-cols-2 gap-4 print:gap-3">
+          <div className="grid grid-cols-2 gap-4 print:gap-2">
             {/* Profile Cards */}
             <div className="print-avoid-break">
-              <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg p-3 border border-gray-200 h-full flex flex-col">
-                <h3 className="text-sm font-bold text-gray-900 mb-1 flex items-center gap-1.5 h-6">
+              <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg p-3 border border-gray-200 print:p-2">
+                <h3 className="text-sm font-bold text-gray-900 mb-1 flex items-center gap-1.5">
                   <Users className="w-4 h-4 text-blue-600 flex-shrink-0" />
                   Verified Candidate Profiles
                 </h3>
-                <p className="text-xs text-gray-600 mb-2 h-8">
+                <p className="text-xs text-gray-600 mb-2 print:mb-1">
                   Comprehensive profiles with verified certifications and clearances
                 </p>
-                <div className="bg-white rounded p-1.5 border border-gray-200 overflow-hidden">
+                <div className="bg-white rounded p-1.5 border border-gray-200 overflow-hidden print:p-1">
                   <img 
                     src="/screenshots/profile-card.png" 
                     alt="Verified candidate profile" 
@@ -224,15 +224,15 @@ const EmployerPDF = () => {
 
             {/* Skills Assessment */}
             <div className="print-avoid-break">
-              <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg p-3 border border-gray-200 h-full flex flex-col">
-                <h3 className="text-sm font-bold text-gray-900 mb-1 flex items-center gap-1.5 h-6">
+              <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg p-3 border border-gray-200 print:p-2">
+                <h3 className="text-sm font-bold text-gray-900 mb-1 flex items-center gap-1.5">
                   <Target className="w-4 h-4 text-purple-600 flex-shrink-0" />
                   Skills Validation Dashboard
                 </h3>
-                <p className="text-xs text-gray-600 mb-2 h-8">
+                <p className="text-xs text-gray-600 mb-2 print:mb-1">
                   Detailed skills assessments and competency demos
                 </p>
-                <div className="bg-white rounded p-1.5 border border-gray-200 flex-grow">
+                <div className="bg-white rounded p-1.5 border border-gray-200 print:p-1">
                   <img 
                     src="/screenshots/skills-assessment.png" 
                     alt="Skills assessment" 
@@ -244,15 +244,15 @@ const EmployerPDF = () => {
 
             {/* Leaderboard */}
             <div className="print-avoid-break">
-              <div className="bg-gradient-to-br from-green-50 to-blue-50 rounded-lg p-3 border border-gray-200 h-full flex flex-col">
-                <h3 className="text-sm font-bold text-gray-900 mb-1 flex items-center gap-1.5 h-6">
+              <div className="bg-gradient-to-br from-green-50 to-blue-50 rounded-lg p-3 border border-gray-200 print:p-2">
+                <h3 className="text-sm font-bold text-gray-900 mb-1 flex items-center gap-1.5">
                   <TrendingUp className="w-4 h-4 text-green-600 flex-shrink-0" />
                   Performance Rankings
                 </h3>
-                <p className="text-xs text-gray-600 mb-2 h-8">
+                <p className="text-xs text-gray-600 mb-2 print:mb-1">
                   Identify top performers through continuous validation
                 </p>
-                <div className="bg-white rounded p-1.5 border border-gray-200 flex-grow">
+                <div className="bg-white rounded p-1.5 border border-gray-200 print:p-1">
                   <img 
                     src="/screenshots/leaderboard.png" 
                     alt="Performance leaderboard" 
@@ -264,15 +264,15 @@ const EmployerPDF = () => {
 
             {/* Community Leaders */}
             <div className="print-avoid-break">
-              <div className="bg-gradient-to-br from-orange-50 to-yellow-50 rounded-lg p-3 border border-gray-200 h-full flex flex-col">
-                <h3 className="text-sm font-bold text-gray-900 mb-1 flex items-center gap-1.5 h-6">
+              <div className="bg-gradient-to-br from-orange-50 to-yellow-50 rounded-lg p-3 border border-gray-200 print:p-2">
+                <h3 className="text-sm font-bold text-gray-900 mb-1 flex items-center gap-1.5">
                   <Shield className="w-4 h-4 text-orange-600 flex-shrink-0" />
                   Active Talent Community
                 </h3>
-                <p className="text-xs text-gray-600 mb-2 h-8">
+                <p className="text-xs text-gray-600 mb-2 print:mb-1">
                   Access engaged professionals developing their skills
                 </p>
-                <div className="bg-white rounded p-1.5 border border-gray-200 flex-grow">
+                <div className="bg-white rounded p-1.5 border border-gray-200 print:p-1">
                   <img 
                     src="/screenshots/community-leaders.png" 
                     alt="Community leaders" 
@@ -285,7 +285,7 @@ const EmployerPDF = () => {
         </div>
 
         {/* Pricing Overview */}
-        <div className="mb-8 print:mb-6 print-page-break">
+        <div className="mb-8 print:mb-4 print-page-break">
           <h2 className="text-2xl font-bold text-gray-900 mb-4 print:text-xl">
             Simple Subscription Pricing
           </h2>
