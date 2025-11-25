@@ -143,15 +143,15 @@ const Pricing = () => {
                 <div className="mt-4">
                   {billingPeriod === 'annual' ? (
                     <>
-                      <span className="text-4xl font-bold">£{Math.round(getPricing(99))}</span>
+                      <span className="text-4xl font-bold">£{Math.round(getPricing(149))}</span>
                       <span className="text-muted-foreground">/year</span>
                       <p className="text-sm text-muted-foreground mt-1">
-                        £{Math.round(getMonthlyEquivalent(99))}/mo
+                        £{Math.round(getMonthlyEquivalent(149))}/mo
                       </p>
                     </>
                   ) : (
                     <>
-                      <span className="text-4xl font-bold">£99</span>
+                      <span className="text-4xl font-bold">£149</span>
                       <span className="text-muted-foreground">/month</span>
                     </>
                   )}
@@ -169,7 +169,7 @@ const Pricing = () => {
                   </li>
                   <li className="flex gap-2">
                     <Check className="h-5 w-5 text-primary shrink-0" />
-                    <span>£8 per additional unlock</span>
+                    <span>£75 per additional unlock</span>
                   </li>
                   <li className="flex gap-2">
                     <Check className="h-5 w-5 text-primary shrink-0" />
@@ -204,20 +204,20 @@ const Pricing = () => {
             <Card className="border-primary relative">
               <Badge className="absolute -top-3 left-1/2 -translate-x-1/2">Most Popular</Badge>
               <CardHeader>
-                <CardTitle>Team</CardTitle>
-                <CardDescription>Hiring teams</CardDescription>
+                <CardTitle>Growth</CardTitle>
+                <CardDescription>Growing teams</CardDescription>
                 <div className="mt-4">
                   {billingPeriod === 'annual' ? (
                     <>
-                      <span className="text-4xl font-bold">£{Math.round(getPricing(249))}</span>
+                      <span className="text-4xl font-bold">£{Math.round(getPricing(399))}</span>
                       <span className="text-muted-foreground">/year</span>
                       <p className="text-sm text-muted-foreground mt-1">
-                        £{Math.round(getMonthlyEquivalent(249))}/mo
+                        £{Math.round(getMonthlyEquivalent(399))}/mo
                       </p>
                     </>
                   ) : (
                     <>
-                      <span className="text-4xl font-bold">£249</span>
+                      <span className="text-4xl font-bold">£399</span>
                       <span className="text-muted-foreground">/month</span>
                     </>
                   )}
@@ -235,7 +235,7 @@ const Pricing = () => {
                   </li>
                   <li className="flex gap-2">
                     <Check className="h-5 w-5 text-primary shrink-0" />
-                    <span>£8 per additional unlock</span>
+                    <span>£75 per additional unlock</span>
                   </li>
                   <li className="flex gap-2">
                     <Check className="h-5 w-5 text-primary shrink-0" />
@@ -261,32 +261,45 @@ const Pricing = () => {
                   onClick={() => handleTierSelect('employer_growth')}
                   disabled={checkingAuth}
                 >
-                  Choose Team
+                  Choose Growth
                 </Button>
               </CardFooter>
             </Card>
 
-            <Card className="border-2 border-primary/50 relative">
-              <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-primary to-purple-600">
-                <Sparkles className="h-3 w-3 mr-1" />
-                Best Value
-              </Badge>
+            <Card>
               <CardHeader>
-                <CardTitle>Enterprise</CardTitle>
-                <CardDescription>Agencies & high-volume</CardDescription>
+                <CardTitle>Scale</CardTitle>
+                <CardDescription>High-volume hiring</CardDescription>
                 <div className="mt-4">
-                  <span className="text-4xl font-bold">Let&apos;s Talk</span>
+                  {billingPeriod === 'annual' ? (
+                    <>
+                      <span className="text-4xl font-bold">£{Math.round(getPricing(799))}</span>
+                      <span className="text-muted-foreground">/year</span>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        £{Math.round(getMonthlyEquivalent(799))}/mo
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <span className="text-4xl font-bold">£799</span>
+                      <span className="text-muted-foreground">/month</span>
+                    </>
+                  )}
                 </div>
               </CardHeader>
               <CardContent>
                 <ul className="space-y-2">
                   <li className="flex gap-2">
                     <Check className="h-5 w-5 text-primary shrink-0" />
-                    <span>10+ seats</span>
+                    <span>10 seats</span>
                   </li>
                   <li className="flex gap-2">
                     <Check className="h-5 w-5 text-primary shrink-0" />
-                    <span className="font-semibold">Custom unlocks</span>
+                    <span>100 unlocks/year included</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <Check className="h-5 w-5 text-primary shrink-0" />
+                    <span>£75 per additional unlock</span>
                   </li>
                   <li className="flex gap-2">
                     <Check className="h-5 w-5 text-primary shrink-0" />
@@ -294,31 +307,32 @@ const Pricing = () => {
                   </li>
                   <li className="flex gap-2">
                     <Check className="h-5 w-5 text-primary shrink-0" />
-                    <span>Custom integrations</span>
+                    <span>All Growth features</span>
                   </li>
                   <li className="flex gap-2">
                     <Check className="h-5 w-5 text-primary shrink-0" />
-                    <span>SLA guarantees</span>
+                    <span>Custom assessments</span>
                   </li>
                   <li className="flex gap-2">
                     <Check className="h-5 w-5 text-primary shrink-0" />
-                    <span>Volume discounts</span>
+                    <span>Dedicated support</span>
                   </li>
                 </ul>
               </CardContent>
               <CardFooter>
                 <Button 
                   className="w-full"
-                  onClick={() => navigate('/contact')}
+                  onClick={() => handleTierSelect('employer_scale')}
+                  disabled={checkingAuth}
                 >
-                  Contact Sales
+                  Choose Scale
                 </Button>
               </CardFooter>
             </Card>
           </div>
         </div>
 
-        {/* Expert Assist Add-On */}
+          {/* Expert Assist Add-On */}
         <Card className="border border-orange-200 bg-gradient-to-br from-orange-50/30 to-background mt-8">
           <CardHeader className="text-center">
             <Badge className="w-fit mx-auto mb-2 bg-orange-600">Optional Add-On</Badge>
@@ -355,19 +369,19 @@ const Pricing = () => {
                 <ul className="space-y-1.5 text-sm text-muted-foreground mb-4">
                   <li className="flex gap-2">
                     <Check className="h-4 w-4 text-orange-600 shrink-0 mt-0.5" />
-                    <span>Candidate shortlisting & screening</span>
+                    <span>Deep market expertise</span>
                   </li>
                   <li className="flex gap-2">
                     <Check className="h-4 w-4 text-orange-600 shrink-0 mt-0.5" />
-                    <span>Technical assessment guidance</span>
+                    <span>Candidate shortlisting</span>
                   </li>
                   <li className="flex gap-2">
                     <Check className="h-4 w-4 text-orange-600 shrink-0 mt-0.5" />
-                    <span>Interview coordination</span>
+                    <span>Skills & experience matching</span>
                   </li>
                   <li className="flex gap-2">
                     <Check className="h-4 w-4 text-orange-600 shrink-0 mt-0.5" />
-                    <span>Offer negotiation support</span>
+                    <span>Targeted candidate sourcing</span>
                   </li>
                 </ul>
                 <div className="bg-white rounded-lg p-3 border border-orange-200">
