@@ -193,6 +193,96 @@ const EmployerPDF = () => {
         </div>
 
 
+        {/* Platform Screenshots */}
+        <div className="mb-8 print:mb-6 print-page-break">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4 print:text-xl">
+            Platform Features in Action
+          </h2>
+          <p className="text-gray-600 mb-6">See how Cydena's platform streamlines your hiring process</p>
+          
+          <div className="space-y-6 print:space-y-4">
+            {/* Profile Cards */}
+            <div className="print-avoid-break">
+              <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg p-5 border border-gray-200">
+                <h3 className="text-lg font-bold text-gray-900 mb-2 flex items-center gap-2">
+                  <Users className="w-5 h-5 text-blue-600" />
+                  Verified Candidate Profiles
+                </h3>
+                <p className="text-sm text-gray-600 mb-3">
+                  View comprehensive profiles with verified certifications, security clearances, and skills assessments
+                </p>
+                <div className="bg-white rounded-lg p-2 border border-gray-200">
+                  <img 
+                    src="/screenshots/profile-card.png" 
+                    alt="Verified candidate profile example" 
+                    className="w-full rounded shadow-sm"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Skills Assessment */}
+            <div className="print-avoid-break">
+              <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg p-5 border border-gray-200">
+                <h3 className="text-lg font-bold text-gray-900 mb-2 flex items-center gap-2">
+                  <Target className="w-5 h-5 text-purple-600" />
+                  Skills Validation Dashboard
+                </h3>
+                <p className="text-sm text-gray-600 mb-3">
+                  Review detailed skills assessments and practical competency demonstrations
+                </p>
+                <div className="bg-white rounded-lg p-2 border border-gray-200">
+                  <img 
+                    src="/screenshots/skills-assessment.png" 
+                    alt="Skills assessment dashboard" 
+                    className="w-full rounded shadow-sm"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Leaderboard */}
+            <div className="print-avoid-break">
+              <div className="bg-gradient-to-br from-green-50 to-blue-50 rounded-lg p-5 border border-gray-200">
+                <h3 className="text-lg font-bold text-gray-900 mb-2 flex items-center gap-2">
+                  <TrendingUp className="w-5 h-5 text-green-600" />
+                  Performance Rankings
+                </h3>
+                <p className="text-sm text-gray-600 mb-3">
+                  Identify top performers through continuous skill validation and community engagement
+                </p>
+                <div className="bg-white rounded-lg p-2 border border-gray-200">
+                  <img 
+                    src="/screenshots/leaderboard.png" 
+                    alt="Candidate performance leaderboard" 
+                    className="w-full rounded shadow-sm"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Community Leaders */}
+            <div className="print-avoid-break">
+              <div className="bg-gradient-to-br from-orange-50 to-yellow-50 rounded-lg p-5 border border-gray-200">
+                <h3 className="text-lg font-bold text-gray-900 mb-2 flex items-center gap-2">
+                  <Shield className="w-5 h-5 text-orange-600" />
+                  Active Talent Community
+                </h3>
+                <p className="text-sm text-gray-600 mb-3">
+                  Access engaged professionals who continuously develop their skills
+                </p>
+                <div className="bg-white rounded-lg p-2 border border-gray-200">
+                  <img 
+                    src="/screenshots/community-leaders.png" 
+                    alt="Community leaders showcase" 
+                    className="w-full rounded shadow-sm"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Pricing Overview */}
         <div className="mb-8 print:mb-6 print-page-break">
           <h2 className="text-2xl font-bold text-gray-900 mb-4 print:text-xl">
