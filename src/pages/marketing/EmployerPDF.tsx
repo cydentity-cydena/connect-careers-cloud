@@ -13,6 +13,17 @@ const EmployerPDF = () => {
             print-color-adjust: exact !important;
             color-adjust: exact !important;
           }
+          .print-section {
+            break-inside: avoid;
+            page-break-inside: avoid;
+          }
+          .print-page-break {
+            page-break-after: always;
+          }
+          .print-avoid-break {
+            break-inside: avoid;
+            page-break-inside: avoid;
+          }
         }
       `}</style>
       <SEO 
@@ -43,7 +54,7 @@ const EmployerPDF = () => {
       <div className="max-w-4xl mx-auto p-6 print:p-5">
         
         {/* Problem Statement */}
-        <div className="mb-8 print:mb-6">
+        <div className="mb-8 print:mb-6 print-avoid-break">
           <h2 className="text-2xl font-bold text-gray-900 mb-3 print:text-xl">
             The Challenge of Hiring Cybersecurity Talent
           </h2>
@@ -79,7 +90,7 @@ const EmployerPDF = () => {
           </h2>
           
           <div className="space-y-5 print:space-y-4">
-            <div className="flex gap-4">
+            <div className="flex gap-4 print-avoid-break">
               <div className="flex-shrink-0">
                 <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
                   <Shield className="w-6 h-6 text-blue-600" />
@@ -99,7 +110,7 @@ const EmployerPDF = () => {
               </div>
             </div>
 
-            <div className="flex gap-4">
+            <div className="flex gap-4 print-avoid-break">
               <div className="flex-shrink-0">
                 <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
                   <Target className="w-6 h-6 text-blue-600" />
@@ -119,7 +130,7 @@ const EmployerPDF = () => {
               </div>
             </div>
 
-            <div className="flex gap-4">
+            <div className="flex gap-4 print-avoid-break">
               <div className="flex-shrink-0">
                 <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
                   <Zap className="w-6 h-6 text-blue-600" />
@@ -139,7 +150,7 @@ const EmployerPDF = () => {
               </div>
             </div>
 
-            <div className="flex gap-4">
+            <div className="flex gap-4 print-avoid-break">
               <div className="flex-shrink-0">
                 <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
                   <Clock className="w-6 h-6 text-blue-600" />
@@ -159,7 +170,7 @@ const EmployerPDF = () => {
               </div>
             </div>
 
-            <div className="flex gap-4">
+            <div className="flex gap-4 print-avoid-break">
               <div className="flex-shrink-0">
                 <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
                   <TrendingUp className="w-6 h-6 text-blue-600" />
@@ -183,13 +194,13 @@ const EmployerPDF = () => {
 
 
         {/* Pricing Overview */}
-        <div className="mb-8 print:mb-6">
+        <div className="mb-8 print:mb-6 print-page-break">
           <h2 className="text-2xl font-bold text-gray-900 mb-4 print:text-xl">
             Simple Subscription Pricing
           </h2>
           <p className="text-gray-600 mb-6">Choose the tier that matches your hiring volume</p>
           
-          <div className="grid grid-cols-3 gap-4 mb-6">
+          <div className="grid grid-cols-3 gap-4 mb-6 print-avoid-break">
             <div className="border-2 border-gray-200 rounded-lg p-5">
               <h3 className="text-lg font-bold text-gray-900 mb-2">Starter</h3>
               <div className="text-3xl font-bold text-blue-600 mb-3">£149<span className="text-base text-gray-600">/mo</span></div>
@@ -230,7 +241,7 @@ const EmployerPDF = () => {
             </div>
           </div>
           
-          <div className="bg-gradient-to-br from-blue-50/80 to-background rounded-lg p-6 border border-blue-200 mb-8">
+          <div className="bg-gradient-to-br from-blue-50/80 to-background rounded-lg p-6 border border-blue-200 mb-8 print-avoid-break">
             <p className="text-center text-gray-700 mb-2">
               <strong>Additional unlocks after annual allocation:</strong> £75 each
             </p>
@@ -241,7 +252,7 @@ const EmployerPDF = () => {
         </div>
 
         {/* Expert Assist Add-On */}
-        <div className="mb-6 print:mb-5">
+        <div className="mb-6 print:mb-5 print-avoid-break">
           <div className="border border-orange-300 rounded-lg p-5 bg-orange-50">
             <div className="text-center mb-3">
               <div className="inline-block bg-orange-600 text-white px-3 py-1 rounded-full text-xs font-semibold mb-1">
