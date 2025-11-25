@@ -192,7 +192,7 @@ const EmployerPDF = () => {
           <div className="grid grid-cols-3 gap-4 mb-6">
             <div className="border-2 border-gray-200 rounded-lg p-5">
               <h3 className="text-lg font-bold text-gray-900 mb-2">Starter</h3>
-              <div className="text-3xl font-bold text-blue-600 mb-3">£99<span className="text-base text-gray-600">/mo</span></div>
+              <div className="text-3xl font-bold text-blue-600 mb-3">£149<span className="text-base text-gray-600">/mo</span></div>
               <ul className="space-y-1.5 text-sm text-gray-700">
                 <li>• 10 unlocks/year</li>
                 <li>• 1 team seat</li>
@@ -207,7 +207,7 @@ const EmployerPDF = () => {
                 MOST POPULAR
               </div>
               <h3 className="text-lg font-bold text-gray-900 mb-2">Growth</h3>
-              <div className="text-3xl font-bold text-blue-600 mb-3">£299<span className="text-base text-gray-600">/mo</span></div>
+              <div className="text-3xl font-bold text-blue-600 mb-3">£399<span className="text-base text-gray-600">/mo</span></div>
               <ul className="space-y-1.5 text-sm text-gray-700">
                 <li>• 30 unlocks/year</li>
                 <li>• 5 team seats</li>
@@ -219,7 +219,7 @@ const EmployerPDF = () => {
             
             <div className="border-2 border-gray-200 rounded-lg p-5">
               <h3 className="text-lg font-bold text-gray-900 mb-2">Scale</h3>
-              <div className="text-3xl font-bold text-blue-600 mb-3">£599<span className="text-base text-gray-600">/mo</span></div>
+              <div className="text-3xl font-bold text-blue-600 mb-3">£799<span className="text-base text-gray-600">/mo</span></div>
               <ul className="space-y-1.5 text-sm text-gray-700">
                 <li>• 100 unlocks/year</li>
                 <li>• 10 team seats</li>
@@ -232,7 +232,7 @@ const EmployerPDF = () => {
           
           <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
             <p className="text-sm text-gray-700 text-center">
-              <strong>Additional unlocks:</strong> £8 each after your annual allocation is used • 
+              <strong>Additional unlocks:</strong> £75 each after your annual allocation is used • 
               <strong> Enterprise:</strong> Custom pricing for high-volume needs
             </p>
           </div>
