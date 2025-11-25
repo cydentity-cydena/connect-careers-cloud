@@ -278,43 +278,6 @@ const EmployerPDF = () => {
           </div>
         </div>
 
-        {/* Recruiter Partnership */}
-        <div className="mb-8 print:mb-6">
-          <div className="border-2 border-purple-600 rounded-lg p-6 bg-purple-50">
-            <div className="text-center mb-4">
-              <div className="inline-block bg-purple-600 text-white px-3 py-1 rounded-full text-xs font-semibold mb-2">
-                FOR RECRUITERS
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Partner With Cydena</h3>
-              <p className="text-sm text-gray-600">
-                Access our verified candidate pool for your placements
-              </p>
-            </div>
-            
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              <div>
-                <h4 className="font-semibold text-sm text-gray-900 mb-2">What You Get:</h4>
-                <ul className="space-y-1 text-xs text-gray-700">
-                  <li>• Pre-verified candidate pool</li>
-                  <li>• Client management tools</li>
-                  <li>• Placement tracking</li>
-                  <li>• No verification overhead</li>
-                </ul>
-              </div>
-              <div className="bg-white rounded p-3 border border-purple-200">
-                <p className="text-xs text-gray-600 mb-2">Partnership Model:</p>
-                <div className="text-2xl font-bold text-purple-600 mb-1">2-3%</div>
-                <p className="text-xs text-gray-600">platform fee on placements</p>
-                <p className="text-xs text-purple-600 font-semibold mt-1">You keep 97-98%</p>
-              </div>
-            </div>
-            
-            <p className="text-xs text-gray-600 text-center">
-              Contact us to discuss partnership opportunities
-            </p>
-          </div>
-        </div>
-
         {/* Email Signup Section */}
         <div className="mb-6 print:hidden">
           <MailchimpSignup 
