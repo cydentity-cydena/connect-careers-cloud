@@ -71,3 +71,6 @@ verify_jwt = false
 
 [functions.create-custom-assessment]
 verify_jwt = true
+
+[functions.purchase-additional-unlock]
+verify_jwt = true
