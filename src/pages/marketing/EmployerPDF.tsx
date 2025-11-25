@@ -241,11 +241,11 @@ const EmployerPDF = () => {
             </div>
           </div>
           
-          <div className="bg-gradient-to-br from-blue-50/80 to-background rounded-lg p-6 border border-blue-200 mb-8 print-avoid-break">
-            <p className="text-center text-gray-700 mb-2">
+          <div className="print-gradient bg-gradient-to-r from-[hsl(189,97%,55%)] to-[hsl(263,70%,50%)] rounded-lg p-6 mb-8 print-avoid-break">
+            <p className="text-center text-white mb-2">
               <strong>Additional unlocks after annual allocation:</strong> £75 each
             </p>
-            <p className="text-center text-sm text-muted-foreground">
+            <p className="text-center text-sm text-white/90">
               <strong>Enterprise tier:</strong> Contact us for custom pricing and high-volume needs
             </p>
           </div>
