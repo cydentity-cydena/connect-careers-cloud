@@ -19,6 +19,7 @@ const Certifications = () => {
   const [expiryDate, setExpiryDate] = useState('');
   const [proofFiles, setProofFiles] = useState<FileList | null>(null);
   const [loading, setLoading] = useState(false);
+  const [importing, setImporting] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -46,6 +47,40 @@ const Certifications = () => {
       uploadedUrls.push(filePath);
     }
     return uploadedUrls;
+  };
+
+  const handleCredlyImport = async () => {
+    if (!credentialUrl || !credentialUrl.includes('credly.com')) {
+      toast.error('Please enter a valid Credly badge URL');
+      return;
+    }
+
+    setImporting(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('import-credly-badge', {
+        body: { badgeUrl: credentialUrl }
+      });
+
+      if (error) throw error;
+
+      if (data?.success && data?.data) {
+        const badgeData = data.data;
+        setName(badgeData.name || '');
+        setIssuer(badgeData.issuer || '');
+        setCredentialId(badgeData.credentialId || '');
+        setIssueDate(badgeData.issueDate || '');
+        setExpiryDate(badgeData.expiryDate || '');
+        
+        toast.success('✨ Badge details imported successfully!');
+      } else {
+        toast.error('Failed to extract badge details');
+      }
+    } catch (error) {
+      console.error('Credly import error:', error);
+      toast.error('Failed to import badge. Please enter details manually.');
+    } finally {
+      setImporting(false);
+    }
   };
 
   const handleAdd = async () => {
@@ -184,21 +219,25 @@ const Certifications = () => {
             <Label htmlFor="credlyUrl" className="text-base font-semibold">
               🎖️ Quick Import from Credly
             </Label>
-            <Input 
-              id="credlyUrl" 
-              value={credentialUrl} 
-              onChange={(e) => {
-                setCredentialUrl(e.target.value);
-                // Auto-detect if it's a Credly URL and suggest it
-                if (e.target.value.includes('credly.com')) {
-                  setIssuer('Credly Badge');
-                }
-              }}
-              placeholder="https://www.credly.com/badges/..." 
-              className="text-base"
-            />
+            <div className="flex gap-2">
+              <Input 
+                id="credlyUrl" 
+                value={credentialUrl} 
+                onChange={(e) => setCredentialUrl(e.target.value)}
+                placeholder="https://www.credly.com/badges/..." 
+                className="text-base flex-1"
+              />
+              <Button 
+                onClick={handleCredlyImport}
+                disabled={importing || !credentialUrl.includes('credly.com')}
+                variant="secondary"
+                className="shrink-0"
+              >
+                {importing ? 'Importing...' : 'Import'}
+              </Button>
+            </div>
             <p className="text-xs text-muted-foreground">
-              Paste your Credly badge URL here. We'll extract the details automatically!
+              Paste your Credly badge URL and click Import to auto-fill the form!
             </p>
           </div>
           
