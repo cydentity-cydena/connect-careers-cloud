@@ -13,6 +13,17 @@ const RecruiterPDF = () => {
             print-color-adjust: exact !important;
             color-adjust: exact !important;
           }
+          .print-section {
+            break-inside: avoid;
+            page-break-inside: avoid;
+          }
+          .print-page-break {
+            page-break-after: always;
+          }
+          .print-avoid-break {
+            break-inside: avoid;
+            page-break-inside: avoid;
+          }
         }
       `}</style>
       <SEO 
@@ -43,7 +54,7 @@ const RecruiterPDF = () => {
       <div className="max-w-4xl mx-auto p-6 print:p-5">
         
         {/* Problem Statement */}
-        <div className="mb-8 print:mb-6">
+        <div className="mb-8 print:mb-6 print-avoid-break">
           <h2 className="text-2xl font-bold text-gray-900 mb-3 print:text-xl">
             The Cybersecurity Recruiter's Dilemma
           </h2>
@@ -80,7 +91,7 @@ const RecruiterPDF = () => {
           </h2>
           
           <div className="space-y-5 print:space-y-4">
-            <div className="flex gap-4">
+            <div className="flex gap-4 print-avoid-break">
               <div className="flex-shrink-0">
                 <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
                   <Users className="w-6 h-6 text-purple-600" />
@@ -100,7 +111,7 @@ const RecruiterPDF = () => {
               </div>
             </div>
 
-            <div className="flex gap-4">
+            <div className="flex gap-4 print-avoid-break">
               <div className="flex-shrink-0">
                 <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
                   <Clock className="w-6 h-6 text-purple-600" />
@@ -120,7 +131,7 @@ const RecruiterPDF = () => {
               </div>
             </div>
 
-            <div className="flex gap-4">
+            <div className="flex gap-4 print-avoid-break">
               <div className="flex-shrink-0">
                 <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
                   <DollarSign className="w-6 h-6 text-purple-600" />
@@ -140,7 +151,7 @@ const RecruiterPDF = () => {
               </div>
             </div>
 
-            <div className="flex gap-4">
+            <div className="flex gap-4 print-avoid-break">
               <div className="flex-shrink-0">
                 <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
                   <BarChart className="w-6 h-6 text-purple-600" />
@@ -160,7 +171,7 @@ const RecruiterPDF = () => {
               </div>
             </div>
 
-            <div className="flex gap-4">
+            <div className="flex gap-4 print-avoid-break">
               <div className="flex-shrink-0">
                 <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
                   <Award className="w-6 h-6 text-purple-600" />
@@ -180,7 +191,7 @@ const RecruiterPDF = () => {
               </div>
             </div>
 
-            <div className="flex gap-4">
+            <div className="flex gap-4 print-avoid-break">
               <div className="flex-shrink-0">
                 <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
                   <CheckCircle className="w-6 h-6 text-purple-600" />
@@ -203,7 +214,7 @@ const RecruiterPDF = () => {
         </div>
 
         {/* How It Works */}
-        <div className="mb-8 print:mb-6">
+        <div className="mb-8 print:mb-6 print-page-break print-avoid-break">
           <h2 className="text-2xl font-bold text-gray-900 mb-4 print:text-xl">
             How It Works for Recruiters
           </h2>
@@ -260,12 +271,12 @@ const RecruiterPDF = () => {
 
 
         {/* Pricing */}
-        <div className="mb-8 print:mb-6">
+        <div className="mb-8 print:mb-6 print-avoid-break">
           <h2 className="text-2xl font-bold text-gray-900 mb-4 print:text-xl">
             Partnership Model
           </h2>
           
-          <div className="border-2 border-purple-600 rounded-lg p-8 bg-purple-50">
+          <div className="border-2 border-purple-600 rounded-lg p-8 bg-purple-50 print-avoid-break">
             <div className="mb-6">
               <h3 className="text-2xl font-bold text-gray-900 mb-2">Recruiter Pro Partnership</h3>
               <p className="text-gray-600">Platform access + small fee on successful placements</p>
