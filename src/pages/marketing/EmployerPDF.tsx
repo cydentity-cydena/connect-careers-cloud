@@ -192,9 +192,8 @@ const EmployerPDF = () => {
           </div>
         </div>
 
-
         {/* Platform Screenshots */}
-        <div className="mb-8 print:mb-6 print-page-break">
+        <div className="mb-8 print:mb-6 print-page-break print:pt-6">
           <h2 className="text-2xl font-bold text-gray-900 mb-4 print:text-xl">
             Platform Features in Action
           </h2>
@@ -232,11 +231,12 @@ const EmployerPDF = () => {
                 <p className="text-xs text-gray-600 mb-2 h-8">
                   Detailed skills assessments and competency demos
                 </p>
-                <div className="bg-white rounded p-1.5 border border-gray-200 flex-grow">
+                <div className="bg-white rounded p-1.5 border border-gray-200">
                   <img 
                     src="/screenshots/skills-assessment.png" 
                     alt="Skills assessment" 
                     className="w-full rounded shadow-sm"
+                    style={{ display: 'block' }}
                   />
                 </div>
               </div>
@@ -252,11 +252,12 @@ const EmployerPDF = () => {
                 <p className="text-xs text-gray-600 mb-2 h-8">
                   Identify top performers through continuous validation
                 </p>
-                <div className="bg-white rounded p-1.5 border border-gray-200 flex-grow">
+                <div className="bg-white rounded p-1.5 border border-gray-200">
                   <img 
                     src="/screenshots/leaderboard.png" 
                     alt="Performance leaderboard" 
                     className="w-full rounded shadow-sm"
+                    style={{ display: 'block' }}
                   />
                 </div>
               </div>
@@ -272,11 +273,12 @@ const EmployerPDF = () => {
                 <p className="text-xs text-gray-600 mb-2 h-8">
                   Access engaged professionals developing their skills
                 </p>
-                <div className="bg-white rounded p-1.5 border border-gray-200 flex-grow">
+                <div className="bg-white rounded p-1.5 border border-gray-200">
                   <img 
                     src="/screenshots/community-leaders.png" 
                     alt="Community leaders" 
                     className="w-full rounded shadow-sm"
+                    style={{ display: 'block' }}
                   />
                 </div>
               </div>
