@@ -42,6 +42,7 @@ import PartnerAnalytics from "./pages/admin/PartnerAnalytics";
 import CandidatePDF from "./pages/marketing/CandidatePDF";
 import EmployerPDF from "./pages/marketing/EmployerPDF";
 import RecruiterPDF from "./pages/marketing/RecruiterPDF";
+import PartnersPDF from "./pages/marketing/PartnersPDF";
 
 import HRReady from "./pages/HRReady";
 import RoleManagement from "./pages/admin/RoleManagement";
@@ -126,6 +127,7 @@ const AppContent = () => {
           <Route path="/marketing/candidates" element={<CandidatePDF />} />
           <Route path="/marketing/employers" element={<EmployerPDF />} />
           <Route path="/marketing/recruiters" element={<RecruiterPDF />} />
+          <Route path="/marketing/partners" element={<PartnersPDF />} />
           
           {/* Lead Generation */}
           <Route path="/Early-Access-200" element={<Founding20 />} />
