@@ -201,6 +201,27 @@ const EmployerPDF = () => {
           <p className="text-gray-600 mb-6">See how Cydena's platform streamlines your hiring process</p>
           
           <div className="grid grid-cols-2 gap-4 print:gap-3">
+            {/* Profile Cards */}
+            <div className="print-avoid-break">
+              <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg p-3 border border-gray-200 h-full flex flex-col">
+                <h3 className="text-sm font-bold text-gray-900 mb-1 flex items-center gap-1.5 h-6">
+                  <Users className="w-4 h-4 text-blue-600 flex-shrink-0" />
+                  Verified Candidate Profiles
+                </h3>
+                <p className="text-xs text-gray-600 mb-2 h-8">
+                  Comprehensive profiles with verified certifications and clearances
+                </p>
+                <div className="bg-white rounded p-1.5 border border-gray-200 flex-grow overflow-hidden">
+                  <img 
+                    src="/screenshots/profile-card.png" 
+                    alt="Verified candidate profile" 
+                    className="w-full rounded shadow-sm object-cover object-top"
+                    style={{ maxHeight: '280px' }}
+                  />
+                </div>
+              </div>
+            </div>
+
             {/* Skills Assessment */}
             <div className="print-avoid-break">
               <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg p-3 border border-gray-200 h-full flex flex-col">
