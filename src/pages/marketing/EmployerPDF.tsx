@@ -317,7 +317,7 @@ const EmployerPDF = () => {
             </div>
           </div>
           <p className="text-sm opacity-75 print:opacity-100">
-            No credit card required • 14-day free trial • ROI calculator included
+            ROI calculator included with all plans
           </p>
         </div>
       </div>
