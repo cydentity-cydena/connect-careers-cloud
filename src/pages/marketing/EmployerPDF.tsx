@@ -230,10 +230,12 @@ const EmployerPDF = () => {
             </div>
           </div>
           
-          <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
-            <p className="text-sm text-gray-700 text-center">
-              <strong>Additional unlocks:</strong> £75 each after your annual allocation is used • 
-              <strong> Enterprise:</strong> Custom pricing for high-volume needs
+          <div className="bg-gradient-to-br from-blue-50/80 to-background rounded-lg p-6 border border-blue-200 mb-8">
+            <p className="text-center text-gray-700 mb-2">
+              <strong>Additional unlocks after annual allocation:</strong> £75 each
+            </p>
+            <p className="text-center text-sm text-muted-foreground">
+              <strong>Enterprise tier:</strong> Contact us for custom pricing and high-volume needs
             </p>
           </div>
         </div>
