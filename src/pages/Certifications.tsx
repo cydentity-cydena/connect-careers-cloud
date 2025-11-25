@@ -55,16 +55,26 @@ const Certifications = () => {
       return;
     }
 
+    console.log('Starting Credly import for URL:', credentialUrl);
     setImporting(true);
+    
     try {
+      console.log('Invoking import-credly-badge function...');
       const { data, error } = await supabase.functions.invoke('import-credly-badge', {
         body: { badgeUrl: credentialUrl }
       });
 
-      if (error) throw error;
+      console.log('Edge function response:', { data, error });
+
+      if (error) {
+        console.error('Edge function error:', error);
+        throw error;
+      }
 
       if (data?.success && data?.data) {
         const badgeData = data.data;
+        console.log('Extracted badge data:', badgeData);
+        
         setName(badgeData.name || '');
         setIssuer(badgeData.issuer || '');
         setCredentialId(badgeData.credentialId || '');
@@ -73,11 +83,13 @@ const Certifications = () => {
         
         toast.success('✨ Badge details imported successfully!');
       } else {
-        toast.error('Failed to extract badge details');
+        console.error('Invalid response format:', data);
+        toast.error('Failed to extract badge details from the URL');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Credly import error:', error);
-      toast.error('Failed to import badge. Please enter details manually.');
+      const errorMessage = error?.message || 'Unknown error occurred';
+      toast.error(`Failed to import: ${errorMessage}. Please enter details manually.`);
     } finally {
       setImporting(false);
     }

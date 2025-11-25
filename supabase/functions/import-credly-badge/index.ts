@@ -11,18 +11,29 @@ serve(async (req) => {
   }
 
   try {
+    console.log('Import Credly badge function called');
     const { badgeUrl } = await req.json();
+    console.log('Badge URL:', badgeUrl);
 
     if (!badgeUrl || !badgeUrl.includes('credly.com')) {
+      console.error('Invalid Credly URL:', badgeUrl);
       return new Response(
         JSON.stringify({ error: 'Invalid Credly URL' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
+    console.log('Fetching badge page...');
     // Fetch the Credly badge page
     const response = await fetch(badgeUrl);
+    
+    if (!response.ok) {
+      console.error('Failed to fetch badge page:', response.status);
+      throw new Error(`Failed to fetch badge page: ${response.status}`);
+    }
+    
     const html = await response.text();
+    console.log('Badge page fetched, HTML length:', html.length);
 
     // Extract Open Graph meta tags and JSON-LD data
     const extractMetaContent = (property: string): string | null => {
@@ -37,6 +48,7 @@ serve(async (req) => {
     
     if (jsonLdMatch) {
       try {
+        console.log('Found JSON-LD data');
         const jsonLd = JSON.parse(jsonLdMatch[1]);
         certData = {
           name: jsonLd.name || extractMetaContent('og:title'),
@@ -53,6 +65,7 @@ serve(async (req) => {
     // Fallback to meta tags if JSON-LD parsing failed
     if (!certData.name) {
       certData.name = extractMetaContent('og:title') || extractMetaContent('twitter:title');
+      console.log('Extracted name from meta tags:', certData.name);
     }
     if (!certData.description) {
       certData.description = extractMetaContent('og:description') || extractMetaContent('twitter:description');
@@ -63,6 +76,7 @@ serve(async (req) => {
       const issuerMatch = html.match(/Issued by[:\s]+([^<\n]+)/i) || 
                           html.match(/"issuer"[:\s]*{[^}]*"name"[:\s]*"([^"]+)"/i);
       certData.issuer = issuerMatch ? issuerMatch[1].trim() : 'Credly Badge';
+      console.log('Extracted issuer:', certData.issuer);
     }
 
     // Extract dates from the page
@@ -84,6 +98,8 @@ serve(async (req) => {
     const credIdMatch = badgeUrl.match(/\/badges\/([a-f0-9-]+)/i);
     certData.credentialId = credIdMatch ? credIdMatch[1] : '';
 
+    console.log('Extracted certification data:', certData);
+
     return new Response(
       JSON.stringify({
         success: true,
@@ -96,7 +112,11 @@ serve(async (req) => {
     console.error('Error importing Credly badge:', error);
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return new Response(
-      JSON.stringify({ error: 'Failed to import badge data', details: errorMessage }),
+      JSON.stringify({ 
+        success: false,
+        error: 'Failed to import badge data', 
+        details: errorMessage 
+      }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
