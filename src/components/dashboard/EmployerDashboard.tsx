@@ -5,11 +5,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Building, Users, Briefcase, TrendingUp, Coins, Workflow, CheckCircle, Bug, ArrowRight, BarChart3, ListChecks } from "lucide-react";
-import { CreditsPurchaseDialog } from "@/components/employer/CreditsPurchaseDialog";
 import { ApplicationPipeline } from "@/components/employer/ApplicationPipeline";
 import { UnlockUsageTracker } from "@/components/employer/UnlockUsageTracker";
 import { VerificationRequestDialog } from "@/components/verification/VerificationRequestDialog";
 import { SubscriptionStatus } from "@/components/subscription/SubscriptionStatus";
+import { SubscriptionManagement } from "@/components/subscription/SubscriptionManagement";
 import { JobManagement } from "./JobManagement";
 import { AnalyticsDashboard } from "@/components/employer/AnalyticsDashboard";
 import { useQuery } from "@tanstack/react-query";
@@ -233,29 +233,44 @@ const EmployerDashboard = () => {
         </TabsList>
 
         <TabsContent value="overview" className="space-y-8 mt-6">
-      {/* Usage Tracker */}
-      <UnlockUsageTracker
-        creditsAvailable={credits}
-        creditsUsed={creditsUsed}
-        annualAllocation={annualAllocation}
-        currentTier="Starter"
-      />
+      {/* Subscription Management */}
+      <div className="grid md:grid-cols-2 gap-6" data-subscription-management>
+        <SubscriptionManagement
+          creditsAvailable={credits}
+          annualAllocation={annualAllocation}
+          annualUnlocksUsed={creditsUsed}
+          onPurchaseComplete={() => loadCredits(userId)}
+        />
+        
+        <UnlockUsageTracker
+          creditsAvailable={credits}
+          creditsUsed={creditsUsed}
+          annualAllocation={annualAllocation}
+          currentTier="Starter"
+        />
+      </div>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
         <Card className="border-primary border-2 shadow-lg hover:scale-105 transition-transform">
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-lg">
               <Coins className="h-5 w-5 text-primary" />
-              Credits Balance
+              Quick Actions
             </CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-4xl font-bold text-primary">{credits}</p>
             <p className="text-sm text-muted-foreground mt-1">Profile unlocks available</p>
-            <CreditsPurchaseDialog 
-              currentCredits={credits} 
-              onPurchaseComplete={() => loadCredits(userId)} 
-            />
+            <Button 
+              variant="outline" 
+              size="sm"
+              className="w-full mt-3"
+              onClick={() => {
+                document.querySelector('[data-subscription-management]')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+            >
+              Buy More Unlocks
+            </Button>
           </CardContent>
         </Card>
 
