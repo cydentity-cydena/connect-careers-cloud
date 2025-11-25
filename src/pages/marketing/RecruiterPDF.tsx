@@ -340,7 +340,7 @@ const RecruiterPDF = () => {
           </p>
           <div className="flex flex-col gap-3 justify-center items-center mb-6">
             <div className="text-lg font-semibold">
-              👉 Visit: <a href="https://cydena.com/recruiters" target="_blank" rel="noopener noreferrer" className="underline hover:opacity-80">cydena.com/recruiters</a>
+              👉 Visit: <a href="https://cydena.com" target="_blank" rel="noopener noreferrer" className="underline hover:opacity-80">cydena.com</a>
             </div>
             <div className="text-lg font-semibold">
               ✉️ Email: <a href="mailto:recruiters@cydena.com" className="underline hover:opacity-80">recruiters@cydena.com</a>
