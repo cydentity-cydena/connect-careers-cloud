@@ -244,55 +244,6 @@ const PartnersPDF = () => {
           </div>
         </div>
 
-        {/* ROI Example */}
-        <div className="mb-8 print:mb-6 bg-blue-50 rounded-lg p-6 border-2 border-blue-200">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4 print:text-xl">
-            ROI Example: Training Provider
-          </h2>
-          
-          <div className="space-y-4">
-            <div>
-              <div className="font-bold text-gray-900 mb-2">Investment: 12-week Slot 2 Featured</div>
-              <div className="text-sm text-gray-700 space-y-1">
-                <div className="flex justify-between">
-                  <span>Base placement: £149 × 12 weeks</span>
-                  <span>£1,788</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Slot 2 upgrade: £200 × 12 weeks</span>
-                  <span>£2,400</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Subtotal:</span>
-                  <span>£4,188</span>
-                </div>
-                <div className="flex justify-between font-bold text-green-600">
-                  <span>15% volume discount:</span>
-                  <span>-£628</span>
-                </div>
-                <div className="flex justify-between font-bold text-xl text-blue-600 pt-2 border-t-2 border-blue-200">
-                  <span>Total Investment:</span>
-                  <span>£3,560</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-lg p-4">
-              <div className="font-bold text-gray-900 mb-2">Expected Return:</div>
-              <div className="text-sm text-gray-700 space-y-1">
-                <div>Conservative: 20 course enrollments @ £299 each = <span className="font-bold text-green-600">£5,980</span></div>
-                <div>Moderate: 35 enrollments = <span className="font-bold text-green-600">£10,465</span></div>
-                <div>Strong: 50 enrollments = <span className="font-bold text-green-600">£14,950</span></div>
-              </div>
-              <div className="mt-3 pt-3 border-t border-gray-200">
-                <div className="font-bold text-gray-900">Net ROI Range:</div>
-                <div className="text-2xl font-bold text-green-600">£2,420 - £11,390</div>
-                <div className="text-xs text-gray-600">68% - 320% return on investment</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
         {/* What You Get */}
         <div className="mb-8 print:mb-6">
           <h2 className="text-2xl font-bold text-gray-900 mb-4 print:text-xl">
