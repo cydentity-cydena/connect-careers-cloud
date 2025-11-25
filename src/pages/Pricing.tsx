@@ -14,15 +14,15 @@ import { Label } from "@/components/ui/label";
 
 const PRICING_IDS = {
   employer_starter: {
-    monthly: 'price_1SG2n2FnZFXoJvyLkjI5aoMI',
+    monthly: 'price_1SXCuZFnZFXoJvyLnugwAejP',
     annual: 'price_1SWuPZDOcfakZuIayVMDAWmO',
   },
   employer_growth: {
-    monthly: 'price_1SG2nbFnZFXoJvyLkAKznYqi',
+    monthly: 'price_1SXCupDOcfakZuIaS1ql4wKP',
     annual: 'price_1SWuQ6FnZFXoJvyLolWy7fSK',
   },
   employer_scale: {
-    monthly: 'price_1SG35iDOcfakZuIaarlVZp2y',
+    monthly: 'price_1SXCv4FnZFXoJvyLjZYxVDl9',
     annual: 'price_1SWuRdDOcfakZuIagcO6GWxx',
   }
 };
