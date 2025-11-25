@@ -10,10 +10,10 @@ interface UnlockAllocationDisplayProps {
 }
 
 const TIER_LIMITS: Record<string, { allocation: number; overageCharge: number; isUnlimited?: boolean }> = {
-  'employer_starter': { allocation: 10, overageCharge: 8 },
-  'employer_growth': { allocation: 30, overageCharge: 8 },
-  'employer_scale': { allocation: 999999, overageCharge: 0, isUnlimited: true },
-  'recruiter_pro': { allocation: 75, overageCharge: 8 },
+  'employer_starter': { allocation: 10, overageCharge: 75 },
+  'employer_growth': { allocation: 30, overageCharge: 75 },
+  'employer_scale': { allocation: 100, overageCharge: 75 },
+  'recruiter_pro': { allocation: 75, overageCharge: 75 },
 };
 
 export const UnlockAllocationDisplay = ({ 
