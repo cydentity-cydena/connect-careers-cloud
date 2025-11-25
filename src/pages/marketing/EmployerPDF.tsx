@@ -316,10 +316,7 @@ const EmployerPDF = () => {
               ✉️ Email: <a href="mailto:employers@cydena.com" className="underline hover:opacity-80">employers@cydena.com</a>
             </div>
           </div>
-          <p className="text-sm opacity-75 print:opacity-100">
-            ROI calculator included with all plans
-          </p>
-        </div>
+          </div>
       </div>
 
       {/* Print Button */}
