@@ -211,12 +211,12 @@ const EmployerPDF = () => {
                 <p className="text-xs text-gray-600 mb-2 h-8">
                   Comprehensive profiles with verified certifications and clearances
                 </p>
-                <div className="bg-white rounded p-1.5 border border-gray-200 flex-grow overflow-hidden">
+                <div className="bg-white rounded p-1.5 border border-gray-200 overflow-hidden">
                   <img 
                     src="/screenshots/profile-card.png" 
                     alt="Verified candidate profile" 
                     className="w-full rounded shadow-sm object-cover object-top"
-                    style={{ maxHeight: '280px' }}
+                    style={{ maxHeight: '280px', display: 'block' }}
                   />
                 </div>
               </div>
