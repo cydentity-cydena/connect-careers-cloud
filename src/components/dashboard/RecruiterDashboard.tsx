@@ -18,6 +18,7 @@ import { CreateCustomAssessmentDialog } from "@/components/assessments/CreateCus
 import { CustomAssessmentsList } from "@/components/assessments/CustomAssessmentsList";
 import { AssessmentQuotaDisplay } from "@/components/assessments/AssessmentQuotaDisplay";
 import { AssignedPods } from "@/components/employer/AssignedPods";
+import { SubscriptionStatus } from "@/components/subscription/SubscriptionStatus";
 
 const RecruiterDashboard = () => {
   const navigate = useNavigate();
@@ -227,6 +228,10 @@ const RecruiterDashboard = () => {
                 <p className="text-sm text-muted-foreground mt-1">Total earned</p>
               </CardContent>
             </Card>
+          </div>
+
+          <div className="mb-8">
+            <SubscriptionStatus />
           </div>
 
           <div className="grid md:grid-cols-2 gap-6">
