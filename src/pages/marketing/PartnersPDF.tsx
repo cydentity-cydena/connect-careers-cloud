@@ -33,24 +33,24 @@ const PartnersPDF = () => {
 
       {/* PDF Content */}
       <div className="max-w-4xl mx-auto p-8 print:p-12">
-        {/* Header */}
-        <div className="mb-8 print:mb-6">
-          <div className="flex items-center justify-between mb-6">
+        {/* Gradient Banner Header */}
+        <div className="mb-8 print:mb-6 -mx-8 -mt-8 print:-mx-12 print:-mt-12 px-8 pt-8 pb-12 print:px-12 print:pt-12 print:pb-16 bg-gradient-to-br from-blue-600 via-blue-700 to-purple-700 rounded-b-3xl">
+          <div className="flex items-center justify-between mb-8">
             <img 
-              src="/logos/cydena-main-logo.png" 
+              src="/logos/cydentity-academy-logo-white.png" 
               alt="Cydena" 
               className="h-10 print:h-8"
             />
             <div className="text-right">
-              <p className="text-sm text-gray-600">Training & Certification</p>
-              <p className="text-sm font-bold text-gray-900">Partnership Opportunities</p>
+              <p className="text-sm text-blue-100">Training & Certification</p>
+              <p className="text-sm font-bold text-white">Partnership Opportunities</p>
             </div>
           </div>
           
-          <h1 className="text-4xl font-bold text-gray-900 mb-3 print:text-3xl">
+          <h1 className="text-4xl font-bold text-white mb-4 print:text-3xl leading-tight">
             Reach Thousands of Cybersecurity Professionals
           </h1>
-          <p className="text-xl text-gray-700 print:text-lg">
+          <p className="text-xl text-blue-50 print:text-lg leading-relaxed">
             Premium visibility for your training courses and certifications on the UK's fastest-growing cybersecurity talent platform
           </p>
         </div>
