@@ -383,7 +383,7 @@ const PartnersPDF = () => {
               <div className="font-bold mb-2">Get Started Today</div>
               <div className="space-y-1 text-sm">
                 <div>📧 Email: partnerships@cydena.com</div>
-                <div>🌐 Visit: cydena.com/partnerships</div>
+                <div>🌐 Visit: cydena.com</div>
                 <div>📞 Book a call to discuss your needs</div>
               </div>
             </div>
