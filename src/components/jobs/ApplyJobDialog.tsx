@@ -100,6 +100,14 @@ export const ApplyJobDialog = ({ jobId, jobTitle, children }: ApplyJobDialogProp
         return;
       }
 
+      // Check if this is a Cydena-managed job
+      const { data: jobData } = await supabase
+        .from("jobs")
+        .select("managed_by_cydena")
+        .eq("id", jobId)
+        .single();
+
+      // Create application
       const { error } = await supabase.from("applications").insert({
         candidate_id: user.id,
         job_id: jobId,
@@ -109,7 +117,43 @@ export const ApplyJobDialog = ({ jobId, jobTitle, children }: ApplyJobDialogProp
 
       if (error) throw error;
 
-      toast.success("Application submitted successfully!");
+      // If managed by Cydena, also add to admin pipeline for curation
+      if (jobData?.managed_by_cydena) {
+        // Get candidate profile info for pipeline entry
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('full_name, email')
+          .eq('id', user.id)
+          .single();
+
+        const { data: candidateProfile } = await supabase
+          .from('candidate_profiles')
+          .select('title, years_experience')
+          .eq('user_id', user.id)
+          .single();
+
+        // Check if already in pipeline
+        const { data: pipelineExists } = await supabase
+          .from('candidate_pipeline')
+          .select('id')
+          .eq('candidate_id', user.id)
+          .maybeSingle();
+
+        if (!pipelineExists) {
+          await supabase.from('candidate_pipeline').insert({
+            candidate_id: user.id,
+            stage: 'new_application',
+            source: `job_application_${jobId}`,
+            desired_role: candidateProfile?.title || 'Not specified',
+          });
+        }
+      }
+
+      toast.success(
+        jobData?.managed_by_cydena 
+          ? "Application submitted! Our team will review and curate your profile." 
+          : "Application submitted successfully!"
+      );
       setOpen(false);
       setCoverLetter("");
     } catch (error) {

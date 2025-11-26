@@ -33,6 +33,7 @@ interface Job {
   required_clearance: string | null;
   remote_allowed: boolean | null;
   created_at: string;
+  managed_by_cydena: boolean | null;
   company: {
     id: string;
     name: string;
@@ -73,6 +74,7 @@ const JobDetail = () => {
           required_clearance,
           remote_allowed,
           created_at,
+          managed_by_cydena,
           company:companies(
             id,
             name,
@@ -226,6 +228,12 @@ const JobDetail = () => {
 
                 {/* Badges */}
                 <div className="flex flex-wrap gap-2 mt-4">
+                  {job.managed_by_cydena && (
+                    <Badge className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground border-0">
+                      <Shield className="h-3 w-3 mr-1" />
+                      Cydena Expert Assist
+                    </Badge>
+                  )}
                   <Badge variant={job.remote_allowed ? "default" : "secondary"}>
                     {job.remote_allowed ? "Remote" : "On-site"}
                   </Badge>

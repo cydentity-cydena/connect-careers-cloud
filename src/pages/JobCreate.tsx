@@ -42,6 +42,7 @@ const JobCreate = () => {
   const [niceToHaves, setNiceToHaves] = useState('');
   const [yearsExpMin, setYearsExpMin] = useState('');
   const [yearsExpMax, setYearsExpMax] = useState('');
+  const [managedByCydena, setManagedByCydena] = useState(false);
 
   useEffect(() => {
     const init = async () => {
@@ -136,6 +137,7 @@ const JobCreate = () => {
           setCompanyId(jobData.company_id || '');
           setSelectedClientId(jobData.client_id || '');
           setCompanyName(jobData.company?.name || '');
+          setManagedByCydena(jobData.managed_by_cydena || false);
         }
       }
     };
@@ -222,6 +224,7 @@ const JobCreate = () => {
         years_experience_min: yearsExpMin ? parseInt(yearsExpMin) : null,
         years_experience_max: yearsExpMax ? parseInt(yearsExpMax) : null,
         is_active: true,
+        managed_by_cydena: isAdmin ? managedByCydena : false,
       };
 
       let error;
@@ -471,9 +474,26 @@ const JobCreate = () => {
                   <Input id="certs" value={requiredCerts} onChange={(e) => setRequiredCerts(e.target.value)} placeholder="CISSP, CEH, Security+" />
                 </div>
               </div>
-              <div className="flex items-center gap-2">
-                <Checkbox id="remote" checked={remoteAllowed} onCheckedChange={(checked) => setRemoteAllowed(!!checked)} />
-                <Label htmlFor="remote">Remote work allowed</Label>
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <Checkbox id="remote" checked={remoteAllowed} onCheckedChange={(checked) => setRemoteAllowed(!!checked)} />
+                  <Label htmlFor="remote">Remote work allowed</Label>
+                </div>
+                {isAdmin && (
+                  <div className="flex items-center gap-2 p-3 bg-primary/5 rounded-lg border border-primary/20">
+                    <Checkbox 
+                      id="managedByCydena" 
+                      checked={managedByCydena} 
+                      onCheckedChange={(checked) => setManagedByCydena(!!checked)} 
+                    />
+                    <div className="flex-1">
+                      <Label htmlFor="managedByCydena" className="font-semibold">Managed by Cydena (Expert Assist)</Label>
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        Applications will be routed to admin funnel for talent curation before being assigned to pods
+                      </p>
+                    </div>
+                  </div>
+                )}
               </div>
               <div className="flex justify-end gap-2">
                 <Button variant="outline" onClick={() => navigate('/dashboard')}>Cancel</Button>

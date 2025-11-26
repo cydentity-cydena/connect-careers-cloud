@@ -33,6 +33,7 @@ interface Job {
   must_haves: string[] | null;
   required_certifications: string[] | null;
   years_experience_min: number | null;
+  managed_by_cydena: boolean | null;
 }
 
 interface CompanyVerification {
@@ -78,6 +79,7 @@ const Jobs = () => {
           must_haves,
           required_certifications,
           years_experience_min,
+          managed_by_cydena,
           company:companies(name, created_by)
         `)
         .eq("is_active", true)
@@ -319,9 +321,16 @@ const Jobs = () => {
                         {verifiedCompanies[job.company.created_by] && <VerifiedBadge />}
                       </div>
                     </div>
-                    <Badge variant={job.remote_allowed ? "default" : "secondary"}>
-                      {job.remote_allowed ? "Remote" : "On-site"}
-                    </Badge>
+                    <div className="flex gap-2">
+                      {job.managed_by_cydena && (
+                        <Badge className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground border-0 whitespace-nowrap">
+                          Cydena Expert Assist
+                        </Badge>
+                      )}
+                      <Badge variant={job.remote_allowed ? "default" : "secondary"}>
+                        {job.remote_allowed ? "Remote" : "On-site"}
+                      </Badge>
+                    </div>
                   </div>
                 </CardHeader>
                 <CardContent>
