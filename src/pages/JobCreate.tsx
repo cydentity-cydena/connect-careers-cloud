@@ -21,6 +21,10 @@ const JobCreate = () => {
   const [isRecruiter, setIsRecruiter] = useState(false);
   const [loading, setLoading] = useState(false);
   const [selectedClientId, setSelectedClientId] = useState('');
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [postingAs, setPostingAs] = useState<'employer' | 'recruiter'>('employer');
+  const [selectedUserId, setSelectedUserId] = useState('');
+  const [users, setUsers] = useState<any[]>([]);
 
   const [companyId, setCompanyId] = useState('');
   const [companyName, setCompanyName] = useState('');
@@ -45,16 +49,45 @@ const JobCreate = () => {
       if (!session) { navigate('/auth'); return; }
       setUserId(session.user.id);
 
-      // Check if user is a recruiter
+      // Check if user is an admin or recruiter
       const { data: roles } = await supabase
         .from('user_roles')
         .select('role')
         .eq('user_id', session.user.id);
 
+      const userIsAdmin = roles?.some(r => r.role === 'admin');
       const userIsRecruiter = roles?.some(r => r.role === 'recruiter');
+      setIsAdmin(userIsAdmin);
       setIsRecruiter(userIsRecruiter);
 
-      if (userIsRecruiter) {
+      // If admin, load all employers and recruiters
+      if (userIsAdmin) {
+        const { data: employerRoles } = await supabase
+          .from('user_roles')
+          .select('user_id, profiles(id, email, full_name)')
+          .eq('role', 'employer');
+
+        const { data: recruiterRoles } = await supabase
+          .from('user_roles')
+          .select('user_id, profiles(id, email, full_name)')
+          .eq('role', 'recruiter');
+
+        const allUsers = [
+          ...(employerRoles || []).filter(r => r.profiles).map(r => ({ 
+            id: (r.profiles as any)?.id,
+            email: (r.profiles as any)?.email,
+            full_name: (r.profiles as any)?.full_name,
+            role: 'employer' 
+          })),
+          ...(recruiterRoles || []).filter(r => r.profiles).map(r => ({ 
+            id: (r.profiles as any)?.id,
+            email: (r.profiles as any)?.email,
+            full_name: (r.profiles as any)?.full_name,
+            role: 'recruiter' 
+          }))
+        ];
+        setUsers(allUsers);
+      } else if (userIsRecruiter) {
         // Load clients for recruiters
         const { data: clientsData } = await supabase
           .from('clients')
@@ -110,10 +143,20 @@ const JobCreate = () => {
   }, [navigate, editJobId]);
 
   const handleCreate = async () => {
-    if (!userId) return;
+    const effectiveUserId = isAdmin && selectedUserId ? selectedUserId : userId;
+    if (!effectiveUserId) return;
+    
+    // Admin validation
+    if (isAdmin && !selectedUserId) {
+      toast.error('Please select a user to post on behalf of');
+      return;
+    }
+    
+    // Determine if posting as recruiter
+    const isPostingAsRecruiter = isAdmin ? postingAs === 'recruiter' : isRecruiter;
     
     // Validation for recruiters (using clients)
-    if (isRecruiter) {
+    if (isPostingAsRecruiter) {
       if (!selectedClientId) { toast.error('Please select a client'); return; }
       if (!companyName.trim()) { toast.error('Company name is required'); return; }
     } else {
@@ -130,7 +173,7 @@ const JobCreate = () => {
       // For recruiters, we need to ensure company exists or create it
       let finalCompanyId = companyId;
       
-      if (isRecruiter && !editJobId) {
+      if (isPostingAsRecruiter && !editJobId) {
         // Check if company already exists for this client
         const { data: existingCompany } = await supabase
           .from('companies')
@@ -146,7 +189,7 @@ const JobCreate = () => {
             .from('companies')
             .insert({
               name: companyName,
-              created_by: userId
+              created_by: effectiveUserId
             })
             .select('id')
             .single();
@@ -163,7 +206,7 @@ const JobCreate = () => {
       
       const jobData = {
         company_id: finalCompanyId,
-        client_id: isRecruiter ? selectedClientId : null,
+        client_id: isPostingAsRecruiter ? selectedClientId : null,
         title,
         description,
         location: location || null,
@@ -195,7 +238,7 @@ const JobCreate = () => {
           .from('jobs')
           .insert({
             ...jobData,
-            created_by: userId,
+            created_by: effectiveUserId,
           } as any);
         error = result.error;
       }
@@ -219,19 +262,82 @@ const JobCreate = () => {
           <CardTitle>{editJobId ? 'Edit Job' : 'Post a Job'}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {isRecruiter && clients.length === 0 ? (
+          {isAdmin && (
+            <>
+              <div className="space-y-2 p-4 bg-primary/5 rounded-lg border border-primary/20">
+                <Label className="text-sm font-semibold">Admin: Post on Behalf Of</Label>
+                <div className="space-y-2">
+                  <Select value={postingAs} onValueChange={(v: any) => {
+                    setPostingAs(v);
+                    setSelectedUserId('');
+                    setCompanies([]);
+                    setClients([]);
+                    setCompanyId('');
+                    setSelectedClientId('');
+                  }}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="employer">Employer</SelectItem>
+                      <SelectItem value="recruiter">Recruiter</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label>Select {postingAs === 'employer' ? 'Employer' : 'Recruiter'}</Label>
+                  <Select value={selectedUserId} onValueChange={async (userId) => {
+                    setSelectedUserId(userId);
+                    
+                    // Load companies or clients for selected user
+                    if (postingAs === 'recruiter') {
+                      const { data: clientsData } = await supabase
+                        .from('clients')
+                        .select('id, company_name, contact_name')
+                        .eq('recruiter_id', userId)
+                        .eq('status', 'active')
+                        .order('company_name');
+                      setClients(clientsData || []);
+                      setIsRecruiter(true);
+                    } else {
+                      const { data: companiesData } = await supabase
+                        .from('companies')
+                        .select('id, name')
+                        .eq('created_by', userId);
+                      setCompanies(companiesData || []);
+                      setIsRecruiter(false);
+                    }
+                  }}>
+                    <SelectTrigger>
+                      <SelectValue placeholder={`Select ${postingAs}`} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {users
+                        .filter(u => u.role === postingAs)
+                        .map((user) => (
+                          <SelectItem key={user.id} value={user.id}>
+                            {user.full_name || user.email}
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </>
+          )}
+          {!isAdmin && isRecruiter && clients.length === 0 ? (
             <div className="text-center py-8 space-y-4">
               <p className="text-muted-foreground">You need to add clients to your portfolio first before posting jobs.</p>
               <Button onClick={() => navigate('/clients/create')}>Add First Client</Button>
             </div>
-          ) : !isRecruiter && companies.length === 0 ? (
+          ) : !isAdmin && !isRecruiter && companies.length === 0 ? (
             <div className="text-center py-8 space-y-4">
               <p className="text-muted-foreground">You need to create a company profile first before posting jobs.</p>
               <Button onClick={() => navigate('/company/create')}>Create Company Profile</Button>
             </div>
-          ) : (
+          ) : (!isAdmin || (isAdmin && selectedUserId)) && (
             <>
-              {isRecruiter ? (
+              {(isAdmin ? postingAs === 'recruiter' : isRecruiter) ? (
                 <>
                   <div className="space-y-2">
                     <Label htmlFor="client">Client *</Label>
