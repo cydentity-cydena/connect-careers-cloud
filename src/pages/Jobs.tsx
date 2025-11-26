@@ -20,7 +20,7 @@ interface Job {
   company: {
     name: string;
     created_by: string;
-  };
+  } | null;
   location: string | null;
   job_type: string;
   salary_min: number | null;
@@ -90,7 +90,7 @@ const Jobs = () => {
 
       // Fetch verification status for all companies
       if (data && data.length > 0) {
-        const companyOwnerIds = [...new Set(data.map(job => job.company.created_by))];
+        const companyOwnerIds = [...new Set(data.map(job => job.company?.created_by).filter(Boolean))];
         const { data: profiles, error: profileError } = await supabase
           .from("profiles")
           .select("id, is_verified")
@@ -236,7 +236,7 @@ const Jobs = () => {
     .filter(
       (job) =>
         job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        job.company.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (job.company?.name && job.company.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
         (job.location && job.location.toLowerCase().includes(searchQuery.toLowerCase())) ||
         (job.required_skills && job.required_skills.some((skill) =>
           skill.toLowerCase().includes(searchQuery.toLowerCase())
@@ -309,9 +309,9 @@ const Jobs = () => {
                       <CardTitle className="text-2xl mb-2">{job.title}</CardTitle>
                       <div className="flex items-center gap-2">
                         <CardDescription className="text-base font-semibold text-foreground">
-                          {job.company.name}
+                          {job.company?.name || 'Company Name Not Available'}
                         </CardDescription>
-                        {verifiedCompanies[job.company.created_by] && <VerifiedBadge />}
+                        {job.company && verifiedCompanies[job.company.created_by] && <VerifiedBadge />}
                       </div>
                     </div>
                     <div className="flex gap-2">
