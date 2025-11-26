@@ -49,6 +49,12 @@ export const ApplyJobDialog = ({ jobId, jobTitle, children }: ApplyJobDialogProp
 
       if (error) throw error;
       
+      // If no resumes exist, generate one from profile
+      if (!data || data.length === 0) {
+        await generateResumeFromProfile(true);
+        return;
+      }
+      
       setResumes(data || []);
       // Auto-select primary resume
       const primary = data?.find(r => r.is_primary);
@@ -56,6 +62,28 @@ export const ApplyJobDialog = ({ jobId, jobTitle, children }: ApplyJobDialogProp
     } catch (error) {
       console.error("Error loading resumes:", error);
       toast.error("Failed to load resumes");
+    }
+  };
+
+  const generateResumeFromProfile = async (saveAsResume: boolean = true) => {
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("generate-resume-from-profile", {
+        body: { saveAsResume },
+      });
+
+      if (error) throw error;
+
+      if (data.success && data.resumeId) {
+        toast.success("Resume auto-generated from your profile");
+        // Reload resumes to show the new one
+        await loadResumes();
+      }
+    } catch (error) {
+      console.error("Error generating resume:", error);
+      toast.error("Failed to generate resume. Please ensure your profile is complete.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -181,20 +209,19 @@ export const ApplyJobDialog = ({ jobId, jobTitle, children }: ApplyJobDialogProp
           <div className="space-y-3">
             <Label className="text-base font-semibold">Select Resume *</Label>
             {resumes.length === 0 ? (
-              <div className="p-4 border rounded-lg bg-muted/50">
-                <p className="text-sm text-muted-foreground mb-2">
-                  You haven't uploaded any resumes yet.
+              <div className="p-4 border rounded-lg bg-muted/50 space-y-2">
+                <p className="text-sm text-muted-foreground">
+                  {loading ? "Generating resume from your profile..." : "No resumes found. Generating one from your profile..."}
                 </p>
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={() => {
-                    setOpen(false);
-                    navigate('/dashboard');
-                  }}
-                >
-                  Upload Resume First
-                </Button>
+                {!loading && (
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={() => generateResumeFromProfile(true)}
+                  >
+                    Retry Generate Resume
+                  </Button>
+                )}
               </div>
             ) : (
               <RadioGroup value={selectedResumeId} onValueChange={setSelectedResumeId}>
