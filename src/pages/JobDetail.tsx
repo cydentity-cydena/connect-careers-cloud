@@ -44,7 +44,7 @@ interface Job {
     website: string;
     logo_url: string | null;
     created_by: string;
-  };
+  } | null;
 }
 
 const JobDetail = () => {
@@ -75,7 +75,8 @@ const JobDetail = () => {
           remote_allowed,
           created_at,
           managed_by_cydena,
-          company:companies(
+          company_id,
+          companies!left(
             id,
             name,
             description,
@@ -89,18 +90,40 @@ const JobDetail = () => {
         `)
         .eq("id", id)
         .eq("is_active", true)
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
-      setJob(data as Job);
+      
+      if (!data) {
+        setJob(null);
+        return;
+      }
+
+      // Transform the data to match expected structure
+      const transformedData: Job = {
+        ...data,
+        company: data.companies ? {
+          id: data.companies.id,
+          name: data.companies.name,
+          description: data.companies.description,
+          industry: data.companies.industry,
+          size: data.companies.size,
+          location: data.companies.location,
+          website: data.companies.website,
+          logo_url: data.companies.logo_url,
+          created_by: data.companies.created_by
+        } : null
+      };
+      
+      setJob(transformedData);
 
       // Fetch verification status
-      if (data?.company?.created_by) {
+      if (transformedData.company?.created_by) {
         const { data: profile } = await supabase
           .from("profiles")
           .select("is_verified")
-          .eq("id", data.company.created_by)
-          .single();
+          .eq("id", transformedData.company.created_by)
+          .maybeSingle();
 
         setIsVerified(profile?.is_verified || false);
       }
@@ -166,7 +189,7 @@ const JobDetail = () => {
   return (
     <div className="min-h-screen bg-background">
       <SEO 
-        title={`${job.title} at ${job.company.name} - Cydena`}
+        title={`${job.title}${job.company ? ` at ${job.company.name}` : ''} - Cydena`}
         description={job.description.substring(0, 160)}
       />
       <Navigation />
@@ -188,7 +211,7 @@ const JobDetail = () => {
             <div className="flex items-start justify-between">
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-2">
-                  {job.company.logo_url && (
+                  {job.company?.logo_url && (
                     <img 
                       src={job.company.logo_url} 
                       alt={job.company.name}
@@ -199,7 +222,7 @@ const JobDetail = () => {
                     <CardTitle className="text-3xl mb-1">{job.title}</CardTitle>
                     <div className="flex items-center gap-2">
                       <p className="text-lg text-muted-foreground font-semibold">
-                        {job.company.name}
+                        {job.company?.name || 'Company Name Not Available'}
                       </p>
                       {isVerified && <VerifiedBadge />}
                     </div>
@@ -295,51 +318,61 @@ const JobDetail = () => {
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Company Info */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Building2 className="h-5 w-5" />
-                  About {job.company.name}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <p className="text-sm text-muted-foreground">
-                  {job.company.description}
-                </p>
-                
-                <Separator />
-                
-                <div className="space-y-2 text-sm">
-                  <div>
-                    <span className="font-semibold">Industry:</span>
-                    <p className="text-muted-foreground">{job.company.industry}</p>
+            {job.company && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Building2 className="h-5 w-5" />
+                    About {job.company.name}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {job.company.description && (
+                    <p className="text-sm text-muted-foreground">
+                      {job.company.description}
+                    </p>
+                  )}
+                  
+                  <Separator />
+                  
+                  <div className="space-y-2 text-sm">
+                    {job.company.industry && (
+                      <div>
+                        <span className="font-semibold">Industry:</span>
+                        <p className="text-muted-foreground">{job.company.industry}</p>
+                      </div>
+                    )}
+                    {job.company.size && (
+                      <div>
+                        <span className="font-semibold">Company Size:</span>
+                        <p className="text-muted-foreground">{job.company.size} employees</p>
+                      </div>
+                    )}
+                    {job.company.location && (
+                      <div>
+                        <span className="font-semibold">Location:</span>
+                        <p className="text-muted-foreground">{job.company.location}</p>
+                      </div>
+                    )}
                   </div>
-                  <div>
-                    <span className="font-semibold">Company Size:</span>
-                    <p className="text-muted-foreground">{job.company.size} employees</p>
-                  </div>
-                  <div>
-                    <span className="font-semibold">Location:</span>
-                    <p className="text-muted-foreground">{job.company.location}</p>
-                  </div>
-                </div>
 
-                {job.company.website && (
-                  <>
-                    <Separator />
-                    <a 
-                      href={job.company.website}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 text-sm text-primary hover:underline"
-                    >
-                      Visit Company Website
-                      <ExternalLink className="h-3 w-3" />
-                    </a>
-                  </>
-                )}
-              </CardContent>
-            </Card>
+                  {job.company.website && (
+                    <>
+                      <Separator />
+                      <a 
+                        href={job.company.website}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 text-sm text-primary hover:underline"
+                      >
+                        Visit Company Website
+                        <ExternalLink className="h-3 w-3" />
+                      </a>
+                    </>
+                  )}
+                </CardContent>
+              </Card>
+            )}
 
             {/* Apply Again */}
             <Card className="bg-primary/5 border-primary/20">
