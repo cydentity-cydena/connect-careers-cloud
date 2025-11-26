@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -18,13 +19,28 @@ const CATEGORIES = [
   "Identity Management"
 ];
 
-interface Challenge {
+interface MCQChallenge {
+  type: "mcq";
   question: string;
   options: string[];
   correctAnswer: number;
   explanation: string;
   category: string;
 }
+
+interface CTFChallenge {
+  type: "ctf";
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  difficulty: string;
+  points: number;
+  hints: any;
+  flag: string;
+}
+
+type Challenge = MCQChallenge | CTFChallenge;
 
 const handler = async (req: Request): Promise<Response> => {
   if (req.method === "OPTIONS") {
@@ -33,14 +49,69 @@ const handler = async (req: Request): Promise<Response> => {
 
   try {
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
+    const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     
     if (!LOVABLE_API_KEY) {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
+    const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+
     // Get date-based seed for consistent daily challenges
     const today = new Date().toISOString().split('T')[0];
     const dateSeed = today.split('-').join('');
+    
+    // Decide challenge type based on date (50/50 mix)
+    const dayNumber = parseInt(dateSeed);
+    const isCTFDay = dayNumber % 2 === 0;
+    
+    if (isCTFDay) {
+      // Fetch an active CTF challenge
+      console.log(`Fetching CTF challenge for ${today}`);
+      
+      const { data: ctfChallenges, error } = await supabase
+        .from('ctf_challenges')
+        .select('*')
+        .eq('is_active', true);
+      
+      if (error) {
+        console.error("Error fetching CTF challenges:", error);
+        throw error;
+      }
+      
+      if (!ctfChallenges || ctfChallenges.length === 0) {
+        console.log("No CTF challenges found, falling back to MCQ");
+      } else {
+        // Select a CTF challenge based on date
+        const challengeIndex = dayNumber % ctfChallenges.length;
+        const ctfChallenge = ctfChallenges[challengeIndex];
+        
+        const challenge: CTFChallenge = {
+          type: "ctf",
+          id: ctfChallenge.id,
+          title: ctfChallenge.title,
+          description: ctfChallenge.description,
+          category: ctfChallenge.category,
+          difficulty: ctfChallenge.difficulty,
+          points: ctfChallenge.points,
+          hints: ctfChallenge.hints,
+          flag: ctfChallenge.flag
+        };
+        
+        console.log("Successfully fetched CTF challenge:", challenge.title);
+        
+        return new Response(
+          JSON.stringify(challenge),
+          {
+            status: 200,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          }
+        );
+      }
+    }
+    
+    // Generate MCQ challenge
     const categoryIndex = parseInt(dateSeed.slice(-2)) % CATEGORIES.length;
     const category = CATEGORIES[categoryIndex];
 
@@ -112,21 +183,26 @@ The correctAnswer should be the index (0-3) of the correct option.`
     content = content.trim();
     
     // Parse the AI response
-    let challenge: Challenge;
+    let mcqData: any;
     try {
-      challenge = JSON.parse(content);
+      mcqData = JSON.parse(content);
     } catch (parseError) {
       console.error("Failed to parse AI response:", content);
       throw new Error("Invalid AI response format");
     }
 
     // Validate the challenge structure
-    if (!challenge.question || !challenge.options || challenge.options.length !== 4 || 
-        challenge.correctAnswer === undefined || !challenge.explanation || !challenge.category) {
+    if (!mcqData.question || !mcqData.options || mcqData.options.length !== 4 || 
+        mcqData.correctAnswer === undefined || !mcqData.explanation || !mcqData.category) {
       throw new Error("Invalid challenge structure from AI");
     }
 
-    console.log("Successfully generated challenge:", challenge.question);
+    const challenge: MCQChallenge = {
+      type: "mcq",
+      ...mcqData
+    };
+
+    console.log("Successfully generated MCQ challenge:", challenge.question);
 
     return new Response(
       JSON.stringify(challenge),
@@ -138,8 +214,9 @@ The correctAnswer should be the index (0-3) of the correct option.`
   } catch (error: any) {
     console.error("Error in generate-security-iq-challenge:", error);
     
-    // Return a fallback challenge if generation fails
-    const fallbackChallenge: Challenge = {
+    // Return a fallback MCQ challenge if generation fails
+    const fallbackChallenge: MCQChallenge = {
+      type: "mcq",
       question: "What is the primary purpose of two-factor authentication (2FA)?",
       options: [
         "To encrypt data in transit",

@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Shield, Flame, Trophy, Share2, CheckCircle, XCircle } from "lucide-react";
+import { Shield, Flame, Trophy, Share2, CheckCircle, XCircle, Flag, Lightbulb } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
-interface Challenge {
+interface MCQChallenge {
+  type: "mcq";
   question: string;
   options: string[];
   correctAnswer: number;
@@ -14,13 +16,29 @@ interface Challenge {
   category: string;
 }
 
+interface CTFChallenge {
+  type: "ctf";
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  difficulty: string;
+  points: number;
+  hints: any;
+  flag: string;
+}
+
+type Challenge = MCQChallenge | CTFChallenge;
+
 export function SecurityIQ() {
   const [challenge, setChallenge] = useState<Challenge | null>(null);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
+  const [flagInput, setFlagInput] = useState("");
   const [hasAnswered, setHasAnswered] = useState(false);
   const [streak, setStreak] = useState(0);
   const [todayScore, setTodayScore] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showHint, setShowHint] = useState(false);
 
   useEffect(() => {
     loadTodayChallenge();
@@ -39,18 +57,33 @@ export function SecurityIQ() {
         throw challengeError;
       }
       
-      // Validate challenge data has all required fields
-      if (!challengeData || 
-          !challengeData.question || 
-          !Array.isArray(challengeData.options) || 
-          challengeData.options.length !== 4 ||
-          challengeData.correctAnswer === undefined ||
-          !challengeData.explanation ||
-          !challengeData.category) {
+      // Validate challenge data based on type
+      if (!challengeData || !challengeData.type) {
         console.error('Invalid challenge data received:', challengeData);
         toast.error("Failed to load challenge - invalid data");
         setLoading(false);
         return;
+      }
+
+      if (challengeData.type === "mcq") {
+        if (!challengeData.question || 
+            !Array.isArray(challengeData.options) || 
+            challengeData.options.length !== 4 ||
+            challengeData.correctAnswer === undefined ||
+            !challengeData.explanation ||
+            !challengeData.category) {
+          console.error('Invalid MCQ challenge data:', challengeData);
+          toast.error("Failed to load challenge - invalid data");
+          setLoading(false);
+          return;
+        }
+      } else if (challengeData.type === "ctf") {
+        if (!challengeData.title || !challengeData.description || !challengeData.flag) {
+          console.error('Invalid CTF challenge data:', challengeData);
+          toast.error("Failed to load challenge - invalid data");
+          setLoading(false);
+          return;
+        }
       }
       
       setChallenge(challengeData);
@@ -65,11 +98,15 @@ export function SecurityIQ() {
           .select('*')
           .eq('candidate_id', user.id)
           .eq('challenge_date', today)
-          .single();
+          .maybeSingle();
         
         if (data) {
           setHasAnswered(true);
-          setSelectedAnswer(data.selected_answer);
+          if (challengeData.type === "mcq") {
+            setSelectedAnswer(data.selected_answer);
+          } else if (challengeData.type === "ctf") {
+            setFlagInput(data.submitted_flag || "");
+          }
           setTodayScore(data.score);
         }
       }
@@ -92,10 +129,20 @@ export function SecurityIQ() {
   };
 
   const handleAnswerSubmit = async () => {
-    if (selectedAnswer === null || !challenge) return;
+    if (!challenge) return;
     
-    const isCorrect = selectedAnswer === challenge.correctAnswer;
-    const score = isCorrect ? 100 : 0;
+    let isCorrect = false;
+    let score = 0;
+    
+    if (challenge.type === "mcq") {
+      if (selectedAnswer === null) return;
+      isCorrect = selectedAnswer === challenge.correctAnswer;
+      score = isCorrect ? 100 : 0;
+    } else if (challenge.type === "ctf") {
+      if (!flagInput.trim()) return;
+      isCorrect = flagInput.trim() === challenge.flag;
+      score = isCorrect ? challenge.points : 0;
+    }
     
     setHasAnswered(true);
     setTodayScore(score);
@@ -105,14 +152,22 @@ export function SecurityIQ() {
     if (user) {
       const today = new Date().toISOString().split('T')[0];
       
+      const attemptData: any = {
+        candidate_id: user.id,
+        challenge_date: today,
+        score: score
+      };
+      
+      if (challenge.type === "mcq") {
+        attemptData.selected_answer = selectedAnswer;
+      } else if (challenge.type === "ctf") {
+        attemptData.submitted_flag = flagInput.trim();
+        attemptData.challenge_id = challenge.id;
+      }
+      
       const { error } = await supabase
         .from('security_iq_attempts')
-        .insert({
-          candidate_id: user.id,
-          challenge_date: today,
-          selected_answer: selectedAnswer,
-          score: score
-        });
+        .insert(attemptData);
       
       if (error) {
         console.error('Error saving attempt:', error);
@@ -126,19 +181,22 @@ export function SecurityIQ() {
     }
     
     if (isCorrect) {
-      toast.success("Correct! +100 XP", {
+      toast.success(`Correct! +${score} points`, {
         description: "Keep your streak going!"
       });
     } else {
       toast.error("Not quite right", {
-        description: "But you learned something new!"
+        description: challenge.type === "ctf" ? "Try again with the correct flag format" : "But you learned something new!"
       });
     }
   };
 
   const shareResults = () => {
-    const emoji = todayScore === 100 ? "✅" : "❌";
-    const text = `Security IQ Daily Challenge ${emoji}\nStreak: ${streak} 🔥\nScore: ${todayScore}/100\n\nTest your cybersecurity knowledge on Cydena!`;
+    if (!challenge) return;
+    
+    const emoji = todayScore && todayScore > 0 ? "✅" : "❌";
+    const challengeType = challenge.type === "ctf" ? "CTF" : "MCQ";
+    const text = `Security IQ Daily Challenge ${emoji}\nType: ${challengeType}\nStreak: ${streak} 🔥\nScore: ${todayScore}/${challenge.type === "ctf" ? challenge.points : 100}\n\nTest your cybersecurity knowledge on Cydena!`;
     
     if (navigator.share) {
       navigator.share({ text });
@@ -171,15 +229,17 @@ export function SecurityIQ() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
-              <Shield className="h-6 w-6 text-primary" />
+              {challenge.type === "ctf" ? <Flag className="h-6 w-6 text-primary" /> : <Shield className="h-6 w-6 text-primary" />}
             </div>
             <div>
               <CardTitle className="flex items-center gap-2">
                 Security IQ
-                <Badge variant="outline" className="text-xs">Daily Challenge</Badge>
+                <Badge variant="outline" className="text-xs">
+                  {challenge.type === "ctf" ? "CTF Challenge" : "Daily Challenge"}
+                </Badge>
               </CardTitle>
               <CardDescription>
-                Test your cybersecurity knowledge
+                {challenge.type === "ctf" ? "Capture the flag!" : "Test your cybersecurity knowledge"}
               </CardDescription>
             </div>
           </div>
@@ -207,64 +267,133 @@ export function SecurityIQ() {
       </CardHeader>
 
       <CardContent className="space-y-6">
-        {/* Category Badge */}
-        <Badge variant="secondary" className="text-xs">
-          {challenge.category}
-        </Badge>
+        {/* Category and Difficulty Badges */}
+        <div className="flex gap-2">
+          <Badge variant="secondary" className="text-xs">
+            {challenge.category}
+          </Badge>
+          {challenge.type === "ctf" && (
+            <>
+              <Badge variant="outline" className="text-xs">
+                {challenge.difficulty}
+              </Badge>
+              <Badge variant="outline" className="text-xs">
+                {challenge.points} points
+              </Badge>
+            </>
+          )}
+        </div>
 
-        {/* Question */}
+        {/* Challenge Content */}
         <div className="space-y-4">
           <h3 className="text-lg font-semibold leading-relaxed">
-            {challenge.question}
+            {challenge.type === "mcq" ? challenge.question : challenge.title}
           </h3>
 
-          {/* Answer Options */}
-          <div className="space-y-3">
-            {challenge.options.map((option, index) => {
-              const isSelected = selectedAnswer === index;
-              const isCorrect = index === challenge.correctAnswer;
-              const showResult = hasAnswered;
-              
-              let buttonClass = "w-full justify-start text-left h-auto py-4 px-4 ";
-              
-              if (showResult) {
-                if (isCorrect) {
-                  buttonClass += "border-green-500 bg-green-500/10 hover:bg-green-500/20";
-                } else if (isSelected && !isCorrect) {
-                  buttonClass += "border-red-500 bg-red-500/10 hover:bg-red-500/20";
-                } else {
-                  buttonClass += "opacity-50";
-                }
-              } else {
-                buttonClass += isSelected ? "border-primary bg-primary/10" : "border-border hover:border-primary/50";
-              }
+          {challenge.type === "ctf" && (
+            <div className="p-4 rounded-lg bg-muted/50 border border-border">
+              <p className="text-sm leading-relaxed whitespace-pre-wrap">
+                {challenge.description}
+              </p>
+            </div>
+          )}
 
-              return (
+          {/* CTF Flag Input */}
+          {challenge.type === "ctf" && !hasAnswered && (
+            <div className="space-y-3">
+              <Input
+                placeholder="Enter flag (e.g., FLAG{...})"
+                value={flagInput}
+                onChange={(e) => setFlagInput(e.target.value)}
+                className="font-mono"
+              />
+              {challenge.hints && (
                 <Button
-                  key={index}
-                  variant="outline"
-                  className={buttonClass}
-                  onClick={() => !hasAnswered && setSelectedAnswer(index)}
-                  disabled={hasAnswered}
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowHint(!showHint)}
+                  className="text-xs"
                 >
-                  <div className="flex items-center justify-between w-full">
-                    <span className="text-sm">{option}</span>
-                    {showResult && isCorrect && <CheckCircle className="h-5 w-5 text-green-500" />}
-                    {showResult && isSelected && !isCorrect && <XCircle className="h-5 w-5 text-red-500" />}
-                  </div>
+                  <Lightbulb className="h-3 w-3 mr-1" />
+                  {showHint ? "Hide" : "Show"} Hint
                 </Button>
-              );
-            })}
-          </div>
+              )}
+              {showHint && challenge.hints && (
+                <div className="p-3 rounded-lg bg-yellow-500/10 border border-yellow-500/20 text-xs">
+                  💡 {Array.isArray(challenge.hints) ? challenge.hints[0] : challenge.hints}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* MCQ Answer Options */}
+          {challenge.type === "mcq" && (
+            <div className="space-y-3">
+              {challenge.options.map((option, index) => {
+                const isSelected = selectedAnswer === index;
+                const isCorrect = index === challenge.correctAnswer;
+                const showResult = hasAnswered;
+                
+                let buttonClass = "w-full justify-start text-left h-auto py-4 px-4 ";
+                
+                if (showResult) {
+                  if (isCorrect) {
+                    buttonClass += "border-green-500 bg-green-500/10 hover:bg-green-500/20";
+                  } else if (isSelected && !isCorrect) {
+                    buttonClass += "border-red-500 bg-red-500/10 hover:bg-red-500/20";
+                  } else {
+                    buttonClass += "opacity-50";
+                  }
+                } else {
+                  buttonClass += isSelected ? "border-primary bg-primary/10" : "border-border hover:border-primary/50";
+                }
+
+                return (
+                  <Button
+                    key={index}
+                    variant="outline"
+                    className={buttonClass}
+                    onClick={() => !hasAnswered && setSelectedAnswer(index)}
+                    disabled={hasAnswered}
+                  >
+                    <div className="flex items-center justify-between w-full">
+                      <span className="text-sm">{option}</span>
+                      {showResult && isCorrect && <CheckCircle className="h-5 w-5 text-green-500" />}
+                      {showResult && isSelected && !isCorrect && <XCircle className="h-5 w-5 text-red-500" />}
+                    </div>
+                  </Button>
+                );
+              })}
+            </div>
+          )}
         </div>
 
         {/* Explanation (shown after answering) */}
         {hasAnswered && (
           <div className="p-4 rounded-lg bg-muted/50 border border-border animate-fade-in space-y-2">
-            <div className="font-semibold text-sm">Explanation</div>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              {challenge.explanation}
-            </p>
+            <div className="font-semibold text-sm flex items-center gap-2">
+              {todayScore && todayScore > 0 ? (
+                <CheckCircle className="h-4 w-4 text-green-500" />
+              ) : (
+                <XCircle className="h-4 w-4 text-red-500" />
+              )}
+              {todayScore && todayScore > 0 ? "Correct!" : "Incorrect"}
+            </div>
+            {challenge.type === "mcq" && (
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                {challenge.explanation}
+              </p>
+            )}
+            {challenge.type === "ctf" && todayScore && todayScore > 0 && (
+              <p className="text-sm text-muted-foreground">
+                Well done! You successfully captured the flag.
+              </p>
+            )}
+            {challenge.type === "ctf" && (!todayScore || todayScore === 0) && (
+              <p className="text-sm text-muted-foreground font-mono">
+                The correct flag was: {challenge.flag}
+              </p>
+            )}
           </div>
         )}
 
@@ -273,10 +402,10 @@ export function SecurityIQ() {
           {!hasAnswered ? (
             <Button 
               onClick={handleAnswerSubmit} 
-              disabled={selectedAnswer === null}
+              disabled={challenge.type === "mcq" ? selectedAnswer === null : !flagInput.trim()}
               className="flex-1"
             >
-              Submit Answer
+              Submit {challenge.type === "ctf" ? "Flag" : "Answer"}
             </Button>
           ) : (
             <>
