@@ -138,6 +138,45 @@ const JobCreate = () => {
           setSelectedClientId(jobData.client_id || '');
           setCompanyName(jobData.company?.name || '');
           setManagedByCydena(jobData.managed_by_cydena || false);
+
+          // If admin is editing, load the job owner and their role
+          if (userIsAdmin) {
+            const jobOwnerId = jobData.created_by;
+            setSelectedUserId(jobOwnerId);
+
+            // Check if job owner is employer or recruiter
+            const { data: ownerRoles } = await supabase
+              .from('user_roles')
+              .select('role')
+              .eq('user_id', jobOwnerId);
+
+            const isOwnerRecruiter = ownerRoles?.some(r => r.role === 'recruiter');
+            const isOwnerEmployer = ownerRoles?.some(r => r.role === 'employer');
+
+            if (isOwnerRecruiter) {
+              setPostingAs('recruiter');
+              setIsRecruiter(true);
+              
+              // Load recruiter's clients
+              const { data: clientsData } = await supabase
+                .from('clients')
+                .select('id, company_name, contact_name')
+                .eq('recruiter_id', jobOwnerId)
+                .eq('status', 'active')
+                .order('company_name');
+              setClients(clientsData || []);
+            } else if (isOwnerEmployer) {
+              setPostingAs('employer');
+              setIsRecruiter(false);
+              
+              // Load employer's companies
+              const { data: companiesData } = await supabase
+                .from('companies')
+                .select('id, name')
+                .eq('created_by', jobOwnerId);
+              setCompanies(companiesData || []);
+            }
+          }
         }
       }
     };
@@ -229,10 +268,14 @@ const JobCreate = () => {
 
       let error;
       if (editJobId) {
-        // Update existing job
+        // Update existing job - include created_by if admin is reassigning
+        const updateData = isAdmin 
+          ? { ...jobData, created_by: effectiveUserId }
+          : jobData;
+          
         const result = await supabase
           .from('jobs')
-          .update(jobData as any)
+          .update(updateData as any)
           .eq('id', editJobId);
         error = result.error;
       } else {
@@ -263,6 +306,11 @@ const JobCreate = () => {
       <Card className="max-w-3xl mx-auto">
         <CardHeader>
           <CardTitle>{editJobId ? 'Edit Job' : 'Post a Job'}</CardTitle>
+          {editJobId && isAdmin && (
+            <p className="text-sm text-muted-foreground">
+              You can reassign this job to a different employer or recruiter
+            </p>
+          )}
         </CardHeader>
         <CardContent className="space-y-4">
           {isAdmin && (
