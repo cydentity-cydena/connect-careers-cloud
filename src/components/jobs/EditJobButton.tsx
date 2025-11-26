@@ -55,7 +55,7 @@ export const EditJobButton = ({ jobId, createdBy, variant = "outline" }: EditJob
   return (
     <Button
       variant={variant}
-      onClick={() => navigate(`/job/create?edit=${jobId}`)}
+      onClick={() => navigate(`/jobs/create?edit=${jobId}`)}
     >
       <Pencil className="h-4 w-4 mr-2" />
       Edit Job
