@@ -18,6 +18,7 @@ import {
   ExternalLink
 } from "lucide-react";
 import { ApplyJobDialog } from "@/components/jobs/ApplyJobDialog";
+import { EditJobButton } from "@/components/jobs/EditJobButton";
 import { VerifiedBadge } from "@/components/verification/VerifiedBadge";
 import SEO from "@/components/SEO";
 
@@ -33,6 +34,7 @@ interface Job {
   required_clearance: string | null;
   work_mode: string | null;
   created_at: string;
+  created_by: string;
   managed_by_cydena: boolean | null;
   company: {
     id: string;
@@ -74,6 +76,7 @@ const JobDetail = () => {
           required_clearance,
           work_mode,
           created_at,
+          created_by,
           managed_by_cydena,
           company_id,
           companies!left(
@@ -271,8 +274,13 @@ const JobDetail = () => {
                 </div>
               </div>
 
-              {/* Apply Button */}
-              <div className="ml-4">
+              {/* Action Buttons */}
+              <div className="ml-4 flex gap-2">
+                <EditJobButton 
+                  jobId={job.id} 
+                  createdBy={job.created_by}
+                  variant="outline"
+                />
                 <ApplyJobDialog jobId={job.id} jobTitle={job.title}>
                   <Button size="lg" variant="hero" className="whitespace-nowrap">
                     Apply Now
