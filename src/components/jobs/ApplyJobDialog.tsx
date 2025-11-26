@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -22,6 +23,7 @@ interface ApplyJobDialogProps {
 }
 
 export const ApplyJobDialog = ({ jobId, jobTitle, children }: ApplyJobDialogProps) => {
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [resumes, setResumes] = useState<Resume[]>([]);
@@ -183,7 +185,14 @@ export const ApplyJobDialog = ({ jobId, jobTitle, children }: ApplyJobDialogProp
                 <p className="text-sm text-muted-foreground mb-2">
                   You haven't uploaded any resumes yet.
                 </p>
-                <Button variant="outline" size="sm" onClick={() => setOpen(false)}>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => {
+                    setOpen(false);
+                    navigate('/dashboard');
+                  }}
+                >
                   Upload Resume First
                 </Button>
               </div>
