@@ -113,7 +113,7 @@ export function VerificationPanel({ verification, onEdit, showEditButton = false
                 const certs = Array.isArray(raw) ? raw : [];
 
                 return certs.length > 0 ? (
-                  <div className="max-h-[300px] overflow-y-auto space-y-2 pr-2">
+                  <div className="space-y-2">
                     {certs.map((cert: any, index: number) => (
                       <div key={index} className="space-y-1">
                         <div className="flex items-center gap-2">
