@@ -47,6 +47,7 @@ export const ApplyJobDialog = ({ jobId, jobTitle, children }: ApplyJobDialogProp
         .from("candidate_resumes")
         .select("id, resume_name, resume_type, is_primary")
         .eq("candidate_id", user.id)
+        .neq("resume_type", "auto-generated")
         .order("is_primary", { ascending: false });
 
       if (error) throw error;
