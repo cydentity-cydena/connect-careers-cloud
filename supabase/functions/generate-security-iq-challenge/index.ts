@@ -95,9 +95,21 @@ The correctAnswer should be the index (0-3) of the correct option.`
     }
 
     const data = await response.json();
-    const content = data.choices[0].message.content;
+    let content = data.choices[0].message.content;
     
     console.log("AI response:", content);
+    
+    // Strip markdown code blocks if present
+    content = content.trim();
+    if (content.startsWith('```json')) {
+      content = content.slice(7); // Remove ```json
+    } else if (content.startsWith('```')) {
+      content = content.slice(3); // Remove ```
+    }
+    if (content.endsWith('```')) {
+      content = content.slice(0, -3); // Remove trailing ```
+    }
+    content = content.trim();
     
     // Parse the AI response
     let challenge: Challenge;
