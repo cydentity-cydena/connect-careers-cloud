@@ -14,6 +14,7 @@ import { Separator } from '@/components/ui/separator';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { CandidateAvatar } from '@/components/profiles/CandidateAvatar';
 import { countries, countryPhoneCodes } from '@/lib/countries';
+import { CVAutoPopulate } from '@/components/profile/CVAutoPopulate';
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -528,6 +529,86 @@ const Profile = () => {
     }
   };
 
+  const handleCVPopulate = async (cvDetails: any) => {
+    // Populate basic profile info
+    if (cvDetails.fullName) setFullName(cvDetails.fullName);
+    if (cvDetails.email) setEmail(cvDetails.email);
+    if (cvDetails.location) setLocation(cvDetails.location);
+    
+    // Populate candidate profile fields
+    if (cvDetails.title) setTitle(cvDetails.title);
+    if (cvDetails.professionalStatement) setProfessionalStatement(cvDetails.professionalStatement);
+    if (cvDetails.yearsExperience) setYearsExperience(cvDetails.yearsExperience.toString());
+    if (cvDetails.phone) {
+      // Try to extract country code
+      const phoneMatch = cvDetails.phone.match(/^(\+\d{1,4})\s*(.+)$/);
+      if (phoneMatch) {
+        setCountryCode(phoneMatch[1]);
+        setPhone(phoneMatch[2]);
+      } else {
+        setPhone(cvDetails.phone);
+      }
+    }
+    if (cvDetails.linkedinUrl) setLinkedinUrl(cvDetails.linkedinUrl);
+    if (cvDetails.githubUrl) setGithubUrl(cvDetails.githubUrl);
+    if (cvDetails.portfolioUrl) setPortfolioUrl(cvDetails.portfolioUrl);
+    if (cvDetails.workModePreference) setWorkModePreference(cvDetails.workModePreference);
+    
+    // Populate work history
+    if (cvDetails.workHistory && cvDetails.workHistory.length > 0) {
+      const formattedWorkHistory = cvDetails.workHistory.map((job: any) => ({
+        company: job.company,
+        role: job.title,
+        start_date: job.startDate,
+        end_date: job.endDate,
+        description: job.description,
+        is_current: !job.endDate
+      }));
+      setWorkHistory(formattedWorkHistory);
+      setWorkHistoryOpen(true);
+    }
+    
+    // Populate education
+    if (cvDetails.education && cvDetails.education.length > 0) {
+      const formattedEducation = cvDetails.education.map((edu: any) => ({
+        institution: edu.institution,
+        degree: edu.degree,
+        field_of_study: edu.fieldOfStudy,
+        start_date: edu.startDate,
+        end_date: edu.endDate,
+        gpa: edu.gpa
+      }));
+      setEducation(formattedEducation);
+      setEducationOpen(true);
+    }
+    
+    // Save certifications to database immediately if user is authenticated
+    if (userId && cvDetails.certifications && cvDetails.certifications.length > 0) {
+      try {
+        const certsToInsert = cvDetails.certifications.map((cert: any) => ({
+          candidate_id: userId,
+          name: cert.name,
+          issuer: cert.issuer,
+          issue_date: cert.issueDate,
+          expiry_date: cert.expiryDate,
+          credential_id: cert.credentialId
+        }));
+        
+        const { error } = await supabase
+          .from('certifications')
+          .insert(certsToInsert);
+        
+        if (error) throw error;
+        toast.success('Certifications added successfully');
+      } catch (error: any) {
+        console.error('Error adding certifications:', error);
+        toast.error('Failed to add certifications');
+      }
+    }
+    
+    toast.success('Profile populated from CV - review and save changes');
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       <SEO title="Edit Profile | Cydena" description="Edit your cybersecurity profile and experience." />
@@ -546,6 +627,9 @@ const Profile = () => {
           <CardTitle>Edit Profile</CardTitle>
         </CardHeader>
         <CardContent className="space-y-8">
+          {userRoles.includes('candidate') && (
+            <CVAutoPopulate onPopulate={handleCVPopulate} />
+          )}
           {/* Basic Information */}
           <div>
             <h3 className="text-lg font-semibold mb-4">Basic Information</h3>
