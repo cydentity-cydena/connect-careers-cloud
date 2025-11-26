@@ -6,8 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Send, FileText, Star } from "lucide-react";
+import { Send, FileText, Star, Eye } from "lucide-react";
 import { toast } from "sonner";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface Resume {
   id: string;
@@ -29,6 +30,9 @@ export const ApplyJobDialog = ({ jobId, jobTitle, children }: ApplyJobDialogProp
   const [resumes, setResumes] = useState<Resume[]>([]);
   const [selectedResumeId, setSelectedResumeId] = useState<string>("");
   const [coverLetter, setCoverLetter] = useState("");
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewContent, setPreviewContent] = useState<string>("");
+  const [generatingPreview, setGeneratingPreview] = useState(false);
 
   useEffect(() => {
     if (open) {
@@ -74,16 +78,37 @@ export const ApplyJobDialog = ({ jobId, jobTitle, children }: ApplyJobDialogProp
 
       if (error) throw error;
 
-      if (data.success && data.resumeId) {
-        toast.success("Resume auto-generated from your profile");
-        // Reload resumes to show the new one
-        await loadResumes();
+      if (data.success) {
+        if (data.resumeId) {
+          toast.success("Resume auto-generated from your profile");
+          // Reload resumes to show the new one
+          await loadResumes();
+        }
+        return data.resumeContent;
       }
     } catch (error) {
       console.error("Error generating resume:", error);
       toast.error("Failed to generate resume. Please ensure your profile is complete.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handlePreviewResume = async () => {
+    setGeneratingPreview(true);
+    setPreviewOpen(true);
+    try {
+      // Generate resume content without saving
+      const content = await generateResumeFromProfile(false);
+      if (content) {
+        setPreviewContent(content);
+      }
+    } catch (error) {
+      console.error("Error previewing resume:", error);
+      toast.error("Failed to generate preview");
+      setPreviewOpen(false);
+    } finally {
+      setGeneratingPreview(false);
     }
   };
 
@@ -249,6 +274,20 @@ export const ApplyJobDialog = ({ jobId, jobTitle, children }: ApplyJobDialogProp
                         </span>
                       )}
                     </label>
+                    {resume.resume_type === "auto-generated" && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handlePreviewResume();
+                        }}
+                      >
+                        <Eye className="h-4 w-4 mr-1" />
+                        Preview
+                      </Button>
+                    )}
                   </div>
                 ))}
               </RadioGroup>
@@ -288,6 +327,48 @@ export const ApplyJobDialog = ({ jobId, jobTitle, children }: ApplyJobDialogProp
           </div>
         </div>
       </DialogContent>
+
+      {/* Resume Preview Dialog */}
+      <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
+        <DialogContent className="max-w-3xl max-h-[90vh]">
+          <DialogHeader>
+            <DialogTitle>Resume Preview</DialogTitle>
+          </DialogHeader>
+          <ScrollArea className="h-[600px] w-full pr-4">
+            {generatingPreview ? (
+              <div className="flex items-center justify-center py-12">
+                <div className="text-center space-y-2">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+                  <p className="text-sm text-muted-foreground">Generating resume...</p>
+                </div>
+              </div>
+            ) : (
+              <pre className="whitespace-pre-wrap font-sans text-sm leading-relaxed">
+                {previewContent}
+              </pre>
+            )}
+          </ScrollArea>
+          <div className="flex gap-3 pt-4">
+            <Button
+              variant="outline"
+              onClick={() => setPreviewOpen(false)}
+              className="flex-1"
+            >
+              Close
+            </Button>
+            <Button
+              onClick={async () => {
+                await generateResumeFromProfile(true);
+                setPreviewOpen(false);
+              }}
+              disabled={generatingPreview}
+              className="flex-1"
+            >
+              Regenerate
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </Dialog>
   );
 };
