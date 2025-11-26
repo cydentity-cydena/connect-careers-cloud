@@ -238,8 +238,9 @@ export const ApplyJobDialog = ({ jobId, jobTitle, children }: ApplyJobDialogProp
                   Loading resumes...
                 </div>
               </div>
-            ) : resumes.length === 0 ? (
+            ) : (
               <div className="space-y-4">
+                {/* Upload or Generate Options */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {/* Upload Resume Option */}
                   <div 
@@ -280,6 +281,7 @@ export const ApplyJobDialog = ({ jobId, jobTitle, children }: ApplyJobDialogProp
                     </div>
                   </div>
                 </div>
+
                 {loading && (
                   <div className="text-center py-4">
                     <div className="inline-flex items-center gap-2 text-sm text-muted-foreground">
@@ -288,50 +290,60 @@ export const ApplyJobDialog = ({ jobId, jobTitle, children }: ApplyJobDialogProp
                     </div>
                   </div>
                 )}
-              </div>
-            ) : (
-              <RadioGroup value={selectedResumeId} onValueChange={setSelectedResumeId}>
-                {resumes.map((resume) => (
-                  <div
-                    key={resume.id}
-                    className="flex items-center space-x-3 p-3 border rounded-lg hover:bg-muted/50 transition-colors"
-                  >
-                    <RadioGroupItem value={resume.id} id={resume.id} />
-                    <label
-                      htmlFor={resume.id}
-                      className="flex-1 flex items-center gap-2 cursor-pointer"
-                    >
-                      <FileText className="h-4 w-4 text-muted-foreground" />
-                      <div className="flex-1">
-                        <p className="font-medium">{resume.resume_name}</p>
-                        <p className="text-xs text-muted-foreground capitalize">
-                          {resume.resume_type === "auto-generated" ? "Generated from Profile" : resume.resume_type}
-                        </p>
-                      </div>
-                      {resume.is_primary && (
-                        <span className="flex items-center gap-1 text-xs text-primary">
-                          <Star className="h-3 w-3 fill-current" />
-                          Primary
-                        </span>
-                      )}
-                    </label>
-                    {resume.resume_type === "auto-generated" && (
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          handlePreviewResume();
-                        }}
-                      >
-                        <Eye className="h-4 w-4 mr-1" />
-                        Preview
-                      </Button>
-                    )}
+
+                {/* Existing Resumes */}
+                {resumes.length > 0 && (
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <div className="h-px bg-border flex-1"></div>
+                      <span className="text-xs text-muted-foreground">Or select existing</span>
+                      <div className="h-px bg-border flex-1"></div>
+                    </div>
+                    <RadioGroup value={selectedResumeId} onValueChange={setSelectedResumeId}>
+                      {resumes.map((resume) => (
+                        <div
+                          key={resume.id}
+                          className="flex items-center space-x-3 p-3 border rounded-lg hover:bg-muted/50 transition-colors"
+                        >
+                          <RadioGroupItem value={resume.id} id={resume.id} />
+                          <label
+                            htmlFor={resume.id}
+                            className="flex-1 flex items-center gap-2 cursor-pointer"
+                          >
+                            <FileText className="h-4 w-4 text-muted-foreground" />
+                            <div className="flex-1">
+                              <p className="font-medium">{resume.resume_name}</p>
+                              <p className="text-xs text-muted-foreground capitalize">
+                                {resume.resume_type === "auto-generated" ? "Generated from Profile" : resume.resume_type}
+                              </p>
+                            </div>
+                            {resume.is_primary && (
+                              <span className="flex items-center gap-1 text-xs text-primary">
+                                <Star className="h-3 w-3 fill-current" />
+                                Primary
+                              </span>
+                            )}
+                          </label>
+                          {resume.resume_type === "auto-generated" && (
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                handlePreviewResume();
+                              }}
+                            >
+                              <Eye className="h-4 w-4 mr-1" />
+                              Preview
+                            </Button>
+                          )}
+                        </div>
+                      ))}
+                    </RadioGroup>
                   </div>
-                ))}
-              </RadioGroup>
+                )}
+              </div>
             )}
           </div>
 
