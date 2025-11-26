@@ -6,9 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Send, FileText, Star, Eye, Upload } from "lucide-react";
+import { Send, FileText, Star, Upload } from "lucide-react";
 import { toast } from "sonner";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface Resume {
   id: string;
@@ -31,9 +30,6 @@ export const ApplyJobDialog = ({ jobId, jobTitle, children }: ApplyJobDialogProp
   const [resumes, setResumes] = useState<Resume[]>([]);
   const [selectedResumeId, setSelectedResumeId] = useState<string>("");
   const [coverLetter, setCoverLetter] = useState("");
-  const [previewOpen, setPreviewOpen] = useState(false);
-  const [previewContent, setPreviewContent] = useState<string>("");
-  const [generatingPreview, setGeneratingPreview] = useState(false);
 
   useEffect(() => {
     if (open) {
@@ -67,48 +63,6 @@ export const ApplyJobDialog = ({ jobId, jobTitle, children }: ApplyJobDialogProp
     }
   };
 
-  const generateResumeFromProfile = async (saveAsResume: boolean = true) => {
-    setLoading(true);
-    try {
-      const { data, error } = await supabase.functions.invoke("generate-resume-from-profile", {
-        body: { saveAsResume },
-      });
-
-      if (error) throw error;
-
-      if (data.success) {
-        if (data.resumeId) {
-          toast.success("Resume auto-generated from your profile");
-          // Reload resumes to show the new one
-          await loadResumes();
-        }
-        return data.resumeContent;
-      }
-    } catch (error) {
-      console.error("Error generating resume:", error);
-      toast.error("Failed to generate resume. Please ensure your profile is complete.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handlePreviewResume = async () => {
-    setGeneratingPreview(true);
-    setPreviewOpen(true);
-    try {
-      // Generate resume content without saving
-      const content = await generateResumeFromProfile(false);
-      if (content) {
-        setPreviewContent(content);
-      }
-    } catch (error) {
-      console.error("Error previewing resume:", error);
-      toast.error("Failed to generate preview");
-      setPreviewOpen(false);
-    } finally {
-      setGeneratingPreview(false);
-    }
-  };
 
   const handleApply = async () => {
     if (!selectedResumeId) {
@@ -240,63 +194,33 @@ export const ApplyJobDialog = ({ jobId, jobTitle, children }: ApplyJobDialogProp
               </div>
             ) : (
               <div className="space-y-4">
-                {/* Upload or Generate Options */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {/* Upload Resume Option */}
-                  <div 
-                    className="p-4 border-2 rounded-lg hover:border-primary transition-colors cursor-pointer bg-card"
-                    onClick={() => {
-                      setOpen(false);
-                      navigate('/dashboard');
-                    }}
-                  >
-                    <div className="flex flex-col items-center text-center space-y-2">
-                      <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
-                        <Upload className="h-6 w-6 text-primary" />
-                      </div>
-                      <div>
-                        <h4 className="font-semibold">Upload Resume</h4>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          Upload a PDF or Word document
-                        </p>
-                      </div>
+                {/* Upload Resume Option */}
+                <div 
+                  className="p-6 border-2 rounded-lg hover:border-primary transition-colors cursor-pointer bg-card"
+                  onClick={() => {
+                    setOpen(false);
+                    navigate('/dashboard');
+                  }}
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                      <Upload className="h-6 w-6 text-primary" />
                     </div>
-                  </div>
-
-                  {/* Generate from Profile Option */}
-                  <div 
-                    className="p-4 border-2 rounded-lg hover:border-primary transition-colors cursor-pointer bg-card"
-                    onClick={() => generateResumeFromProfile(true)}
-                  >
-                    <div className="flex flex-col items-center text-center space-y-2">
-                      <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
-                        <FileText className="h-6 w-6 text-primary" />
-                      </div>
-                      <div>
-                        <h4 className="font-semibold">Generate from Profile</h4>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          Auto-create from your profile data
-                        </p>
-                      </div>
+                    <div className="text-left">
+                      <h4 className="font-semibold">Upload New Resume</h4>
+                      <p className="text-sm text-muted-foreground mt-0.5">
+                        Go to dashboard to upload a PDF or Word document
+                      </p>
                     </div>
                   </div>
                 </div>
-
-                {loading && (
-                  <div className="text-center py-4">
-                    <div className="inline-flex items-center gap-2 text-sm text-muted-foreground">
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
-                      Generating resume from profile...
-                    </div>
-                  </div>
-                )}
 
                 {/* Existing Resumes */}
                 {resumes.length > 0 && (
                   <div className="space-y-2">
                     <div className="flex items-center gap-2">
                       <div className="h-px bg-border flex-1"></div>
-                      <span className="text-xs text-muted-foreground">Or select existing</span>
+                      <span className="text-xs text-muted-foreground">Import from Dashboard</span>
                       <div className="h-px bg-border flex-1"></div>
                     </div>
                     <RadioGroup value={selectedResumeId} onValueChange={setSelectedResumeId}>
@@ -324,20 +248,6 @@ export const ApplyJobDialog = ({ jobId, jobTitle, children }: ApplyJobDialogProp
                               </span>
                             )}
                           </label>
-                          {resume.resume_type === "auto-generated" && (
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="sm"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                handlePreviewResume();
-                              }}
-                            >
-                              <Eye className="h-4 w-4 mr-1" />
-                              Preview
-                            </Button>
-                          )}
                         </div>
                       ))}
                     </RadioGroup>
@@ -380,48 +290,6 @@ export const ApplyJobDialog = ({ jobId, jobTitle, children }: ApplyJobDialogProp
           </div>
         </div>
       </DialogContent>
-
-      {/* Resume Preview Dialog */}
-      <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
-        <DialogContent className="max-w-3xl max-h-[90vh]">
-          <DialogHeader>
-            <DialogTitle>Resume Preview</DialogTitle>
-          </DialogHeader>
-          <ScrollArea className="h-[600px] w-full pr-4">
-            {generatingPreview ? (
-              <div className="flex items-center justify-center py-12">
-                <div className="text-center space-y-2">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-                  <p className="text-sm text-muted-foreground">Generating resume...</p>
-                </div>
-              </div>
-            ) : (
-              <pre className="whitespace-pre-wrap font-sans text-sm leading-relaxed">
-                {previewContent}
-              </pre>
-            )}
-          </ScrollArea>
-          <div className="flex gap-3 pt-4">
-            <Button
-              variant="outline"
-              onClick={() => setPreviewOpen(false)}
-              className="flex-1"
-            >
-              Close
-            </Button>
-            <Button
-              onClick={async () => {
-                await generateResumeFromProfile(true);
-                setPreviewOpen(false);
-              }}
-              disabled={generatingPreview}
-              className="flex-1"
-            >
-              Regenerate
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
     </Dialog>
   );
 };
