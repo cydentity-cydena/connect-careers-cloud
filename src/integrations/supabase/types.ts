@@ -2748,28 +2748,42 @@ export type Database = {
         Row: {
           candidate_id: string
           challenge_date: string
+          challenge_id: string | null
           created_at: string
           id: string
           score: number
           selected_answer: number
+          submitted_flag: string | null
         }
         Insert: {
           candidate_id: string
           challenge_date: string
+          challenge_id?: string | null
           created_at?: string
           id?: string
           score: number
           selected_answer: number
+          submitted_flag?: string | null
         }
         Update: {
           candidate_id?: string
           challenge_date?: string
+          challenge_id?: string | null
           created_at?: string
           id?: string
           score?: number
           selected_answer?: number
+          submitted_flag?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "security_iq_attempts_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "ctf_challenges"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       skill_pathways: {
         Row: {
