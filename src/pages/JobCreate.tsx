@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from 'sonner';
 import SEO from '@/components/SEO';
+import { JobAutoPopulate } from '@/components/jobs/JobAutoPopulate';
 
 const JobCreate = () => {
   const navigate = useNavigate();
@@ -43,6 +44,24 @@ const JobCreate = () => {
   const [yearsExpMin, setYearsExpMin] = useState('');
   const [yearsExpMax, setYearsExpMax] = useState('');
   const [managedByCydena, setManagedByCydena] = useState(false);
+
+  const handleAutoPopulate = (details: any) => {
+    if (details.title) setTitle(details.title);
+    if (details.description) setDescription(details.description);
+    if (details.location) setLocation(details.location);
+    if (details.jobType) setJobType(details.jobType);
+    if (details.remoteAllowed !== undefined) setRemoteAllowed(details.remoteAllowed);
+    if (details.salaryMin) setSalaryMin(details.salaryMin.toString());
+    if (details.salaryMax) setSalaryMax(details.salaryMax.toString());
+    if (details.requiredClearance) setRequiredClearance(details.requiredClearance);
+    if (details.requiredSkills) setRequiredSkills(details.requiredSkills);
+    if (details.requiredCerts) setRequiredCerts(details.requiredCerts);
+    if (details.mustHaves) setMustHaves(details.mustHaves);
+    if (details.niceToHaves) setNiceToHaves(details.niceToHaves);
+    if (details.yearsExpMin) setYearsExpMin(details.yearsExpMin.toString());
+    if (details.yearsExpMax) setYearsExpMax(details.yearsExpMax.toString());
+    if (details.companyName) setCompanyName(details.companyName);
+  };
 
   useEffect(() => {
     const init = async () => {
@@ -395,6 +414,10 @@ const JobCreate = () => {
             </div>
           ) : (!isAdmin || (isAdmin && (selectedUserId || !editJobId))) && (
             <>
+              {!editJobId && (
+                <JobAutoPopulate onPopulate={handleAutoPopulate} />
+              )}
+              
               {(isAdmin ? postingAs === 'recruiter' : isRecruiter) ? (
                 <>
                   <div className="space-y-2">
