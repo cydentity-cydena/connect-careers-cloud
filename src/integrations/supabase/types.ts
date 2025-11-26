@@ -1584,6 +1584,7 @@ export type Database = {
           is_active: boolean | null
           job_type: Database["public"]["Enums"]["job_type"]
           location: string | null
+          managed_by_cydena: boolean | null
           must_haves: string[] | null
           nice_to_haves: string[] | null
           remote_allowed: boolean | null
@@ -1607,6 +1608,7 @@ export type Database = {
           is_active?: boolean | null
           job_type: Database["public"]["Enums"]["job_type"]
           location?: string | null
+          managed_by_cydena?: boolean | null
           must_haves?: string[] | null
           nice_to_haves?: string[] | null
           remote_allowed?: boolean | null
@@ -1630,6 +1632,7 @@ export type Database = {
           is_active?: boolean | null
           job_type?: Database["public"]["Enums"]["job_type"]
           location?: string | null
+          managed_by_cydena?: boolean | null
           must_haves?: string[] | null
           nice_to_haves?: string[] | null
           remote_allowed?: boolean | null
