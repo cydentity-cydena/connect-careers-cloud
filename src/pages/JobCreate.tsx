@@ -187,14 +187,14 @@ const JobCreate = () => {
     const effectiveUserId = isAdmin && selectedUserId ? selectedUserId : userId;
     if (!effectiveUserId) return;
     
-    // Admin validation
-    if (isAdmin && !selectedUserId) {
-      toast.error('Please select a user to post on behalf of');
+    // Admin validation - only require user selection when editing
+    if (isAdmin && editJobId && !selectedUserId) {
+      toast.error('Please select a user to reassign this job to');
       return;
     }
     
     // Determine if posting as recruiter
-    const isPostingAsRecruiter = isAdmin ? postingAs === 'recruiter' : isRecruiter;
+    const isPostingAsRecruiter = isAdmin && selectedUserId ? postingAs === 'recruiter' : isRecruiter;
     
     // Validation for recruiters (using clients)
     if (isPostingAsRecruiter) {
@@ -316,7 +316,14 @@ const JobCreate = () => {
           {isAdmin && (
             <>
               <div className="space-y-2 p-4 bg-primary/5 rounded-lg border border-primary/20">
-                <Label className="text-sm font-semibold">Admin: Post on Behalf Of</Label>
+                <Label className="text-sm font-semibold">
+                  Admin: Post on Behalf Of {!editJobId && '(Optional)'}
+                </Label>
+                {!editJobId && (
+                  <p className="text-xs text-muted-foreground">
+                    Leave empty to post as yourself
+                  </p>
+                )}
                 <div className="space-y-2">
                   <Select value={postingAs} onValueChange={(v: any) => {
                     setPostingAs(v);
@@ -360,7 +367,7 @@ const JobCreate = () => {
                     }
                   }}>
                     <SelectTrigger>
-                      <SelectValue placeholder={`Select ${postingAs}`} />
+                      <SelectValue placeholder={`Select ${postingAs} (optional)`} />
                     </SelectTrigger>
                     <SelectContent>
                       {users
@@ -386,7 +393,7 @@ const JobCreate = () => {
               <p className="text-muted-foreground">You need to create a company profile first before posting jobs.</p>
               <Button onClick={() => navigate('/company/create')}>Create Company Profile</Button>
             </div>
-          ) : (!isAdmin || (isAdmin && selectedUserId)) && (
+          ) : (!isAdmin || (isAdmin && (selectedUserId || !editJobId))) && (
             <>
               {(isAdmin ? postingAs === 'recruiter' : isRecruiter) ? (
                 <>
