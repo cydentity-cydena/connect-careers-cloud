@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Send, FileText, Star, Eye } from "lucide-react";
+import { Send, FileText, Star, Eye, Upload } from "lucide-react";
 import { toast } from "sonner";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
@@ -52,12 +52,6 @@ export const ApplyJobDialog = ({ jobId, jobTitle, children }: ApplyJobDialogProp
         .order("is_primary", { ascending: false });
 
       if (error) throw error;
-      
-      // If no resumes exist, generate one from profile
-      if (!data || data.length === 0) {
-        await generateResumeFromProfile(true);
-        return;
-      }
       
       setResumes(data || []);
       // Auto-select primary resume
@@ -234,18 +228,54 @@ export const ApplyJobDialog = ({ jobId, jobTitle, children }: ApplyJobDialogProp
           <div className="space-y-3">
             <Label className="text-base font-semibold">Select Resume *</Label>
             {resumes.length === 0 ? (
-              <div className="p-4 border rounded-lg bg-muted/50 space-y-2">
-                <p className="text-sm text-muted-foreground">
-                  {loading ? "Generating resume from your profile..." : "No resumes found. Generating one from your profile..."}
-                </p>
-                {!loading && (
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {/* Upload Resume Option */}
+                  <div 
+                    className="p-4 border-2 rounded-lg hover:border-primary transition-colors cursor-pointer bg-card"
+                    onClick={() => {
+                      setOpen(false);
+                      navigate('/dashboard');
+                    }}
+                  >
+                    <div className="flex flex-col items-center text-center space-y-2">
+                      <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
+                        <Upload className="h-6 w-6 text-primary" />
+                      </div>
+                      <div>
+                        <h4 className="font-semibold">Upload Resume</h4>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Upload a PDF or Word document
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Generate from Profile Option */}
+                  <div 
+                    className="p-4 border-2 rounded-lg hover:border-primary transition-colors cursor-pointer bg-card"
                     onClick={() => generateResumeFromProfile(true)}
                   >
-                    Retry Generate Resume
-                  </Button>
+                    <div className="flex flex-col items-center text-center space-y-2">
+                      <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
+                        <FileText className="h-6 w-6 text-primary" />
+                      </div>
+                      <div>
+                        <h4 className="font-semibold">Generate from Profile</h4>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Auto-create from your profile data
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {loading && (
+                  <div className="text-center py-4">
+                    <div className="inline-flex items-center gap-2 text-sm text-muted-foreground">
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
+                      Generating resume from profile...
+                    </div>
+                  </div>
                 )}
               </div>
             ) : (
@@ -264,7 +294,7 @@ export const ApplyJobDialog = ({ jobId, jobTitle, children }: ApplyJobDialogProp
                       <div className="flex-1">
                         <p className="font-medium">{resume.resume_name}</p>
                         <p className="text-xs text-muted-foreground capitalize">
-                          {resume.resume_type}
+                          {resume.resume_type === "auto-generated" ? "Generated from Profile" : resume.resume_type}
                         </p>
                       </div>
                       {resume.is_primary && (
