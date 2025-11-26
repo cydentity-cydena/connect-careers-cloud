@@ -27,6 +27,7 @@ export const ApplyJobDialog = ({ jobId, jobTitle, children }: ApplyJobDialogProp
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [loadingResumes, setLoadingResumes] = useState(true);
   const [resumes, setResumes] = useState<Resume[]>([]);
   const [selectedResumeId, setSelectedResumeId] = useState<string>("");
   const [coverLetter, setCoverLetter] = useState("");
@@ -41,6 +42,7 @@ export const ApplyJobDialog = ({ jobId, jobTitle, children }: ApplyJobDialogProp
   }, [open]);
 
   const loadResumes = async () => {
+    setLoadingResumes(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
@@ -60,6 +62,8 @@ export const ApplyJobDialog = ({ jobId, jobTitle, children }: ApplyJobDialogProp
     } catch (error) {
       console.error("Error loading resumes:", error);
       toast.error("Failed to load resumes");
+    } finally {
+      setLoadingResumes(false);
     }
   };
 
@@ -227,7 +231,14 @@ export const ApplyJobDialog = ({ jobId, jobTitle, children }: ApplyJobDialogProp
           {/* Resume Selection */}
           <div className="space-y-3">
             <Label className="text-base font-semibold">Select Resume *</Label>
-            {resumes.length === 0 ? (
+            {loadingResumes ? (
+              <div className="text-center py-8">
+                <div className="inline-flex items-center gap-2 text-sm text-muted-foreground">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
+                  Loading resumes...
+                </div>
+              </div>
+            ) : resumes.length === 0 ? (
               <div className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {/* Upload Resume Option */}
