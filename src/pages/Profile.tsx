@@ -220,8 +220,29 @@ const Profile = () => {
       // Normalize and validate work history before saving
       const normalizedWorkHistory = workHistory.map((w, i) => {
         const isCurrent = !!w.is_current;
-        const startDate = w.start_date ? String(w.start_date) : '';
-        const endDate = isCurrent ? null : (w.end_date ? String(w.end_date) : null);
+        
+        // Validate and format dates - ensure they're valid or null
+        const validateDate = (dateStr: string | null | undefined): string | null => {
+          if (!dateStr || dateStr.trim() === '') return null;
+          
+          // Check if date contains invalid parts like "00" for month or day
+          const datePattern = /^\d{4}-\d{2}-\d{2}$/;
+          if (!datePattern.test(dateStr)) return null;
+          
+          // Parse the date to ensure it's valid
+          const date = new Date(dateStr);
+          if (isNaN(date.getTime())) return null;
+          
+          // Check for invalid month/day (like 00)
+          const [year, month, day] = dateStr.split('-').map(Number);
+          if (month < 1 || month > 12 || day < 1 || day > 31) return null;
+          
+          return dateStr;
+        };
+        
+        const startDate = validateDate(w.start_date);
+        const endDate = isCurrent ? null : validateDate(w.end_date);
+        
         return {
           id: w.id,
           company: (w.company ?? '').trim(),
@@ -294,10 +315,28 @@ const Profile = () => {
 
       // Save projects
       for (const project of projects) {
+        // Validate dates before saving
+        const validateDate = (dateStr: string | null | undefined): string | null => {
+          if (!dateStr || dateStr.trim() === '') return null;
+          const datePattern = /^\d{4}-\d{2}-\d{2}$/;
+          if (!datePattern.test(dateStr)) return null;
+          const date = new Date(dateStr);
+          if (isNaN(date.getTime())) return null;
+          const [year, month, day] = dateStr.split('-').map(Number);
+          if (month < 1 || month > 12 || day < 1 || day > 31) return null;
+          return dateStr;
+        };
+        
+        const cleanedProject = {
+          ...project,
+          start_date: validateDate(project.start_date),
+          end_date: validateDate(project.end_date)
+        };
+        
         if (project.id) {
           const { error: projectUpdateError } = await supabase
             .from('projects')
-            .update(project)
+            .update(cleanedProject)
             .eq('id', project.id);
           if (projectUpdateError) {
             console.error('Error updating project:', projectUpdateError);
@@ -306,7 +345,7 @@ const Profile = () => {
         } else if (project.name) {
           const { error: projectInsertError } = await supabase
             .from('projects')
-            .insert({ ...project, candidate_id: userId });
+            .insert({ ...cleanedProject, candidate_id: userId });
           if (projectInsertError) {
             console.error('Error inserting project:', projectInsertError);
             throw new Error(`Failed to add project: ${projectInsertError.message}`);
@@ -316,10 +355,28 @@ const Profile = () => {
 
       // Save education
       for (const edu of education) {
+        // Validate dates before saving
+        const validateDate = (dateStr: string | null | undefined): string | null => {
+          if (!dateStr || dateStr.trim() === '') return null;
+          const datePattern = /^\d{4}-\d{2}-\d{2}$/;
+          if (!datePattern.test(dateStr)) return null;
+          const date = new Date(dateStr);
+          if (isNaN(date.getTime())) return null;
+          const [year, month, day] = dateStr.split('-').map(Number);
+          if (month < 1 || month > 12 || day < 1 || day > 31) return null;
+          return dateStr;
+        };
+        
+        const cleanedEdu = {
+          ...edu,
+          start_date: validateDate(edu.start_date),
+          end_date: validateDate(edu.end_date)
+        };
+        
         if (edu.id) {
           const { error: eduUpdateError } = await supabase
             .from('education')
-            .update(edu)
+            .update(cleanedEdu)
             .eq('id', edu.id);
           if (eduUpdateError) {
             console.error('Error updating education:', eduUpdateError);
@@ -328,7 +385,7 @@ const Profile = () => {
         } else if (edu.institution && edu.degree) {
           const { error: eduInsertError } = await supabase
             .from('education')
-            .insert({ ...edu, candidate_id: userId });
+            .insert({ ...cleanedEdu, candidate_id: userId });
           if (eduInsertError) {
             console.error('Error inserting education:', eduInsertError);
             throw new Error(`Failed to add education: ${eduInsertError.message}`);
