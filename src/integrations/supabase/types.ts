@@ -1595,6 +1595,7 @@ export type Database = {
           salary_min: number | null
           title: string
           updated_at: string
+          work_mode: string | null
           years_experience_max: number | null
           years_experience_min: number | null
         }
@@ -1619,6 +1620,7 @@ export type Database = {
           salary_min?: number | null
           title: string
           updated_at?: string
+          work_mode?: string | null
           years_experience_max?: number | null
           years_experience_min?: number | null
         }
@@ -1643,6 +1645,7 @@ export type Database = {
           salary_min?: number | null
           title?: string
           updated_at?: string
+          work_mode?: string | null
           years_experience_max?: number | null
           years_experience_min?: number | null
         }
