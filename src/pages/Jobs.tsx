@@ -280,13 +280,6 @@ const Jobs = () => {
           </div>
         </div>
 
-        <Alert className="mb-6 border-primary/20 bg-primary/5">
-          <Info className="h-4 w-4 text-primary" />
-          <AlertDescription className="text-foreground ml-2">
-            This is an example job post. Real job posts coming soon with key partners.
-          </AlertDescription>
-        </Alert>
-
         {candidateProfile && !isAdmin && (
           <Alert className="mb-6 border-accent/20 bg-accent/5">
             <Info className="h-4 w-4 text-accent" />
