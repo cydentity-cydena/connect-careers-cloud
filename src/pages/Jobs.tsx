@@ -27,7 +27,7 @@ interface Job {
   salary_max: number | null;
   required_skills: string[] | null;
   required_clearance: string | null;
-  remote_allowed: boolean | null;
+  work_mode: string | null;
   created_at: string;
   description: string;
   must_haves: string[] | null;
@@ -74,7 +74,7 @@ const Jobs = () => {
           salary_max,
           required_skills,
           required_clearance,
-          remote_allowed,
+          work_mode,
           created_at,
           must_haves,
           required_certifications,
@@ -331,9 +331,11 @@ const Jobs = () => {
                           Cydena Expert Assist
                         </Badge>
                       )}
-                      <Badge variant={job.remote_allowed ? "default" : "secondary"}>
-                        {job.remote_allowed ? "Remote" : "On-site"}
-                      </Badge>
+                      {job.work_mode && (
+                        <Badge variant={job.work_mode === 'remote' ? "default" : "secondary"}>
+                          {job.work_mode === 'on-site' ? 'On-site' : job.work_mode === 'remote' ? 'Remote' : 'Hybrid'}
+                        </Badge>
+                      )}
                     </div>
                   </div>
                 </CardHeader>

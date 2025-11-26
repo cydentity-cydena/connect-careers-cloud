@@ -20,7 +20,7 @@ interface Job {
   description: string;
   location: string | null;
   job_type: string;
-  remote_allowed: boolean;
+  work_mode: string;
   salary_min: number | null;
   salary_max: number | null;
   required_clearance: string | null;
@@ -75,7 +75,7 @@ export const JobManagement = () => {
       description: job.description,
       location: job.location || '',
       job_type: job.job_type,
-      remote_allowed: job.remote_allowed,
+      work_mode: job.work_mode,
       salary_min: job.salary_min,
       salary_max: job.salary_max,
       required_clearance: job.required_clearance || '',
@@ -100,7 +100,7 @@ export const JobManagement = () => {
           description: formData.description,
           location: formData.location || null,
           job_type: formData.job_type as 'full-time' | 'part-time' | 'contract' | 'freelance',
-          remote_allowed: formData.remote_allowed,
+          work_mode: formData.work_mode,
           salary_min: formData.salary_min,
           salary_max: formData.salary_max,
           required_clearance: formData.required_clearance || null,
@@ -389,11 +389,20 @@ export const JobManagement = () => {
                       </div>
 
                       <div className="flex items-center gap-2">
-                        <Switch
-                          checked={formData.remote_allowed}
-                          onCheckedChange={(checked) => setFormData({ ...formData, remote_allowed: checked })}
-                        />
-                        <Label>Remote work allowed</Label>
+                        <Label>Work Mode</Label>
+                        <Select
+                          value={formData.work_mode}
+                          onValueChange={(value) => setFormData({ ...formData, work_mode: value })}
+                        >
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="on-site">On-site</SelectItem>
+                            <SelectItem value="remote">Remote</SelectItem>
+                            <SelectItem value="hybrid">Hybrid</SelectItem>
+                          </SelectContent>
+                        </Select>
                       </div>
 
                       <div className="flex items-center gap-2">

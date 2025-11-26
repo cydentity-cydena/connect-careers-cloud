@@ -33,7 +33,7 @@ const JobCreate = () => {
   const [description, setDescription] = useState('');
   const [location, setLocation] = useState('');
   const [jobType, setJobType] = useState<'full-time' | 'part-time' | 'contract' | 'freelance'>('full-time');
-  const [remoteAllowed, setRemoteAllowed] = useState(false);
+  const [workMode, setWorkMode] = useState<'on-site' | 'remote' | 'hybrid'>('on-site');
   const [salaryMin, setSalaryMin] = useState('');
   const [salaryMax, setSalaryMax] = useState('');
   const [requiredClearance, setRequiredClearance] = useState('');
@@ -50,7 +50,9 @@ const JobCreate = () => {
     if (details.description) setDescription(details.description);
     if (details.location) setLocation(details.location);
     if (details.jobType) setJobType(details.jobType);
-    if (details.remoteAllowed !== undefined) setRemoteAllowed(details.remoteAllowed);
+    if (details.remoteAllowed !== undefined) {
+      setWorkMode(details.remoteAllowed ? 'remote' : 'on-site');
+    }
     if (details.salaryMin) setSalaryMin(details.salaryMin.toString());
     if (details.salaryMax) setSalaryMax(details.salaryMax.toString());
     if (details.requiredClearance) setRequiredClearance(details.requiredClearance);
@@ -143,7 +145,7 @@ const JobCreate = () => {
           setDescription(jobData.description || '');
           setLocation(jobData.location || '');
           setJobType(jobData.job_type || 'full-time');
-          setRemoteAllowed(jobData.remote_allowed || false);
+          setWorkMode((jobData.work_mode as 'on-site' | 'remote' | 'hybrid') || 'on-site');
           setSalaryMin(jobData.salary_min?.toString() || '');
           setSalaryMax(jobData.salary_max?.toString() || '');
           setRequiredClearance(jobData.required_clearance || '');
@@ -271,7 +273,7 @@ const JobCreate = () => {
         description,
         location: location || null,
         job_type: jobType,
-        remote_allowed: remoteAllowed,
+        work_mode: workMode,
         salary_min: salaryMin ? parseInt(salaryMin) : null,
         salary_max: salaryMax ? parseInt(salaryMax) : null,
         required_clearance: requiredClearance || null,
@@ -552,11 +554,20 @@ const JobCreate = () => {
                   <Input id="certs" value={requiredCerts} onChange={(e) => setRequiredCerts(e.target.value)} placeholder="CISSP, CEH, Security+" />
                 </div>
               </div>
+              <div className="space-y-2">
+                <Label htmlFor="workMode">Work Mode</Label>
+                <Select value={workMode} onValueChange={(v: any) => setWorkMode(v)}>
+                  <SelectTrigger id="workMode">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="on-site">On-site</SelectItem>
+                    <SelectItem value="remote">Remote</SelectItem>
+                    <SelectItem value="hybrid">Hybrid</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
               <div className="space-y-3">
-                <div className="flex items-center gap-2">
-                  <Checkbox id="remote" checked={remoteAllowed} onCheckedChange={(checked) => setRemoteAllowed(!!checked)} />
-                  <Label htmlFor="remote">Remote work allowed</Label>
-                </div>
                 {isAdmin && (
                   <div className="flex items-center gap-2 p-3 bg-primary/5 rounded-lg border border-primary/20">
                     <Checkbox 
