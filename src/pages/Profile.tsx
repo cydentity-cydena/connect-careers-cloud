@@ -639,30 +639,6 @@ const Profile = () => {
       setEducationOpen(true);
     }
     
-    // Save certifications to database immediately if user is authenticated
-    if (userId && cvDetails.certifications && cvDetails.certifications.length > 0) {
-      try {
-        const certsToInsert = cvDetails.certifications.map((cert: any) => ({
-          candidate_id: userId,
-          name: cert.name,
-          issuer: cert.issuer,
-          issue_date: cert.issueDate,
-          expiry_date: cert.expiryDate,
-          credential_id: cert.credentialId
-        }));
-        
-        const { error } = await supabase
-          .from('certifications')
-          .insert(certsToInsert);
-        
-        if (error) throw error;
-        toast.success('Certifications added successfully');
-      } catch (error: any) {
-        console.error('Error adding certifications:', error);
-        toast.error('Failed to add certifications');
-      }
-    }
-    
     toast.success('Profile populated from CV - review and save changes');
   };
 
