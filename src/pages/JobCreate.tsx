@@ -196,12 +196,12 @@ const JobCreate = () => {
     // Determine if posting as recruiter
     const isPostingAsRecruiter = isAdmin && selectedUserId ? postingAs === 'recruiter' : isRecruiter;
     
-    // Validation for recruiters (using clients)
-    if (isPostingAsRecruiter) {
+    // Validation for recruiters (using clients) - now optional for admins
+    if (isPostingAsRecruiter && !isAdmin) {
       if (!selectedClientId) { toast.error('Please select a client'); return; }
       if (!companyName.trim()) { toast.error('Company name is required'); return; }
-    } else {
-      // Validation for employers (using companies)
+    } else if (!isPostingAsRecruiter && !isAdmin) {
+      // Validation for employers (using companies) - required for non-admins
       if (!companyId) { toast.error('Please select a company'); return; }
     }
     
@@ -214,7 +214,7 @@ const JobCreate = () => {
       // For recruiters, we need to ensure company exists or create it
       let finalCompanyId = companyId;
       
-      if (isPostingAsRecruiter && !editJobId) {
+      if (isPostingAsRecruiter && !editJobId && companyName.trim()) {
         // Check if company already exists for this client
         const { data: existingCompany } = await supabase
           .from('companies')
@@ -246,8 +246,8 @@ const JobCreate = () => {
       const niceToHavesList = niceToHaves.split(',').map(s => s.trim()).filter(Boolean);
       
       const jobData = {
-        company_id: finalCompanyId,
-        client_id: isPostingAsRecruiter ? selectedClientId : null,
+        company_id: finalCompanyId || null,
+        client_id: isPostingAsRecruiter && selectedClientId ? selectedClientId : null,
         title,
         description,
         location: location || null,
@@ -398,7 +398,7 @@ const JobCreate = () => {
               {(isAdmin ? postingAs === 'recruiter' : isRecruiter) ? (
                 <>
                   <div className="space-y-2">
-                    <Label htmlFor="client">Client *</Label>
+                    <Label htmlFor="client">Client{!isAdmin && ' *'}</Label>
                     <Select value={selectedClientId} onValueChange={(value) => {
                       setSelectedClientId(value);
                       const client = clients.find(c => c.id === value);
@@ -420,19 +420,19 @@ const JobCreate = () => {
                     </Select>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="company-name">Company Name *</Label>
+                    <Label htmlFor="company-name">Company Name{!isAdmin && ' *'}</Label>
                     <Input 
                       id="company-name" 
                       value={companyName} 
                       onChange={(e) => setCompanyName(e.target.value)} 
                       placeholder="Acme Corp"
-                      disabled={!selectedClientId}
+                      disabled={!isAdmin && !selectedClientId}
                     />
                   </div>
                 </>
               ) : (
                 <div className="space-y-2">
-                  <Label htmlFor="company">Company *</Label>
+                  <Label htmlFor="company">Company{!isAdmin && ' *'}</Label>
                   <Select value={companyId} onValueChange={setCompanyId}>
                     <SelectTrigger id="company">
                       <SelectValue placeholder="Select company" />
