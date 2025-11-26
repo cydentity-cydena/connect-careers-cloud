@@ -1576,7 +1576,7 @@ export type Database = {
       jobs: {
         Row: {
           client_id: string | null
-          company_id: string
+          company_id: string | null
           created_at: string
           created_by: string
           description: string
@@ -1600,7 +1600,7 @@ export type Database = {
         }
         Insert: {
           client_id?: string | null
-          company_id: string
+          company_id?: string | null
           created_at?: string
           created_by: string
           description: string
@@ -1624,7 +1624,7 @@ export type Database = {
         }
         Update: {
           client_id?: string | null
-          company_id?: string
+          company_id?: string | null
           created_at?: string
           created_by?: string
           description?: string
