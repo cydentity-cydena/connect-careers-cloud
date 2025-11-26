@@ -80,17 +80,28 @@ const Jobs = () => {
           required_certifications,
           years_experience_min,
           managed_by_cydena,
-          company:companies(name, created_by)
+          company_id,
+          companies!left(name, created_by)
         `)
         .eq("is_active", true)
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      setJobs(data || []);
+      
+      // Transform the data to match expected structure
+      const transformedData = (data || []).map((job: any) => ({
+        ...job,
+        company: job.companies ? {
+          name: job.companies.name,
+          created_by: job.companies.created_by
+        } : null
+      }));
+      
+      setJobs(transformedData);
 
       // Fetch verification status for all companies
-      if (data && data.length > 0) {
-        const companyOwnerIds = [...new Set(data.map(job => job.company?.created_by).filter(Boolean))];
+      if (transformedData && transformedData.length > 0) {
+        const companyOwnerIds = [...new Set(transformedData.map((job: any) => job.company?.created_by).filter(Boolean))];
         const { data: profiles, error: profileError } = await supabase
           .from("profiles")
           .select("id, is_verified")
