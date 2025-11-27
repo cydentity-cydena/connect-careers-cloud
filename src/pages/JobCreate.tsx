@@ -84,31 +84,49 @@ const JobCreate = () => {
 
       // If admin, load all employers and recruiters
       if (userIsAdmin) {
+        // Get employer user IDs
         const { data: employerRoles } = await supabase
           .from('user_roles')
-          .select('user_id, profiles(id, email, full_name)')
+          .select('user_id')
           .eq('role', 'employer');
 
+        // Get recruiter user IDs
         const { data: recruiterRoles } = await supabase
           .from('user_roles')
-          .select('user_id, profiles(id, email, full_name)')
+          .select('user_id')
           .eq('role', 'recruiter');
 
+        const employerIds = (employerRoles || []).map(r => r.user_id);
+        const recruiterIds = (recruiterRoles || []).map(r => r.user_id);
+        const allUserIds = [...new Set([...employerIds, ...recruiterIds])];
+
+        // Get profiles for all users
+        const { data: profiles } = await supabase
+          .from('profiles')
+          .select('id, email, full_name')
+          .in('id', allUserIds);
+
         const allUsers = [
-          ...(employerRoles || []).filter(r => r.profiles).map(r => ({ 
-            id: (r.profiles as any)?.id,
-            email: (r.profiles as any)?.email,
-            full_name: (r.profiles as any)?.full_name,
-            role: 'employer' 
-          })),
-          ...(recruiterRoles || []).filter(r => r.profiles).map(r => ({ 
-            id: (r.profiles as any)?.id,
-            email: (r.profiles as any)?.email,
-            full_name: (r.profiles as any)?.full_name,
-            role: 'recruiter' 
-          }))
+          ...employerIds.map(userId => {
+            const profile = profiles?.find(p => p.id === userId);
+            return profile ? {
+              id: profile.id,
+              email: profile.email,
+              full_name: profile.full_name,
+              role: 'employer'
+            } : null;
+          }).filter(Boolean),
+          ...recruiterIds.map(userId => {
+            const profile = profiles?.find(p => p.id === userId);
+            return profile ? {
+              id: profile.id,
+              email: profile.email,
+              full_name: profile.full_name,
+              role: 'recruiter'
+            } : null;
+          }).filter(Boolean)
         ];
-        setUsers(allUsers);
+        setUsers(allUsers as any[]);
       } else if (userIsRecruiter) {
         // Load clients for recruiters
         const { data: clientsData } = await supabase
