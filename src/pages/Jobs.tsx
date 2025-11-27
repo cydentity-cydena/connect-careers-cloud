@@ -47,6 +47,7 @@ const Jobs = () => {
   const [loading, setLoading] = useState(true);
   const [verifiedCompanies, setVerifiedCompanies] = useState<CompanyVerification>({});
   const [isAdmin, setIsAdmin] = useState(false);
+  const [profileLoaded, setProfileLoaded] = useState(false);
   const [candidateProfile, setCandidateProfile] = useState<{
     skills: string[];
     certifications: string[];
@@ -126,7 +127,10 @@ const Jobs = () => {
   const loadCandidateProfile = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      if (!user) {
+        setProfileLoaded(true);
+        return;
+      }
 
       // Fetch candidate skills
       const { data: skillsData } = await supabase
@@ -159,6 +163,8 @@ const Jobs = () => {
       });
     } catch (error) {
       console.error("Error loading candidate profile:", error);
+    } finally {
+      setProfileLoaded(true);
     }
   };
 
@@ -183,8 +189,11 @@ const Jobs = () => {
     // Admins can see all jobs
     if (isAdmin) return true;
     
-    // If no candidate profile loaded, show all jobs (guest viewing)
-    if (!candidateProfile) return true;
+    // If no candidate profile (guest/unauthenticated user), show all jobs
+    if (!candidateProfile && profileLoaded) return true;
+    
+    // If profile not loaded yet, hide jobs to prevent flash
+    if (!candidateProfile) return false;
 
     // Check years of experience requirement
     if (job.years_experience_min && candidateProfile.yearsExperience < job.years_experience_min) {
@@ -295,13 +304,13 @@ const Jobs = () => {
           <Alert className="mb-6 border-accent/20 bg-accent/5">
             <Info className="h-4 w-4 text-accent" />
             <AlertDescription className="text-foreground ml-2">
-              Intelligent Matching Active: You only see jobs matching your qualifications (skills, certifications, experience). No more spray-and-pray applications!
+              Intelligent Matching Active: You only see jobs matching your qualifications (skills, certifications, experience).
             </AlertDescription>
           </Alert>
         )}
 
         {/* Jobs Grid */}
-        {loading ? (
+        {loading || !profileLoaded ? (
           <div className="text-center py-16">
             <p className="text-muted-foreground text-lg">Loading jobs...</p>
           </div>
@@ -406,7 +415,7 @@ const Jobs = () => {
           </div>
         )}
 
-        {!loading && filteredJobs.length === 0 && (
+        {!loading && profileLoaded && filteredJobs.length === 0 && (
           <div className="text-center py-16">
             <p className="text-muted-foreground text-lg">
               No jobs found matching your search.
