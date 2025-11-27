@@ -99,13 +99,14 @@ const Certifications = () => {
     if (!userId) return;
     if (!name) { toast.error('Certification name is required'); return; }
     
-    // Require at least one form of proof
+    // Check for evidence requirements
+    const hasCredlyLink = credentialUrl.trim().length > 0 && credentialUrl.includes('credly.com');
     const hasCredentialId = credentialId.trim().length > 0;
-    const hasCredentialUrl = credentialUrl.trim().length > 0;
     const hasProofDocs = proofFiles && proofFiles.length > 0;
     
-    if (!hasCredentialId && !hasCredentialUrl && !hasProofDocs) {
-      toast.error('Please provide at least one form of proof: Credential ID, Badge URL, or Proof Documents');
+    // If no Credly link, require either credential ID or proof documents
+    if (!hasCredlyLink && !hasCredentialId && !hasProofDocs) {
+      toast.error('Without a Credly badge link, you must provide either a Credential ID or upload proof documents (certificate screenshot, verification email, etc.)');
       return;
     }
     setLoading(true);
@@ -272,8 +273,13 @@ const Certifications = () => {
             <Input id="issuer" value={issuer} onChange={(e) => setIssuer(e.target.value)} placeholder="e.g., CompTIA" />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="cid">Credential ID (Optional)</Label>
-            <Input id="cid" value={credentialId} onChange={(e) => setCredentialId(e.target.value)} />
+            <Label htmlFor="cid">
+              Credential ID {!credentialUrl.includes('credly.com') && <span className="text-destructive">*</span>}
+            </Label>
+            <Input id="cid" value={credentialId} onChange={(e) => setCredentialId(e.target.value)} placeholder="Your certification credential ID" />
+            {!credentialUrl.includes('credly.com') && (
+              <p className="text-xs text-muted-foreground">Required if no Credly link or proof documents provided</p>
+            )}
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
@@ -286,7 +292,9 @@ const Certifications = () => {
             </div>
           </div>
           <div className="space-y-2 border-t pt-4">
-            <Label htmlFor="proofDocs">Proof Documents (Optional)</Label>
+            <Label htmlFor="proofDocs">
+              Proof Documents {!credentialUrl.includes('credly.com') && !credentialId.trim() && <span className="text-destructive">*</span>}
+            </Label>
             <Input 
               id="proofDocs" 
               type="file" 
@@ -295,9 +303,9 @@ const Certifications = () => {
               onChange={(e) => setProofFiles(e.target.files)} 
             />
             <p className="text-xs text-muted-foreground">
-              {credentialUrl.trim() 
+              {credentialUrl.includes('credly.com')
                 ? "Optional: Already have Credly link above. You can also upload additional proof if desired."
-                : "Upload certificate, badge screenshot, or verification email. Staff will review within 48 hours."
+                : "Upload certificate, badge screenshot, or verification email. Required if no Credly link or Credential ID provided."
               }
             </p>
           </div>
