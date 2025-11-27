@@ -53,17 +53,28 @@ serve(async (req) => {
 
     // Format certifications for display
     const formattedCerts = (certifications || []).map(cert => {
-      // Determine status based on expiry date
-      let status = 'green'; // Default to verified
-      if (cert.expiry_date) {
-        const expiryDate = new Date(cert.expiry_date);
-        const now = new Date();
-        if (expiryDate < now) {
-          status = 'grey'; // Expired
-        } else if ((expiryDate.getTime() - now.getTime()) < (30 * 24 * 60 * 60 * 1000)) {
-          status = 'amber'; // Expiring within 30 days
+      // Determine status based on verification_status first, then expiry
+      let status = 'grey'; // Default to unverified
+      
+      // Check verification status first - this is the primary factor
+      if (cert.verification_status === 'verified') {
+        status = 'green';
+        // Check expiry for verified certs
+        if (cert.expiry_date) {
+          const expiryDate = new Date(cert.expiry_date);
+          const now = new Date();
+          if (expiryDate < now) {
+            status = 'grey'; // Expired even if verified
+          } else if ((expiryDate.getTime() - now.getTime()) < (30 * 24 * 60 * 60 * 1000)) {
+            status = 'amber'; // Expiring within 30 days
+          }
         }
+      } else if (cert.verification_status === 'pending') {
+        status = 'amber'; // Pending review
+      } else if (cert.verification_status === 'rejected') {
+        status = 'red'; // Rejected
       }
+      // Otherwise stays grey (unverified/not submitted)
       
       return {
         name: cert.name,
@@ -72,7 +83,8 @@ serve(async (req) => {
         issued_date: cert.issue_date,
         expiry_date: cert.expiry_date,
         credential_id: cert.credential_id,
-        source: 'manual',
+        source: cert.source || 'manual',
+        verification_status: cert.verification_status,
       };
     });
 

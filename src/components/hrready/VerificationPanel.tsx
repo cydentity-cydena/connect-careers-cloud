@@ -17,6 +17,13 @@ const statusColors: Record<string, string> = {
   grey: 'bg-muted text-muted-foreground',
 };
 
+const statusIcons: Record<string, string> = {
+  green: '✓',
+  amber: '⏳',
+  red: '✗',
+  grey: '○',
+};
+
 export function VerificationPanel({ verification, onEdit, showEditButton = false }: VerificationPanelProps) {
   if (!verification) {
     return (
@@ -113,12 +120,12 @@ export function VerificationPanel({ verification, onEdit, showEditButton = false
                 const certs = Array.isArray(raw) ? raw : [];
 
                 return certs.length > 0 ? (
-                  <div className="space-y-2">
+                <div className="space-y-2">
                     {certs.map((cert: any, index: number) => (
                       <div key={index} className="space-y-1">
                         <div className="flex items-center gap-2">
                           <Badge className={statusColors[cert.status || 'grey']} variant="outline">
-                            {(cert.status || 'grey') === 'green' ? '✓' : (cert.status || 'grey') === 'amber' ? '⏳' : '○'} {cert.name}
+                            {statusIcons[cert.status || 'grey']} {cert.name}
                           </Badge>
                         </div>
                         <div className="flex items-center gap-2 text-xs text-muted-foreground ml-1">
@@ -126,6 +133,11 @@ export function VerificationPanel({ verification, onEdit, showEditButton = false
                           {cert.source && (
                             <Badge variant="outline" className="text-xs py-0 h-5">
                               {cert.source === 'credly' ? '🎖️ Credly' : '📄 Manual'}
+                            </Badge>
+                          )}
+                          {cert.verification_status === 'pending' && (
+                            <Badge variant="outline" className="text-xs py-0 h-5 bg-amber-500/10 text-amber-600 border-amber-500/20">
+                              Pending Review
                             </Badge>
                           )}
                         </div>
