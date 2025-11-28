@@ -218,15 +218,15 @@ const Jobs = () => {
       return false;
     }
 
-    // Check must-have skills/requirements (unless overridden)
+    // Check must-have skills/requirements (unless overridden) - requires at least one match
     if (!job.skip_must_haves_match && job.must_haves && job.must_haves.length > 0) {
-      const hasMustHaves = job.must_haves.every(mustHave => 
+      const hasAtLeastOneMustHave = job.must_haves.some(mustHave => 
         candidateProfile.skills.some(skill => 
           skill.toLowerCase().includes(mustHave.toLowerCase()) ||
           mustHave.toLowerCase().includes(skill.toLowerCase())
         )
       );
-      if (!hasMustHaves) return false;
+      if (!hasAtLeastOneMustHave) return false;
     }
 
     // Check required certifications (unless overridden)
