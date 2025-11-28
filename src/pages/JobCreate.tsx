@@ -313,11 +313,11 @@ const JobCreate = () => {
         years_experience_max: yearsExpMax ? parseInt(yearsExpMax) : null,
         is_active: true,
         managed_by_cydena: isAdmin ? managedByCydena : false,
-        skip_experience_match: isAdmin ? skipExperienceMatch : false,
-        skip_clearance_match: isAdmin ? skipClearanceMatch : false,
-        skip_must_haves_match: isAdmin ? skipMustHavesMatch : false,
-        skip_certifications_match: isAdmin ? skipCertificationsMatch : false,
-        skip_intelligent_matching: isAdmin ? skipIntelligentMatching : false,
+        skip_experience_match: skipExperienceMatch,
+        skip_clearance_match: skipClearanceMatch,
+        skip_must_haves_match: skipMustHavesMatch,
+        skip_certifications_match: skipCertificationsMatch,
+        skip_intelligent_matching: skipIntelligentMatching,
       };
 
       let error;
@@ -602,81 +602,79 @@ const JobCreate = () => {
               </div>
               <div className="space-y-3">
                 {isAdmin && (
-                  <>
-                    <div className="flex items-center gap-2 p-3 bg-primary/5 rounded-lg border border-primary/20">
-                      <Checkbox 
-                        id="managedByCydena" 
-                        checked={managedByCydena} 
-                        onCheckedChange={(checked) => setManagedByCydena(!!checked)} 
-                      />
-                      <div className="flex-1">
-                        <Label htmlFor="managedByCydena" className="font-semibold">Managed by Cydena (Expert Assist)</Label>
-                        <p className="text-xs text-muted-foreground mt-0.5">
-                          Applications will be routed to admin funnel for talent curation before being assigned to pods
-                        </p>
-                      </div>
+                  <div className="flex items-center gap-2 p-3 bg-primary/5 rounded-lg border border-primary/20">
+                    <Checkbox 
+                      id="managedByCydena" 
+                      checked={managedByCydena} 
+                      onCheckedChange={(checked) => setManagedByCydena(!!checked)} 
+                    />
+                    <div className="flex-1">
+                      <Label htmlFor="managedByCydena" className="font-semibold">Managed by Cydena (Expert Assist)</Label>
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        Applications will be routed to admin funnel for talent curation before being assigned to pods
+                      </p>
                     </div>
-                    
-                    <div className="p-3 bg-muted/50 rounded-lg border">
-                      <div className="flex items-center gap-2 mb-3">
-                        <Checkbox 
-                          id="skipIntelligentMatching" 
-                          checked={skipIntelligentMatching} 
-                          onCheckedChange={(checked) => setSkipIntelligentMatching(!!checked)} 
-                        />
-                        <div>
-                          <Label htmlFor="skipIntelligentMatching" className="font-semibold text-sm">Disable Intelligent Matching</Label>
-                          <p className="text-xs text-muted-foreground">
-                            Show this job to all candidates regardless of qualifications
-                          </p>
+                  </div>
+                )}
+                
+                <div className="p-3 bg-muted/50 rounded-lg border">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Checkbox 
+                      id="skipIntelligentMatching" 
+                      checked={skipIntelligentMatching} 
+                      onCheckedChange={(checked) => setSkipIntelligentMatching(!!checked)} 
+                    />
+                    <div>
+                      <Label htmlFor="skipIntelligentMatching" className="font-semibold text-sm">Disable Intelligent Matching</Label>
+                      <p className="text-xs text-muted-foreground">
+                        Show this job to all candidates regardless of qualifications
+                      </p>
+                    </div>
+                  </div>
+                  
+                  {!skipIntelligentMatching && (
+                    <>
+                      <Label className="font-semibold text-sm">Per-Field Overrides</Label>
+                      <p className="text-xs text-muted-foreground mb-3">
+                        Skip specific matching criteria while keeping others active
+                      </p>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="flex items-center gap-2">
+                          <Checkbox 
+                            id="skipExperienceMatch" 
+                            checked={skipExperienceMatch} 
+                            onCheckedChange={(checked) => setSkipExperienceMatch(!!checked)} 
+                          />
+                          <Label htmlFor="skipExperienceMatch" className="text-sm">Skip Experience Check</Label>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Checkbox 
+                            id="skipClearanceMatch" 
+                            checked={skipClearanceMatch} 
+                            onCheckedChange={(checked) => setSkipClearanceMatch(!!checked)} 
+                          />
+                          <Label htmlFor="skipClearanceMatch" className="text-sm">Skip Clearance Check</Label>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Checkbox 
+                            id="skipMustHavesMatch" 
+                            checked={skipMustHavesMatch} 
+                            onCheckedChange={(checked) => setSkipMustHavesMatch(!!checked)} 
+                          />
+                          <Label htmlFor="skipMustHavesMatch" className="text-sm">Skip Must-Haves Check</Label>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Checkbox 
+                            id="skipCertificationsMatch" 
+                            checked={skipCertificationsMatch} 
+                            onCheckedChange={(checked) => setSkipCertificationsMatch(!!checked)} 
+                          />
+                          <Label htmlFor="skipCertificationsMatch" className="text-sm">Skip Certifications Check</Label>
                         </div>
                       </div>
-                      
-                      {!skipIntelligentMatching && (
-                        <>
-                          <Label className="font-semibold text-sm">Per-Field Overrides</Label>
-                          <p className="text-xs text-muted-foreground mb-3">
-                            Skip specific matching criteria while keeping others active
-                          </p>
-                          <div className="grid grid-cols-2 gap-3">
-                            <div className="flex items-center gap-2">
-                              <Checkbox 
-                                id="skipExperienceMatch" 
-                                checked={skipExperienceMatch} 
-                                onCheckedChange={(checked) => setSkipExperienceMatch(!!checked)} 
-                              />
-                              <Label htmlFor="skipExperienceMatch" className="text-sm">Skip Experience Check</Label>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Checkbox 
-                                id="skipClearanceMatch" 
-                                checked={skipClearanceMatch} 
-                                onCheckedChange={(checked) => setSkipClearanceMatch(!!checked)} 
-                              />
-                              <Label htmlFor="skipClearanceMatch" className="text-sm">Skip Clearance Check</Label>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Checkbox 
-                                id="skipMustHavesMatch" 
-                                checked={skipMustHavesMatch} 
-                                onCheckedChange={(checked) => setSkipMustHavesMatch(!!checked)} 
-                              />
-                              <Label htmlFor="skipMustHavesMatch" className="text-sm">Skip Must-Haves Check</Label>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Checkbox 
-                                id="skipCertificationsMatch" 
-                                checked={skipCertificationsMatch} 
-                                onCheckedChange={(checked) => setSkipCertificationsMatch(!!checked)} 
-                              />
-                              <Label htmlFor="skipCertificationsMatch" className="text-sm">Skip Certifications Check</Label>
-                            </div>
-                          </div>
-                        </>
-                      )}
-                    </div>
-                  </>
-                )}
+                    </>
+                  )}
+                </div>
               </div>
               <div className="flex justify-end gap-2">
                 <Button variant="outline" onClick={() => navigate('/dashboard')}>Cancel</Button>
