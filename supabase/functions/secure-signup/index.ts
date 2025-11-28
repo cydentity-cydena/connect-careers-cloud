@@ -56,33 +56,11 @@ serve(async (req) => {
 
     console.log('Starting secure signup for:', email, 'with role:', role, isFounding200 ? '(Founding 200)' : '');
 
-    // Check if email is on the allowlist (skip for Founding 200 signups and OAuth completions)
-    if (!isFounding200 && !isOAuthCompletion) {
-      const { data: allowedEmail, error: allowlistError } = await supabaseAdmin
-        .from('allowed_signups')
-        .select('*')
-        .eq('email', email.toLowerCase())
-        .maybeSingle();
-
-      if (allowlistError) {
-        console.error('Error checking allowlist:', allowlistError);
-        throw new Error('Failed to verify signup eligibility');
-      }
-
-      if (!allowedEmail) {
-        throw new Error('Signups are currently invite-only. Please contact us to request access.');
-      }
-
-      // If allowlist has a specific role requirement, enforce it
-      if (allowedEmail.allowed_role && allowedEmail.allowed_role !== role) {
-        throw new Error(`This email is registered for ${allowedEmail.allowed_role} access only.`);
-      }
-
-      console.log('Email verified on allowlist:', email);
-    } else if (isOAuthCompletion) {
-      console.log('OAuth completion - skipping allowlist check');
-    } else {
-      console.log('Founding 200 signup - skipping allowlist check');
+    // Open registration - no allowlist required for candidates, employers, and recruiters
+    if (isOAuthCompletion) {
+      console.log('OAuth completion - proceeding with profile setup');
+    } else if (isFounding200) {
+      console.log('Founding 200 signup - checking availability');
       
       // Check if Founding 200 is still available
       const { data: availability, error: availError } = await supabaseAdmin
@@ -96,6 +74,8 @@ serve(async (req) => {
       if (!availability) {
         throw new Error('The Founding 200 program has reached capacity. Please join our waitlist!');
       }
+    } else {
+      console.log('Open registration for role:', role);
     }
 
     // Validate professional email for employers and recruiters
@@ -370,14 +350,7 @@ serve(async (req) => {
       }
     }
 
-    // Mark the allowed email as used (skip for Founding 200)
-    if (!isOAuthCompletion && !isFounding200) {
-      await supabaseAdmin
-        .from('allowed_signups')
-        .update({ used_at: new Date().toISOString() })
-        .eq('email', email.toLowerCase());
-      console.log('Marked allowlist entry as used');
-    }
+    // Allowlist tracking removed - open registration is now enabled
 
     return new Response(
       JSON.stringify({
