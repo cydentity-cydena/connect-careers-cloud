@@ -34,6 +34,10 @@ interface Job {
   required_certifications: string[] | null;
   years_experience_min: number | null;
   managed_by_cydena: boolean | null;
+  skip_experience_match: boolean | null;
+  skip_clearance_match: boolean | null;
+  skip_must_haves_match: boolean | null;
+  skip_certifications_match: boolean | null;
 }
 
 interface CompanyVerification {
@@ -81,6 +85,10 @@ const Jobs = () => {
           required_certifications,
           years_experience_min,
           managed_by_cydena,
+          skip_experience_match,
+          skip_clearance_match,
+          skip_must_haves_match,
+          skip_certifications_match,
           company_id,
           companies!left(name, created_by)
         `)
@@ -195,18 +203,18 @@ const Jobs = () => {
     // If profile not loaded yet, hide jobs to prevent flash
     if (!candidateProfile) return false;
 
-    // Check years of experience requirement
-    if (job.years_experience_min && candidateProfile.yearsExperience < job.years_experience_min) {
+    // Check years of experience requirement (unless overridden)
+    if (!job.skip_experience_match && job.years_experience_min && candidateProfile.yearsExperience < job.years_experience_min) {
       return false;
     }
 
-    // Check security clearance requirement
-    if (job.required_clearance && job.required_clearance !== candidateProfile.clearance) {
+    // Check security clearance requirement (unless overridden)
+    if (!job.skip_clearance_match && job.required_clearance && job.required_clearance !== candidateProfile.clearance) {
       return false;
     }
 
-    // Check must-have skills/requirements
-    if (job.must_haves && job.must_haves.length > 0) {
+    // Check must-have skills/requirements (unless overridden)
+    if (!job.skip_must_haves_match && job.must_haves && job.must_haves.length > 0) {
       const hasMustHaves = job.must_haves.every(mustHave => 
         candidateProfile.skills.some(skill => 
           skill.toLowerCase().includes(mustHave.toLowerCase()) ||
@@ -216,8 +224,8 @@ const Jobs = () => {
       if (!hasMustHaves) return false;
     }
 
-    // Check required certifications
-    if (job.required_certifications && job.required_certifications.length > 0) {
+    // Check required certifications (unless overridden)
+    if (!job.skip_certifications_match && job.required_certifications && job.required_certifications.length > 0) {
       const hasRequiredCerts = job.required_certifications.every(reqCert =>
         candidateProfile.certifications.some(cert =>
           cert.toLowerCase().includes(reqCert.toLowerCase()) ||
