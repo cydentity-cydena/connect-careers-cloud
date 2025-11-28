@@ -38,6 +38,7 @@ interface Job {
   skip_clearance_match: boolean | null;
   skip_must_haves_match: boolean | null;
   skip_certifications_match: boolean | null;
+  skip_intelligent_matching: boolean | null;
 }
 
 interface CompanyVerification {
@@ -89,6 +90,7 @@ const Jobs = () => {
           skip_clearance_match,
           skip_must_haves_match,
           skip_certifications_match,
+          skip_intelligent_matching,
           company_id,
           companies!left(name, created_by)
         `)
@@ -202,6 +204,9 @@ const Jobs = () => {
     
     // If profile not loaded yet, hide jobs to prevent flash
     if (!candidateProfile) return false;
+
+    // Global override - skip all matching if enabled
+    if (job.skip_intelligent_matching) return true;
 
     // Check years of experience requirement (unless overridden)
     if (!job.skip_experience_match && job.years_experience_min && candidateProfile.yearsExperience < job.years_experience_min) {
