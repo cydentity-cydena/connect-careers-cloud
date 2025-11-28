@@ -1593,6 +1593,10 @@ export type Database = {
           required_skills: string[] | null
           salary_max: number | null
           salary_min: number | null
+          skip_certifications_match: boolean | null
+          skip_clearance_match: boolean | null
+          skip_experience_match: boolean | null
+          skip_must_haves_match: boolean | null
           title: string
           updated_at: string
           work_mode: string | null
@@ -1618,6 +1622,10 @@ export type Database = {
           required_skills?: string[] | null
           salary_max?: number | null
           salary_min?: number | null
+          skip_certifications_match?: boolean | null
+          skip_clearance_match?: boolean | null
+          skip_experience_match?: boolean | null
+          skip_must_haves_match?: boolean | null
           title: string
           updated_at?: string
           work_mode?: string | null
@@ -1643,6 +1651,10 @@ export type Database = {
           required_skills?: string[] | null
           salary_max?: number | null
           salary_min?: number | null
+          skip_certifications_match?: boolean | null
+          skip_clearance_match?: boolean | null
+          skip_experience_match?: boolean | null
+          skip_must_haves_match?: boolean | null
           title?: string
           updated_at?: string
           work_mode?: string | null

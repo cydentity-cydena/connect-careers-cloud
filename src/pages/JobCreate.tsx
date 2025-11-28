@@ -44,6 +44,10 @@ const JobCreate = () => {
   const [yearsExpMin, setYearsExpMin] = useState('');
   const [yearsExpMax, setYearsExpMax] = useState('');
   const [managedByCydena, setManagedByCydena] = useState(false);
+  const [skipExperienceMatch, setSkipExperienceMatch] = useState(false);
+  const [skipClearanceMatch, setSkipClearanceMatch] = useState(false);
+  const [skipMustHavesMatch, setSkipMustHavesMatch] = useState(false);
+  const [skipCertificationsMatch, setSkipCertificationsMatch] = useState(false);
 
   const handleAutoPopulate = (details: any) => {
     if (details.title) setTitle(details.title);
@@ -177,6 +181,10 @@ const JobCreate = () => {
           setSelectedClientId(jobData.client_id || '');
           setCompanyName(jobData.company?.name || '');
           setManagedByCydena(jobData.managed_by_cydena || false);
+          setSkipExperienceMatch(jobData.skip_experience_match || false);
+          setSkipClearanceMatch(jobData.skip_clearance_match || false);
+          setSkipMustHavesMatch(jobData.skip_must_haves_match || false);
+          setSkipCertificationsMatch(jobData.skip_certifications_match || false);
 
           // If admin is editing, load the job owner and their role
           if (userIsAdmin) {
@@ -303,6 +311,10 @@ const JobCreate = () => {
         years_experience_max: yearsExpMax ? parseInt(yearsExpMax) : null,
         is_active: true,
         managed_by_cydena: isAdmin ? managedByCydena : false,
+        skip_experience_match: isAdmin ? skipExperienceMatch : false,
+        skip_clearance_match: isAdmin ? skipClearanceMatch : false,
+        skip_must_haves_match: isAdmin ? skipMustHavesMatch : false,
+        skip_certifications_match: isAdmin ? skipCertificationsMatch : false,
       };
 
       let error;
@@ -587,19 +599,62 @@ const JobCreate = () => {
               </div>
               <div className="space-y-3">
                 {isAdmin && (
-                  <div className="flex items-center gap-2 p-3 bg-primary/5 rounded-lg border border-primary/20">
-                    <Checkbox 
-                      id="managedByCydena" 
-                      checked={managedByCydena} 
-                      onCheckedChange={(checked) => setManagedByCydena(!!checked)} 
-                    />
-                    <div className="flex-1">
-                      <Label htmlFor="managedByCydena" className="font-semibold">Managed by Cydena (Expert Assist)</Label>
-                      <p className="text-xs text-muted-foreground mt-0.5">
-                        Applications will be routed to admin funnel for talent curation before being assigned to pods
-                      </p>
+                  <>
+                    <div className="flex items-center gap-2 p-3 bg-primary/5 rounded-lg border border-primary/20">
+                      <Checkbox 
+                        id="managedByCydena" 
+                        checked={managedByCydena} 
+                        onCheckedChange={(checked) => setManagedByCydena(!!checked)} 
+                      />
+                      <div className="flex-1">
+                        <Label htmlFor="managedByCydena" className="font-semibold">Managed by Cydena (Expert Assist)</Label>
+                        <p className="text-xs text-muted-foreground mt-0.5">
+                          Applications will be routed to admin funnel for talent curation before being assigned to pods
+                        </p>
+                      </div>
                     </div>
-                  </div>
+                    
+                    <div className="p-3 bg-muted/50 rounded-lg border">
+                      <Label className="font-semibold text-sm">Intelligent Matching Overrides</Label>
+                      <p className="text-xs text-muted-foreground mb-3">
+                        Skip matching criteria to show this job to candidates who don't meet these requirements
+                      </p>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="flex items-center gap-2">
+                          <Checkbox 
+                            id="skipExperienceMatch" 
+                            checked={skipExperienceMatch} 
+                            onCheckedChange={(checked) => setSkipExperienceMatch(!!checked)} 
+                          />
+                          <Label htmlFor="skipExperienceMatch" className="text-sm">Skip Experience Check</Label>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Checkbox 
+                            id="skipClearanceMatch" 
+                            checked={skipClearanceMatch} 
+                            onCheckedChange={(checked) => setSkipClearanceMatch(!!checked)} 
+                          />
+                          <Label htmlFor="skipClearanceMatch" className="text-sm">Skip Clearance Check</Label>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Checkbox 
+                            id="skipMustHavesMatch" 
+                            checked={skipMustHavesMatch} 
+                            onCheckedChange={(checked) => setSkipMustHavesMatch(!!checked)} 
+                          />
+                          <Label htmlFor="skipMustHavesMatch" className="text-sm">Skip Must-Haves Check</Label>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Checkbox 
+                            id="skipCertificationsMatch" 
+                            checked={skipCertificationsMatch} 
+                            onCheckedChange={(checked) => setSkipCertificationsMatch(!!checked)} 
+                          />
+                          <Label htmlFor="skipCertificationsMatch" className="text-sm">Skip Certifications Check</Label>
+                        </div>
+                      </div>
+                    </div>
+                  </>
                 )}
               </div>
               <div className="flex justify-end gap-2">
