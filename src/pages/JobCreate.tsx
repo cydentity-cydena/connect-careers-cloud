@@ -48,6 +48,7 @@ const JobCreate = () => {
   const [skipClearanceMatch, setSkipClearanceMatch] = useState(false);
   const [skipMustHavesMatch, setSkipMustHavesMatch] = useState(false);
   const [skipCertificationsMatch, setSkipCertificationsMatch] = useState(false);
+  const [skipIntelligentMatching, setSkipIntelligentMatching] = useState(false);
 
   const handleAutoPopulate = (details: any) => {
     if (details.title) setTitle(details.title);
@@ -185,6 +186,7 @@ const JobCreate = () => {
           setSkipClearanceMatch(jobData.skip_clearance_match || false);
           setSkipMustHavesMatch(jobData.skip_must_haves_match || false);
           setSkipCertificationsMatch(jobData.skip_certifications_match || false);
+          setSkipIntelligentMatching(jobData.skip_intelligent_matching || false);
 
           // If admin is editing, load the job owner and their role
           if (userIsAdmin) {
@@ -315,6 +317,7 @@ const JobCreate = () => {
         skip_clearance_match: isAdmin ? skipClearanceMatch : false,
         skip_must_haves_match: isAdmin ? skipMustHavesMatch : false,
         skip_certifications_match: isAdmin ? skipCertificationsMatch : false,
+        skip_intelligent_matching: isAdmin ? skipIntelligentMatching : false,
       };
 
       let error;
@@ -615,44 +618,62 @@ const JobCreate = () => {
                     </div>
                     
                     <div className="p-3 bg-muted/50 rounded-lg border">
-                      <Label className="font-semibold text-sm">Intelligent Matching Overrides</Label>
-                      <p className="text-xs text-muted-foreground mb-3">
-                        Skip matching criteria to show this job to candidates who don't meet these requirements
-                      </p>
-                      <div className="grid grid-cols-2 gap-3">
-                        <div className="flex items-center gap-2">
-                          <Checkbox 
-                            id="skipExperienceMatch" 
-                            checked={skipExperienceMatch} 
-                            onCheckedChange={(checked) => setSkipExperienceMatch(!!checked)} 
-                          />
-                          <Label htmlFor="skipExperienceMatch" className="text-sm">Skip Experience Check</Label>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Checkbox 
-                            id="skipClearanceMatch" 
-                            checked={skipClearanceMatch} 
-                            onCheckedChange={(checked) => setSkipClearanceMatch(!!checked)} 
-                          />
-                          <Label htmlFor="skipClearanceMatch" className="text-sm">Skip Clearance Check</Label>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Checkbox 
-                            id="skipMustHavesMatch" 
-                            checked={skipMustHavesMatch} 
-                            onCheckedChange={(checked) => setSkipMustHavesMatch(!!checked)} 
-                          />
-                          <Label htmlFor="skipMustHavesMatch" className="text-sm">Skip Must-Haves Check</Label>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Checkbox 
-                            id="skipCertificationsMatch" 
-                            checked={skipCertificationsMatch} 
-                            onCheckedChange={(checked) => setSkipCertificationsMatch(!!checked)} 
-                          />
-                          <Label htmlFor="skipCertificationsMatch" className="text-sm">Skip Certifications Check</Label>
+                      <div className="flex items-center gap-2 mb-3">
+                        <Checkbox 
+                          id="skipIntelligentMatching" 
+                          checked={skipIntelligentMatching} 
+                          onCheckedChange={(checked) => setSkipIntelligentMatching(!!checked)} 
+                        />
+                        <div>
+                          <Label htmlFor="skipIntelligentMatching" className="font-semibold text-sm">Disable Intelligent Matching</Label>
+                          <p className="text-xs text-muted-foreground">
+                            Show this job to all candidates regardless of qualifications
+                          </p>
                         </div>
                       </div>
+                      
+                      {!skipIntelligentMatching && (
+                        <>
+                          <Label className="font-semibold text-sm">Per-Field Overrides</Label>
+                          <p className="text-xs text-muted-foreground mb-3">
+                            Skip specific matching criteria while keeping others active
+                          </p>
+                          <div className="grid grid-cols-2 gap-3">
+                            <div className="flex items-center gap-2">
+                              <Checkbox 
+                                id="skipExperienceMatch" 
+                                checked={skipExperienceMatch} 
+                                onCheckedChange={(checked) => setSkipExperienceMatch(!!checked)} 
+                              />
+                              <Label htmlFor="skipExperienceMatch" className="text-sm">Skip Experience Check</Label>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Checkbox 
+                                id="skipClearanceMatch" 
+                                checked={skipClearanceMatch} 
+                                onCheckedChange={(checked) => setSkipClearanceMatch(!!checked)} 
+                              />
+                              <Label htmlFor="skipClearanceMatch" className="text-sm">Skip Clearance Check</Label>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Checkbox 
+                                id="skipMustHavesMatch" 
+                                checked={skipMustHavesMatch} 
+                                onCheckedChange={(checked) => setSkipMustHavesMatch(!!checked)} 
+                              />
+                              <Label htmlFor="skipMustHavesMatch" className="text-sm">Skip Must-Haves Check</Label>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Checkbox 
+                                id="skipCertificationsMatch" 
+                                checked={skipCertificationsMatch} 
+                                onCheckedChange={(checked) => setSkipCertificationsMatch(!!checked)} 
+                              />
+                              <Label htmlFor="skipCertificationsMatch" className="text-sm">Skip Certifications Check</Label>
+                            </div>
+                          </div>
+                        </>
+                      )}
                     </div>
                   </>
                 )}

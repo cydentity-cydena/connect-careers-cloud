@@ -1596,6 +1596,7 @@ export type Database = {
           skip_certifications_match: boolean | null
           skip_clearance_match: boolean | null
           skip_experience_match: boolean | null
+          skip_intelligent_matching: boolean | null
           skip_must_haves_match: boolean | null
           title: string
           updated_at: string
@@ -1625,6 +1626,7 @@ export type Database = {
           skip_certifications_match?: boolean | null
           skip_clearance_match?: boolean | null
           skip_experience_match?: boolean | null
+          skip_intelligent_matching?: boolean | null
           skip_must_haves_match?: boolean | null
           title: string
           updated_at?: string
@@ -1654,6 +1656,7 @@ export type Database = {
           skip_certifications_match?: boolean | null
           skip_clearance_match?: boolean | null
           skip_experience_match?: boolean | null
+          skip_intelligent_matching?: boolean | null
           skip_must_haves_match?: boolean | null
           title?: string
           updated_at?: string
