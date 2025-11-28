@@ -57,7 +57,6 @@ const Auth = () => {
   const [fullName, setFullName] = useState("");
   const [username, setUsername] = useState("");
   const [userRole, setUserRole] = useState<"candidate" | "employer" | "recruiter">("candidate");
-  const [inviteOnlyMessage, setInviteOnlyMessage] = useState<string | null>(null);
   const [isFounding200, setIsFounding200] = useState(false);
   const [mfaRequired, setMfaRequired] = useState(false);
   const [mfaCode, setMfaCode] = useState("");
@@ -244,8 +243,6 @@ const Auth = () => {
   };
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Reset any previous invite-only message
-    setInviteOnlyMessage(null);
     
     // Validate inputs
     try {
@@ -360,9 +357,7 @@ const Auth = () => {
       
       const errorMessage = error.message || '';
       
-      if (errorMessage.includes('invite-only') || errorMessage.includes('request access')) {
-        setInviteOnlyMessage("Signups are invite-only right now. If you're on the Early Access 200 list, use your approved email or contact us.");
-      } else if (errorMessage.includes('already registered') || errorMessage.includes('already taken') || errorMessage.includes('email_exists')) {
+      if (errorMessage.includes('already registered') || errorMessage.includes('already taken') || errorMessage.includes('email_exists')) {
         toast.error("This email is already registered. Please sign in or use a different email.");
       } else if (errorMessage.includes('Username already taken')) {
         toast.error("Username already taken. Please choose another.");
@@ -855,13 +850,6 @@ const Auth = () => {
                       </span>
                     </div>
                   </div>
-                )}
-                
-                {inviteOnlyMessage && (
-                  <Alert className="mb-4 border-primary/30">
-                    <AlertTitle>Invite-only signups</AlertTitle>
-                    <AlertDescription>{inviteOnlyMessage}</AlertDescription>
-                  </Alert>
                 )}
                 
                 <form onSubmit={handleSignUp} className="space-y-4">
