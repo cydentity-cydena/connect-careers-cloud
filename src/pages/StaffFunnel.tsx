@@ -31,6 +31,8 @@ interface PipelineCandidate {
   moved_to_stage_at: string;
   cv_url: string | null;
   compliance_score: number | null;
+  job_title?: string | null;
+  job_id?: string | null;
   profiles: {
     full_name: string;
     username?: string;
@@ -113,7 +115,7 @@ export default function StaffFunnel() {
       if (pipelineError) throw pipelineError;
 
       // Fetch from pipeline_candidates (Early Access 200 applications)
-      const { data: applicationsData, error: applicationsError } = await supabase
+      const { data: ea200Data, error: ea200Error } = await supabase
         .from("pipeline_candidates")
         .select(`
           *,
@@ -126,10 +128,71 @@ export default function StaffFunnel() {
         `)
         .order("created_at", { ascending: false });
 
-      if (applicationsError) throw applicationsError;
+      if (ea200Error) throw ea200Error;
+
+      // Fetch from applications (job applications)
+      const { data: jobApplicationsData, error: jobApplicationsError } = await supabase
+        .from("applications")
+        .select(`
+          id,
+          candidate_id,
+          job_id,
+          stage,
+          applied_at,
+          cover_letter,
+          resume_id,
+          is_starred,
+          jobs (
+            id,
+            title,
+            company_id,
+            companies (
+              name
+            )
+          )
+        `)
+        .order("applied_at", { ascending: false });
+
+      if (jobApplicationsError) throw jobApplicationsError;
+
+      // Fetch profiles for job applicants
+      const jobApplicantIds = (jobApplicationsData || []).map(app => app.candidate_id);
+      const { data: jobApplicantProfiles } = await supabase
+        .from("profiles")
+        .select("id, full_name, username, email, avatar_url")
+        .in("id", jobApplicantIds);
+
+      const jobApplicantProfilesMap = new Map(
+        (jobApplicantProfiles || []).map(p => [p.id, p])
+      );
+
+      // Transform job applications to match the structure
+      const transformedJobApplications = (jobApplicationsData || []).map((app: any) => ({
+        id: `job_app_${app.id}`, // Prefix to avoid ID collision
+        candidate_id: app.candidate_id,
+        stage: 'applied', // All job applications start in applied
+        source: 'Job Application',
+        desired_role: app.jobs?.title || 'Unknown Position',
+        sla_due_at: null,
+        is_priority: app.is_starred || false,
+        is_founding_20: false,
+        staff_notes: app.cover_letter,
+        moved_to_stage_at: app.applied_at,
+        cv_url: null,
+        compliance_score: null,
+        job_title: app.jobs?.title,
+        job_id: app.job_id,
+        source_table: 'applications',
+        profiles: jobApplicantProfilesMap.get(app.candidate_id) || {
+          full_name: 'Unknown',
+          username: null,
+          email: 'unknown@example.com',
+          avatar_url: null
+        }
+      }));
 
       // Auto-link any pipeline candidates who have since created a profile (match on email, case-insensitive)
-      const appsWithProfiles = await Promise.all((applicationsData || []).map(async (app: any) => {
+      const appsWithProfiles = await Promise.all((ea200Data || []).map(async (app: any) => {
         if (!app.profile_id && app.email) {
           const { data: profileMatch } = await supabase
             .from('profiles')
@@ -151,7 +214,7 @@ export default function StaffFunnel() {
       }));
 
       // Transform pipeline_candidates to match the structure
-      const transformedApplications = (appsWithProfiles || []).map((app: any) => ({
+      const transformedEA200 = (appsWithProfiles || []).map((app: any) => ({
         id: app.id,
         candidate_id: app.profile_id || app.id, // Use profile_id if exists, otherwise use id
         stage: app.stage,
@@ -179,8 +242,8 @@ export default function StaffFunnel() {
         source_table: 'candidate_pipeline'
       }));
 
-      // Merge both datasets
-      const allCandidates = [...pipelineWithSource, ...transformedApplications];
+      // Merge all datasets
+      const allCandidates = [...pipelineWithSource, ...transformedEA200, ...transformedJobApplications];
 
       // Fetch candidate_profiles for primary CV (resume_url)
       const candidateIds = allCandidates.map(c => c.candidate_id).filter(Boolean);
@@ -543,6 +606,7 @@ export default function StaffFunnel() {
       candidate.profiles?.full_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       candidate.profiles?.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       candidate.desired_role?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      candidate.job_title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       searchQuery.toLowerCase().includes('has:hr_ready') && candidate.verification?.hr_ready ||
       searchQuery.toLowerCase().includes('rtw:green') && candidate.verification?.rtw_status === 'green';
 
@@ -560,13 +624,14 @@ export default function StaffFunnel() {
 
   const exportToCSV = () => {
     const csvContent = [
-      ["Name", "Username", "Email", "Stage", "Role", "Source", "Priority", "Chosen", "SLA Due"],
+      ["Name", "Username", "Email", "Stage", "Role", "Job Applied", "Source", "Priority", "Chosen", "SLA Due"],
       ...filteredCandidates.map((c) => [
         c.profiles?.full_name || "",
         c.profiles?.username || "",
         c.profiles?.email || "",
         c.stage,
         c.desired_role || "",
+        c.job_title || "",
         c.source || "",
         c.is_priority ? "Yes" : "No",
         c.is_founding_20 ? "Chosen" : "No",
@@ -679,6 +744,7 @@ export default function StaffFunnel() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All sources</SelectItem>
+                <SelectItem value="Job Application">Job Applications</SelectItem>
                 <SelectItem value="LinkedIn">LinkedIn</SelectItem>
                 <SelectItem value="Referral">Referral</SelectItem>
                 <SelectItem value="Community">Community</SelectItem>
@@ -1012,6 +1078,16 @@ export default function StaffFunnel() {
 
                         {/* Role and metadata */}
                         <div className="flex flex-wrap gap-2">
+                          {candidate.job_title && candidate.job_id && (
+                            <Link to={`/jobs/${candidate.job_id}`}>
+                              <Badge 
+                                variant="secondary" 
+                                className="text-xs bg-primary/20 text-primary border-primary/30 hover:bg-primary/30 cursor-pointer"
+                              >
+                                📋 {candidate.job_title}
+                              </Badge>
+                            </Link>
+                          )}
                           {candidate.is_priority && (
                             <Badge 
                               variant="destructive" 
@@ -1021,7 +1097,7 @@ export default function StaffFunnel() {
                               Priority
                             </Badge>
                           )}
-                          {candidate.desired_role && (
+                          {candidate.desired_role && !candidate.job_title && (
                             <Badge variant="outline" className="text-xs">
                               {candidate.desired_role}
                             </Badge>
