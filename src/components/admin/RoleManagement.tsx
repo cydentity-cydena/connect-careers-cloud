@@ -285,7 +285,7 @@ export const RoleManagement = () => {
               </div>
 
               {/* Pagination */}
-              <div className="flex items-center justify-between mt-4">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mt-4">
                 <p className="text-sm text-muted-foreground">
                   Showing {startIndex + 1}-{Math.min(endIndex, totalItems)} of {totalItems} results
                 </p>
