@@ -99,14 +99,20 @@ const Certifications = () => {
     if (!userId) return;
     if (!name) { toast.error('Certification name is required'); return; }
     
-    // Check for evidence requirements
-    const hasCredlyLink = credentialUrl.trim().length > 0 && credentialUrl.includes('credly.com');
+    // Check for evidence requirements - at least ONE form of verifiable evidence is required
+    const hasCredlyLink = credentialUrl.trim().length > 0 && credentialUrl.toLowerCase().includes('credly.com');
     const hasCredentialId = credentialId.trim().length > 0;
     const hasProofDocs = proofFiles && proofFiles.length > 0;
     
-    // If no Credly link, require either credential ID or proof documents
+    // STRICT: Must have at least one form of evidence
     if (!hasCredlyLink && !hasCredentialId && !hasProofDocs) {
-      toast.error('Without a Credly badge link, you must provide either a Credential ID or upload proof documents (certificate screenshot, verification email, etc.)');
+      toast.error('Evidence required: Please provide a Credly badge URL, Credential ID, OR upload proof documents (certificate screenshot, verification email, etc.)');
+      return;
+    }
+    
+    // If only credential URL but not Credly, still require additional evidence
+    if (credentialUrl.trim().length > 0 && !hasCredlyLink && !hasCredentialId && !hasProofDocs) {
+      toast.error('Non-Credly URLs require additional evidence: Please also provide a Credential ID or upload proof documents');
       return;
     }
     setLoading(true);
