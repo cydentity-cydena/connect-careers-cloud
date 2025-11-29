@@ -272,12 +272,29 @@ export const ApplicationCard = ({ application, onStageChange, onToggleStar, onAd
           </div>
 
           <div className="space-y-2.5">
+            {/* Job Title Badge - Prominent */}
+            {application.job?.title && (
+              <Link 
+                to={`/jobs/${application.job_id}`}
+                onClick={(e) => e.stopPropagation()}
+                className="block"
+              >
+                <Badge 
+                  variant="secondary" 
+                  className="text-xs px-2.5 py-1 font-medium bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20 transition-colors flex items-center gap-1.5 w-fit"
+                >
+                  <Briefcase className="h-3.5 w-3.5 flex-shrink-0" />
+                  <span className="truncate max-w-[180px]">{application.job.title}</span>
+                </Badge>
+              </Link>
+            )}
+            
             <div className="flex flex-wrap gap-1.5 items-center">
               {/* Years of Experience Badge */}
               {application.candidate_profile?.years_experience !== undefined && (
                 <Badge variant="secondary" className="text-xs px-2 py-0.5 font-medium flex items-center gap-1">
-                  <Briefcase className="h-3 w-3 flex-shrink-0" />
-                  <span className="whitespace-nowrap">{application.candidate_profile.years_experience} yrs</span>
+                  <Calendar className="h-3 w-3 flex-shrink-0" />
+                  <span className="whitespace-nowrap">{application.candidate_profile.years_experience} yrs exp</span>
                 </Badge>
               )}
               
