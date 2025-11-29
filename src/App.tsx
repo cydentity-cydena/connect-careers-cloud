@@ -39,6 +39,7 @@ import UserManagement from "./pages/admin/UserManagement";
 import Integrations from "./pages/Integrations";
 import SkillsAssessment from "./pages/SkillsAssessment";
 import PartnerAnalytics from "./pages/admin/PartnerAnalytics";
+import AssessmentReview from "./pages/admin/AssessmentReview";
 import CandidatePDF from "./pages/marketing/CandidatePDF";
 import EmployerPDF from "./pages/marketing/EmployerPDF";
 import RecruiterPDF from "./pages/marketing/RecruiterPDF";
@@ -119,6 +120,7 @@ const AppContent = () => {
           <Route path="/admin/verification-review" element={<ProtectedRoute><VerificationReview /></ProtectedRoute>} />
           <Route path="/admin/allowed-signups" element={<ProtectedRoute><AllowedSignups /></ProtectedRoute>} />
           <Route path="/admin/partner-analytics" element={<ProtectedRoute><PartnerAnalytics /></ProtectedRoute>} />
+          <Route path="/admin/assessment-review" element={<ProtectedRoute><AssessmentReview /></ProtectedRoute>} />
           
           {/* Standalone Presentation */}
           <Route path="/employer-pitch-deck" element={<EmployerPitchDeck />} />

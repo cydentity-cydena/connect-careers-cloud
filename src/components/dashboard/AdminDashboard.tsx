@@ -3,10 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Shield, Users, Briefcase, AlertCircle, UserCog, CheckCircle, Bug, Settings, FolderKanban, FileCheck, BarChart3, Plus } from "lucide-react";
+import { Shield, Users, Briefcase, AlertCircle, UserCog, CheckCircle, Bug, Settings, FolderKanban, FileCheck, BarChart3, Plus, Brain } from "lucide-react";
 import { AdminNotifications } from "@/components/admin/AdminNotifications";
 import { SeedDemoCandidates } from "@/components/admin/SeedDemoCandidates";
-import { AssessmentReviewQueue } from "@/components/admin/AssessmentReviewQueue";
 import { toast } from "sonner";
 
 const AdminDashboard = () => {
@@ -92,9 +91,6 @@ const AdminDashboard = () => {
 
       {/* Seed Demo Data Section */}
       <SeedDemoCandidates />
-
-      {/* Assessment Review Queue */}
-      <AssessmentReviewQueue />
 
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
         <Card 
@@ -344,6 +340,26 @@ const AdminDashboard = () => {
           </Card>
 
           <Card 
+            className="border-border shadow-card hover:shadow-lg transition-all cursor-pointer group"
+            onClick={() => navigate('/admin/assessment-review')}
+          >
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 group-hover:text-primary transition-colors">
+                <Brain className="h-5 w-5" />
+                Assessment Review
+              </CardTitle>
+              <CardDescription>
+                Review flagged assessments for AI-generated content
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button variant="outline" className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                Review Queue
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card
             className="border-border shadow-card hover:shadow-lg transition-all cursor-pointer group"
             onClick={() => navigate('/jobs/create')}
           >
