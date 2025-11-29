@@ -117,11 +117,11 @@ export function EditVerificationDrawer({
         </SheetHeader>
 
         <Tabs defaultValue="identity" className="mt-6">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="identity">Identity</TabsTrigger>
-            <TabsTrigger value="rtw">Right to Work</TabsTrigger>
-            <TabsTrigger value="logistics">Logistics</TabsTrigger>
-            <TabsTrigger value="clearance">Clearance</TabsTrigger>
+          <TabsList className="flex w-full overflow-x-auto">
+            <TabsTrigger value="identity" className="flex-1 min-w-fit text-xs sm:text-sm">Identity</TabsTrigger>
+            <TabsTrigger value="rtw" className="flex-1 min-w-fit text-xs sm:text-sm">RTW</TabsTrigger>
+            <TabsTrigger value="logistics" className="flex-1 min-w-fit text-xs sm:text-sm">Logistics</TabsTrigger>
+            <TabsTrigger value="clearance" className="flex-1 min-w-fit text-xs sm:text-sm">Clearance</TabsTrigger>
           </TabsList>
 
           <TabsContent value="identity" className="space-y-4 mt-4">
