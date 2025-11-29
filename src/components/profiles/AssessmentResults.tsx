@@ -83,7 +83,8 @@ export const AssessmentResults = ({ candidateId }: AssessmentResultsProps) => {
                     'integrityScore' in assessment.ai_feedback
                       ? (assessment.ai_feedback as any).integrityScore
                       : undefined
-                  } 
+                  }
+                  humanReviewStatus={assessment.human_review_status}
                 />
                 <Badge variant="outline" className={getScoreColor(assessment.score)}>
                   {assessment.score}%
