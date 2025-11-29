@@ -44,7 +44,7 @@ import CandidatePDF from "./pages/marketing/CandidatePDF";
 import EmployerPDF from "./pages/marketing/EmployerPDF";
 import RecruiterPDF from "./pages/marketing/RecruiterPDF";
 import PartnersPDF from "./pages/marketing/PartnersPDF";
-import TikTokAd from "./pages/marketing/TikTokAd";
+import LinkedInAd from "./pages/marketing/LinkedInAd";
 
 import HRReady from "./pages/HRReady";
 import RoleManagement from "./pages/admin/RoleManagement";
@@ -131,7 +131,7 @@ const AppContent = () => {
           <Route path="/marketing/employers" element={<EmployerPDF />} />
           <Route path="/marketing/recruiters" element={<RecruiterPDF />} />
           <Route path="/marketing/partners" element={<PartnersPDF />} />
-          <Route path="/tiktok-ad" element={<TikTokAd />} />
+          <Route path="/linkedin-ad" element={<LinkedInAd />} />
           
           {/* Lead Generation */}
           <Route path="/Early-Access-200" element={<Founding20 />} />
