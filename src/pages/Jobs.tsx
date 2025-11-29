@@ -337,8 +337,8 @@ const Jobs = () => {
                   style={{ animationDelay: `${index * 0.05}s` }}
                 >
                 <CardHeader>
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+                    <div className="flex-1 min-w-0">
                       <CardTitle className="text-2xl mb-2">{job.title}</CardTitle>
                       <div className="flex items-center gap-2">
                         <CardDescription className="text-base font-semibold text-foreground">
@@ -347,14 +347,14 @@ const Jobs = () => {
                         {job.company && verifiedCompanies[job.company.created_by] && <VerifiedBadge />}
                       </div>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-2 shrink-0">
                       {job.managed_by_cydena && (
                         <Badge className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground border-0 whitespace-nowrap">
                           Cydena Expert Assist
                         </Badge>
                       )}
                       {job.work_mode && (
-                        <Badge variant={job.work_mode === 'remote' ? "default" : "secondary"}>
+                        <Badge variant={job.work_mode === 'remote' ? "default" : "secondary"} className="whitespace-nowrap">
                           {job.work_mode === 'on-site' ? 'On-site' : job.work_mode === 'remote' ? 'Remote' : 'Hybrid'}
                         </Badge>
                       )}
