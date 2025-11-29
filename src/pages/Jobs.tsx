@@ -383,11 +383,11 @@ const Jobs = () => {
                     </div>
 
                     {job.required_skills && job.required_skills.length > 0 && (
-                      <div>
+                      <div className="overflow-hidden min-w-0">
                         <p className="text-sm font-semibold mb-2">Required Skills:</p>
-                        <div className="flex flex-wrap gap-2">
+                        <div className="flex flex-wrap gap-2 overflow-hidden">
                           {job.required_skills.map((skill, idx) => (
-                            <Badge key={idx} variant="secondary">
+                            <Badge key={idx} variant="secondary" className="truncate max-w-full">
                               {skill}
                             </Badge>
                           ))}
