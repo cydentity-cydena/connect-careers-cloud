@@ -1,9 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ThumbsUp, MessageSquare, Repeat2, Send, Shield, Award, Users, Briefcase, TrendingUp, CheckCircle, MoreHorizontal, Globe } from "lucide-react";
+import { ThumbsUp, MessageSquare, Repeat2, Send, Shield, Award, Users, Briefcase, TrendingUp, CheckCircle, MoreHorizontal, Globe, Download, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import SEO from "@/components/SEO";
+import html2canvas from "html2canvas";
+import { toast } from "sonner";
 
 const slides = [
   {
@@ -60,6 +62,9 @@ const LinkedInAd = () => {
   const [likes, setLikes] = useState(2847);
   const [isLiked, setIsLiked] = useState(false);
   const [reaction, setReaction] = useState<string | null>(null);
+  const [isRecording, setIsRecording] = useState(false);
+  const [recordingProgress, setRecordingProgress] = useState(0);
+  const videoContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -78,18 +83,126 @@ const LinkedInAd = () => {
     }
   };
 
+  const recordVideo = async () => {
+    if (!videoContainerRef.current) return;
+    
+    setIsRecording(true);
+    setRecordingProgress(0);
+    toast.info("Recording started... This will take about 25 seconds.");
+
+    const container = videoContainerRef.current;
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    
+    // Set canvas size to match container
+    const rect = container.getBoundingClientRect();
+    canvas.width = rect.width * 2; // Higher resolution
+    canvas.height = rect.height * 2;
+    
+    if (!ctx) {
+      toast.error("Failed to create canvas context");
+      setIsRecording(false);
+      return;
+    }
+
+    // Create MediaRecorder
+    const stream = canvas.captureStream(30); // 30 FPS
+    const mediaRecorder = new MediaRecorder(stream, {
+      mimeType: 'video/webm;codecs=vp9',
+      videoBitsPerSecond: 5000000
+    });
+    
+    const chunks: Blob[] = [];
+    mediaRecorder.ondataavailable = (e) => {
+      if (e.data.size > 0) chunks.push(e.data);
+    };
+
+    mediaRecorder.onstop = () => {
+      const blob = new Blob(chunks, { type: 'video/webm' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'cydena-linkedin-ad.webm';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      setIsRecording(false);
+      setRecordingProgress(100);
+      toast.success("Video downloaded successfully!");
+    };
+
+    mediaRecorder.start();
+
+    // Capture frames for full cycle (all slides)
+    const totalDuration = slides.length * 3500; // Total time for all slides
+    const frameInterval = 1000 / 30; // 30 FPS
+    const totalFrames = totalDuration / frameInterval;
+    let frameCount = 0;
+
+    const captureFrame = async () => {
+      if (frameCount >= totalFrames) {
+        mediaRecorder.stop();
+        return;
+      }
+
+      try {
+        const capturedCanvas = await html2canvas(container, {
+          scale: 2,
+          useCORS: true,
+          logging: false,
+          backgroundColor: null,
+        });
+        
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(capturedCanvas, 0, 0, canvas.width, canvas.height);
+      } catch (error) {
+        console.error('Frame capture error:', error);
+      }
+
+      frameCount++;
+      setRecordingProgress(Math.round((frameCount / totalFrames) * 100));
+      
+      setTimeout(captureFrame, frameInterval);
+    };
+
+    // Reset to first slide before recording
+    setCurrentSlide(0);
+    await new Promise(resolve => setTimeout(resolve, 500));
+    captureFrame();
+  };
+
   const slide = slides[currentSlide];
   const Icon = slide.icon;
 
   return (
-    <div className="min-h-screen bg-[#f4f2ee] flex items-center justify-center p-4">
+    <div className="min-h-screen bg-[#f4f2ee] flex flex-col items-center justify-center p-4 gap-4">
       <SEO 
         title="Cydena - Cybersecurity Talent Platform | LinkedIn"
         description="Join Cydena - The platform for cybersecurity professionals to showcase skills, get verified, and land dream jobs."
       />
+
+      {/* Download Button */}
+      <Button
+        onClick={recordVideo}
+        disabled={isRecording}
+        className="bg-[#0a66c2] hover:bg-[#004182] text-white"
+      >
+        {isRecording ? (
+          <>
+            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+            Recording... {recordingProgress}%
+          </>
+        ) : (
+          <>
+            <Download className="w-4 h-4 mr-2" />
+            Download Video
+          </>
+        )}
+      </Button>
       
       {/* LinkedIn Post Card */}
-      <div className="w-full max-w-[550px] bg-white rounded-lg shadow-md overflow-hidden">
+      <div ref={videoContainerRef} className="w-full max-w-[550px] bg-white rounded-lg shadow-md overflow-hidden">
         {/* Post Header */}
         <div className="p-4 flex items-start gap-3">
           <div className="w-12 h-12 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center flex-shrink-0">
