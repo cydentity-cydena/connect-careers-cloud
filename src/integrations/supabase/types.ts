@@ -2877,8 +2877,12 @@ export type Database = {
           candidate_id: string
           completed_at: string
           created_at: string
+          human_review_status: string | null
+          human_reviewed_at: string | null
+          human_reviewed_by: string | null
           id: string
           questions: Json
+          review_notes: string | null
           score: number
         }
         Insert: {
@@ -2888,8 +2892,12 @@ export type Database = {
           candidate_id: string
           completed_at?: string
           created_at?: string
+          human_review_status?: string | null
+          human_reviewed_at?: string | null
+          human_reviewed_by?: string | null
           id?: string
           questions: Json
+          review_notes?: string | null
           score: number
         }
         Update: {
@@ -2899,8 +2907,12 @@ export type Database = {
           candidate_id?: string
           completed_at?: string
           created_at?: string
+          human_review_status?: string | null
+          human_reviewed_at?: string | null
+          human_reviewed_by?: string | null
           id?: string
           questions?: Json
+          review_notes?: string | null
           score?: number
         }
         Relationships: [
