@@ -60,6 +60,7 @@ import AcceptInvitation from "./pages/AcceptInvitation";
 import MFA from "./pages/MFA";
 import SecuritySettings from "./pages/SecuritySettings";
 import VerifyEmail from "./pages/VerifyEmail";
+import Unsubscribe from "./pages/Unsubscribe";
 import { ScrollToTop } from "./components/ScrollToTop";
 
 const queryClient = new QueryClient();
@@ -75,6 +76,7 @@ const AppContent = () => {
           <Route path="/" element={<Index />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/verify-email" element={<VerifyEmail />} />
+          <Route path="/unsubscribe" element={<Unsubscribe />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/contact" element={<Contact />} />
