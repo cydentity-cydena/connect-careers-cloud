@@ -23,11 +23,12 @@ const handler = async (req: Request): Promise<Response> => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
-    // Get all active candidate users with emails
+    // Get all active candidate users with emails WHO HAVE NOT OPTED OUT
     const { data: profiles, error: profilesError } = await supabaseClient
       .from("profiles")
-      .select("id, email, full_name, username")
-      .not("email", "is", null);
+      .select("id, email, full_name, username, email_notifications")
+      .not("email", "is", null)
+      .neq("email_notifications", false); // Only users who haven't opted out
 
     if (profilesError) {
       console.error("Error fetching profiles:", profilesError);
@@ -54,7 +55,7 @@ const handler = async (req: Request): Promise<Response> => {
     const candidateIds = new Set(candidates?.map(c => c.user_id) || []);
     const candidateProfiles = profiles.filter(p => candidateIds.has(p.id));
 
-    console.log(`Sending daily challenge notification to ${candidateProfiles.length} candidates`);
+    console.log(`Sending daily challenge notification to ${candidateProfiles.length} candidates (opted-in only)`);
     console.log("Using SendGrid from:", SENDGRID_FROM_EMAIL, "name:", SENDGRID_FROM_NAME);
 
     if (!SENDGRID_API_KEY) {
@@ -73,6 +74,10 @@ const handler = async (req: Request): Promise<Response> => {
         batch.map(async (profile) => {
           try {
             const displayName = profile.full_name || profile.username || "there";
+            
+            // Generate unsubscribe token (base64 encoded user ID)
+            const unsubscribeToken = btoa(profile.id);
+            const unsubscribeUrl = `${APP_URL}/unsubscribe?token=${unsubscribeToken}`;
             
             const emailHtml = `
               <!DOCTYPE html>
@@ -134,8 +139,17 @@ const handler = async (req: Request): Promise<Response> => {
                               <p style="margin: 0 0 10px; color: #999999; font-size: 12px;">
                                 © ${new Date().getFullYear()} Cydena. All rights reserved.
                               </p>
-                              <p style="margin: 0; color: #999999; font-size: 12px;">
+                              <p style="margin: 0 0 15px; color: #999999; font-size: 12px;">
                                 You're receiving this because you're part of the Cydena community.
+                              </p>
+                              <p style="margin: 0;">
+                                <a href="${unsubscribeUrl}" style="color: #667eea; font-size: 12px; text-decoration: underline;">
+                                  Unsubscribe from these emails
+                                </a>
+                                &nbsp;|&nbsp;
+                                <a href="${APP_URL}/dashboard" style="color: #667eea; font-size: 12px; text-decoration: underline;">
+                                  Manage notification preferences
+                                </a>
                               </p>
                             </td>
                           </tr>

@@ -2378,6 +2378,7 @@ export type Database = {
           created_at: string
           desired_job_title: string | null
           email: string
+          email_notifications: boolean
           founding_200_joined_at: string | null
           full_name: string | null
           hackthebox_api_key: string | null
@@ -2410,6 +2411,7 @@ export type Database = {
           created_at?: string
           desired_job_title?: string | null
           email: string
+          email_notifications?: boolean
           founding_200_joined_at?: string | null
           full_name?: string | null
           hackthebox_api_key?: string | null
@@ -2442,6 +2444,7 @@ export type Database = {
           created_at?: string
           desired_job_title?: string | null
           email?: string
+          email_notifications?: boolean
           founding_200_joined_at?: string | null
           full_name?: string | null
           hackthebox_api_key?: string | null
