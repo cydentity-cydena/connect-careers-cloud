@@ -68,20 +68,24 @@ const SecuritySettings = () => {
     setSecret("");
     
     try {
-      // Only clear pending (unverified) TOTP factors, keep verified ones
+      // Clear ALL TOTP factors to allow fresh enrollment
       const { data: factorsData, error: factorsError } = await supabase.auth.mfa.listFactors();
       if (factorsError) throw factorsError;
 
-      // Unenroll only pending TOTP factors
-      const pendingFactors = factorsData?.totp?.filter(f => f.status !== "verified") || [];
-      for (const factor of pendingFactors) {
-        await supabase.auth.mfa.unenroll({ factorId: factor.id });
+      // Unenroll ALL TOTP factors to prevent "factor already exists" errors
+      const allFactors = factorsData?.totp || [];
+      for (const factor of allFactors) {
+        try {
+          await supabase.auth.mfa.unenroll({ factorId: factor.id });
+        } catch (unenrollErr: any) {
+          console.error(`Failed to unenroll factor ${factor.id}:`, unenrollErr);
+        }
       }
 
-      const deviceName = enrolledDevices.length === 0 
-        ? "Primary Device" 
-        : `Device ${enrolledDevices.length + 1}`;
-      const friendlyName = `${deviceName} - ${new Date().toLocaleDateString()}`;
+      // Generate unique friendly name with timestamp to avoid conflicts
+      const timestamp = Date.now();
+      const deviceName = "Primary Device";
+      const friendlyName = `${deviceName} - ${new Date().toLocaleDateString()} - ${timestamp}`;
       
       const { data, error } = await supabase.auth.mfa.enroll({
         factorType: "totp",
@@ -166,12 +170,19 @@ const SecuritySettings = () => {
       const { data, error } = await supabase.auth.mfa.listFactors();
       if (error) throw error;
 
-      const pending = data?.totp?.filter((f) => f.status !== "verified") || [];
-      for (const f of pending) {
-        await supabase.auth.mfa.unenroll({ factorId: f.id });
+      // Clear ALL TOTP factors (both pending and verified) to allow fresh start
+      const allFactors = data?.totp || [];
+      for (const f of allFactors) {
+        try {
+          await supabase.auth.mfa.unenroll({ factorId: f.id });
+        } catch (unenrollErr: any) {
+          console.error(`Failed to unenroll factor ${f.id}:`, unenrollErr);
+        }
       }
 
-      toast.success("Pending MFA setup reset. Please enroll again.");
+      setMfaEnabled(false);
+      setEnrolledDevices([]);
+      toast.success("MFA setup completely reset. Please enroll again.");
       await handleEnrollMFA();
     } catch (err: any) {
       console.error("Error resetting MFA enrollment:", err);
