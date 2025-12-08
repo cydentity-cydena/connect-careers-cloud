@@ -47,10 +47,24 @@ export const EditPostDialog = ({ activity, open, onOpenChange, onSuccess }: Edit
     setLoading(true);
 
     try {
-      // Moderate content before updating
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      // Check admin status for moderation
+      let userIsAdmin = false;
+      if (user) {
+        const { data: adminCheck } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', user.id)
+          .eq('role', 'admin')
+          .maybeSingle();
+        userIsAdmin = !!adminCheck;
+      }
+
+      // Moderate content before updating (admins allowed to post links)
       const contentToModerate = `${title}\n${description}`;
       const { data: moderationResult, error: moderationError } = await supabase.functions.invoke('moderate-content', {
-        body: { content: contentToModerate }
+        body: { content: contentToModerate, isAdmin: userIsAdmin }
       });
 
       if (moderationError) {
