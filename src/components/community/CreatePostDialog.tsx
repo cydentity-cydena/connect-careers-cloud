@@ -62,10 +62,20 @@ export const CreatePostDialog = () => {
         return;
       }
 
-      // Moderate content before posting
+      // Check admin status for moderation
+      const { data: adminCheck } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', user.id)
+        .eq('role', 'admin')
+        .maybeSingle();
+      
+      const userIsAdmin = !!adminCheck;
+
+      // Moderate content before posting (admins allowed to post links)
       const contentToModerate = `${title}\n${description}`;
       const { data: moderationResult, error: moderationError } = await supabase.functions.invoke('moderate-content', {
-        body: { content: contentToModerate }
+        body: { content: contentToModerate, isAdmin: userIsAdmin }
       });
 
       if (moderationError) {
@@ -95,16 +105,8 @@ export const CreatePostDialog = () => {
 
       if (error) throw error;
 
-      // Check admin status at post time (not from state)
-      const { data: adminCheck } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', user.id)
-        .eq('role', 'admin')
-        .maybeSingle();
-
       // Send announcement emails for all admin posts
-      if (adminCheck) {
+      if (userIsAdmin) {
         console.log('Admin detected, sending announcement emails for post:', newPost.id);
         try {
           const { error: emailError } = await supabase.functions.invoke('send-announcement-email', {

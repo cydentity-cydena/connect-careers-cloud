@@ -11,7 +11,7 @@ serve(async (req) => {
   }
 
   try {
-    const { content } = await req.json();
+    const { content, isAdmin } = await req.json();
     
     if (!content || typeof content !== 'string') {
       return new Response(
@@ -30,7 +30,21 @@ serve(async (req) => {
     }
 
     // Use Lovable AI to check for inappropriate content
-    const moderationPrompt = `You are a content moderation system for a professional cybersecurity platform. 
+    // For admins, only check for profanity and hate speech (allow links and promotional content)
+    const moderationPrompt = isAdmin 
+      ? `You are a content moderation system for a professional cybersecurity platform.
+Analyze the following text posted by an ADMIN and determine if it contains:
+- Profanity or vulgar language
+- Hate speech or discriminatory content
+- Harassment or bullying
+
+Note: Admins ARE allowed to post links, URLs, promotional content, meeting invites, and calls to action. Only flag truly inappropriate content.
+
+Text to analyze: "${content}"
+
+Respond ONLY with a JSON object in this exact format (no other text):
+{"appropriate": true/false, "reason": "brief explanation if inappropriate, empty string if appropriate"}`
+      : `You are a content moderation system for a professional cybersecurity platform. 
 Analyze the following text and determine if it contains:
 - Profanity or vulgar language
 - Hate speech or discriminatory content
