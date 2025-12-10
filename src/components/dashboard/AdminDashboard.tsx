@@ -6,9 +6,17 @@ import { Button } from "@/components/ui/button";
 import { Shield, Users, Briefcase, AlertCircle, UserCog, CheckCircle, Bug, Settings, FolderKanban, FileCheck, BarChart3, Plus, Brain } from "lucide-react";
 import { AdminNotifications } from "@/components/admin/AdminNotifications";
 import { SeedDemoCandidates } from "@/components/admin/SeedDemoCandidates";
+import { RoleSimulator } from "@/components/admin/RoleSimulator";
 import { toast } from "sonner";
 
-const AdminDashboard = () => {
+type SimulatedRole = "candidate" | "employer" | "recruiter" | null;
+
+interface AdminDashboardProps {
+  onSimulateRole?: (role: SimulatedRole) => void;
+  currentSimulatedRole?: SimulatedRole;
+}
+
+const AdminDashboard = ({ onSimulateRole, currentSimulatedRole }: AdminDashboardProps) => {
   const navigate = useNavigate();
   const [totalUsers, setTotalUsers] = useState(0);
   const [candidatesCount, setCandidatesCount] = useState(0);
@@ -88,6 +96,14 @@ const AdminDashboard = () => {
 
       {/* Notifications Section */}
       <AdminNotifications />
+
+      {/* Role Simulator Section */}
+      {onSimulateRole && (
+        <RoleSimulator 
+          onRoleChange={onSimulateRole} 
+          currentSimulatedRole={currentSimulatedRole || null} 
+        />
+      )}
 
       {/* Seed Demo Data Section */}
       <SeedDemoCandidates />

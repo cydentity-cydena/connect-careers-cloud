@@ -9,19 +9,26 @@ import CandidateDashboard from "@/components/dashboard/CandidateDashboard";
 import EmployerDashboard from "@/components/dashboard/EmployerDashboard";
 import AdminDashboard from "@/components/dashboard/AdminDashboard";
 import RecruiterDashboard from "@/components/dashboard/RecruiterDashboard";
+import { useRoleSimulator, SimulationBanner } from "@/components/admin/RoleSimulator";
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [userRole, setUserRole] = useState<string | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { simulatedRole, setRole: setSimulatedRole, clearSimulation } = useRoleSimulator();
+
+  // Effective role is either simulated (for admins) or actual role
+  const effectiveRole = isAdmin && simulatedRole ? simulatedRole : userRole;
 
   useEffect(() => {
     checkUser();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_OUT') {
+        clearSimulation(); // Clear simulation on sign out
         navigate("/auth");
       } else if (event === 'SIGNED_IN' && session) {
         checkUser();
@@ -56,9 +63,11 @@ const Dashboard = () => {
 
       // Priority: admin > recruiter > employer > candidate
       let selectedRole = null;
+      let userIsAdmin = false;
       if (roleData && roleData.length > 0) {
         const roles = roleData.map(r => r.role);
-        if (roles.includes('admin')) {
+        userIsAdmin = roles.includes('admin');
+        if (userIsAdmin) {
           selectedRole = 'admin';
         } else if (roles.includes('recruiter')) {
           selectedRole = 'recruiter';
@@ -68,6 +77,7 @@ const Dashboard = () => {
           selectedRole = 'candidate';
         }
       }
+      setIsAdmin(userIsAdmin);
 
       // If no role found and we haven't retried too many times, retry after a delay
       if (!selectedRole && retryCount < 3) {
@@ -93,13 +103,25 @@ const Dashboard = () => {
 
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className={`min-h-screen bg-background ${isAdmin && simulatedRole ? 'pt-10' : ''}`}>
       <SEO 
         title="Dashboard | Cydena"
         description="Manage your cybersecurity career on Cydena"
       />
+      
+      {/* Simulation Banner for Admins */}
+      {isAdmin && (
+        <SimulationBanner 
+          role={simulatedRole} 
+          onExit={() => {
+            clearSimulation();
+            toast.success("Returned to Admin view");
+          }} 
+        />
+      )}
+
       {/* Navigation */}
-      <nav className="border-b border-border backdrop-blur-sm sticky top-0 z-50 bg-background/80">
+      <nav className={`border-b border-border backdrop-blur-sm sticky ${isAdmin && simulatedRole ? 'top-10' : 'top-0'} z-50 bg-background/80`}>
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <Link to="/" className="flex items-center">
@@ -118,7 +140,7 @@ const Dashboard = () => {
               <Link to="/leaderboard" className="text-sm font-medium hover:text-primary transition-colors">
                 Leaderboard
               </Link>
-              {!(userRole === 'employer' || userRole === 'recruiter') && (
+              {!(effectiveRole === 'employer' || effectiveRole === 'recruiter') && (
                 <Link to="/community" className="text-sm font-medium hover:text-primary transition-colors">
                   Community
                 </Link>
@@ -129,7 +151,7 @@ const Dashboard = () => {
               <Link to="/jobs" className="text-sm font-medium hover:text-primary transition-colors">
                 Jobs
               </Link>
-              {userRole === 'candidate' && (
+              {effectiveRole === 'candidate' && (
                 <Link to="/career-assistant" className="text-sm font-medium hover:text-primary transition-colors">
                   AI Assistant
                 </Link>
@@ -189,7 +211,7 @@ const Dashboard = () => {
               >
                 Leaderboard
               </Link>
-              {!(userRole === 'employer' || userRole === 'recruiter') && (
+              {!(effectiveRole === 'employer' || effectiveRole === 'recruiter') && (
                 <Link 
                   to="/community" 
                   className="block text-sm font-medium hover:text-primary transition-colors py-2"
@@ -212,7 +234,7 @@ const Dashboard = () => {
               >
                 Jobs
               </Link>
-              {userRole === 'candidate' && (
+              {effectiveRole === 'candidate' && (
                 <Link 
                   to="/career-assistant" 
                   className="block text-sm font-medium hover:text-primary transition-colors py-2"
@@ -272,11 +294,11 @@ const Dashboard = () => {
           </div>
         ) : (
           <>
-            {userRole === "candidate" && <CandidateDashboard />}
-            {userRole === "employer" && <EmployerDashboard />}
-            {userRole === "recruiter" && <RecruiterDashboard />}
-            {userRole === "admin" && <AdminDashboard />}
-            {!userRole && (
+            {effectiveRole === "candidate" && <CandidateDashboard />}
+            {effectiveRole === "employer" && <EmployerDashboard />}
+            {effectiveRole === "recruiter" && <RecruiterDashboard />}
+            {effectiveRole === "admin" && <AdminDashboard onSimulateRole={setSimulatedRole} currentSimulatedRole={simulatedRole} />}
+            {!effectiveRole && (
               <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
                 <h2 className="text-xl font-semibold mb-2">Almost there…</h2>
                 <p className="text-muted-foreground">We couldn't detect a role yet. Please refresh or contact support.</p>
