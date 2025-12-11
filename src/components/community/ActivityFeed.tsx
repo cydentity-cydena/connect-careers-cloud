@@ -370,9 +370,19 @@ export const ActivityFeed = ({ limit = 20 }: { limit?: number }) => {
                     </div>
                   )}
                   
-                  {activity.metadata && (
+                  {activity.metadata?.image_url && (
+                    <div className="mt-3">
+                      <img 
+                        src={activity.metadata.image_url} 
+                        alt={activity.title}
+                        className="max-w-full rounded-lg border max-h-96 object-contain"
+                      />
+                    </div>
+                  )}
+                  
+                  {activity.metadata?.tags && (
                     <div className="mt-2 flex flex-wrap gap-2">
-                      {activity.metadata.tags?.map((tag: string, i: number) => (
+                      {activity.metadata.tags.map((tag: string, i: number) => (
                         <Badge key={i} variant="outline" className="text-xs">
                           {tag}
                         </Badge>
