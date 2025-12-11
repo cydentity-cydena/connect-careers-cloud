@@ -191,9 +191,19 @@ export const PostComments = ({ postId }: { postId: string }) => {
         mentionedUserIds = mentionedProfiles?.map(p => p.id) || [];
       }
 
-      // Moderate comment content before posting
+      // Check if current user is admin for content moderation bypass
+      let userIsAdmin = false;
+      const { data: adminCheck } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', user.id)
+        .eq('role', 'admin')
+        .maybeSingle();
+      userIsAdmin = !!adminCheck;
+
+      // Moderate comment content before posting (admins allowed to post links/promo content)
       const { data: moderationResult, error: moderationError } = await supabase.functions.invoke('moderate-content', {
-        body: { content: validated.content }
+        body: { content: validated.content, isAdmin: userIsAdmin }
       });
 
       if (moderationError) {
