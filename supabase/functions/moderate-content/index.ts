@@ -38,7 +38,7 @@ Analyze the following text posted by an ADMIN and determine if it contains:
 - Hate speech or discriminatory content
 - Harassment or bullying
 
-Note: Admins ARE allowed to post links, URLs, promotional content, meeting invites, and calls to action. Only flag truly inappropriate content.
+Note: Admins ARE allowed to post links, URLs, image URLs, images, promotional content, meeting invites, and calls to action. Only flag truly inappropriate content like profanity, hate speech, or harassment.
 
 Text to analyze: "${content}"
 
