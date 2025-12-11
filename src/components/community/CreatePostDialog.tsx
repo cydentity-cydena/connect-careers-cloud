@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { PlusCircle } from 'lucide-react';
+import { PlusCircle, ImagePlus, X } from 'lucide-react';
 
 export const CreatePostDialog = () => {
   const [open, setOpen] = useState(false);
@@ -16,6 +16,10 @@ export const CreatePostDialog = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [isAdmin, setIsAdmin] = useState(false);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -35,6 +39,66 @@ export const CreatePostDialog = () => {
 
     checkAdminStatus();
   }, []);
+
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        toast({
+          title: "File too large",
+          description: "Please select an image under 5MB",
+          variant: "destructive",
+        });
+        return;
+      }
+      setImageFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const removeImage = () => {
+    setImageFile(null);
+    setImagePreview(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  const uploadImage = async (userId: string): Promise<string | null> => {
+    if (!imageFile) return null;
+    
+    setUploadingImage(true);
+    try {
+      const fileExt = imageFile.name.split('.').pop();
+      const fileName = `${userId}/${Date.now()}.${fileExt}`;
+      
+      const { error: uploadError } = await supabase.storage
+        .from('post-images')
+        .upload(fileName, imageFile);
+      
+      if (uploadError) throw uploadError;
+      
+      const { data } = supabase.storage
+        .from('post-images')
+        .getPublicUrl(fileName);
+      
+      return data.publicUrl;
+    } catch (error) {
+      console.error('Image upload error:', error);
+      toast({
+        title: "Image upload failed",
+        description: "Failed to upload image. Post will be created without it.",
+        variant: "destructive",
+      });
+      return null;
+    } finally {
+      setUploadingImage(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -72,6 +136,12 @@ export const CreatePostDialog = () => {
       
       const userIsAdmin = !!adminCheck;
 
+      // Upload image if present (admin only)
+      let imageUrl: string | null = null;
+      if (userIsAdmin && imageFile) {
+        imageUrl = await uploadImage(user.id);
+      }
+
       // Moderate content before posting (admins allowed to post links)
       const contentToModerate = `${title}\n${description}`;
       const { data: moderationResult, error: moderationError } = await supabase.functions.invoke('moderate-content', {
@@ -91,6 +161,9 @@ export const CreatePostDialog = () => {
         return;
       }
 
+      // Include image URL in metadata if uploaded
+      const metadata = imageUrl ? { image_url: imageUrl } : null;
+
       const { data: newPost, error } = await supabase
         .from('activity_feed')
         .insert({
@@ -98,7 +171,8 @@ export const CreatePostDialog = () => {
           activity_type: activityType,
           title,
           description: description || null,
-          is_public: true
+          is_public: true,
+          metadata
         })
         .select()
         .single();
@@ -137,6 +211,8 @@ export const CreatePostDialog = () => {
       setTitle('');
       setDescription('');
       setActivityType('');
+      setImageFile(null);
+      setImagePreview(null);
       
       window.location.reload();
     } catch (error: any) {
@@ -221,12 +297,53 @@ export const CreatePostDialog = () => {
             />
           </div>
 
+          {isAdmin && (
+            <div className="space-y-2">
+              <Label>Image (Optional)</Label>
+              <input
+                type="file"
+                ref={fileInputRef}
+                accept="image/*"
+                onChange={handleImageSelect}
+                className="hidden"
+              />
+              {imagePreview ? (
+                <div className="relative inline-block">
+                  <img 
+                    src={imagePreview} 
+                    alt="Preview" 
+                    className="max-h-40 rounded-md border"
+                  />
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="icon"
+                    className="absolute -top-2 -right-2 h-6 w-6"
+                    onClick={removeImage}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              ) : (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="gap-2"
+                >
+                  <ImagePlus className="h-4 w-4" />
+                  Add Image
+                </Button>
+              )}
+            </div>
+          )}
+
           <div className="flex justify-end gap-2">
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
               Cancel
             </Button>
-            <Button type="submit" disabled={loading}>
-              {loading ? 'Posting...' : 'Share'}
+            <Button type="submit" disabled={loading || uploadingImage}>
+              {uploadingImage ? 'Uploading...' : loading ? 'Posting...' : 'Share'}
             </Button>
           </div>
         </form>
