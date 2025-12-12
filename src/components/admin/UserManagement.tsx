@@ -6,11 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { Search, UserX, Shield } from "lucide-react";
+import { Search, Trash2, Shield } from "lucide-react";
 import { VerifiedBadge } from "@/components/verification/VerifiedBadge";
 import {
   Pagination,
@@ -20,20 +18,29 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 export const UserManagement = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedUser, setSelectedUser] = useState<any>(null);
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(20);
+  const [userToDelete, setUserToDelete] = useState<any>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const { data: users, isLoading } = useQuery({
     queryKey: ["admin-users"],
     queryFn: async () => {
-      // Get all profiles
       const { data: profiles, error: profilesError } = await supabase
         .from("profiles")
         .select("*")
@@ -41,14 +48,12 @@ export const UserManagement = () => {
 
       if (profilesError) throw profilesError;
 
-      // Get all user roles
       const { data: roles, error: rolesError } = await supabase
         .from("user_roles")
         .select("user_id, role");
 
       if (rolesError) throw rolesError;
 
-      // Merge roles into profiles
       return profiles?.map(profile => ({
         ...profile,
         user_roles: roles?.filter(r => r.user_id === profile.id) || []
@@ -67,17 +72,41 @@ export const UserManagement = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-users"] });
-      toast({
-        title: "Business verification status updated",
-      });
+      toast({ title: "Business verification status updated" });
     },
     onError: () => {
-      toast({
-        title: "Failed to update business verification",
-        variant: "destructive",
-      });
+      toast({ title: "Failed to update business verification", variant: "destructive" });
     },
   });
+
+  const handleDeleteUser = async () => {
+    if (!userToDelete) return;
+    
+    setIsDeleting(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("delete-user", {
+        body: { userId: userToDelete.id },
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "User deleted",
+        description: `${userToDelete.email} has been permanently deleted.`,
+      });
+      
+      queryClient.invalidateQueries({ queryKey: ["admin-users"] });
+      setUserToDelete(null);
+    } catch (error: any) {
+      toast({
+        title: "Failed to delete user",
+        description: error.message || "An error occurred",
+        variant: "destructive",
+      });
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   const filteredUsers = users?.filter((user) =>
     user.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -92,45 +121,44 @@ export const UserManagement = () => {
   const paginatedUsers = filteredUsers?.slice(startIndex, endIndex);
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>User Management</CardTitle>
-        <CardDescription>Manage platform users and business verification status</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
-          {/* Search and Page Size */}
-          <div className="flex gap-4">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-              <Input
-                placeholder="Search by email, name, or username..."
-                value={searchQuery}
-                onChange={(e) => {
-                  setSearchQuery(e.target.value);
-                  setCurrentPage(1);
-                }}
-                className="pl-10"
-              />
+    <>
+      <Card>
+        <CardHeader>
+          <CardTitle>User Management</CardTitle>
+          <CardDescription>Manage platform users, verification status, and GDPR deletion requests</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <div className="flex gap-4">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                <Input
+                  placeholder="Search by email, name, or username..."
+                  value={searchQuery}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    setCurrentPage(1);
+                  }}
+                  className="pl-10"
+                />
+              </div>
+              <Select value={pageSize.toString()} onValueChange={(v) => { setPageSize(Number(v)); setCurrentPage(1); }}>
+                <SelectTrigger className="w-[140px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="20">Show 20</SelectItem>
+                  <SelectItem value="50">Show 50</SelectItem>
+                  <SelectItem value="100">Show 100</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
-            <Select value={pageSize.toString()} onValueChange={(v) => { setPageSize(Number(v)); setCurrentPage(1); }}>
-              <SelectTrigger className="w-[140px]">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="20">Show 20</SelectItem>
-                <SelectItem value="50">Show 50</SelectItem>
-                <SelectItem value="100">Show 100</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
 
-          {/* Users Table */}
-          {isLoading ? (
-            <p className="text-center text-muted-foreground">Loading users...</p>
-          ) : (
-            <>
-              <div className="border rounded-lg">
+            {isLoading ? (
+              <p className="text-center text-muted-foreground">Loading users...</p>
+            ) : (
+              <>
+                <div className="border rounded-lg">
                   <Table>
                     <TableHeader>
                       <TableRow>
@@ -146,6 +174,7 @@ export const UserManagement = () => {
                         const hasBusinessRole = user.user_roles?.some((r: any) => 
                           r.role === 'employer' || r.role === 'recruiter'
                         );
+                        const isAdmin = user.user_roles?.some((r: any) => r.role === 'admin');
                         
                         return (
                           <TableRow key={user.id}>
@@ -175,8 +204,8 @@ export const UserManagement = () => {
                               )}
                             </TableCell>
                             <TableCell>
-                              {hasBusinessRole ? (
-                                <div className="flex gap-2">
+                              <div className="flex gap-2">
+                                {hasBusinessRole && (
                                   <Button
                                     variant="outline"
                                     size="sm"
@@ -188,59 +217,97 @@ export const UserManagement = () => {
                                     }
                                   >
                                     <Shield className="h-4 w-4 mr-1" />
-                                    {user.is_verified ? "Unverify Business" : "Verify Business"}
+                                    {user.is_verified ? "Unverify" : "Verify"}
                                   </Button>
-                                </div>
-                              ) : (
-                                <span className="text-muted-foreground text-sm">-</span>
-                              )}
+                                )}
+                                {!isAdmin && (
+                                  <Button
+                                    variant="destructive"
+                                    size="sm"
+                                    onClick={() => setUserToDelete(user)}
+                                  >
+                                    <Trash2 className="h-4 w-4 mr-1" />
+                                    Delete
+                                  </Button>
+                                )}
+                              </div>
                             </TableCell>
                           </TableRow>
                         );
                       })}
                     </TableBody>
                   </Table>
-              </div>
+                </div>
 
-              {/* Pagination */}
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mt-4">
-                <p className="text-sm text-muted-foreground">
-                  Showing {startIndex + 1}-{Math.min(endIndex, totalItems)} of {totalItems} results
-                </p>
-                {totalPages > 1 && (
-                  <Pagination>
-                    <PaginationContent>
-                      <PaginationItem>
-                        <PaginationPrevious 
-                          onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                          className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
-                        />
-                      </PaginationItem>
-                      {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                        <PaginationItem key={page}>
-                          <PaginationLink
-                            onClick={() => setCurrentPage(page)}
-                            isActive={currentPage === page}
-                            className="cursor-pointer"
-                          >
-                            {page}
-                          </PaginationLink>
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mt-4">
+                  <p className="text-sm text-muted-foreground">
+                    Showing {startIndex + 1}-{Math.min(endIndex, totalItems)} of {totalItems} results
+                  </p>
+                  {totalPages > 1 && (
+                    <Pagination>
+                      <PaginationContent>
+                        <PaginationItem>
+                          <PaginationPrevious 
+                            onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                            className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                          />
                         </PaginationItem>
-                      ))}
-                      <PaginationItem>
-                        <PaginationNext 
-                          onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                          className={currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
-                        />
-                      </PaginationItem>
-                    </PaginationContent>
-                  </Pagination>
-                )}
-              </div>
-            </>
-          )}
-        </div>
-      </CardContent>
-    </Card>
+                        {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                          <PaginationItem key={page}>
+                            <PaginationLink
+                              onClick={() => setCurrentPage(page)}
+                              isActive={currentPage === page}
+                              className="cursor-pointer"
+                            >
+                              {page}
+                            </PaginationLink>
+                          </PaginationItem>
+                        ))}
+                        <PaginationItem>
+                          <PaginationNext 
+                            onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                            className={currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                          />
+                        </PaginationItem>
+                      </PaginationContent>
+                    </Pagination>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
+      <AlertDialog open={!!userToDelete} onOpenChange={(open) => !open && setUserToDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete User Account (GDPR)</AlertDialogTitle>
+            <AlertDialogDescription className="space-y-2">
+              <p>
+                This will <strong>permanently delete</strong> the user account for:
+              </p>
+              <p className="font-medium text-foreground">
+                {userToDelete?.email}
+              </p>
+              <p className="text-destructive">
+                This action cannot be undone. All user data including profile, certifications, 
+                applications, and activity will be permanently removed.
+              </p>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteUser}
+              disabled={isDeleting}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {isDeleting ? "Deleting..." : "Delete Permanently"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 };
