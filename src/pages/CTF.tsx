@@ -11,6 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { toast } from "sonner";
 import { Json } from "@/integrations/supabase/types";
+import ChessChallenge from "@/components/ctf/ChessChallenge";
 import { 
   Flag, 
   Trophy, 
@@ -380,29 +381,40 @@ const CTF = () => {
                       {/* Expanded Challenge View */}
                       {isSelected && !isSolved && (
                         <div className="pt-4 border-t space-y-3" onClick={(e) => e.stopPropagation()}>
-                          {/* Hints */}
-                          {challenge.hints && challenge.hints.length > 0 && (
-                            <div className="space-y-2">
-                              {challenge.hints.map((hint, idx) => (
-                                <div key={idx}>
-                                  {revealedHints[challenge.id]?.includes(idx) ? (
-                                    <div className="p-2 rounded bg-yellow-500/10 border border-yellow-500/20 text-xs">
-                                      💡 {hint.hint}
+                          {/* Special Interactive Challenge: AI Chess Gambit */}
+                          {challenge.title === "AI Chess Gambit" ? (
+                            <ChessChallenge 
+                              onComplete={(flag) => {
+                                setFlagInput(flag);
+                              }} 
+                            />
+                          ) : (
+                            <>
+                              {/* Hints */}
+                              {challenge.hints && challenge.hints.length > 0 && (
+                                <div className="space-y-2">
+                                  {challenge.hints.map((hint, idx) => (
+                                    <div key={idx}>
+                                      {revealedHints[challenge.id]?.includes(idx) ? (
+                                        <div className="p-2 rounded bg-yellow-500/10 border border-yellow-500/20 text-xs">
+                                          💡 {hint.hint}
+                                        </div>
+                                      ) : (
+                                        <Button 
+                                          variant="ghost" 
+                                          size="sm" 
+                                          className="text-xs w-full justify-start"
+                                          onClick={() => revealHint(challenge.id, idx)}
+                                        >
+                                          <Lightbulb className="h-3 w-3 mr-1" />
+                                          Reveal Hint {idx + 1}
+                                        </Button>
+                                      )}
                                     </div>
-                                  ) : (
-                                    <Button 
-                                      variant="ghost" 
-                                      size="sm" 
-                                      className="text-xs w-full justify-start"
-                                      onClick={() => revealHint(challenge.id, idx)}
-                                    >
-                                      <Lightbulb className="h-3 w-3 mr-1" />
-                                      Reveal Hint {idx + 1}
-                                    </Button>
-                                  )}
+                                  ))}
                                 </div>
-                              ))}
-                            </div>
+                              )}
+                            </>
                           )}
 
                           {/* Flag Input */}
