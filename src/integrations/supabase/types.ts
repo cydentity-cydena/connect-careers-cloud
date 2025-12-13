@@ -1205,6 +1205,13 @@ export type Database = {
             referencedRelation: "ctf_challenges"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "ctf_submissions_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "ctf_challenges_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       custom_assessments: {
@@ -2804,6 +2811,13 @@ export type Database = {
             referencedRelation: "ctf_challenges"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "security_iq_attempts_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "ctf_challenges_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       skill_pathways: {
@@ -3356,6 +3370,45 @@ export type Database = {
       }
     }
     Views: {
+      ctf_challenges_public: {
+        Row: {
+          category: string | null
+          created_at: string | null
+          description: string | null
+          difficulty: string | null
+          hints: Json | null
+          id: string | null
+          is_active: boolean | null
+          points: number | null
+          title: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string | null
+          description?: string | null
+          difficulty?: string | null
+          hints?: Json | null
+          id?: string | null
+          is_active?: boolean | null
+          points?: number | null
+          title?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string | null
+          description?: string | null
+          difficulty?: string | null
+          hints?: Json | null
+          id?: string | null
+          is_active?: boolean | null
+          points?: number | null
+          title?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       ctf_leaderboard: {
         Row: {
           avatar_url: string | null
@@ -3480,6 +3533,10 @@ export type Database = {
       }
       mark_as_founding_200: { Args: { user_id: string }; Returns: Json }
       mark_message_read: { Args: { message_id: string }; Returns: undefined }
+      verify_ctf_flag: {
+        Args: { p_challenge_id: string; p_submitted_flag: string }
+        Returns: boolean
+      }
     }
     Enums: {
       achievement_category:
