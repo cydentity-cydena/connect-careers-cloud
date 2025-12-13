@@ -14,9 +14,9 @@ interface QuizQuestion {
 // Answers spell NEVERGIVEUP
 const QUIZ_QUESTIONS: QuizQuestion[] = [
   { 
-    question: "What network scanning tool shares its name with a sci-fi movie about machines?", 
+    question: "What popular open-source tool is used for network discovery and security auditing?", 
     answer: "nmap",
-    hint: "Think 'Network Mapper'"
+    hint: "Stands for 'Network Mapper'"
   },
   { 
     question: "The reconnaissance phase of gathering system info is called ___?", 
