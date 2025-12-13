@@ -383,7 +383,7 @@ const CTF = () => {
                       {isSelected && !isSolved && (
                         <div className="pt-4 border-t space-y-3" onClick={(e) => e.stopPropagation()}>
                           {/* Special Interactive Challenge: AI Chess Gambit */}
-                          {challenge.title.trim().toLowerCase() === "ai chess gambit" ? (
+                          {challenge.title.trim().toLowerCase() === "advanced chess gambit" ? (
                             <ChessChallenge 
                               onComplete={(flag) => {
                                 setFlagInput(flag);
