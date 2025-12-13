@@ -1079,12 +1079,12 @@ export default function StaffFunnel() {
                         {/* Role and metadata */}
                         <div className="flex flex-wrap gap-2">
                           {candidate.job_title && candidate.job_id && (
-                            <Link to={`/jobs/${candidate.job_id}`}>
+                            <Link to={`/jobs/${candidate.job_id}`} className="block max-w-full overflow-hidden">
                               <Badge 
                                 variant="secondary" 
-                                className="text-xs bg-primary/20 text-primary border-primary/30 hover:bg-primary/30 cursor-pointer"
+                                className="text-xs bg-primary/20 text-primary border-primary/30 hover:bg-primary/30 cursor-pointer max-w-full"
                               >
-                                📋 {candidate.job_title}
+                                <span className="truncate block">📋 {candidate.job_title}</span>
                               </Badge>
                             </Link>
                           )}
