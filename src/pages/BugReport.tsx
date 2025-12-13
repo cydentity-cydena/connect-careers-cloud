@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import Navigation from '@/components/Navigation';
 import SEO from '@/components/SEO';
 import { Button } from '@/components/ui/button';
@@ -7,12 +7,15 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Bug, Send } from 'lucide-react';
+import { Bug, Send, ImagePlus, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 
 export default function BugReport() {
   const [submitting, setSubmitting] = useState(false);
+  const [screenshots, setScreenshots] = useState<File[]>([]);
+  const [screenshotPreviews, setScreenshotPreviews] = useState<string[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -20,6 +23,67 @@ export default function BugReport() {
     url: '',
     description: ''
   });
+
+  const handleScreenshotSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    const validFiles = files.filter(file => {
+      if (!file.type.startsWith('image/')) {
+        toast.error(`${file.name} is not an image`);
+        return false;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error(`${file.name} is too large (max 5MB)`);
+        return false;
+      }
+      return true;
+    });
+
+    if (screenshots.length + validFiles.length > 3) {
+      toast.error('Maximum 3 screenshots allowed');
+      return;
+    }
+
+    setScreenshots(prev => [...prev, ...validFiles]);
+    
+    // Generate previews
+    validFiles.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setScreenshotPreviews(prev => [...prev, e.target?.result as string]);
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const removeScreenshot = (index: number) => {
+    setScreenshots(prev => prev.filter((_, i) => i !== index));
+    setScreenshotPreviews(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const uploadScreenshots = async (): Promise<string[]> => {
+    const urls: string[] = [];
+    
+    for (const file of screenshots) {
+      const fileName = `bug-reports/${Date.now()}-${Math.random().toString(36).substring(7)}.${file.name.split('.').pop()}`;
+      
+      const { data, error } = await supabase.storage
+        .from('marketing')
+        .upload(fileName, file);
+      
+      if (error) {
+        console.error('Upload error:', error);
+        continue;
+      }
+      
+      const { data: urlData } = supabase.storage
+        .from('marketing')
+        .getPublicUrl(fileName);
+      
+      urls.push(urlData.publicUrl);
+    }
+    
+    return urls;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,8 +96,14 @@ export default function BugReport() {
     setSubmitting(true);
 
     try {
+      // Upload screenshots first if any
+      let screenshotUrls: string[] = [];
+      if (screenshots.length > 0) {
+        screenshotUrls = await uploadScreenshots();
+      }
+
       const { error } = await supabase.functions.invoke('submit-bug-report', {
-        body: formData
+        body: { ...formData, screenshotUrls }
       });
 
       if (error) throw error;
@@ -48,6 +118,8 @@ export default function BugReport() {
         url: '',
         description: ''
       });
+      setScreenshots([]);
+      setScreenshotPreviews([]);
     } catch (error: any) {
       console.error('Error submitting bug report:', error);
       toast.error('Failed to submit bug report. Please try again.');
@@ -158,6 +230,49 @@ export default function BugReport() {
                   />
                   <p className="text-xs text-muted-foreground">
                     Be as specific as possible - include steps to reproduce if applicable
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Screenshots (Optional)</Label>
+                  <div className="flex flex-wrap gap-3">
+                    {screenshotPreviews.map((preview, index) => (
+                      <div key={index} className="relative group">
+                        <img 
+                          src={preview} 
+                          alt={`Screenshot ${index + 1}`}
+                          className="h-20 w-20 object-cover rounded-lg border border-border"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => removeScreenshot(index)}
+                          className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </div>
+                    ))}
+                    {screenshots.length < 3 && (
+                      <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        className="h-20 w-20 border-2 border-dashed border-muted-foreground/30 rounded-lg flex flex-col items-center justify-center gap-1 hover:border-primary/50 hover:bg-primary/5 transition-colors"
+                      >
+                        <ImagePlus className="h-5 w-5 text-muted-foreground" />
+                        <span className="text-xs text-muted-foreground">Add</span>
+                      </button>
+                    )}
+                  </div>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    className="hidden"
+                    onChange={handleScreenshotSelect}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Upload up to 3 screenshots to help illustrate the issue (max 5MB each)
                   </p>
                 </div>
 

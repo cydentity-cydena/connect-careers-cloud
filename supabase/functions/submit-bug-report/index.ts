@@ -11,6 +11,7 @@ interface BugReportRequest {
   bugType: string;
   url: string;
   description: string;
+  screenshotUrls?: string[];
 }
 
 serve(async (req) => {
@@ -19,20 +20,37 @@ serve(async (req) => {
   }
 
   try {
-    const { name, email, bugType, url, description }: BugReportRequest = await req.json();
+    const { name, email, bugType, url, description, screenshotUrls }: BugReportRequest = await req.json();
 
     console.log('Bug report received:', {
       name: name || 'Anonymous',
       email: email || 'Not provided',
       bugType: bugType || 'Not specified',
       url: url || 'Not provided',
-      description: description.substring(0, 100) + '...'
+      description: description.substring(0, 100) + '...',
+      screenshotCount: screenshotUrls?.length || 0
     });
 
     // Send email using SendGrid
     const SENDGRID_API_KEY = Deno.env.get('SENDGRID_API_KEY');
     
     if (SENDGRID_API_KEY) {
+      // Build screenshot HTML if any
+      let screenshotHtml = '';
+      if (screenshotUrls && screenshotUrls.length > 0) {
+        screenshotHtml = `
+          <hr>
+          <h3>Screenshots:</h3>
+          <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            ${screenshotUrls.map((url, i) => `
+              <a href="${url}" target="_blank" style="display: block;">
+                <img src="${url}" alt="Screenshot ${i + 1}" style="max-width: 300px; max-height: 200px; border: 1px solid #ddd; border-radius: 4px;" />
+              </a>
+            `).join('')}
+          </div>
+        `;
+      }
+
       const emailBody = {
         personalizations: [{
           to: [{ email: 'contact@cydena.com' }],
@@ -50,6 +68,7 @@ serve(async (req) => {
             <hr>
             <h3>Description:</h3>
             <p>${description.replace(/\n/g, '<br>')}</p>
+            ${screenshotHtml}
           `
         }]
       };
