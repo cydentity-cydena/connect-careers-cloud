@@ -361,7 +361,7 @@ const CTF = () => {
                       </div>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                      <p className="text-sm text-muted-foreground line-clamp-2">{challenge.description}</p>
+                      <p className="text-sm text-muted-foreground">{challenge.description}</p>
                       
                       <div className="flex items-center justify-between">
                         <Badge variant="secondary" className="gap-1">
