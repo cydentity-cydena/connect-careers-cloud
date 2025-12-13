@@ -210,21 +210,35 @@ const JobDetail = () => {
 
         {/* Job Header */}
         <Card className="mb-6">
-          <CardHeader>
-            <div className="flex items-start justify-between">
-              <div className="flex-1">
-                <div className="flex items-center gap-3 mb-2">
+          <CardHeader className="space-y-4">
+            {/* Action Buttons - Top on mobile */}
+            <div className="flex flex-wrap gap-2 sm:hidden">
+              <EditJobButton 
+                jobId={job.id} 
+                createdBy={job.created_by}
+                variant="outline"
+              />
+              <ApplyJobDialog jobId={job.id} jobTitle={job.title}>
+                <Button size="default" variant="hero" className="whitespace-nowrap">
+                  Apply Now
+                </Button>
+              </ApplyJobDialog>
+            </div>
+
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+              <div className="flex-1 min-w-0">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-2">
                   {job.company?.logo_url && (
                     <img 
                       src={job.company.logo_url} 
                       alt={job.company.name}
-                      className="h-12 w-12 rounded-lg object-cover"
+                      className="h-12 w-12 rounded-lg object-cover flex-shrink-0"
                     />
                   )}
-                  <div>
-                    <CardTitle className="text-3xl mb-1">{job.title}</CardTitle>
-                    <div className="flex items-center gap-2">
-                      <p className="text-lg text-muted-foreground font-semibold">
+                  <div className="min-w-0">
+                    <CardTitle className="text-2xl sm:text-3xl mb-1 break-words">{job.title}</CardTitle>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <p className="text-base sm:text-lg text-muted-foreground font-semibold">
                         {job.company?.name || 'Company Name Not Available'}
                       </p>
                       {isVerified && <VerifiedBadge />}
@@ -233,22 +247,22 @@ const JobDetail = () => {
                 </div>
 
                 {/* Key Details */}
-                <div className="flex flex-wrap gap-4 mt-4 text-sm text-muted-foreground">
+                <div className="flex flex-wrap gap-3 sm:gap-4 mt-4 text-sm text-muted-foreground">
                   <div className="flex items-center gap-2">
-                    <MapPin className="h-4 w-4" />
-                    {job.location || "Not specified"}
+                    <MapPin className="h-4 w-4 flex-shrink-0" />
+                    <span className="truncate">{job.location || "Not specified"}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Briefcase className="h-4 w-4" />
-                    {job.job_type}
+                    <Briefcase className="h-4 w-4 flex-shrink-0" />
+                    <span>{job.job_type}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <DollarSign className="h-4 w-4" />
-                    {formatSalary(job.salary_min, job.salary_max)}
+                    <DollarSign className="h-4 w-4 flex-shrink-0" />
+                    <span>{formatSalary(job.salary_min, job.salary_max)}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Clock className="h-4 w-4" />
-                    Posted {getTimeAgo(job.created_at)}
+                    <Clock className="h-4 w-4 flex-shrink-0" />
+                    <span>Posted {getTimeAgo(job.created_at)}</span>
                   </div>
                 </div>
 
@@ -274,8 +288,8 @@ const JobDetail = () => {
                 </div>
               </div>
 
-              {/* Action Buttons */}
-              <div className="ml-4 flex gap-2">
+              {/* Action Buttons - Side on desktop */}
+              <div className="hidden sm:flex gap-2 flex-shrink-0">
                 <EditJobButton 
                   jobId={job.id} 
                   createdBy={job.created_by}
