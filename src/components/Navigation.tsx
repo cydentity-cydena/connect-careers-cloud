@@ -74,6 +74,7 @@ const Navigation = () => {
   const allNavLinks: NavLink[] = [
     { to: "/", label: "Home" },
     { to: "/leaderboard", label: "Leaderboard" },
+    { to: "/ctf", label: "CTF" },
     { to: "/profiles", label: "Profiles" },
     { to: "/jobs", label: "Jobs" },
     { to: "/career-assistant", label: "AI Assistant", showForRoles: ["candidate"] },
