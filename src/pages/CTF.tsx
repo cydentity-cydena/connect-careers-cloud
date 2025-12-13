@@ -12,6 +12,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { toast } from "sonner";
 import { Json } from "@/integrations/supabase/types";
 import ChessChallenge from "@/components/ctf/ChessChallenge";
+import { QuizChallenge } from "@/components/ctf/QuizChallenge";
 import { 
   Flag, 
   Trophy, 
@@ -384,6 +385,12 @@ const CTF = () => {
                           {/* Special Interactive Challenge: AI Chess Gambit */}
                           {challenge.title.trim().toLowerCase() === "ai chess gambit" ? (
                             <ChessChallenge 
+                              onComplete={(flag) => {
+                                setFlagInput(flag);
+                              }} 
+                            />
+                          ) : challenge.title.trim().toLowerCase() === "quiz quantlet" ? (
+                            <QuizChallenge 
                               onComplete={(flag) => {
                                 setFlagInput(flag);
                               }} 
