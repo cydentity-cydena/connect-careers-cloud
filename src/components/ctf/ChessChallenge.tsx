@@ -6,42 +6,78 @@ import { toast } from "sonner";
 import { RotateCcw, CheckCircle2, Crown, Lightbulb } from "lucide-react";
 
 interface ChessPuzzle {
-  position: string; // Simple visual representation
+  position: string;
+  board: string; // ASCII representation
   question: string;
   correctMove: string;
   hint: string;
   flagLetter: string;
 }
 
-// Each puzzle's correct move destination file spells: CHECKMATE -> C H E C K M A T E
-// But we'll use first letter of the answer for simplicity
+// Valid checkmate-in-one puzzles - destination files spell FACE
 const CHESS_PUZZLES: ChessPuzzle[] = [
   {
-    position: "White to move. Black King on h8, White Queen on f6, White King on g6.",
-    question: "What's the checkmate move? (e.g., Qg7#)",
-    correctMove: "Qg7#",
-    hint: "The Queen delivers mate by covering all escape squares",
-    flagLetter: "G"
+    position: "Scholar's Mate pattern",
+    board: `  a b c d e f g h
+8 . . . q k . . .
+7 . . . p . p . .
+6 . . . . . . . .
+5 . . . . . . . Q
+4 . . B . . . . .
+3 . . . . . . . .
+2 . . . . . . . .
+1 . . . . . . . .`,
+    question: "White to move. Black King e8, Black Queen d8, pawns d7/f7. White Queen h5, White Bishop c4. Find the checkmate!",
+    correctMove: "Qxf7#",
+    hint: "The Bishop on c4 protects a critical square on the a2-g8 diagonal",
+    flagLetter: "F"
   },
   {
-    position: "White to move. Black King on e8, White Rook on a1, White King on e6.",
-    question: "What move forces checkmate in one?",
+    position: "Back Rank Mate",
+    board: `  a b c d e f g h
+8 . . . . . . . k
+7 . . . . . . p p
+6 . . . . . . . .
+5 . . . . . . . .
+4 . . . . . . . .
+3 . . . . . . . .
+2 . . . . . . . .
+1 R . . . . . . .`,
+    question: "White to move. Black King h8, pawns g7/h7. White Rook a1. Deliver checkmate!",
     correctMove: "Ra8#",
-    hint: "Use the back rank",
+    hint: "The pawns trap the King - use the back rank",
     flagLetter: "A"
   },
   {
-    position: "White to move. Black King on g8, White Queen on h5, White Bishop on c2.",
-    question: "Find the checkmate with the Queen.",
-    correctMove: "Qf7#",
-    hint: "The Bishop supports the Queen's attack",
-    flagLetter: "M"
+    position: "Rook and King Coordination",
+    board: `  a b c d e f g h
+8 k . . . . . . .
+7 . . . . . . . .
+6 K . . . . . . .
+5 . . . . . . . .
+4 . . . . . . . .
+3 . . . . . . . .
+2 . . . . . . . .
+1 . . R . . . . .`,
+    question: "White to move. Black King a8, White King a6, White Rook c1. Find the checkmate!",
+    correctMove: "Rc8#",
+    hint: "The White King controls the escape squares on the 7th rank",
+    flagLetter: "C"
   },
   {
-    position: "White to move. Black King on e8, White Knight on d6, White Queen on e2.",
-    question: "Deliver checkmate with the Queen.",
-    correctMove: "Qe7#",
-    hint: "The Knight controls key escape squares",
+    position: "Queen Back Rank",
+    board: `  a b c d e f g h
+8 . . . . . r . k
+7 . . . . . p p p
+6 . . . . . . . .
+5 . . . . . . . .
+4 . . . . . . . .
+3 . . . . . . . .
+2 . . . . . . . .
+1 . . . . Q . . .`,
+    question: "White to move. Black King g8, Black Rook f8, pawns f7/g7/h7. White Queen e1. Deliver checkmate!",
+    correctMove: "Qe8#",
+    hint: "The Queen attacks along the entire 8th rank",
     flagLetter: "E"
   },
 ];
@@ -59,7 +95,7 @@ const ChessChallenge = ({ onComplete }: ChessChallengeProps) => {
   const [showHint, setShowHint] = useState(false);
 
   const normalizeMove = (move: string): string => {
-    return move.trim().toLowerCase().replace(/[+#]/g, '').replace(/\s/g, '');
+    return move.trim().toLowerCase().replace(/[+#x]/g, '').replace(/\s/g, '');
   };
 
   const handleSubmitMove = () => {
@@ -84,6 +120,7 @@ const ChessChallenge = ({ onComplete }: ChessChallengeProps) => {
         setCurrentIndex(currentIndex + 1);
       }
       setMoveInput("");
+      setAttempts(0);
     } else {
       setAttempts(attempts + 1);
       toast.error("♟ Incorrect move. Try again!");
@@ -114,7 +151,7 @@ const ChessChallenge = ({ onComplete }: ChessChallengeProps) => {
           FLAG{`{${solvedLetters.join("")}}`}
         </div>
         <p className="text-xs text-muted-foreground text-center">
-          The correct moves revealed the hidden message. Submit this flag above!
+          The destination squares revealed the flag. Submit above!
         </p>
       </div>
     );
@@ -133,7 +170,7 @@ const ChessChallenge = ({ onComplete }: ChessChallengeProps) => {
         <Progress value={progress} className="h-2" />
       </div>
 
-      {/* Revealed letters */}
+      {/* Revealed letters - destination files spell the flag */}
       <div className="flex gap-1 justify-center flex-wrap">
         {CHESS_PUZZLES.map((_, idx) => (
           <div
@@ -155,13 +192,13 @@ const ChessChallenge = ({ onComplete }: ChessChallengeProps) => {
       <div className="p-4 bg-muted/20 rounded-lg border border-muted/30">
         <div className="flex items-center gap-2 mb-2">
           <Crown className="h-4 w-4 text-primary" />
-          <span className="text-xs text-muted-foreground">Chess Puzzle #{currentIndex + 1}</span>
+          <span className="text-xs text-muted-foreground">Chess Puzzle #{currentIndex + 1}: {currentPuzzle.position}</span>
         </div>
         
-        {/* Position description */}
-        <div className="p-3 mb-3 bg-background/50 rounded border font-mono text-xs">
-          {currentPuzzle.position}
-        </div>
+        {/* ASCII Board */}
+        <pre className="p-3 mb-3 bg-background/50 rounded border font-mono text-xs leading-relaxed overflow-x-auto">
+          {currentPuzzle.board}
+        </pre>
         
         <p className="text-sm font-medium">{currentPuzzle.question}</p>
         
@@ -176,7 +213,7 @@ const ChessChallenge = ({ onComplete }: ChessChallengeProps) => {
       {/* Move input */}
       <div className="flex gap-2">
         <Input
-          placeholder="Enter move (e.g., Qg7#)"
+          placeholder="Enter move (e.g., Qxf7# or Qf7)"
           value={moveInput}
           onChange={(e) => setMoveInput(e.target.value)}
           className="font-mono"
@@ -204,7 +241,7 @@ const ChessChallenge = ({ onComplete }: ChessChallengeProps) => {
           <span />
         )}
         <p className="text-xs text-muted-foreground">
-          Solve each puzzle - the moves reveal the flag!
+          Destination squares reveal the flag!
         </p>
       </div>
     </div>
