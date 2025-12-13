@@ -1075,18 +1075,19 @@ export const ApplicationPipeline = () => {
                               {candidate.profile.full_name?.split(" ").map((n) => n[0]).join("").toUpperCase() || "??"}
                             </AvatarFallback>
                           </Avatar>
-                          <div className="flex-1 min-w-0 pr-6">
+                          <div className="flex-1 min-w-0 pr-6 overflow-hidden">
                             {candidate.profile.username ? (
                               <Link 
                                 to={`/profiles/${candidate.candidate_id}`}
-                                className="font-bold text-base leading-tight mb-1.5 text-foreground hover:text-primary transition-colors cursor-pointer block"
+                                className="font-bold text-base leading-tight mb-1.5 text-foreground hover:text-primary transition-colors cursor-pointer block truncate"
                                 onClick={(e) => e.stopPropagation()}
+                                title={`${candidate.profile.full_name} (@${candidate.profile.username})`}
                               >
-                                {candidate.profile.full_name}
-                                <span className="text-muted-foreground font-normal text-sm"> (@{candidate.profile.username})</span>
+                                <span className="truncate">{candidate.profile.full_name}</span>
+                                <span className="text-muted-foreground font-normal text-sm truncate"> @{candidate.profile.username}</span>
                               </Link>
                             ) : (
-                              <h4 className="font-bold text-base leading-tight mb-1.5 text-foreground">
+                              <h4 className="font-bold text-base leading-tight mb-1.5 text-foreground truncate" title={candidate.profile.full_name}>
                                 {candidate.profile.full_name}
                                 <span className="text-muted-foreground font-normal text-sm"> (No profile yet)</span>
                               </h4>
