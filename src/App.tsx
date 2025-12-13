@@ -62,6 +62,7 @@ import MFA from "./pages/MFA";
 import SecuritySettings from "./pages/SecuritySettings";
 import VerifyEmail from "./pages/VerifyEmail";
 import Unsubscribe from "./pages/Unsubscribe";
+import CTF from "./pages/CTF";
 import { ScrollToTop } from "./components/ScrollToTop";
 
 const queryClient = new QueryClient();
@@ -105,6 +106,7 @@ const AppContent = () => {
           <Route path="/placements" element={<ProtectedRoute><Placements /></ProtectedRoute>} />
           <Route path="/jobs/create" element={<ProtectedRoute><JobCreate /></ProtectedRoute>} />
           <Route path="/community" element={<ProtectedRoute><Community /></ProtectedRoute>} />
+          <Route path="/ctf" element={<CTF />} />
           {/* <Route path="/roi-calculator" element={<ROICalculator />} /> */}
           <Route path="/partnerships" element={<ProtectedRoute><Partnerships /></ProtectedRoute>} />
           <Route path="/career-assistant" element={<ProtectedRoute><CareerAssistant /></ProtectedRoute>} />
