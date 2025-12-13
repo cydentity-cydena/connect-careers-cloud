@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Shield, Users, Briefcase, AlertCircle, UserCog, CheckCircle, Bug, Settings, FolderKanban, FileCheck, BarChart3, Plus, Brain } from "lucide-react";
+import { Shield, Users, Briefcase, AlertCircle, UserCog, CheckCircle, Bug, Settings, FolderKanban, FileCheck, BarChart3, Plus, Brain, Send } from "lucide-react";
 import { AdminNotifications } from "@/components/admin/AdminNotifications";
 import { SeedDemoCandidates } from "@/components/admin/SeedDemoCandidates";
 import { RoleSimulator } from "@/components/admin/RoleSimulator";
@@ -26,6 +26,20 @@ const AdminDashboard = ({ onSimulateRole, currentSimulatedRole }: AdminDashboard
   const [applicationsCount, setApplicationsCount] = useState(0);
   const [employerCompaniesCount, setEmployerCompaniesCount] = useState(0);
   const [clientCompaniesCount, setClientCompaniesCount] = useState(0);
+  const [sendingBlitz, setSendingBlitz] = useState(false);
+
+  const handleSendReferralBlitz = async () => {
+    setSendingBlitz(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('send-referral-blitz-email');
+      if (error) throw error;
+      toast.success(`Referral blitz emails sent to ${data?.sent || 0} users!`);
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to send referral blitz emails');
+    } finally {
+      setSendingBlitz(false);
+    }
+  };
 
   useEffect(() => {
     loadStats();
@@ -391,6 +405,31 @@ const AdminDashboard = ({ onSimulateRole, currentSimulatedRole }: AdminDashboard
             <CardContent>
               <Button variant="outline" className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
                 Create Job
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card className="border-border shadow-card hover:shadow-lg transition-all group bg-gradient-to-br from-primary/10 to-secondary/10">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 group-hover:text-primary transition-colors">
+                <Send className="h-5 w-5" />
+                Referral Blitz
+              </CardTitle>
+              <CardDescription>
+                Send referral campaign emails to all users
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button 
+                variant="default" 
+                className="w-full"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleSendReferralBlitz();
+                }}
+                disabled={sendingBlitz}
+              >
+                {sendingBlitz ? 'Sending...' : 'Send Referral Blitz'}
               </Button>
             </CardContent>
           </Card>
