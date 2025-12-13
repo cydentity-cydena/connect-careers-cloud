@@ -335,11 +335,12 @@ const SecuritySettings = () => {
                     onClick={() => {
                       setShowBackupCodes(false);
                       setBackupCodes([]);
-                      checkMFAStatus();
+                      toast.success("MFA setup complete! Redirecting to dashboard...");
+                      navigate("/dashboard");
                     }}
                     className="w-full"
                   >
-                    I've Saved My Backup Codes
+                    I've Saved My Backup Codes - Continue to Dashboard
                   </Button>
                 </div>
               </div>
