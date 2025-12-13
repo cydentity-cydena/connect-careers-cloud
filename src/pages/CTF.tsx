@@ -11,7 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { toast } from "sonner";
 import { Json } from "@/integrations/supabase/types";
-import CyberQuizChallenge from "@/components/ctf/CyberQuizChallenge";
+import ChessChallenge from "@/components/ctf/ChessChallenge";
 import { 
   Flag, 
   Trophy, 
@@ -381,9 +381,9 @@ const CTF = () => {
                       {/* Expanded Challenge View */}
                       {isSelected && !isSolved && (
                         <div className="pt-4 border-t space-y-3" onClick={(e) => e.stopPropagation()}>
-                          {/* Special Interactive Challenge: Cyber Security Gauntlet */}
-                          {challenge.title.trim().toLowerCase() === "cyber security gauntlet" ? (
-                            <CyberQuizChallenge 
+                          {/* Special Interactive Challenge: AI Chess Gambit */}
+                          {challenge.title.trim().toLowerCase() === "ai chess gambit" ? (
+                            <ChessChallenge 
                               onComplete={(flag) => {
                                 setFlagInput(flag);
                               }} 
