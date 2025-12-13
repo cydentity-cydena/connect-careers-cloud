@@ -1,141 +1,74 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import { CheckCircle2, XCircle, HelpCircle, RotateCcw } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface QuizQuestion {
   question: string;
-  options: string[];
-  correctIndex: number;
-  flagLetter: string;
-  explanation: string;
+  answer: string;
+  hint: string;
 }
 
+// Answers spell out: N-E-V-E-R-G-I-V-E-U-P = NEVERGIVEUP
 const QUIZ_QUESTIONS: QuizQuestion[] = [
   {
-    question: "Which nmap flag performs a SYN stealth scan?",
-    options: [
-      "-sT",
-      "-sS",
-      "-sU",
-      "-sA"
-    ],
-    correctIndex: 1,
-    flagLetter: "N",
-    explanation: "-sS performs a SYN stealth scan, sending SYN packets without completing the TCP handshake."
+    question: "Which popular open-source tool is used for network discovery and security auditing through port scanning?",
+    answer: "nmap",
+    hint: "It's a 4-letter tool that starts with 'n'."
   },
   {
-    question: "What port does HTTPS typically run on?",
-    options: [
-      "80",
-      "22",
-      "443",
-      "8080"
-    ],
-    correctIndex: 2,
-    flagLetter: "E",
-    explanation: "HTTPS uses port 443 by default for encrypted web traffic."
+    question: "What Linux command prints all environment variables to the terminal?",
+    answer: "env",
+    hint: "A 3-letter command that shows your shell's variables."
   },
   {
-    question: "Which tool is commonly used for password cracking with wordlists?",
-    options: [
-      "Wireshark",
-      "Nmap",
-      "John the Ripper",
-      "Metasploit"
-    ],
-    correctIndex: 2,
-    flagLetter: "V",
-    explanation: "John the Ripper is a popular password cracking tool that supports dictionary attacks."
+    question: "Which modal text editor, famous for its steep learning curve, is installed by default on most Unix systems?",
+    answer: "vim",
+    hint: "An improved version of 'vi'."
   },
   {
-    question: "What does the command 'chmod 777' do?",
-    options: [
-      "Deletes the file",
-      "Encrypts the file",
-      "Gives read, write, execute permissions to everyone",
-      "Makes the file hidden"
-    ],
-    correctIndex: 2,
-    flagLetter: "E",
-    explanation: "chmod 777 sets read (4), write (2), and execute (1) permissions for owner, group, and others."
+    question: "What bash command outputs a string or variable value to the terminal?",
+    answer: "echo",
+    hint: "It 'repeats' what you tell it."
   },
   {
-    question: "Which protocol does ping use?",
-    options: [
-      "TCP",
-      "UDP",
-      "ICMP",
-      "ARP"
-    ],
-    correctIndex: 2,
-    flagLetter: "R",
-    explanation: "Ping uses ICMP (Internet Control Message Protocol) Echo Request and Reply messages."
+    question: "What is the name of the superuser account on Unix/Linux systems with UID 0?",
+    answer: "root",
+    hint: "The most powerful account on the system."
   },
   {
-    question: "What is the default port for SSH?",
-    options: [
-      "21",
-      "22",
-      "23",
-      "25"
-    ],
-    correctIndex: 1,
-    flagLetter: "G",
-    explanation: "SSH (Secure Shell) uses port 22 by default for encrypted remote access."
+    question: "Which command-line utility searches for text patterns using regular expressions?",
+    answer: "grep",
+    hint: "Global Regular Expression Print."
   },
   {
-    question: "Which command displays network connections on Linux?",
-    options: [
-      "ifconfig",
-      "netstat",
-      "ping",
-      "traceroute"
-    ],
-    correctIndex: 1,
-    flagLetter: "I",
-    explanation: "netstat displays active network connections, routing tables, and interface statistics."
+    question: "What legacy Linux command is used to configure network interfaces (now replaced by 'ip')?",
+    answer: "ifconfig",
+    hint: "Short for 'interface configuration'."
   },
   {
-    question: "What does XSS stand for?",
-    options: [
-      "Extra Secure Socket",
-      "Cross-Site Scripting",
-      "Extended Security System",
-      "External Script Source"
-    ],
-    correctIndex: 1,
-    flagLetter: "V",
-    explanation: "Cross-Site Scripting (XSS) allows attackers to inject malicious scripts into web pages."
+    question: "What technology creates a secure encrypted tunnel over the internet for private network access?",
+    answer: "vpn",
+    hint: "Virtual Private ___."
   },
   {
-    question: "Which Metasploit command starts a listener for reverse shells?",
-    options: [
-      "use auxiliary/scanner",
-      "exploit/multi/handler",
-      "set PAYLOAD",
-      "run scanner"
-    ],
-    correctIndex: 1,
-    flagLetter: "E",
-    explanation: "exploit/multi/handler is used to catch incoming reverse shell connections in Metasploit."
+    question: "What is the term for the unauthorized transfer of data out of a compromised network or system?",
+    answer: "exfiltration",
+    hint: "The opposite of infiltration, but for data."
   },
   {
-    question: "What file contains password hashes on Linux?",
-    options: [
-      "/etc/passwd",
-      "/etc/shadow",
-      "/etc/hosts",
-      "/etc/sudoers"
-    ],
-    correctIndex: 1,
-    flagLetter: "UP",
-    explanation: "/etc/shadow stores encrypted password hashes and is only readable by root."
+    question: "Which transport layer protocol is connectionless and commonly used for streaming and gaming?",
+    answer: "udp",
+    hint: "User Datagram Protocol."
+  },
+  {
+    question: "Which ICMP-based command is used to test network connectivity to a remote host?",
+    answer: "ping",
+    hint: "Named after sonar sound."
   }
 ];
-
-// The flag letters spell out: NEVERGIVEUP -> FLAG{NEVERGIVEUP}
 
 interface QuizChallengeProps {
   onComplete: (flag: string) => void;
@@ -143,28 +76,27 @@ interface QuizChallengeProps {
 
 export const QuizChallenge: React.FC<QuizChallengeProps> = ({ onComplete }) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
+  const [userAnswer, setUserAnswer] = useState('');
+  const [showHint, setShowHint] = useState(false);
   const [answered, setAnswered] = useState(false);
-  const [correctAnswers, setCorrectAnswers] = useState<string[]>([]);
+  const [isCorrect, setIsCorrect] = useState(false);
+  const [collectedLetters, setCollectedLetters] = useState<string[]>([]);
   const [showWrongReset, setShowWrongReset] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
 
   const currentQuestion = QUIZ_QUESTIONS[currentQuestionIndex];
-  const isCorrect = selectedAnswer === currentQuestion.correctIndex;
-
-  const handleAnswerSelect = (index: number) => {
-    if (answered) return;
-    setSelectedAnswer(index);
-  };
 
   const handleSubmitAnswer = () => {
-    if (selectedAnswer === null) return;
-    setAnswered(true);
+    if (!userAnswer.trim()) return;
     
-    if (isCorrect) {
-      setCorrectAnswers(prev => [...prev, currentQuestion.flagLetter]);
+    const correct = userAnswer.trim().toLowerCase() === currentQuestion.answer.toLowerCase();
+    setAnswered(true);
+    setIsCorrect(correct);
+    
+    if (correct) {
+      const firstLetter = currentQuestion.answer[0].toUpperCase();
+      setCollectedLetters(prev => [...prev, firstLetter]);
     } else {
-      // Wrong answer - show reset message
       setShowWrongReset(true);
     }
   };
@@ -172,26 +104,36 @@ export const QuizChallenge: React.FC<QuizChallengeProps> = ({ onComplete }) => {
   const handleNextQuestion = () => {
     if (currentQuestionIndex < QUIZ_QUESTIONS.length - 1) {
       setCurrentQuestionIndex(prev => prev + 1);
-      setSelectedAnswer(null);
+      setUserAnswer('');
+      setShowHint(false);
       setAnswered(false);
+      setIsCorrect(false);
     } else {
       setIsComplete(true);
-      const flag = `FLAG{NEVERGIVEUP}`;
+      const flag = 'FLAG{NEVERGIVEUP}';
       onComplete(flag);
     }
   };
 
   const handleReset = () => {
     setCurrentQuestionIndex(0);
-    setSelectedAnswer(null);
+    setUserAnswer('');
+    setShowHint(false);
     setAnswered(false);
-    setCorrectAnswers([]);
+    setIsCorrect(false);
+    setCollectedLetters([]);
     setShowWrongReset(false);
     setIsComplete(false);
   };
 
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !answered) {
+      handleSubmitAnswer();
+    }
+  };
+
   if (isComplete) {
-    const flag = `FLAG{NEVERGIVEUP}`;
+    const flag = 'FLAG{NEVERGIVEUP}';
     
     return (
       <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-primary/20">
@@ -201,6 +143,9 @@ export const QuizChallenge: React.FC<QuizChallengeProps> = ({ onComplete }) => {
           <p className="text-sm text-muted-foreground">
             You answered all {QUIZ_QUESTIONS.length} questions correctly!
           </p>
+          <div className="p-2 rounded bg-background/30 font-mono text-xs text-muted-foreground">
+            {collectedLetters.join(' → ')}
+          </div>
           <div className="p-3 rounded-lg bg-background/50 font-mono text-primary">
             {flag}
           </div>
@@ -212,7 +157,6 @@ export const QuizChallenge: React.FC<QuizChallengeProps> = ({ onComplete }) => {
     );
   }
 
-  // Show wrong answer reset screen
   if (showWrongReset) {
     return (
       <Card className="bg-gradient-to-br from-red-500/10 to-red-500/5 border-red-500/20">
@@ -223,7 +167,7 @@ export const QuizChallenge: React.FC<QuizChallengeProps> = ({ onComplete }) => {
             You must get all questions correct. The quiz will reset.
           </p>
           <p className="text-xs text-muted-foreground italic">
-            Remember: Never give up!
+            Hint: Each answer reveals a letter of the flag...
           </p>
           <Button onClick={handleReset} variant="outline" size="sm" className="gap-2">
             <RotateCcw className="h-4 w-4" />
@@ -256,6 +200,16 @@ export const QuizChallenge: React.FC<QuizChallengeProps> = ({ onComplete }) => {
         </div>
       </div>
 
+      {/* Collected letters so far */}
+      {collectedLetters.length > 0 && (
+        <div className="p-2 rounded bg-background/30 text-center">
+          <span className="text-xs text-muted-foreground">Collected: </span>
+          <span className="font-mono text-primary font-bold">
+            {collectedLetters.join('')}
+          </span>
+        </div>
+      )}
+
       {/* Question */}
       <Card className="bg-background/50 border-border/50">
         <CardContent className="p-4 space-y-4">
@@ -264,34 +218,43 @@ export const QuizChallenge: React.FC<QuizChallengeProps> = ({ onComplete }) => {
             <p className="text-sm font-medium">{currentQuestion.question}</p>
           </div>
 
-          {/* Options */}
+          {/* Answer input */}
           <div className="space-y-2">
-            {currentQuestion.options.map((option, idx) => (
+            <Input
+              type="text"
+              placeholder="Type your answer..."
+              value={userAnswer}
+              onChange={(e) => setUserAnswer(e.target.value)}
+              onKeyPress={handleKeyPress}
+              disabled={answered}
+              className={cn(
+                "font-mono",
+                answered && isCorrect && "border-green-500 bg-green-500/10"
+              )}
+            />
+            
+            {!answered && !showHint && (
               <button
-                key={idx}
-                onClick={() => handleAnswerSelect(idx)}
-                disabled={answered}
-                className={cn(
-                  "w-full p-3 text-left text-sm rounded-lg border transition-all",
-                  "hover:bg-accent/50",
-                  selectedAnswer === idx && !answered && "ring-2 ring-primary border-primary",
-                  answered && idx === currentQuestion.correctIndex && "bg-green-500/20 border-green-500 text-green-400",
-                  answered && selectedAnswer !== idx && idx !== currentQuestion.correctIndex && "opacity-50"
-                )}
+                onClick={() => setShowHint(true)}
+                className="text-xs text-muted-foreground hover:text-primary transition-colors"
               >
-                <span className="font-mono mr-2 text-muted-foreground">
-                  {String.fromCharCode(65 + idx)}.
-                </span>
-                {option}
+                Need a hint?
               </button>
-            ))}
+            )}
+            
+            {showHint && !answered && (
+              <p className="text-xs text-muted-foreground italic bg-muted/30 p-2 rounded">
+                💡 {currentQuestion.hint}
+              </p>
+            )}
           </div>
 
-          {/* Explanation (shown after answering correctly) */}
+          {/* Success message */}
           {answered && isCorrect && (
             <div className="p-3 rounded-lg text-xs bg-green-500/10 border border-green-500/20">
-              <p className="font-medium mb-1 text-green-400">✓ Correct!</p>
-              <p className="text-muted-foreground">{currentQuestion.explanation}</p>
+              <p className="font-medium text-green-400">
+                ✓ Correct! The answer "{currentQuestion.answer}" gives you the letter "{currentQuestion.answer[0].toUpperCase()}"
+              </p>
             </div>
           )}
 
@@ -300,7 +263,7 @@ export const QuizChallenge: React.FC<QuizChallengeProps> = ({ onComplete }) => {
             {!answered ? (
               <Button 
                 onClick={handleSubmitAnswer} 
-                disabled={selectedAnswer === null}
+                disabled={!userAnswer.trim()}
                 size="sm"
               >
                 Check Answer
