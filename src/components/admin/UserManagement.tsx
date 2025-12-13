@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { Search, Trash2, Shield } from "lucide-react";
+import { Search, Trash2, Shield, KeyRound } from "lucide-react";
 import { VerifiedBadge } from "@/components/verification/VerifiedBadge";
 import {
   Pagination,
@@ -37,6 +37,8 @@ export const UserManagement = () => {
   const [pageSize, setPageSize] = useState(20);
   const [userToDelete, setUserToDelete] = useState<any>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [userToResetMFA, setUserToResetMFA] = useState<any>(null);
+  const [isResettingMFA, setIsResettingMFA] = useState(false);
 
   const { data: users, isLoading } = useQuery({
     queryKey: ["admin-users"],
@@ -105,6 +107,34 @@ export const UserManagement = () => {
       });
     } finally {
       setIsDeleting(false);
+    }
+  };
+
+  const handleResetMFA = async () => {
+    if (!userToResetMFA) return;
+    
+    setIsResettingMFA(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("admin-reset-mfa", {
+        body: { userId: userToResetMFA.id },
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "MFA Reset",
+        description: `MFA has been reset for ${userToResetMFA.email}. ${data?.message || ''}`,
+      });
+      
+      setUserToResetMFA(null);
+    } catch (error: any) {
+      toast({
+        title: "Failed to reset MFA",
+        description: error.message || "An error occurred",
+        variant: "destructive",
+      });
+    } finally {
+      setIsResettingMFA(false);
     }
   };
 
@@ -220,6 +250,14 @@ export const UserManagement = () => {
                                     {user.is_verified ? "Unverify" : "Verify"}
                                   </Button>
                                 )}
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => setUserToResetMFA(user)}
+                                >
+                                  <KeyRound className="h-4 w-4 mr-1" />
+                                  Reset MFA
+                                </Button>
                                 {!isAdmin && (
                                   <Button
                                     variant="destructive"
@@ -304,6 +342,34 @@ export const UserManagement = () => {
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
               {isDeleting ? "Deleting..." : "Delete Permanently"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={!!userToResetMFA} onOpenChange={(open) => !open && setUserToResetMFA(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Reset MFA for User</AlertDialogTitle>
+            <AlertDialogDescription className="space-y-2">
+              <p>
+                This will reset all MFA factors and backup codes for:
+              </p>
+              <p className="font-medium text-foreground">
+                {userToResetMFA?.email}
+              </p>
+              <p>
+                The user will need to set up MFA again on their next login.
+              </p>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isResettingMFA}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleResetMFA}
+              disabled={isResettingMFA}
+            >
+              {isResettingMFA ? "Resetting..." : "Reset MFA"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
