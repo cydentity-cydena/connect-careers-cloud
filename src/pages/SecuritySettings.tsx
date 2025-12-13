@@ -26,6 +26,7 @@ const SecuritySettings = () => {
   const [showBackupCodes, setShowBackupCodes] = useState(false);
   const [remainingCodes, setRemainingCodes] = useState(0);
   const [enrolledDevices, setEnrolledDevices] = useState<any[]>([]);
+  const [regeneratingCodes, setRegeneratingCodes] = useState(false);
 
   useEffect(() => {
     checkAuth();
@@ -218,6 +219,24 @@ const SecuritySettings = () => {
     } catch (error: any) {
       console.error("Error removing MFA device:", error);
       toast.error(error.message || "Failed to remove device");
+    }
+  };
+
+  const handleRegenerateBackupCodes = async () => {
+    setRegeneratingCodes(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("User not found");
+      
+      const codes = await generateBackupCodes(user.id);
+      setBackupCodes(codes);
+      setShowBackupCodes(true);
+      toast.success("New backup codes generated! Please save them securely.");
+    } catch (error: any) {
+      console.error("Error regenerating backup codes:", error);
+      toast.error(error.message || "Failed to generate backup codes");
+    } finally {
+      setRegeneratingCodes(false);
     }
   };
 
@@ -482,14 +501,38 @@ const SecuritySettings = () => {
                   </div>
                 </div>
 
-                {remainingCodes > 0 && (
-                  <Alert>
-                    <Key className="h-4 w-4" />
-                    <AlertDescription>
-                      You have {remainingCodes} unused backup code{remainingCodes !== 1 ? 's' : ''} remaining.
-                    </AlertDescription>
-                  </Alert>
-                )}
+                {/* Backup Codes Section */}
+                <div className="border rounded-lg p-4 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Key className="h-4 w-4 text-muted-foreground" />
+                      <h3 className="text-sm font-semibold">Backup Codes</h3>
+                    </div>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={handleRegenerateBackupCodes}
+                      disabled={regeneratingCodes}
+                    >
+                      {regeneratingCodes && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
+                      Regenerate Codes
+                    </Button>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Backup codes can be used if you lose access to your authenticator app.
+                    {remainingCodes > 0 
+                      ? ` You have ${remainingCodes} unused code${remainingCodes !== 1 ? 's' : ''} remaining.`
+                      : ' You have no backup codes remaining - please regenerate.'}
+                  </p>
+                  {remainingCodes === 0 && (
+                    <Alert className="border-yellow-500/50 bg-yellow-500/10">
+                      <AlertDescription className="text-yellow-600 dark:text-yellow-500">
+                        Warning: You have no backup codes left. Regenerate codes to ensure account recovery.
+                      </AlertDescription>
+                    </Alert>
+                  )}
+                </div>
+
                 <Alert variant="destructive">
                   <Shield className="h-4 w-4" />
                   <AlertDescription>
