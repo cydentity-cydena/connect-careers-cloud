@@ -157,17 +157,22 @@ Deno.serve(async (req) => {
 
     // Block only if already submitted/verified/rejected (not in_progress or enrollment)
     if (existing && existing.status !== 'in_progress') {
+      const errorMessage = existing.status === 'PENDING' 
+        ? 'Your submission is already pending review' 
+        : existing.status === 'VERIFIED'
+        ? 'This course has already been verified'
+        : 'You have already submitted this course';
+      
+      console.log(`Blocking duplicate submission: ${errorMessage}`);
+      
+      // Return 200 with error in body so Supabase SDK can read it
       return new Response(
         JSON.stringify({ 
-          error: existing.status === 'PENDING' 
-            ? 'Your submission is already pending review' 
-            : existing.status === 'VERIFIED'
-            ? 'This course has already been verified'
-            : 'You have already submitted this course',
+          error: errorMessage,
           status: existing.status
         }), 
         {
-          status: 400,
+          status: 200,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         }
       );

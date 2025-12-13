@@ -100,15 +100,14 @@ export const ProofSubmissionDialog = ({
         },
       });
 
-      if (error) {
-        // Try to extract error message from edge function response
-        const errorMessage = error.message || 'Please try again';
-        throw new Error(errorMessage);
-      }
-
-      // Check if the response contains an error (non-2XX can still return data)
+      // Check if the response contains an error (edge function returns error in data for non-2XX)
       if (data?.error) {
         throw new Error(data.error);
+      }
+
+      if (error) {
+        // For generic SDK errors, provide a better message
+        throw new Error(error.message || 'Please try again');
       }
 
       if (data.status === 'VERIFIED') {
