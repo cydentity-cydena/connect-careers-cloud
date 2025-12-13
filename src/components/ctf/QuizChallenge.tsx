@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { CheckCircle2, XCircle, HelpCircle } from 'lucide-react';
+import { CheckCircle2, XCircle, HelpCircle, RotateCcw } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface QuizQuestion {
@@ -23,7 +22,7 @@ const QUIZ_QUESTIONS: QuizQuestion[] = [
       "Network packet sniffing"
     ],
     correctIndex: 1,
-    flagLetter: "Q",
+    flagLetter: "N",
     explanation: "SQL injection exploits unsanitized user input that gets concatenated into SQL queries."
   },
   {
@@ -35,7 +34,7 @@ const QUIZ_QUESTIONS: QuizQuestion[] = [
       "SMTP"
     ],
     correctIndex: 2,
-    flagLetter: "U",
+    flagLetter: "E",
     explanation: "HTTPS uses TLS to encrypt data between the browser and server."
   },
   {
@@ -47,7 +46,7 @@ const QUIZ_QUESTIONS: QuizQuestion[] = [
       "Backup critical files"
     ],
     correctIndex: 1,
-    flagLetter: "I",
+    flagLetter: "V",
     explanation: "Firewalls control incoming and outgoing network traffic based on security rules."
   },
   {
@@ -59,7 +58,7 @@ const QUIZ_QUESTIONS: QuizQuestion[] = [
       "Cross-Site Scripting"
     ],
     correctIndex: 2,
-    flagLetter: "Z",
+    flagLetter: "E",
     explanation: "DoS attacks overwhelm a server with traffic to make it unavailable to legitimate users."
   },
   {
@@ -71,7 +70,7 @@ const QUIZ_QUESTIONS: QuizQuestion[] = [
       "Master File Access"
     ],
     correctIndex: 1,
-    flagLetter: "_",
+    flagLetter: "R",
     explanation: "Multi-Factor Authentication requires two or more verification factors to access a resource."
   },
   {
@@ -83,7 +82,7 @@ const QUIZ_QUESTIONS: QuizQuestion[] = [
       "Company letterhead"
     ],
     correctIndex: 2,
-    flagLetter: "M",
+    flagLetter: "G",
     explanation: "Phishing emails often create urgency and contain suspicious or spoofed links."
   },
   {
@@ -95,7 +94,7 @@ const QUIZ_QUESTIONS: QuizQuestion[] = [
       "Allow password recovery"
     ],
     correctIndex: 1,
-    flagLetter: "A",
+    flagLetter: "I",
     explanation: "Hashing creates a one-way transformation so plaintext passwords aren't stored."
   },
   {
@@ -107,7 +106,7 @@ const QUIZ_QUESTIONS: QuizQuestion[] = [
       "External Server Service"
     ],
     correctIndex: 1,
-    flagLetter: "S",
+    flagLetter: "V",
     explanation: "Cross-Site Scripting allows attackers to inject malicious scripts into web pages."
   },
   {
@@ -119,7 +118,7 @@ const QUIZ_QUESTIONS: QuizQuestion[] = [
       "443"
     ],
     correctIndex: 1,
-    flagLetter: "T",
+    flagLetter: "E",
     explanation: "SSH (Secure Shell) typically runs on port 22."
   },
   {
@@ -131,12 +130,12 @@ const QUIZ_QUESTIONS: QuizQuestion[] = [
       "An expired security certificate"
     ],
     correctIndex: 1,
-    flagLetter: "R",
+    flagLetter: "UP",
     explanation: "Zero-day vulnerabilities are unknown to the software vendor and have no patch available."
   }
 ];
 
-// The flag letters spell out: QUIZ_MASTR -> FLAG{QUIZ_MASTER}
+// The flag letters spell out: NEVERGIVEUP -> FLAG{NEVERGIVEUP}
 
 interface QuizChallengeProps {
   onComplete: (flag: string) => void;
@@ -147,7 +146,7 @@ export const QuizChallenge: React.FC<QuizChallengeProps> = ({ onComplete }) => {
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [answered, setAnswered] = useState(false);
   const [correctAnswers, setCorrectAnswers] = useState<string[]>([]);
-  const [wrongCount, setWrongCount] = useState(0);
+  const [showWrongReset, setShowWrongReset] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
 
   const currentQuestion = QUIZ_QUESTIONS[currentQuestionIndex];
@@ -165,7 +164,8 @@ export const QuizChallenge: React.FC<QuizChallengeProps> = ({ onComplete }) => {
     if (isCorrect) {
       setCorrectAnswers(prev => [...prev, currentQuestion.flagLetter]);
     } else {
-      setWrongCount(prev => prev + 1);
+      // Wrong answer - show reset message
+      setShowWrongReset(true);
     }
   };
 
@@ -176,11 +176,8 @@ export const QuizChallenge: React.FC<QuizChallengeProps> = ({ onComplete }) => {
       setAnswered(false);
     } else {
       setIsComplete(true);
-      // Build the flag from correct answers
-      if (correctAnswers.length === QUIZ_QUESTIONS.length && wrongCount === 0) {
-        const flag = `FLAG{${correctAnswers.join('')}ER}`;
-        onComplete(flag);
-      }
+      const flag = `FLAG{NEVERGIVEUP}`;
+      onComplete(flag);
     }
   };
 
@@ -189,44 +186,49 @@ export const QuizChallenge: React.FC<QuizChallengeProps> = ({ onComplete }) => {
     setSelectedAnswer(null);
     setAnswered(false);
     setCorrectAnswers([]);
-    setWrongCount(0);
+    setShowWrongReset(false);
     setIsComplete(false);
   };
 
   if (isComplete) {
-    const allCorrect = correctAnswers.length === QUIZ_QUESTIONS.length;
-    const flag = `FLAG{QUIZ_MASTER}`;
+    const flag = `FLAG{NEVERGIVEUP}`;
     
     return (
       <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-primary/20">
         <CardContent className="p-4 text-center space-y-4">
-          {allCorrect ? (
-            <>
-              <CheckCircle2 className="h-12 w-12 mx-auto text-green-500" />
-              <h3 className="text-lg font-bold text-green-400">Quiz Completed!</h3>
-              <p className="text-sm text-muted-foreground">
-                You answered all {QUIZ_QUESTIONS.length} questions correctly!
-              </p>
-              <div className="p-3 rounded-lg bg-background/50 font-mono text-primary">
-                {flag}
-              </div>
-              <p className="text-xs text-muted-foreground">
-                The flag has been filled in below. Click Submit to capture it!
-              </p>
-            </>
-          ) : (
-            <>
-              <XCircle className="h-12 w-12 mx-auto text-red-500" />
-              <h3 className="text-lg font-bold text-red-400">Quiz Failed</h3>
-              <p className="text-sm text-muted-foreground">
-                You got {correctAnswers.length}/{QUIZ_QUESTIONS.length} correct.
-                You need a perfect score to unlock the flag!
-              </p>
-              <Button onClick={handleReset} variant="outline" size="sm">
-                Try Again
-              </Button>
-            </>
-          )}
+          <CheckCircle2 className="h-12 w-12 mx-auto text-green-500" />
+          <h3 className="text-lg font-bold text-green-400">Quiz Completed!</h3>
+          <p className="text-sm text-muted-foreground">
+            You answered all {QUIZ_QUESTIONS.length} questions correctly!
+          </p>
+          <div className="p-3 rounded-lg bg-background/50 font-mono text-primary">
+            {flag}
+          </div>
+          <p className="text-xs text-muted-foreground">
+            The flag has been filled in below. Click Submit to capture it!
+          </p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  // Show wrong answer reset screen
+  if (showWrongReset) {
+    return (
+      <Card className="bg-gradient-to-br from-red-500/10 to-red-500/5 border-red-500/20">
+        <CardContent className="p-4 text-center space-y-4">
+          <XCircle className="h-12 w-12 mx-auto text-red-500" />
+          <h3 className="text-lg font-bold text-red-400">Wrong Answer!</h3>
+          <p className="text-sm text-muted-foreground">
+            You must get all questions correct. The quiz will reset.
+          </p>
+          <p className="text-xs text-muted-foreground italic">
+            Remember: Never give up!
+          </p>
+          <Button onClick={handleReset} variant="outline" size="sm" className="gap-2">
+            <RotateCcw className="h-4 w-4" />
+            Try Again
+          </Button>
         </CardContent>
       </Card>
     );
@@ -244,7 +246,7 @@ export const QuizChallenge: React.FC<QuizChallengeProps> = ({ onComplete }) => {
               className={cn(
                 "w-2 h-2 rounded-full",
                 idx < currentQuestionIndex 
-                  ? (correctAnswers[idx] ? "bg-green-500" : "bg-red-500")
+                  ? "bg-green-500"
                   : idx === currentQuestionIndex 
                     ? "bg-primary" 
                     : "bg-muted"
@@ -274,7 +276,6 @@ export const QuizChallenge: React.FC<QuizChallengeProps> = ({ onComplete }) => {
                   "hover:bg-accent/50",
                   selectedAnswer === idx && !answered && "ring-2 ring-primary border-primary",
                   answered && idx === currentQuestion.correctIndex && "bg-green-500/20 border-green-500 text-green-400",
-                  answered && selectedAnswer === idx && idx !== currentQuestion.correctIndex && "bg-red-500/20 border-red-500 text-red-400",
                   answered && selectedAnswer !== idx && idx !== currentQuestion.correctIndex && "opacity-50"
                 )}
               >
@@ -286,15 +287,10 @@ export const QuizChallenge: React.FC<QuizChallengeProps> = ({ onComplete }) => {
             ))}
           </div>
 
-          {/* Explanation (shown after answering) */}
-          {answered && (
-            <div className={cn(
-              "p-3 rounded-lg text-xs",
-              isCorrect ? "bg-green-500/10 border border-green-500/20" : "bg-red-500/10 border border-red-500/20"
-            )}>
-              <p className="font-medium mb-1">
-                {isCorrect ? "✓ Correct!" : "✗ Incorrect"}
-              </p>
+          {/* Explanation (shown after answering correctly) */}
+          {answered && isCorrect && (
+            <div className="p-3 rounded-lg text-xs bg-green-500/10 border border-green-500/20">
+              <p className="font-medium mb-1 text-green-400">✓ Correct!</p>
               <p className="text-muted-foreground">{currentQuestion.explanation}</p>
             </div>
           )}
