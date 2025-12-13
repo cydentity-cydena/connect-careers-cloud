@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Search, Download, Upload, FileText, Star, X, Trash2, ShieldCheck, StickyNote } from "lucide-react";
+import { Loader2, Search, Download, Upload, FileText, Star, X, Trash2, ShieldCheck, StickyNote, Users } from "lucide-react";
 import { format } from "date-fns";
 import AddCandidateToPipeline from "@/components/admin/AddCandidateToPipeline";
 import Navigation from "@/components/Navigation";
@@ -17,6 +17,7 @@ import { BadgesRow, BadgeItem } from "@/components/hrready/BadgesRow";
 import { VerificationPanel } from "@/components/hrready/VerificationPanel";
 import { EditVerificationDrawer } from "@/components/hrready/EditVerificationDrawer";
 import { Textarea } from "@/components/ui/textarea";
+import { AddToPodDialog } from "@/components/admin/AddToPodDialog";
 
 interface PipelineCandidate {
   id: string;
@@ -89,6 +90,7 @@ export default function StaffFunnel() {
   const [notesValue, setNotesValue] = useState<string>("");
   const [savingNotes, setSavingNotes] = useState(false);
   const [showAllHRReady, setShowAllHRReady] = useState(false);
+  const [addingToPod, setAddingToPod] = useState<{ candidateId: string; candidateName: string } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
@@ -1184,6 +1186,18 @@ export default function StaffFunnel() {
                             <StickyNote className="h-3 w-3 mr-1" />
                             {candidate.staff_notes ? 'Edit Notes' : 'Add Notes'}
                           </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="h-8 text-xs w-full"
+                            onClick={() => setAddingToPod({ 
+                              candidateId: candidate.candidate_id, 
+                              candidateName: candidate.profiles?.full_name || "Unknown" 
+                            })}
+                          >
+                            <Users className="h-3 w-3 mr-1" />
+                            Add to Pod
+                          </Button>
 
                           <Select
                             value={candidate.stage}
@@ -1276,6 +1290,16 @@ export default function StaffFunnel() {
             </div>
           </DialogContent>
         </Dialog>
+
+        {/* Add to Pod Dialog */}
+        {addingToPod && (
+          <AddToPodDialog
+            open={!!addingToPod}
+            onOpenChange={(open) => !open && setAddingToPod(null)}
+            candidateId={addingToPod.candidateId}
+            candidateName={addingToPod.candidateName}
+          />
+        )}
       </div>
     </div>
     </>
