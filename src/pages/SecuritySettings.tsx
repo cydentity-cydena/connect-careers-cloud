@@ -135,8 +135,16 @@ const SecuritySettings = () => {
 
     setVerifying(true);
     try {
-      const { data, error } = await supabase.auth.mfa.challengeAndVerify({
+      // For initial enrollment, we need to create a challenge first, then verify
+      const { data: challengeData, error: challengeError } = await supabase.auth.mfa.challenge({
         factorId: factorId,
+      });
+
+      if (challengeError) throw challengeError;
+
+      const { data, error } = await supabase.auth.mfa.verify({
+        factorId: factorId,
+        challengeId: challengeData.id,
         code: verificationCode,
       });
 
@@ -158,7 +166,7 @@ const SecuritySettings = () => {
       setSecret("");
     } catch (error: any) {
       console.error("Error verifying MFA:", error);
-      toast.error(error.message || "Invalid verification code");
+      toast.error(error.message || "Invalid TOTP code entered");
     } finally {
       setVerifying(false);
     }
