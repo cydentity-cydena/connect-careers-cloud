@@ -95,10 +95,17 @@ const CTF = () => {
     if (challengesError) {
       console.error("Error fetching challenges:", challengesError);
     } else if (challengesData) {
-      const mapped: CTFChallenge[] = challengesData.map(c => ({
-        ...c,
-        hints: parseHints(c.hints)
-      }));
+      const mapped: CTFChallenge[] = challengesData
+        .filter(c => c.id && c.title && c.description && c.category && c.difficulty && c.points)
+        .map(c => ({
+          id: c.id!,
+          title: c.title!,
+          description: c.description!,
+          category: c.category!,
+          difficulty: c.difficulty!,
+          points: c.points!,
+          hints: parseHints(c.hints)
+        }));
       setChallenges(mapped);
     }
 
