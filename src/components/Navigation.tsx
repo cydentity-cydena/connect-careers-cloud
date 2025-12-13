@@ -130,7 +130,7 @@ const Navigation = () => {
 
           {/* Desktop Navigation */}
           <TooltipProvider>
-            <div className="hidden lg:flex items-center gap-4 xl:gap-6">
+            <div className="hidden lg:flex items-center gap-5 xl:gap-7">
               {!isLoading && navLinks.map((link) => (
                 <Link
                   key={link.to}
