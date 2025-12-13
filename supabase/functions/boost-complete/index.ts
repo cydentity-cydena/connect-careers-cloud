@@ -147,7 +147,7 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Check for duplicate
+    // Check for existing completion
     const { data: existing } = await supabase
       .from('course_completions')
       .select('id, status')
@@ -155,10 +155,15 @@ Deno.serve(async (req) => {
       .eq('partner_course_id', partnerCourseId)
       .maybeSingle();
 
-    if (existing) {
+    // Block only if already submitted/verified/rejected (not in_progress or enrollment)
+    if (existing && existing.status !== 'in_progress') {
       return new Response(
         JSON.stringify({ 
-          error: 'You have already submitted this course',
+          error: existing.status === 'PENDING' 
+            ? 'Your submission is already pending review' 
+            : existing.status === 'VERIFIED'
+            ? 'This course has already been verified'
+            : 'You have already submitted this course',
           status: existing.status
         }), 
         {
@@ -167,6 +172,8 @@ Deno.serve(async (req) => {
         }
       );
     }
+    
+    const existingRecordId = existing?.id;
 
     // Auto-verify OpenBadge if valid URL provided, screenshots go to manual review
     let status = 'PENDING';
@@ -235,22 +242,46 @@ Deno.serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    const { data: completion, error: insertError } = await serviceClient
-      .from('course_completions')
-      .insert({
-        candidate_id: user.id,
-        partner_course_id: partnerCourseId,
-        proof_type: proofType,
-        proof_url: proofUrl || null,
-        status,
-        awarded_points: awardedPoints,
-        verified_at: status === 'VERIFIED' ? new Date().toISOString() : null
-      })
-      .select()
-      .single();
+    let completion;
+    let insertError;
+
+    if (existingRecordId) {
+      // Update existing in_progress record
+      const { data, error } = await serviceClient
+        .from('course_completions')
+        .update({
+          proof_type: proofType,
+          proof_url: proofUrl || null,
+          status,
+          awarded_points: awardedPoints,
+          verified_at: status === 'VERIFIED' ? new Date().toISOString() : null
+        })
+        .eq('id', existingRecordId)
+        .select()
+        .single();
+      completion = data;
+      insertError = error;
+    } else {
+      // Insert new record
+      const { data, error } = await serviceClient
+        .from('course_completions')
+        .insert({
+          candidate_id: user.id,
+          partner_course_id: partnerCourseId,
+          proof_type: proofType,
+          proof_url: proofUrl || null,
+          status,
+          awarded_points: awardedPoints,
+          verified_at: status === 'VERIFIED' ? new Date().toISOString() : null
+        })
+        .select()
+        .single();
+      completion = data;
+      insertError = error;
+    }
 
     if (insertError) {
-      console.error('Error creating completion:', insertError);
+      console.error('Error creating/updating completion:', insertError);
       return new Response(JSON.stringify({ error: insertError.message }), {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
