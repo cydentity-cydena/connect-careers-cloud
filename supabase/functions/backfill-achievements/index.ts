@@ -158,46 +158,47 @@ serve(async (req) => {
     for (const achievement of (communityAchievements || [])) {
       if (earnedIds.has(achievement.id)) continue; // Already earned
       
-      const name = achievement.name.toLowerCase();
+      const name = achievement.name;
       const req = achievement.requirement_value || 0;
       let shouldAward = false;
 
-      // Post-related achievements
-      if (name.includes('first post') || name === 'conversation starter' || 
-          name === 'prolific poster' || name === 'community leader' || 
-          name === 'community voice') {
-        if (name === 'first post' && postCount >= 1) shouldAward = true;
-        else if (name === 'conversation starter' && postCount >= req) shouldAward = true;
-        else if (name === 'prolific poster' && postCount >= req) shouldAward = true;
-        else if (name === 'community leader' && postCount >= req) shouldAward = true;
-        else if (name === 'community voice' && postCount >= req) shouldAward = true;
+      // Post-related achievements - exact name matching
+      if (name === 'First Post' && postCount >= 1) {
+        shouldAward = true;
+      } else if (name === 'Conversation Starter' && postCount >= req) {
+        shouldAward = true;
+      } else if (name === 'Prolific Poster' && postCount >= req) {
+        shouldAward = true;
+      } else if (name === 'Community Voice' && postCount >= req) {
+        shouldAward = true;
       }
       // Comment-related achievements
-      else if (name.includes('first comment') || name === 'active commenter' || 
-               name === 'discussion enthusiast' || name === 'discussion master') {
-        if (name === 'first comment' && commentCount >= 1) shouldAward = true;
-        else if (name === 'active commenter' && commentCount >= req) shouldAward = true;
-        else if (name === 'discussion enthusiast' && commentCount >= req) shouldAward = true;
-        else if (name === 'discussion master' && commentCount >= req) shouldAward = true;
+      else if (name === 'First Comment' && commentCount >= 1) {
+        shouldAward = true;
+      } else if (name === 'Active Commenter' && commentCount >= req) {
+        shouldAward = true;
+      } else if (name === 'Discussion Enthusiast' && commentCount >= req) {
+        shouldAward = true;
+      } else if (name === 'Discussion Master' && commentCount >= req) {
+        shouldAward = true;
       }
       // Reaction-related achievements
-      else if (name.includes('first reaction') || name === 'engaged member' || 
-               name === 'super supporter' || name === 'community champion') {
-        if (name === 'first reaction' && reactionCount >= 1) shouldAward = true;
-        else if (name === 'engaged member' && reactionCount >= req) shouldAward = true;
-        else if (name === 'super supporter' && reactionCount >= req) shouldAward = true;
-        else if (name === 'community champion' && reactionCount >= req) shouldAward = true;
+      else if (name === 'First Reaction' && reactionCount >= 1) {
+        shouldAward = true;
+      } else if (name === 'Engaged Member' && reactionCount >= req) {
+        shouldAward = true;
+      } else if (name === 'Super Supporter' && reactionCount >= req) {
+        shouldAward = true;
+      } else if (name === 'Community Champion' && reactionCount >= req) {
+        shouldAward = true;
       }
-      // Endorsement-related achievements
-      else if (name === 'rising star') {
-        if (endorsementCount >= req) shouldAward = true;
+      // Community Leader with 1000 points requirement (NOT posts)
+      else if (name === 'Community Leader' && req === 1000 && communityPoints >= req) {
+        shouldAward = true;
       }
-      // Community points achievements - only the specific one
-      else if (name === 'community leader' && achievement.requirement_value === 1000) {
-        if (communityPoints >= req) shouldAward = true;
-      }
-      // Skip achievements that require specific actions we can't verify
-      // (Popular Post, Viral Content, Mentor, Community Helper, Knowledge Sharer)
+      // Skip: Community Leader (25 posts), Rising Star, Mentor, Community Helper, 
+      // Knowledge Sharer, Popular Post, Viral Content - these require specific 
+      // tracking we can't verify in backfill
       
       if (shouldAward) {
         achievementsToAward.push(achievement.id);
