@@ -11,7 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { toast } from "sonner";
 import { Json } from "@/integrations/supabase/types";
-import ChessChallenge from "@/components/ctf/ChessChallenge";
+import CyberQuizChallenge from "@/components/ctf/CyberQuizChallenge";
 import { 
   Flag, 
   Trophy, 
