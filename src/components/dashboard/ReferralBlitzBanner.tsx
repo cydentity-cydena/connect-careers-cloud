@@ -11,6 +11,7 @@ export const ReferralBlitzBanner = () => {
   const [referralCode, setReferralCode] = useState<string | null>(null);
   const [isDismissed, setIsDismissed] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [generating, setGenerating] = useState(false);
   const { toast } = useToast();
   
   const TARGET = 500;
@@ -53,6 +54,60 @@ export const ReferralBlitzBanner = () => {
   const handleDismiss = () => {
     sessionStorage.setItem("referral-blitz-dismissed", "true");
     setIsDismissed(true);
+  };
+
+  const generateReferralCode = async () => {
+    setGenerating(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast({
+          title: "Error",
+          description: "Please log in to get your referral link.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Generate the referral code using the RPC function
+      const { data: generatedCode, error: rpcError } = await supabase
+        .rpc('generate_referral_code', { p_user_id: user.id });
+
+      if (rpcError) throw rpcError;
+
+      // Insert the code into referral_codes table
+      const { error: insertError } = await supabase
+        .from('referral_codes')
+        .insert({
+          user_id: user.id,
+          code: generatedCode
+        });
+
+      if (insertError) throw insertError;
+
+      setReferralCode(generatedCode);
+      
+      // Auto-copy the link
+      const link = `https://cydena.com/auth?ref=${generatedCode}`;
+      navigator.clipboard.writeText(link);
+      setCopied(true);
+      
+      toast({
+        title: "Referral link created!",
+        description: "Your link has been copied to clipboard.",
+      });
+      
+      setTimeout(() => setCopied(false), 2000);
+    } catch (error: any) {
+      console.error("Error generating referral code:", error);
+      toast({
+        title: "Error",
+        description: "Failed to generate referral link. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setGenerating(false);
+    }
   };
 
   const copyReferralLink = () => {
@@ -145,10 +200,11 @@ export const ReferralBlitzBanner = () => {
               </Button>
             ) : (
               <Button 
-                onClick={() => window.location.href = "/dashboard#referral"}
+                onClick={generateReferralCode}
                 variant="cyber"
+                disabled={generating}
               >
-                Get Your Referral Link
+                {generating ? "Generating..." : "Get Your Referral Link"}
               </Button>
             )}
             <p className="text-xs text-muted-foreground text-center">
