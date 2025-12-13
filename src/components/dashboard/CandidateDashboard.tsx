@@ -18,6 +18,7 @@ import { HRReadyCTA } from "./HRReadyCTA";
 import { BadgeSelector } from "@/components/badges/BadgeSelector";
 import { CertificationManager } from "@/components/certifications/CertificationManager";
 import { ReferralSystem } from "./ReferralSystem";
+import { ReferralBlitzBanner } from "./ReferralBlitzBanner";
 import { CareerPathsAI } from "./CareerPathsAI";
 import { SecurityIQ } from "./SecurityIQ";
 import { useQuery } from "@tanstack/react-query";
@@ -157,6 +158,9 @@ const CandidateDashboard = () => {
   });
   return (
     <div className="space-y-8 animate-fade-in">
+      {/* Referral Blitz Campaign Banner */}
+      <ReferralBlitzBanner />
+
       {/* Free Access Banner */}
       <div className="bg-gradient-to-r from-green-500/10 via-green-400/10 to-emerald-500/10 border border-green-500/20 rounded-lg p-4 md:p-6">
         <div className="flex items-start gap-3">
