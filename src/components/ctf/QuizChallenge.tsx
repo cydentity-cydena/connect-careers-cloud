@@ -14,124 +14,124 @@ interface QuizQuestion {
 
 const QUIZ_QUESTIONS: QuizQuestion[] = [
   {
-    question: "What does SQL injection primarily exploit?",
+    question: "Which nmap flag performs a SYN stealth scan?",
     options: [
-      "Memory buffer overflows",
-      "Unsanitized user input in database queries",
-      "Weak encryption algorithms",
-      "Network packet sniffing"
+      "-sT",
+      "-sS",
+      "-sU",
+      "-sA"
     ],
     correctIndex: 1,
     flagLetter: "N",
-    explanation: "SQL injection exploits unsanitized user input that gets concatenated into SQL queries."
+    explanation: "-sS performs a SYN stealth scan, sending SYN packets without completing the TCP handshake."
   },
   {
-    question: "Which protocol provides end-to-end encryption for web traffic?",
+    question: "What port does HTTPS typically run on?",
     options: [
-      "HTTP",
-      "FTP",
-      "HTTPS/TLS",
-      "SMTP"
+      "80",
+      "22",
+      "443",
+      "8080"
     ],
     correctIndex: 2,
     flagLetter: "E",
-    explanation: "HTTPS uses TLS to encrypt data between the browser and server."
+    explanation: "HTTPS uses port 443 by default for encrypted web traffic."
   },
   {
-    question: "What is the primary purpose of a firewall?",
+    question: "Which tool is commonly used for password cracking with wordlists?",
     options: [
-      "Encrypt stored data",
-      "Filter network traffic based on rules",
-      "Detect malware on endpoints",
-      "Backup critical files"
+      "Wireshark",
+      "Nmap",
+      "John the Ripper",
+      "Metasploit"
     ],
-    correctIndex: 1,
+    correctIndex: 2,
     flagLetter: "V",
-    explanation: "Firewalls control incoming and outgoing network traffic based on security rules."
+    explanation: "John the Ripper is a popular password cracking tool that supports dictionary attacks."
   },
   {
-    question: "What type of attack involves flooding a server with requests?",
+    question: "What does the command 'chmod 777' do?",
     options: [
-      "Phishing",
-      "Man-in-the-Middle",
-      "Denial of Service (DoS)",
-      "Cross-Site Scripting"
+      "Deletes the file",
+      "Encrypts the file",
+      "Gives read, write, execute permissions to everyone",
+      "Makes the file hidden"
     ],
     correctIndex: 2,
     flagLetter: "E",
-    explanation: "DoS attacks overwhelm a server with traffic to make it unavailable to legitimate users."
+    explanation: "chmod 777 sets read (4), write (2), and execute (1) permissions for owner, group, and others."
   },
   {
-    question: "What does 'MFA' stand for in cybersecurity?",
+    question: "Which protocol does ping use?",
     options: [
-      "Multiple Firewall Architecture",
-      "Multi-Factor Authentication",
-      "Malware Free Application",
-      "Master File Access"
-    ],
-    correctIndex: 1,
-    flagLetter: "R",
-    explanation: "Multi-Factor Authentication requires two or more verification factors to access a resource."
-  },
-  {
-    question: "Which of these is a common indicator of a phishing email?",
-    options: [
-      "Professional formatting",
-      "Known sender address",
-      "Urgent action required with suspicious links",
-      "Company letterhead"
+      "TCP",
+      "UDP",
+      "ICMP",
+      "ARP"
     ],
     correctIndex: 2,
-    flagLetter: "G",
-    explanation: "Phishing emails often create urgency and contain suspicious or spoofed links."
+    flagLetter: "R",
+    explanation: "Ping uses ICMP (Internet Control Message Protocol) Echo Request and Reply messages."
   },
   {
-    question: "What is the purpose of hashing passwords?",
+    question: "What is the default port for SSH?",
     options: [
-      "Make them shorter",
-      "Store them securely as one-way encrypted values",
-      "Speed up login times",
-      "Allow password recovery"
+      "21",
+      "22",
+      "23",
+      "25"
+    ],
+    correctIndex: 1,
+    flagLetter: "G",
+    explanation: "SSH (Secure Shell) uses port 22 by default for encrypted remote access."
+  },
+  {
+    question: "Which command displays network connections on Linux?",
+    options: [
+      "ifconfig",
+      "netstat",
+      "ping",
+      "traceroute"
     ],
     correctIndex: 1,
     flagLetter: "I",
-    explanation: "Hashing creates a one-way transformation so plaintext passwords aren't stored."
+    explanation: "netstat displays active network connections, routing tables, and interface statistics."
   },
   {
-    question: "What does 'XSS' stand for?",
+    question: "What does XSS stand for?",
     options: [
       "Extra Secure Socket",
       "Cross-Site Scripting",
       "Extended Security System",
-      "External Server Service"
+      "External Script Source"
     ],
     correctIndex: 1,
     flagLetter: "V",
-    explanation: "Cross-Site Scripting allows attackers to inject malicious scripts into web pages."
+    explanation: "Cross-Site Scripting (XSS) allows attackers to inject malicious scripts into web pages."
   },
   {
-    question: "Which port is commonly used for SSH?",
+    question: "Which Metasploit command starts a listener for reverse shells?",
     options: [
-      "21",
-      "22",
-      "80",
-      "443"
+      "use auxiliary/scanner",
+      "exploit/multi/handler",
+      "set PAYLOAD",
+      "run scanner"
     ],
     correctIndex: 1,
     flagLetter: "E",
-    explanation: "SSH (Secure Shell) typically runs on port 22."
+    explanation: "exploit/multi/handler is used to catch incoming reverse shell connections in Metasploit."
   },
   {
-    question: "What is a 'zero-day' vulnerability?",
+    question: "What file contains password hashes on Linux?",
     options: [
-      "A bug that takes zero days to fix",
-      "A vulnerability exploited before the vendor knows about it",
-      "A flaw in day-zero hardware",
-      "An expired security certificate"
+      "/etc/passwd",
+      "/etc/shadow",
+      "/etc/hosts",
+      "/etc/sudoers"
     ],
     correctIndex: 1,
     flagLetter: "UP",
-    explanation: "Zero-day vulnerabilities are unknown to the software vendor and have no patch available."
+    explanation: "/etc/shadow stores encrypted password hashes and is only readable by root."
   }
 ];
 
