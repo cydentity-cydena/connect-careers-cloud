@@ -109,7 +109,8 @@ serve(async (req) => {
   
   <p><strong>Invite 5+ people →</strong> All the above PLUS:</p>
   <ul style="background: #fef3c7; padding: 20px 20px 20px 40px; border-radius: 8px; border-left: 4px solid #f59e0b;">
-    <li>🎯 <strong>Direct intro</strong> to a hiring manager from our active job list</li>
+    <li>🎯 <strong>Priority profile boosting</strong> for 14 days</li>
+    <li>🔔 <strong>Early access</strong> to new platform features</li>
   </ul>
   
   <div style="text-align: center; margin: 30px 0;">
