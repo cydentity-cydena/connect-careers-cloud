@@ -381,9 +381,9 @@ const CTF = () => {
                       {/* Expanded Challenge View */}
                       {isSelected && !isSolved && (
                         <div className="pt-4 border-t space-y-3" onClick={(e) => e.stopPropagation()}>
-                          {/* Special Interactive Challenge: AI Chess Gambit */}
-                          {challenge.title === "AI Chess Gambit" ? (
-                            <ChessChallenge 
+                          {/* Special Interactive Challenge: Cyber Security Gauntlet */}
+                          {challenge.title === "Cyber Security Gauntlet" ? (
+                            <CyberQuizChallenge 
                               onComplete={(flag) => {
                                 setFlagInput(flag);
                               }} 
