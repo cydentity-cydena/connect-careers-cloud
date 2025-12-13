@@ -100,7 +100,16 @@ export const ProofSubmissionDialog = ({
         },
       });
 
-      if (error) throw error;
+      if (error) {
+        // Try to extract error message from edge function response
+        const errorMessage = error.message || 'Please try again';
+        throw new Error(errorMessage);
+      }
+
+      // Check if the response contains an error (non-2XX can still return data)
+      if (data?.error) {
+        throw new Error(data.error);
+      }
 
       if (data.status === 'VERIFIED') {
         toast({
