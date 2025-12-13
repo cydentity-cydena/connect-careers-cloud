@@ -214,18 +214,19 @@ export const ApplicationCard = ({ application, onStageChange, onToggleStar, onAd
                 {getInitials(application.profile.full_name)}
               </AvatarFallback>
             </Avatar>
-            <div className="flex-1 min-w-0 pr-6">
+            <div className="flex-1 min-w-0 pr-6 overflow-hidden">
               {application.profile.username ? (
                 <Link 
                   to={`/profiles/${application.candidate_id}`}
-                  className="font-bold text-base leading-tight mb-1.5 text-foreground hover:text-primary transition-colors cursor-pointer block"
+                  className="font-bold text-base leading-tight mb-1.5 text-foreground hover:text-primary transition-colors cursor-pointer block truncate"
                   onClick={(e) => e.stopPropagation()}
+                  title={`${application.profile.full_name} (@${application.profile.username})`}
                 >
-                  {application.profile.full_name}
-                  <span className="text-muted-foreground font-normal text-sm"> (@{application.profile.username})</span>
+                  <span className="truncate">{application.profile.full_name}</span>
+                  <span className="text-muted-foreground font-normal text-sm truncate"> @{application.profile.username}</span>
                 </Link>
               ) : (
-                <h4 className="font-bold text-base leading-tight mb-1.5 text-foreground">
+                <h4 className="font-bold text-base leading-tight mb-1.5 text-foreground truncate" title={application.profile.full_name}>
                   {application.profile.full_name}
                   <span className="text-muted-foreground font-normal text-sm"> (No profile yet)</span>
                 </h4>
