@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "sonner";
-import { Plus, Edit, Trash2, Eye, EyeOff, Flag, Trophy, Shield, ArrowLeft } from "lucide-react";
+import { Plus, Edit, Trash2, Eye, EyeOff, Flag, Trophy, Shield, ArrowLeft, Upload, FileDown, X } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import { useNavigate } from "react-router-dom";
 
@@ -26,6 +26,8 @@ interface CTFChallenge {
   hints: unknown;
   is_active: boolean;
   created_at: string;
+  file_url?: string | null;
+  file_name?: string | null;
 }
 
 const CATEGORIES = [
@@ -52,6 +54,8 @@ const CTFManagement = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingChallenge, setEditingChallenge] = useState<CTFChallenge | null>(null);
   const [showFlag, setShowFlag] = useState<Record<string, boolean>>({});
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -62,7 +66,9 @@ const CTFManagement = () => {
     points: 100,
     flag: "",
     hints: [] as { text: string; cost: number }[],
-    is_active: false
+    is_active: false,
+    file_url: null as string | null,
+    file_name: null as string | null
   });
 
   useEffect(() => {
@@ -93,7 +99,9 @@ const CTFManagement = () => {
       points: 100,
       flag: "",
       hints: [],
-      is_active: false
+      is_active: false,
+      file_url: null,
+      file_name: null
     });
     setEditingChallenge(null);
   };
@@ -108,9 +116,56 @@ const CTFManagement = () => {
       points: challenge.points,
       flag: challenge.flag,
       hints: (challenge.hints as { text: string; cost: number }[] | null) || [],
-      is_active: challenge.is_active
+      is_active: challenge.is_active,
+      file_url: challenge.file_url || null,
+      file_name: challenge.file_name || null
     });
     setDialogOpen(true);
+  };
+
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+      const filePath = `challenges/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('ctf-files')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('ctf-files')
+        .getPublicUrl(filePath);
+
+      setFormData(prev => ({
+        ...prev,
+        file_url: publicUrl,
+        file_name: file.name
+      }));
+
+      toast.success("File uploaded successfully");
+    } catch (error: any) {
+      toast.error(error.message || "Failed to upload file");
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  };
+
+  const removeFile = () => {
+    setFormData(prev => ({
+      ...prev,
+      file_url: null,
+      file_name: null
+    }));
   };
 
   const handleSubmit = async () => {
@@ -127,7 +182,9 @@ const CTFManagement = () => {
       points: formData.points,
       flag: formData.flag,
       hints: formData.hints.length > 0 ? formData.hints : null,
-      is_active: formData.is_active
+      is_active: formData.is_active,
+      file_url: formData.file_url,
+      file_name: formData.file_name
     };
 
     if (editingChallenge) {
@@ -375,6 +432,49 @@ const CTFManagement = () => {
                   ))}
                 </div>
 
+                {/* File Upload Section */}
+                <div className="space-y-3">
+                  <Label>Challenge File (Optional)</Label>
+                  <p className="text-xs text-muted-foreground">
+                    Upload PCAPs, executables, images, or other files for the challenge
+                  </p>
+                  
+                  {formData.file_url ? (
+                    <div className="flex items-center gap-3 p-3 bg-muted rounded-lg">
+                      <FileDown className="h-5 w-5 text-primary" />
+                      <span className="flex-1 text-sm truncate">{formData.file_name}</span>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        onClick={removeFile}
+                      >
+                        <X className="h-4 w-4 text-destructive" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-3">
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        onChange={handleFileUpload}
+                        className="hidden"
+                        accept="*/*"
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => fileInputRef.current?.click()}
+                        disabled={uploading}
+                        className="gap-2"
+                      >
+                        <Upload className="h-4 w-4" />
+                        {uploading ? "Uploading..." : "Upload File"}
+                      </Button>
+                    </div>
+                  )}
+                </div>
+
                 <div className="flex items-center gap-3 pt-2">
                   <Switch
                     id="is_active"
@@ -470,6 +570,7 @@ const CTFManagement = () => {
                     <TableHead>Category</TableHead>
                     <TableHead>Difficulty</TableHead>
                     <TableHead>Points</TableHead>
+                    <TableHead>File</TableHead>
                     <TableHead>Flag</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
@@ -488,6 +589,21 @@ const CTFManagement = () => {
                         </Badge>
                       </TableCell>
                       <TableCell>{challenge.points}</TableCell>
+                      <TableCell>
+                        {challenge.file_url ? (
+                          <a 
+                            href={challenge.file_url} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-1 text-primary hover:underline text-sm"
+                          >
+                            <FileDown className="h-4 w-4" />
+                            <span className="max-w-[100px] truncate">{challenge.file_name || 'File'}</span>
+                          </a>
+                        ) : (
+                          <span className="text-muted-foreground text-sm">—</span>
+                        )}
+                      </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
                           <code className="text-xs bg-muted px-2 py-1 rounded">

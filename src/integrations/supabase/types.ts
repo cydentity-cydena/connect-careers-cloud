@@ -1133,6 +1133,8 @@ export type Database = {
           created_at: string
           description: string
           difficulty: string
+          file_name: string | null
+          file_url: string | null
           flag: string
           hints: Json | null
           id: string
@@ -1146,6 +1148,8 @@ export type Database = {
           created_at?: string
           description: string
           difficulty: string
+          file_name?: string | null
+          file_url?: string | null
           flag: string
           hints?: Json | null
           id?: string
@@ -1159,6 +1163,8 @@ export type Database = {
           created_at?: string
           description?: string
           difficulty?: string
+          file_name?: string | null
+          file_url?: string | null
           flag?: string
           hints?: Json | null
           id?: string
