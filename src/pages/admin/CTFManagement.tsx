@@ -29,6 +29,7 @@ interface CTFChallenge {
 }
 
 const CATEGORIES = [
+  "General",
   "Network Security",
   "Cryptography",
   "Web Security",
