@@ -3382,6 +3382,8 @@ export type Database = {
           created_at: string | null
           description: string | null
           difficulty: string | null
+          file_name: string | null
+          file_url: string | null
           hints: Json | null
           id: string | null
           is_active: boolean | null
@@ -3394,6 +3396,8 @@ export type Database = {
           created_at?: string | null
           description?: string | null
           difficulty?: string | null
+          file_name?: string | null
+          file_url?: string | null
           hints?: Json | null
           id?: string | null
           is_active?: boolean | null
@@ -3406,6 +3410,8 @@ export type Database = {
           created_at?: string | null
           description?: string | null
           difficulty?: string | null
+          file_name?: string | null
+          file_url?: string | null
           hints?: Json | null
           id?: string | null
           is_active?: boolean | null

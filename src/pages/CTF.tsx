@@ -24,7 +24,8 @@ import {
   Medal,
   Award,
   Flame,
-  Terminal
+  Terminal,
+  Download
 } from "lucide-react";
 
 interface HintItem {
@@ -40,6 +41,8 @@ interface CTFChallenge {
   difficulty: string;
   points: number;
   hints: HintItem[] | null;
+  file_url: string | null;
+  file_name: string | null;
 }
 
 const parseHints = (hints: Json | null): HintItem[] | null => {
@@ -106,7 +109,9 @@ const CTF = () => {
           category: c.category!,
           difficulty: c.difficulty!,
           points: c.points!,
-          hints: parseHints(c.hints)
+          hints: parseHints(c.hints),
+          file_url: c.file_url || null,
+          file_name: c.file_name || null
         }));
       setChallenges(mapped);
     }
@@ -364,6 +369,20 @@ const CTF = () => {
                     </CardHeader>
                     <CardContent className="space-y-4">
                       <p className="text-sm text-muted-foreground">{challenge.description}</p>
+                      
+                      {/* Challenge File Download */}
+                      {challenge.file_url && (
+                        <a 
+                          href={challenge.file_url} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 text-sm text-primary hover:underline"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <Download className="h-4 w-4" />
+                          {challenge.file_name || 'Download File'}
+                        </a>
+                      )}
                       
                       <div className="flex items-center justify-between">
                         <Badge variant="secondary" className="gap-1">
