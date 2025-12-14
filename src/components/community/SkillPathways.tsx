@@ -313,14 +313,6 @@ export const SkillPathways = () => {
                               <p className="text-xs font-medium truncate">{course.title}</p>
                               <p className="text-xs text-muted-foreground">{course.partner_slug}</p>
                             </div>
-                            <div className="flex items-center gap-2 shrink-0 ml-2">
-                              {course.reward_amount && (
-                                <Badge variant="secondary" className="text-xs">
-                                  <Trophy className="h-3 w-3 mr-1" />
-                                  +{course.reward_amount} XP
-                                </Badge>
-                              )}
-                            </div>
                           </div>
                         ))}
                       {pathwayCourses[pathway.id].length > 3 && (
