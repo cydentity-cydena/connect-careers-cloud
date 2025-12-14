@@ -185,13 +185,24 @@ const CTF = () => {
         });
 
       if (submitError) {
-        // Check if already solved
+        // Check if already solved (unique constraint on correct submissions)
         if (submitError.code === '23505') {
           toast.info("You've already solved this challenge!");
+          setUserStats(prev => ({
+            ...prev,
+            solvedChallenges: prev.solvedChallenges.includes(selectedChallenge.id) 
+              ? prev.solvedChallenges 
+              : [...prev.solvedChallenges, selectedChallenge.id]
+          }));
+          setSelectedChallenge(null);
+          setFlagInput("");
+          return;
         } else {
           throw submitError;
         }
-      } else if (isCorrect) {
+      }
+      
+      if (isCorrect) {
         // Show celebration feedback before clearing
         setJustSolved({ challengeId: selectedChallenge.id, points: selectedChallenge.points });
         setUserStats(prev => ({
