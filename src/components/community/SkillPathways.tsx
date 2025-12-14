@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Shield, Crosshair, Scale, Cloud, Brain, Clock, CheckCircle2, Circle, ArrowRight, BookOpen, Info } from 'lucide-react';
+import { Shield, Crosshair, Scale, Cloud, Brain, Clock, CheckCircle2, Circle, ArrowRight, BookOpen, Info, Trophy, ExternalLink, Sparkles } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { PathwayCoursesDialog } from './PathwayCoursesDialog';
 
@@ -29,6 +29,8 @@ type PathwayCourse = {
   partner_slug: string;
   sequence_order: number;
   is_required: boolean;
+  reward_amount?: number;
+  is_free?: boolean;
 };
 
 const getCategoryIcon = (category: string) => {
@@ -122,7 +124,9 @@ export const SkillPathways = () => {
             id,
             title,
             url,
-            partner_slug
+            partner_slug,
+            reward_amount,
+            is_free
           )
         `);
 
@@ -141,6 +145,8 @@ export const SkillPathways = () => {
             partner_slug: item.partner_courses.partner_slug,
             sequence_order: item.sequence_order,
             is_required: item.is_required,
+            reward_amount: item.partner_courses.reward_amount,
+            is_free: item.partner_courses.is_free,
           });
         }
       });
@@ -283,14 +289,48 @@ export const SkillPathways = () => {
                   </div>
                 )}
 
-                {pathwayCourses[pathway.id] && pathwayCourses[pathway.id].length > 0 && (
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
-                    <BookOpen className="h-4 w-4" />
-                    <span>{pathwayCourses[pathway.id].length} courses</span>
+                {pathwayCourses[pathway.id] && pathwayCourses[pathway.id].length > 0 ? (
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-sm font-semibold flex items-center gap-2">
+                        <Sparkles className="h-4 w-4 text-primary" />
+                        Free Courses
+                      </h4>
+                      <Badge variant="outline" className="text-xs border-green-500 text-green-600">
+                        100% FREE
+                      </Badge>
+                    </div>
+                    <div className="space-y-2 max-h-40 overflow-y-auto">
+                      {pathwayCourses[pathway.id]
+                        .sort((a, b) => a.sequence_order - b.sequence_order)
+                        .slice(0, 3)
+                        .map((course) => (
+                          <div 
+                            key={course.id} 
+                            className="flex items-center justify-between p-2 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
+                          >
+                            <div className="flex-1 min-w-0">
+                              <p className="text-xs font-medium truncate">{course.title}</p>
+                              <p className="text-xs text-muted-foreground">{course.partner_slug}</p>
+                            </div>
+                            <div className="flex items-center gap-2 shrink-0 ml-2">
+                              {course.reward_amount && (
+                                <Badge variant="secondary" className="text-xs">
+                                  <Trophy className="h-3 w-3 mr-1" />
+                                  +{course.reward_amount} XP
+                                </Badge>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      {pathwayCourses[pathway.id].length > 3 && (
+                        <p className="text-xs text-muted-foreground text-center">
+                          +{pathwayCourses[pathway.id].length - 3} more courses
+                        </p>
+                      )}
+                    </div>
                   </div>
-                )}
-
-                {(!pathwayCourses[pathway.id] || pathwayCourses[pathway.id].length === 0) && (
+                ) : (
                   <Alert className="mb-3">
                     <Info className="h-4 w-4" />
                     <AlertDescription className="text-sm">
