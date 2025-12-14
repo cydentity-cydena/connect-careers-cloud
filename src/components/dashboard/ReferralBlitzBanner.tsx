@@ -29,12 +29,11 @@ export const ReferralBlitzBanner = () => {
       return;
     }
 
-    // Get user count
-    const { count } = await supabase
-      .from("profiles")
-      .select("*", { count: "exact", head: true });
-    
-    setUserCount(count || 0);
+    // Get user count using the SECURITY DEFINER function that bypasses RLS
+    const { data: stats } = await supabase.rpc("get_community_stats");
+    if (stats && stats.length > 0) {
+      setUserCount(Number(stats[0].active_members) || 0);
+    }
 
     // Get current user's referral code
     const { data: { user } } = await supabase.auth.getUser();
