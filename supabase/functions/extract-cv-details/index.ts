@@ -209,7 +209,7 @@ Return ONLY valid JSON with these exact fields (use null for missing values):
     console.error("Error extracting CV details:", error);
     return new Response(
       JSON.stringify({ 
-        error: error instanceof Error ? error.message : "Unknown error",
+        error: "Failed to extract CV details. Please try again.",
         success: false 
       }), 
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }

@@ -242,8 +242,19 @@ Return your evaluation in this exact JSON format:
 
   } catch (error: any) {
     console.error('Skills assessment error:', error);
+    
+    // Return safe error messages
+    const safeMessages: Record<string, string> = {
+      'No authorization header': 'Please sign in to take the assessment.',
+      'Unauthorized': 'Please sign in to take the assessment.',
+      'Invalid assessment type': 'Invalid assessment type selected.',
+      'Invalid action': 'Invalid request.',
+    };
+    
+    const userMessage = safeMessages[error.message] || 'Assessment temporarily unavailable. Please try again.';
+    
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: userMessage }),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 400 
