@@ -76,7 +76,7 @@ const CTF = () => {
   const [userId, setUserId] = useState<string | null>(null);
   const [userStats, setUserStats] = useState<UserStats>({ solvedChallenges: [], totalPoints: 0, rank: 0 });
   const [selectedChallenge, setSelectedChallenge] = useState<CTFChallenge | null>(null);
-  const [flagInput, setFlagInput] = useState("");
+  const [flagInputs, setFlagInputs] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
   const [revealedHints, setRevealedHints] = useState<Record<string, number[]>>({});
   const [justSolved, setJustSolved] = useState<{ challengeId: string; points: number } | null>(null);
@@ -176,7 +176,8 @@ const CTF = () => {
   };
 
   const handleSubmitFlag = async () => {
-    if (!selectedChallenge || !flagInput.trim() || !userId) {
+    const currentInput = selectedChallenge ? flagInputs[selectedChallenge.id] || "" : "";
+    if (!selectedChallenge || !currentInput.trim() || !userId) {
       if (!userId) toast.error("Please sign in to submit flags");
       return;
     }
@@ -188,7 +189,7 @@ const CTF = () => {
       const { data: isCorrect, error: verifyError } = await supabase
         .rpc('verify_ctf_flag', {
           p_challenge_id: selectedChallenge.id,
-          p_submitted_flag: flagInput.trim()
+          p_submitted_flag: currentInput.trim()
         });
 
       if (verifyError) throw verifyError;
@@ -203,7 +204,7 @@ const CTF = () => {
         .insert({
           candidate_id: userId,
           challenge_id: selectedChallenge.id,
-          submitted_flag: flagInput.trim(),
+          submitted_flag: currentInput.trim(),
           is_correct: isCorrect,
           points_awarded: isCorrect ? finalPoints : 0
         });
@@ -219,7 +220,7 @@ const CTF = () => {
               : [...prev.solvedChallenges, selectedChallenge.id]
           }));
           setSelectedChallenge(null);
-          setFlagInput("");
+          setFlagInputs(prev => ({ ...prev, [selectedChallenge.id]: "" }));
           return;
         } else {
           throw submitError;
@@ -237,7 +238,7 @@ const CTF = () => {
           solvedChallenges: [...prev.solvedChallenges, selectedChallenge.id],
           totalPoints: prev.totalPoints + finalPoints
         }));
-        setFlagInput("");
+        setFlagInputs(prev => ({ ...prev, [selectedChallenge.id]: "" }));
         
         // Clear celebration after a delay
         setTimeout(() => {
@@ -522,13 +523,13 @@ const CTF = () => {
                           {challenge.title.trim().toLowerCase() === "advanced chess gambit" ? (
                             <ChessChallenge 
                               onComplete={(flag) => {
-                                setFlagInput(flag);
+                                setFlagInputs(prev => ({ ...prev, [challenge.id]: flag }));
                               }} 
                             />
                           ) : challenge.title.trim().toLowerCase() === "quiz quantlet" ? (
                             <QuizChallenge 
                               onComplete={(flag) => {
-                                setFlagInput(flag);
+                                setFlagInputs(prev => ({ ...prev, [challenge.id]: flag }));
                               }} 
                             />
                           ) : (
@@ -567,14 +568,14 @@ const CTF = () => {
                           <div className="flex gap-2">
                             <Input
                               placeholder="FLAG{...}"
-                              value={flagInput}
-                              onChange={(e) => setFlagInput(e.target.value)}
+                              value={flagInputs[challenge.id] || ""}
+                              onChange={(e) => setFlagInputs(prev => ({ ...prev, [challenge.id]: e.target.value }))}
                               className="font-mono text-sm"
                               onKeyDown={(e) => e.key === 'Enter' && handleSubmitFlag()}
                             />
                             <Button 
                               onClick={handleSubmitFlag} 
-                              disabled={submitting || !flagInput.trim()}
+                              disabled={submitting || !(flagInputs[challenge.id] || "").trim()}
                               size="sm"
                             >
                               {submitting ? "..." : "Submit"}
