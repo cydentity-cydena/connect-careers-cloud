@@ -1,10 +1,7 @@
-import { useState } from 'react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ExternalLink, CheckCircle2, Trophy, Sparkles } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
+import { ExternalLink, Trophy, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
 
 type Course = {
@@ -31,51 +28,16 @@ export const PathwayCoursesDialog = ({
   pathwayName, 
   courses 
 }: PathwayCoursesDialogProps) => {
-  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
-  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const sortedCourses = [...courses].sort((a, b) => a.sequence_order - b.sequence_order);
 
   const handleStartCourse = (course: Course) => {
-    setSelectedCourse(course);
-    setConfirmDialogOpen(true);
-  };
-
-  const handleConfirmEnrollment = async () => {
-    if (!selectedCourse) return;
-
-    try {
-      // Track enrollment in database
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        const { error } = await supabase
-          .from('course_completions')
-          .insert({
-            candidate_id: user.id,
-            partner_course_id: selectedCourse.id,
-            proof_type: 'enrollment',
-            status: 'in_progress'
-          });
-
-        if (error && error.code !== '23505') { // Ignore duplicate key error
-          console.error('Error tracking enrollment:', error);
-        }
-      }
-
-      // Open course URL in new tab
-      const url = selectedCourse.url;
-      if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
-        window.open(url, '_blank', 'noopener,noreferrer');
-        toast.success('Course opened! Good luck with your learning.');
-      } else {
-        toast.error('Invalid course URL. Please contact support.');
-      }
-    } catch (error) {
-      console.error('Error enrolling in course:', error);
-      toast.error('Failed to enroll in course');
+    const url = course.url;
+    if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
+      window.open(url, '_blank', 'noopener,noreferrer');
+      toast.success('Course opened in new tab. Good luck!');
+    } else {
+      toast.error('Invalid course URL. Please contact support.');
     }
-
-    setConfirmDialogOpen(false);
-    setSelectedCourse(null);
   };
 
   return (
@@ -90,7 +52,7 @@ export const PathwayCoursesDialog = ({
           </div>
           <DialogTitle>{pathwayName} - Learning Path</DialogTitle>
           <DialogDescription>
-            Complete these free courses in order to master this pathway and earn XP
+            Complete these free courses in order to master this pathway
           </DialogDescription>
         </DialogHeader>
         
@@ -146,29 +108,6 @@ export const PathwayCoursesDialog = ({
           </div>
         )}
       </DialogContent>
-
-      <AlertDialog open={confirmDialogOpen} onOpenChange={setConfirmDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Enroll in Course?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This course will be added to your dashboard as enrolled. You'll be redirected to the training provider's website to begin.
-              {selectedCourse && (
-                <div className="mt-3 p-3 rounded-lg bg-muted/50 border">
-                  <p className="font-medium text-foreground">{selectedCourse.title}</p>
-                  <p className="text-xs mt-1">Provider: {selectedCourse.partner_slug}</p>
-                </div>
-              )}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>No, Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleConfirmEnrollment}>
-              Yes, Enroll Me
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </Dialog>
   );
 };
