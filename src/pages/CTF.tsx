@@ -280,37 +280,37 @@ const CTF = () => {
 
         {/* User Stats Bar */}
         {userId && (
-          <div className="grid grid-cols-3 gap-4 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-8">
             <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-primary/20">
-              <CardContent className="p-4 flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-primary/20">
+              <CardContent className="p-3 sm:p-4 flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-primary/20 shrink-0">
                   <Target className="h-5 w-5 text-primary" />
                 </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Challenges Solved</p>
-                  <p className="text-2xl font-bold">{userStats.solvedChallenges.length}/{challenges.length}</p>
+                <div className="min-w-0">
+                  <p className="text-xs sm:text-sm text-muted-foreground">Challenges Solved</p>
+                  <p className="text-xl sm:text-2xl font-bold">{userStats.solvedChallenges.length}/{challenges.length}</p>
                 </div>
               </CardContent>
             </Card>
             <Card className="bg-gradient-to-br from-yellow-500/10 to-yellow-500/5 border-yellow-500/20">
-              <CardContent className="p-4 flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-yellow-500/20">
+              <CardContent className="p-3 sm:p-4 flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-yellow-500/20 shrink-0">
                   <Trophy className="h-5 w-5 text-yellow-500" />
                 </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Total Points</p>
-                  <p className="text-2xl font-bold">{userStats.totalPoints}</p>
+                <div className="min-w-0">
+                  <p className="text-xs sm:text-sm text-muted-foreground">Total Points</p>
+                  <p className="text-xl sm:text-2xl font-bold">{userStats.totalPoints}</p>
                 </div>
               </CardContent>
             </Card>
             <Card className="bg-gradient-to-br from-purple-500/10 to-purple-500/5 border-purple-500/20">
-              <CardContent className="p-4 flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-purple-500/20">
+              <CardContent className="p-3 sm:p-4 flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-purple-500/20 shrink-0">
                   <Flame className="h-5 w-5 text-purple-500" />
                 </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Your Rank</p>
-                  <p className="text-2xl font-bold">{userStats.rank > 0 ? `#${userStats.rank}` : '-'}</p>
+                <div className="min-w-0">
+                  <p className="text-xs sm:text-sm text-muted-foreground">Your Rank</p>
+                  <p className="text-xl sm:text-2xl font-bold">{userStats.rank > 0 ? `#${userStats.rank}` : '-'}</p>
                 </div>
               </CardContent>
             </Card>
