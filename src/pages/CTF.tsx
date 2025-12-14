@@ -79,6 +79,7 @@ const CTF = () => {
   const [flagInput, setFlagInput] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [revealedHints, setRevealedHints] = useState<Record<string, number[]>>({});
+  const [justSolved, setJustSolved] = useState<{ challengeId: string; points: number } | null>(null);
 
   useEffect(() => {
     fetchData();
@@ -191,14 +192,21 @@ const CTF = () => {
           throw submitError;
         }
       } else if (isCorrect) {
-        toast.success(`🎉 Correct! +${selectedChallenge.points} points`);
+        // Show celebration feedback before clearing
+        setJustSolved({ challengeId: selectedChallenge.id, points: selectedChallenge.points });
         setUserStats(prev => ({
           ...prev,
           solvedChallenges: [...prev.solvedChallenges, selectedChallenge.id],
           totalPoints: prev.totalPoints + selectedChallenge.points
         }));
-        setSelectedChallenge(null);
         setFlagInput("");
+        
+        // Clear celebration after a delay
+        setTimeout(() => {
+          setJustSolved(null);
+          setSelectedChallenge(null);
+        }, 3000);
+        
         // Refresh leaderboard
         fetchData();
       } else {
@@ -340,15 +348,17 @@ const CTF = () => {
               {challenges.map((challenge) => {
                 const isSolved = userStats.solvedChallenges.includes(challenge.id);
                 const isSelected = selectedChallenge?.id === challenge.id;
+                const isJustSolved = justSolved?.challengeId === challenge.id;
                 
                 return (
                   <Card 
                     key={challenge.id} 
                     className={`transition-all cursor-pointer hover:shadow-lg ${
+                      isJustSolved ? 'bg-green-500/20 border-green-500 ring-2 ring-green-500 animate-pulse' :
                       isSolved ? 'bg-green-500/5 border-green-500/30' : 
                       isSelected ? 'ring-2 ring-primary' : ''
                     }`}
-                    onClick={() => !isSolved && setSelectedChallenge(isSelected ? null : challenge)}
+                    onClick={() => !isSolved && !isJustSolved && setSelectedChallenge(isSelected ? null : challenge)}
                   >
                     <CardHeader className="pb-3">
                       <div className="flex items-start justify-between">
@@ -389,7 +399,11 @@ const CTF = () => {
                           <Trophy className="h-3 w-3" />
                           {challenge.points} pts
                         </Badge>
-                        {isSolved ? (
+                        {isJustSolved ? (
+                          <Badge className="bg-green-500 text-white animate-bounce">
+                            🎉 +{justSolved.points} pts!
+                          </Badge>
+                        ) : isSolved ? (
                           <Badge variant="outline" className="bg-green-500/10 text-green-400 border-green-500/30">
                             Solved ✓
                           </Badge>
@@ -398,8 +412,19 @@ const CTF = () => {
                         )}
                       </div>
 
+                      {/* Success Celebration */}
+                      {isJustSolved && (
+                        <div className="pt-4 border-t border-green-500/30">
+                          <div className="flex flex-col items-center justify-center p-4 rounded-lg bg-green-500/20 text-center">
+                            <CheckCircle2 className="h-12 w-12 text-green-500 mb-2 animate-bounce" />
+                            <p className="text-lg font-bold text-green-400">Challenge Solved!</p>
+                            <p className="text-sm text-green-300">+{justSolved.points} points earned</p>
+                          </div>
+                        </div>
+                      )}
+
                       {/* Expanded Challenge View */}
-                      {isSelected && !isSolved && (
+                      {isSelected && !isSolved && !isJustSolved && (
                         <div className="pt-4 border-t space-y-3" onClick={(e) => e.stopPropagation()}>
                           {/* Special Interactive Challenge: AI Chess Gambit */}
                           {challenge.title.trim().toLowerCase() === "advanced chess gambit" ? (
