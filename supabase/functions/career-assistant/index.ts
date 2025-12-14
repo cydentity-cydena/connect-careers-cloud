@@ -156,8 +156,14 @@ Be conversational, encouraging, and specific. Provide actionable advice.`;
 
   } catch (error) {
     console.error("Career assistant error:", error);
+    
+    // Return user-friendly error without exposing internals
+    const message = error instanceof Error && error.message === "User not authenticated" 
+      ? "Please sign in to use the career assistant."
+      : "Career assistant is temporarily unavailable. Please try again.";
+    
     return new Response(
-      JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }),
+      JSON.stringify({ error: message }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }

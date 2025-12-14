@@ -54,6 +54,12 @@ serve(async (req) => {
     const validatedData = SignupSchema.parse(rawBody);
     const { email, password, fullName, username, role, isOAuthCompletion, isFounding200 } = validatedData;
 
+    // Defense in depth: Explicitly reject privileged roles even though Zod already restricts
+    const FORBIDDEN_SIGNUP_ROLES = ['admin', 'staff'];
+    if (FORBIDDEN_SIGNUP_ROLES.includes(role)) {
+      throw new Error('This role requires administrative approval');
+    }
+
     console.log('Starting secure signup for:', email, 'with role:', role, isFounding200 ? '(Founding 200)' : '');
 
     // Open registration - no allowlist required for candidates, employers, and recruiters
@@ -368,10 +374,26 @@ serve(async (req) => {
     );
   } catch (error: any) {
     console.error('Signup error:', error);
+    
+    // Sanitize error messages - only return safe, user-facing messages
+    const safeErrorMessages: Record<string, string> = {
+      'This role requires administrative approval': 'This role requires administrative approval',
+      'The Founding 200 program has reached capacity. Please join our waitlist!': 'The Founding 200 program has reached capacity. Please join our waitlist!',
+      'Employer and recruiter accounts require a professional company email address. Please use a different authentication method or contact support.': 'Employer and recruiter accounts require a professional company email address.',
+      'Employers and recruiters must use a professional/company email address, not a personal email': 'Employers and recruiters must use a professional/company email address.',
+      'Invalid username format. Must be 3-20 characters with letters, numbers, and underscores only.': 'Invalid username format.',
+      'Username already taken. Please choose another.': 'Username already taken.',
+      'Password is required for regular signup': 'Password is required.',
+      'No authorization header for OAuth completion': 'Authentication required.',
+      'Failed to get user from token': 'Authentication failed.',
+    };
+    
+    const userMessage = safeErrorMessages[error.message] || 'Signup failed. Please try again.';
+    
     return new Response(
       JSON.stringify({
         success: false,
-        error: error.message || 'Signup failed',
+        error: userMessage,
       }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
