@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ExternalLink, Trophy, Sparkles } from 'lucide-react';
+import { ExternalLink, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
 
 type Course = {
@@ -11,7 +11,6 @@ type Course = {
   partner_slug: string;
   sequence_order: number;
   is_required: boolean;
-  reward_amount?: number;
   is_free?: boolean;
 };
 
@@ -69,17 +68,9 @@ export const PathwayCoursesDialog = ({
               <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between gap-2 mb-1 flex-wrap">
                   <h4 className="font-semibold text-sm">{course.title}</h4>
-                  <div className="flex items-center gap-1">
-                    {course.is_required && (
-                      <Badge variant="secondary" className="text-xs">Required</Badge>
-                    )}
-                    {course.reward_amount && (
-                      <Badge className="bg-primary/10 text-primary border-primary/20 text-xs">
-                        <Trophy className="h-3 w-3 mr-1" />
-                        +{course.reward_amount} XP
-                      </Badge>
-                    )}
-                  </div>
+                  {course.is_required && (
+                    <Badge variant="secondary" className="text-xs">Required</Badge>
+                  )}
                 </div>
                 <p className="text-xs text-muted-foreground mb-2">
                   Provider: <span className="font-medium">{course.partner_slug}</span>
