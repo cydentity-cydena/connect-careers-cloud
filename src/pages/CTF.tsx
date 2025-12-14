@@ -80,6 +80,7 @@ const CTF = () => {
   const [submitting, setSubmitting] = useState(false);
   const [revealedHints, setRevealedHints] = useState<Record<string, number[]>>({});
   const [justSolved, setJustSolved] = useState<{ challengeId: string; points: number } | null>(null);
+  const [hintDeductions, setHintDeductions] = useState<Record<string, number>>({}); // Track points deducted per challenge
 
   useEffect(() => {
     fetchData();
@@ -137,18 +138,37 @@ const CTF = () => {
       }
     }
 
-    // Fetch user's solved challenges if logged in
+    // Fetch user's solved challenges and hint usage if logged in
     if (user?.id) {
-      const { data: submissions } = await supabase
-        .from('ctf_submissions')
-        .select('challenge_id, points_awarded')
-        .eq('candidate_id', user.id)
-        .eq('is_correct', true);
+      const [submissionsResult, hintUsageResult] = await Promise.all([
+        supabase
+          .from('ctf_submissions')
+          .select('challenge_id, points_awarded')
+          .eq('candidate_id', user.id)
+          .eq('is_correct', true),
+        supabase
+          .from('ctf_hint_usage')
+          .select('challenge_id, hint_index, points_deducted')
+          .eq('candidate_id', user.id)
+      ]);
 
-      if (submissions) {
-        const solvedIds = submissions.map(s => s.challenge_id);
-        const totalPoints = submissions.reduce((sum, s) => sum + (s.points_awarded || 0), 0);
+      if (submissionsResult.data) {
+        const solvedIds = submissionsResult.data.map(s => s.challenge_id);
+        const totalPoints = submissionsResult.data.reduce((sum, s) => sum + (s.points_awarded || 0), 0);
         setUserStats(prev => ({ ...prev, solvedChallenges: solvedIds, totalPoints }));
+      }
+
+      if (hintUsageResult.data) {
+        // Restore revealed hints state
+        const hints: Record<string, number[]> = {};
+        const deductions: Record<string, number> = {};
+        hintUsageResult.data.forEach(h => {
+          if (!hints[h.challenge_id]) hints[h.challenge_id] = [];
+          hints[h.challenge_id].push(h.hint_index);
+          deductions[h.challenge_id] = (deductions[h.challenge_id] || 0) + h.points_deducted;
+        });
+        setRevealedHints(hints);
+        setHintDeductions(deductions);
       }
     }
 
@@ -173,6 +193,10 @@ const CTF = () => {
 
       if (verifyError) throw verifyError;
 
+      // Calculate points with hint deductions
+      const hintPenalty = hintDeductions[selectedChallenge.id] || 0;
+      const finalPoints = Math.max(0, selectedChallenge.points - hintPenalty);
+
       // Record the submission
       const { error: submitError } = await supabase
         .from('ctf_submissions')
@@ -181,7 +205,7 @@ const CTF = () => {
           challenge_id: selectedChallenge.id,
           submitted_flag: flagInput.trim(),
           is_correct: isCorrect,
-          points_awarded: isCorrect ? selectedChallenge.points : 0
+          points_awarded: isCorrect ? finalPoints : 0
         });
 
       if (submitError) {
@@ -204,11 +228,14 @@ const CTF = () => {
       
       if (isCorrect) {
         // Show celebration feedback before clearing
-        setJustSolved({ challengeId: selectedChallenge.id, points: selectedChallenge.points });
+        const pointsMessage = hintPenalty > 0 
+          ? `${selectedChallenge.points} - ${hintPenalty} hint penalty = ${finalPoints}`
+          : `${finalPoints}`;
+        setJustSolved({ challengeId: selectedChallenge.id, points: finalPoints });
         setUserStats(prev => ({
           ...prev,
           solvedChallenges: [...prev.solvedChallenges, selectedChallenge.id],
-          totalPoints: prev.totalPoints + selectedChallenge.points
+          totalPoints: prev.totalPoints + finalPoints
         }));
         setFlagInput("");
         
@@ -231,11 +258,57 @@ const CTF = () => {
     }
   };
 
-  const revealHint = (challengeId: string, hintIndex: number) => {
-    setRevealedHints(prev => ({
-      ...prev,
-      [challengeId]: [...(prev[challengeId] || []), hintIndex]
-    }));
+  const revealHint = async (challenge: CTFChallenge, hintIndex: number) => {
+    if (!userId) {
+      toast.error("Please sign in to reveal hints");
+      return;
+    }
+
+    const hint = challenge.hints?.[hintIndex];
+    const cost = hint?.cost || 0;
+
+    // Confirm if there's a cost
+    if (cost > 0) {
+      const confirmed = window.confirm(`Reveal this hint for ${cost} points?`);
+      if (!confirmed) return;
+    }
+
+    try {
+      // Record hint usage in database
+      const { error } = await supabase
+        .from('ctf_hint_usage')
+        .insert({
+          candidate_id: userId,
+          challenge_id: challenge.id,
+          hint_index: hintIndex,
+          points_deducted: cost
+        });
+
+      if (error) {
+        if (error.code === '23505') {
+          // Already revealed - just update local state
+        } else {
+          throw error;
+        }
+      }
+
+      // Update local state
+      setRevealedHints(prev => ({
+        ...prev,
+        [challenge.id]: [...(prev[challenge.id] || []), hintIndex]
+      }));
+
+      if (cost > 0) {
+        setHintDeductions(prev => ({
+          ...prev,
+          [challenge.id]: (prev[challenge.id] || 0) + cost
+        }));
+        toast.info(`💡 Hint revealed! -${cost} points will be deducted from your solve.`);
+      }
+    } catch (error) {
+      console.error("Error revealing hint:", error);
+      toast.error("Failed to reveal hint");
+    }
   };
 
   const getDifficultyColor = (difficulty: string) => {
@@ -406,10 +479,18 @@ const CTF = () => {
                       )}
                       
                       <div className="flex items-center justify-between">
-                        <Badge variant="secondary" className="gap-1">
-                          <Trophy className="h-3 w-3" />
-                          {challenge.points} pts
-                        </Badge>
+                        <div className="flex items-center gap-2">
+                          <Badge variant="secondary" className="gap-1">
+                            <Trophy className="h-3 w-3" />
+                            {challenge.points} pts
+                          </Badge>
+                          {/* Show hint penalty if hints were used */}
+                          {hintDeductions[challenge.id] > 0 && !isSolved && (
+                            <Badge variant="outline" className="text-red-400 border-red-400/30 text-xs">
+                              -{hintDeductions[challenge.id]} hint penalty
+                            </Badge>
+                          )}
+                        </div>
                         {isJustSolved ? (
                           <Badge className="bg-green-500 text-white animate-bounce">
                             🎉 +{justSolved.points} pts!
@@ -465,11 +546,14 @@ const CTF = () => {
                                         <Button 
                                           variant="ghost" 
                                           size="sm" 
-                                          className="text-xs w-full justify-start"
-                                          onClick={() => revealHint(challenge.id, idx)}
+                                          className="text-xs w-full justify-start text-muted-foreground hover:text-foreground"
+                                          onClick={() => revealHint(challenge, idx)}
                                         >
                                           <Lightbulb className="h-3 w-3 mr-1" />
                                           Reveal Hint {idx + 1}
+                                          {hint.cost && hint.cost > 0 && (
+                                            <span className="ml-auto text-red-400 text-xs">-{hint.cost} pts</span>
+                                          )}
                                         </Button>
                                       )}
                                     </div>

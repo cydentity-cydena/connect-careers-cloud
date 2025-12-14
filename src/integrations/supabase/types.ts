@@ -1175,6 +1175,48 @@ export type Database = {
         }
         Relationships: []
       }
+      ctf_hint_usage: {
+        Row: {
+          candidate_id: string
+          challenge_id: string
+          hint_index: number
+          id: string
+          points_deducted: number
+          revealed_at: string
+        }
+        Insert: {
+          candidate_id: string
+          challenge_id: string
+          hint_index: number
+          id?: string
+          points_deducted?: number
+          revealed_at?: string
+        }
+        Update: {
+          candidate_id?: string
+          challenge_id?: string
+          hint_index?: number
+          id?: string
+          points_deducted?: number
+          revealed_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ctf_hint_usage_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "ctf_challenges"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ctf_hint_usage_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "ctf_challenges_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ctf_submissions: {
         Row: {
           candidate_id: string
