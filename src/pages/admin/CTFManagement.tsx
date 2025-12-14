@@ -42,7 +42,7 @@ const CATEGORIES = [
   "OSINT"
 ];
 
-const DIFFICULTIES = ["easy", "medium", "hard", "expert"];
+const DIFFICULTIES = ["beginner", "intermediate", "advanced"];
 
 const CTFManagement = () => {
   const navigate = useNavigate();
@@ -57,7 +57,7 @@ const CTFManagement = () => {
     title: "",
     description: "",
     category: "",
-    difficulty: "medium",
+    difficulty: "beginner",
     points: 100,
     flag: "",
     hints: [] as { text: string; cost: number }[],
@@ -88,7 +88,7 @@ const CTFManagement = () => {
       title: "",
       description: "",
       category: "",
-      difficulty: "medium",
+      difficulty: "beginner",
       points: 100,
       flag: "",
       hints: [],
@@ -212,10 +212,9 @@ const CTFManagement = () => {
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
-      case "easy": return "bg-green-500/20 text-green-400";
-      case "medium": return "bg-yellow-500/20 text-yellow-400";
-      case "hard": return "bg-orange-500/20 text-orange-400";
-      case "expert": return "bg-red-500/20 text-red-400";
+      case "beginner": return "bg-green-500/20 text-green-400";
+      case "intermediate": return "bg-yellow-500/20 text-yellow-400";
+      case "advanced": return "bg-red-500/20 text-red-400";
       default: return "bg-muted";
     }
   };
