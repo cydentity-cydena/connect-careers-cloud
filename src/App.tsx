@@ -53,6 +53,7 @@ import JobModeration from "./pages/admin/JobModeration";
 import PodManagement from "./pages/admin/PodManagement";
 import VerificationReview from "./pages/admin/VerificationReview";
 import AllowedSignups from "./pages/admin/AllowedSignups";
+import CTFManagement from "./pages/admin/CTFManagement";
 import NotFound from "./pages/NotFound";
 import Messages from "./pages/Messages";
 import EmployerPitchDeck from "./pages/EmployerPitchDeck";
@@ -127,6 +128,7 @@ const AppContent = () => {
           <Route path="/admin/allowed-signups" element={<ProtectedRoute><AllowedSignups /></ProtectedRoute>} />
           <Route path="/admin/partner-analytics" element={<ProtectedRoute><PartnerAnalytics /></ProtectedRoute>} />
           <Route path="/admin/assessment-review" element={<ProtectedRoute><AssessmentReview /></ProtectedRoute>} />
+          <Route path="/admin/ctf" element={<ProtectedRoute><CTFManagement /></ProtectedRoute>} />
           
           {/* Standalone Presentation */}
           <Route path="/employer-pitch-deck" element={<EmployerPitchDeck />} />
