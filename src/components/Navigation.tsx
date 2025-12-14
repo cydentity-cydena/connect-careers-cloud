@@ -16,10 +16,24 @@ interface NavLink {
   hideForRoles?: string[];
 }
 
+/**
+ * Navigation Component
+ * 
+ * SECURITY NOTE: Client-side role filtering is used ONLY for UI/UX purposes 
+ * (showing/hiding navigation links). This does NOT provide security.
+ * 
+ * Backend authorization is enforced independently via:
+ * - RLS policies using has_role() function (database level)
+ * - Edge Functions validating roles from database (API level)
+ * 
+ * Even if a user bypasses client-side checks, they cannot access protected
+ * data or perform privileged operations due to server-side enforcement.
+ */
 const Navigation = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [user, setUser] = useState<any>(null);
+  // NOTE: userRoles is used for UI rendering only - not for security
   const [userRoles, setUserRoles] = useState<string[]>([]);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
