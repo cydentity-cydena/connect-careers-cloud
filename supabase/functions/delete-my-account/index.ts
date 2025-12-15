@@ -48,11 +48,7 @@ Deno.serve(async (req) => {
     
     for (const bucket of buckets) {
       try {
-        // List all files in user's folder
-        const { data: files } = await adminClient.storage
-          .from(bucket)
-          .list(userId);
-        
+        const { data: files } = await adminClient.storage.from(bucket).list(userId);
         if (files && files.length > 0) {
           const filePaths = files.map(f => `${userId}/${f.name}`);
           await adminClient.storage.from(bucket).remove(filePaths);
@@ -60,11 +56,74 @@ Deno.serve(async (req) => {
         }
       } catch (err) {
         console.error(`Error cleaning ${bucket} for user ${userId}:`, err);
-        // Continue with other buckets
       }
     }
 
-    // Delete user from auth.users (cascades to profiles and other tables with ON DELETE CASCADE)
+    // Delete all user-related data from tables (order matters due to foreign keys)
+    const tablesToClean = [
+      'post_reactions',
+      'comment_reactions', 
+      'post_comments',
+      'activity_feed',
+      'direct_messages',
+      'notifications',
+      'user_achievements',
+      'user_badges',
+      'reward_points',
+      'community_activities',
+      'peer_endorsements',
+      'candidate_skills',
+      'certifications',
+      'certification_verification_requests',
+      'course_completions',
+      'candidate_resumes',
+      'education',
+      'work_experience',
+      'candidate_xp',
+      'candidate_verifications',
+      'candidate_profiles',
+      'applications',
+      'referrals',
+      'referral_codes',
+      'mfa_backup_codes',
+      'user_roles',
+    ];
+
+    for (const table of tablesToClean) {
+      try {
+        const column = ['peer_endorsements'].includes(table) 
+          ? 'from_user_id' 
+          : ['direct_messages'].includes(table)
+          ? 'sender_id'
+          : ['post_reactions', 'comment_reactions', 'post_comments', 'activity_feed', 'community_activities', 'notifications'].includes(table)
+          ? 'user_id'
+          : 'candidate_id';
+        
+        const { error } = await adminClient.from(table).delete().eq(column, userId);
+        if (error) {
+          // Try alternate column names
+          const altColumns = ['user_id', 'candidate_id', 'employer_id', 'recruiter_id'];
+          for (const alt of altColumns) {
+            const { error: altError } = await adminClient.from(table).delete().eq(alt, userId);
+            if (!altError) break;
+          }
+        }
+        console.log(`Cleaned ${table} for user ${userId}`);
+      } catch (err) {
+        console.log(`Skipped ${table}: ${err}`);
+      }
+    }
+
+    // Also clean recipient messages
+    await adminClient.from('direct_messages').delete().eq('recipient_id', userId);
+    // Clean endorsements received
+    await adminClient.from('peer_endorsements').delete().eq('to_user_id', userId);
+
+    // Finally delete the profile (should cascade but be explicit)
+    await adminClient.from('profiles').delete().eq('id', userId);
+    console.log(`Deleted profile for user ${userId}`);
+
+    // Delete user from auth.users
     const { error: deleteError } = await adminClient.auth.admin.deleteUser(userId);
     
     if (deleteError) {
