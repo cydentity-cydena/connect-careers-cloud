@@ -80,6 +80,7 @@ const AppContent = () => {
           <Route path="/auth" element={<Auth />} />
           <Route path="/verify-email" element={<VerifyEmail />} />
           <Route path="/unsubscribe" element={<Unsubscribe />} />
+          <Route path="/dashboard/unsubscribe" element={<Unsubscribe />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/contact" element={<Contact />} />
