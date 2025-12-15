@@ -147,7 +147,7 @@ const handler = async (req: Request): Promise<Response> => {
                                   Unsubscribe from these emails
                                 </a>
                                 &nbsp;|&nbsp;
-                                <a href="${APP_URL}/dashboard" style="color: #667eea; font-size: 12px; text-decoration: underline;">
+                                <a href="${APP_URL}/profile" style="color: #667eea; font-size: 12px; text-decoration: underline;">
                                   Manage notification preferences
                                 </a>
                               </p>
