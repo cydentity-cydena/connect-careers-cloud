@@ -9,7 +9,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
 import SEO from '@/components/SEO';
-import { ArrowLeft, Plus, Trash2, Upload, Image as ImageIcon, User, ChevronDown, ChevronRight } from 'lucide-react';
+import { ArrowLeft, Plus, Trash2, Upload, Image as ImageIcon, User, ChevronDown, ChevronRight, Bell } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { CandidateAvatar } from '@/components/profiles/CandidateAvatar';
@@ -51,6 +52,7 @@ const Profile = () => {
   const [workHistoryOpen, setWorkHistoryOpen] = useState(false);
   const [projectsOpen, setProjectsOpen] = useState(false);
   const [educationOpen, setEducationOpen] = useState(false);
+  const [emailNotifications, setEmailNotifications] = useState(true);
 
   useEffect(() => {
     const init = async () => {
@@ -64,7 +66,7 @@ const Profile = () => {
       // Load profile
       const { data: profile } = await supabase
         .from('profiles')
-        .select('full_name, username, bio, location, avatar_url, desired_job_title, email')
+        .select('full_name, username, bio, location, avatar_url, desired_job_title, email, email_notifications')
         .eq('id', session.user.id)
         .maybeSingle();
 
@@ -76,6 +78,7 @@ const Profile = () => {
         setLocation(profile.location ?? '');
         setAvatarUrl(profile.avatar_url ?? '');
         setDesiredJobTitle(profile.desired_job_title ?? '');
+        setEmailNotifications(profile.email_notifications ?? true);
       }
 
       // Load user roles
@@ -190,7 +193,7 @@ const Profile = () => {
     try {
       const { error: pErr } = await supabase
         .from('profiles')
-        .update({ full_name: fullName, username, bio, location, avatar_url: avatarUrl, desired_job_title: desiredJobTitle })
+        .update({ full_name: fullName, username, bio, location, avatar_url: avatarUrl, desired_job_title: desiredJobTitle, email_notifications: emailNotifications })
         .eq('id', userId);
       if (pErr) {
         if (pErr.message?.includes('profiles_username_unique')) {
@@ -1214,6 +1217,28 @@ const Profile = () => {
               </div>
             </CollapsibleContent>
           </Collapsible>
+
+          <Separator />
+
+          {/* Email Notification Preferences */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold flex items-center gap-2">
+              <Bell className="h-5 w-5" />
+              Email Preferences
+            </h3>
+            <div className="flex items-center justify-between p-4 border rounded-lg bg-muted/30">
+              <div className="space-y-1">
+                <p className="font-medium">Daily Challenge Emails</p>
+                <p className="text-sm text-muted-foreground">
+                  Receive daily Security IQ challenges and community updates
+                </p>
+              </div>
+              <Switch
+                checked={emailNotifications}
+                onCheckedChange={setEmailNotifications}
+              />
+            </div>
+          </div>
 
           <div className="flex justify-end pt-4">
             <Button onClick={handleSave} disabled={loading}>{loading ? 'Saving...' : 'Save changes'}</Button>
