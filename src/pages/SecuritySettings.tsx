@@ -7,8 +7,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Shield, Loader2, QrCode, Key, CheckCircle, Copy, Download } from "lucide-react";
+import { Shield, Loader2, QrCode, Key, CheckCircle, Copy, Download, Trash2, AlertTriangle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import QRCode from "qrcode";
 import { generateBackupCodes, getRemainingBackupCodes } from "@/lib/backupCodes";
 
@@ -27,6 +28,9 @@ const SecuritySettings = () => {
   const [remainingCodes, setRemainingCodes] = useState(0);
   const [enrolledDevices, setEnrolledDevices] = useState<any[]>([]);
   const [regeneratingCodes, setRegeneratingCodes] = useState(false);
+  const [deletingAccount, setDeletingAccount] = useState(false);
+  const [deleteConfirmText, setDeleteConfirmText] = useState("");
+  const [userEmail, setUserEmail] = useState("");
 
   useEffect(() => {
     checkAuth();
@@ -38,6 +42,7 @@ const SecuritySettings = () => {
       navigate("/auth");
       return;
     }
+    setUserEmail(session.user.email || "");
     await checkMFAStatus();
     setLoading(false);
   };
@@ -237,6 +242,31 @@ const SecuritySettings = () => {
       toast.error(error.message || "Failed to generate backup codes");
     } finally {
       setRegeneratingCodes(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    if (deleteConfirmText !== "DELETE") {
+      toast.error("Please type DELETE to confirm");
+      return;
+    }
+
+    setDeletingAccount(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("delete-my-account");
+      
+      if (error) throw error;
+
+      toast.success("Account deleted successfully. Goodbye!");
+      
+      // Sign out and redirect to home
+      await supabase.auth.signOut();
+      navigate("/");
+    } catch (error: any) {
+      console.error("Error deleting account:", error);
+      toast.error(error.message || "Failed to delete account. Please contact support.");
+    } finally {
+      setDeletingAccount(false);
     }
   };
 
@@ -563,6 +593,83 @@ const SecuritySettings = () => {
                 </div>
               </div>
             )}
+          </CardContent>
+        </Card>
+
+        {/* Delete Account Section */}
+        <Card className="border-destructive/50">
+          <CardHeader>
+            <div className="flex items-center gap-3">
+              <Trash2 className="h-6 w-6 text-destructive" />
+              <div>
+                <CardTitle className="text-destructive">Delete Account</CardTitle>
+                <CardDescription>
+                  Permanently delete your account and all associated data (GDPR)
+                </CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Alert variant="destructive">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertDescription>
+                <strong>Warning:</strong> This action is irreversible. All your data including profile, certifications, resumes, and activity history will be permanently deleted.
+              </AlertDescription>
+            </Alert>
+            
+            <p className="text-sm text-muted-foreground">
+              Account: <strong>{userEmail}</strong>
+            </p>
+
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="destructive">
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  Delete My Account
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription className="space-y-3">
+                    <p>
+                      This will permanently delete your account <strong>{userEmail}</strong> and all associated data including:
+                    </p>
+                    <ul className="list-disc list-inside text-sm space-y-1">
+                      <li>Your profile and personal information</li>
+                      <li>All uploaded resumes and documents</li>
+                      <li>Certifications and verification records</li>
+                      <li>Community posts and activity</li>
+                      <li>Job applications and history</li>
+                    </ul>
+                    <p className="font-semibold text-destructive">
+                      This action cannot be undone.
+                    </p>
+                    <div className="pt-2">
+                      <Label htmlFor="delete-confirm">Type DELETE to confirm:</Label>
+                      <Input
+                        id="delete-confirm"
+                        value={deleteConfirmText}
+                        onChange={(e) => setDeleteConfirmText(e.target.value.toUpperCase())}
+                        placeholder="DELETE"
+                        className="mt-2"
+                      />
+                    </div>
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel onClick={() => setDeleteConfirmText("")}>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={handleDeleteAccount}
+                    disabled={deleteConfirmText !== "DELETE" || deletingAccount}
+                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                  >
+                    {deletingAccount && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
+                    Delete Account Forever
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </CardContent>
         </Card>
       </div>
