@@ -3,11 +3,13 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Pencil, Trash2, ExternalLink, Shield, Clock, XCircle } from 'lucide-react';
+import { Pencil, Trash2, ExternalLink, Shield, Clock, XCircle, Share2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { EditCertificationDialog } from './EditCertificationDialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { ShareableAchievementCard } from '@/components/sharing/ShareableAchievementCard';
 
 interface Certification {
   id: string;
@@ -26,10 +28,22 @@ export const CertificationManager = () => {
   const [loading, setLoading] = useState(true);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [editCert, setEditCert] = useState<Certification | null>(null);
+  const [userProfile, setUserProfile] = useState<{ full_name: string; avatar_url: string | null } | null>(null);
 
   const loadCertifications = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
+
+    // Load user profile for sharing
+    const { data: profileData } = await supabase
+      .from('profiles')
+      .select('full_name, avatar_url')
+      .eq('id', user.id)
+      .single();
+    
+    if (profileData) {
+      setUserProfile(profileData);
+    }
 
     const { data, error } = await supabase
       .from('certifications')
@@ -133,7 +147,35 @@ export const CertificationManager = () => {
                 )}
               </div>
 
-              <div className="flex gap-2 pt-2">
+              <div className="flex flex-wrap gap-2 pt-2">
+                {/* Share Button */}
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      className="text-primary hover:text-primary"
+                    >
+                      <Share2 className="w-4 h-4 mr-2" />
+                      Share
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-lg">
+                    <DialogHeader>
+                      <DialogTitle className="text-center">Share Your Certification 🎉</DialogTitle>
+                    </DialogHeader>
+                    <ShareableAchievementCard
+                      type="certification"
+                      title={cert.name}
+                      subtitle={cert.issuer}
+                      userName={userProfile?.full_name || 'User'}
+                      avatarUrl={userProfile?.avatar_url || undefined}
+                      date={cert.issue_date ? new Date(cert.issue_date).toLocaleDateString() : undefined}
+                      xpEarned={50}
+                    />
+                  </DialogContent>
+                </Dialog>
+
                 {cert.credential_url && (
                   <Button 
                     variant="outline" 
