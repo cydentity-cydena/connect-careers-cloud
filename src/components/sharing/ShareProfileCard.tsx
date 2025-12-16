@@ -51,11 +51,16 @@ export function ShareProfileCard({
 
     setIsGenerating(true);
     try {
+      // Ensure the "export mode" render commits before rasterizing
+      await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+
       // Ensure web fonts are fully loaded before rasterizing (prevents layout shifts in the export)
       if (document.fonts?.ready) {
         await document.fonts.ready;
       }
 
+      // One more frame to let text/layout settle after fonts
+      await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
       const canvas = await html2canvas(cardRef.current, {
         scale: 2,
         backgroundColor: null,
@@ -179,46 +184,80 @@ export function ShareProfileCard({
               style={{ height: '20px', width: 'auto' }}
             />
             {isHrReady && (
-              <div
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '4px',
-                  height: '24px',
-                  padding: '0 10px',
-                  backgroundColor: 'rgba(34, 197, 94, 0.2)',
-                  color: '#4ade80',
-                  border: '1px solid rgba(34, 197, 94, 0.3)',
-                  borderRadius: '9999px',
-                  fontSize: '10px',
-                  fontWeight: 500,
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                <Check style={{ width: '10px', height: '10px', flexShrink: 0, transform: 'translateY(-0.5px)' }} />
-                <span style={{ display: 'block', lineHeight: 1, transform: 'translateY(-0.5px)' }}>HR-Ready</span>
-              </div>
+              isGenerating ? (
+                <div
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                    color: '#4ade80',
+                    fontSize: '10px',
+                    fontWeight: 600,
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  <Check style={{ width: '10px', height: '10px', flexShrink: 0 }} />
+                  <span>HR-Ready</span>
+                </div>
+              ) : (
+                <div
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                    height: '24px',
+                    padding: '0 10px',
+                    backgroundColor: 'rgba(34, 197, 94, 0.2)',
+                    color: '#4ade80',
+                    border: '1px solid rgba(34, 197, 94, 0.3)',
+                    borderRadius: '9999px',
+                    fontSize: '10px',
+                    fontWeight: 500,
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  <Check style={{ width: '10px', height: '10px', flexShrink: 0, transform: 'translateY(-0.5px)' }} />
+                  <span style={{ display: 'block', lineHeight: 1, transform: 'translateY(-0.5px)' }}>HR-Ready</span>
+                </div>
+              )
             )}
             {memberSince && (
-              <div
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '4px',
-                  height: '24px',
-                  padding: '0 10px',
-                  backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                  color: 'rgba(255, 255, 255, 0.6)',
-                  border: '1px solid rgba(255, 255, 255, 0.2)',
-                  borderRadius: '9999px',
-                  fontSize: '10px',
-                  fontWeight: 500,
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                <Calendar style={{ width: '10px', height: '10px', flexShrink: 0, transform: 'translateY(-0.5px)' }} />
-                <span style={{ display: 'block', lineHeight: 1, transform: 'translateY(-0.5px)' }}>{formatMemberSince(memberSince)}</span>
-              </div>
+              isGenerating ? (
+                <div
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                    color: 'rgba(255, 255, 255, 0.6)',
+                    fontSize: '10px',
+                    fontWeight: 600,
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  <Calendar style={{ width: '10px', height: '10px', flexShrink: 0 }} />
+                  <span>{formatMemberSince(memberSince)}</span>
+                </div>
+              ) : (
+                <div
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                    height: '24px',
+                    padding: '0 10px',
+                    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                    color: 'rgba(255, 255, 255, 0.6)',
+                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                    borderRadius: '9999px',
+                    fontSize: '10px',
+                    fontWeight: 500,
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  <Calendar style={{ width: '10px', height: '10px', flexShrink: 0, transform: 'translateY(-0.5px)' }} />
+                  <span style={{ display: 'block', lineHeight: 1, transform: 'translateY(-0.5px)' }}>{formatMemberSince(memberSince)}</span>
+                </div>
+              )
             )}
           </div>
 
@@ -308,56 +347,83 @@ export function ShareProfileCard({
 
             {/* Skills Tags */}
             {skills.length > 0 && (
-              <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '4px', marginBottom: '8px' }}>
-                {skills.slice(0, 3).map((skill, index) => (
-                  <div
-                    key={index}
-                    style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      height: '20px',
-                      padding: '0 6px',
-                      backgroundColor: 'rgba(6, 182, 212, 0.1)',
-                      color: 'rgba(103, 232, 249, 0.9)',
-                      border: '1px solid rgba(6, 182, 212, 0.3)',
-                      borderRadius: '9999px',
-                      fontSize: '9px',
-                      fontWeight: 500,
-                    }}
-                  >
-                    <span style={{ display: 'block', lineHeight: 1, transform: 'translateY(-0.5px)' }}>{skill}</span>
-                  </div>
-                ))}
-              </div>
+              isGenerating ? (
+                <div
+                  style={{
+                    marginBottom: '8px',
+                    color: 'rgba(103, 232, 249, 0.9)',
+                    fontSize: '10px',
+                    fontWeight: 600,
+                    lineHeight: 1.2,
+                  }}
+                >
+                  {skills.slice(0, 3).join(' • ')}
+                </div>
+              ) : (
+                <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '4px', marginBottom: '8px' }}>
+                  {skills.slice(0, 3).map((skill, index) => (
+                    <div
+                      key={index}
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        height: '20px',
+                        padding: '0 6px',
+                        backgroundColor: 'rgba(6, 182, 212, 0.1)',
+                        color: 'rgba(103, 232, 249, 0.9)',
+                        border: '1px solid rgba(6, 182, 212, 0.3)',
+                        borderRadius: '9999px',
+                        fontSize: '9px',
+                        fontWeight: 500,
+                      }}
+                    >
+                      <span style={{ display: 'block', lineHeight: 1, transform: 'translateY(-0.5px)' }}>{skill}</span>
+                    </div>
+                  ))}
+                </div>
+              )
             )}
 
             {/* Specializations */}
             {specializations.length > 0 && (
-              <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '4px' }}>
-                {specializations.slice(0, 2).map((spec, index) => (
-                  <div
-                    key={index}
-                    style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: '4px',
-                      height: '20px',
-                      padding: '0 6px',
-                      backgroundColor: 'rgba(168, 85, 247, 0.1)',
-                      color: 'rgba(255, 255, 255, 0.8)',
-                      border: '1px solid rgba(168, 85, 247, 0.3)',
-                      borderRadius: '9999px',
-                      fontSize: '9px',
-                      fontWeight: 500,
-                    }}
-                  >
-                    <Shield style={{ width: '8px', height: '8px', color: '#a855f7', flexShrink: 0, transform: 'translateY(-0.5px)' }} />
-                    <span style={{ display: 'block', lineHeight: 1, transform: 'translateY(-0.5px)' }}>{spec}</span>
-                  </div>
-                ))}
-              </div>
+              isGenerating ? (
+                <div
+                  style={{
+                    color: 'rgba(255, 255, 255, 0.8)',
+                    fontSize: '10px',
+                    fontWeight: 600,
+                    lineHeight: 1.2,
+                  }}
+                >
+                  {specializations.slice(0, 2).join(' • ')}
+                </div>
+              ) : (
+                <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '4px' }}>
+                  {specializations.slice(0, 2).map((spec, index) => (
+                    <div
+                      key={index}
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '4px',
+                        height: '20px',
+                        padding: '0 6px',
+                        backgroundColor: 'rgba(168, 85, 247, 0.1)',
+                        color: 'rgba(255, 255, 255, 0.8)',
+                        border: '1px solid rgba(168, 85, 247, 0.3)',
+                        borderRadius: '9999px',
+                        fontSize: '9px',
+                        fontWeight: 500,
+                      }}
+                    >
+                      <Shield style={{ width: '8px', height: '8px', color: '#a855f7', flexShrink: 0, transform: 'translateY(-0.5px)' }} />
+                      <span style={{ display: 'block', lineHeight: 1, transform: 'translateY(-0.5px)' }}>{spec}</span>
+                    </div>
+                  ))}
+                </div>
+              )
             )}
           </div>
 
