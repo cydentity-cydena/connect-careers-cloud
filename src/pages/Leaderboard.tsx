@@ -12,6 +12,7 @@ import SEO from "@/components/SEO";
 import { SpecializationBadges } from "@/components/profiles/SpecializationBadges";
 import { detectSpecializations, type Specialization } from "@/lib/specializations";
 import { HRReadyBadge } from "@/components/hrready/HRReadyBadge";
+import { ShareLeaderboardRankCard } from "@/components/sharing/ShareLeaderboardRankCard";
 
 interface LeaderboardEntry {
   id: string;
@@ -43,6 +44,16 @@ const Leaderboard = () => {
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [securityIQLeaderboard, setSecurityIQLeaderboard] = useState<SecurityIQEntry[]>([]);
   const [loading, setLoading] = useState(true);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+
+  // Get current user
+  useEffect(() => {
+    const getCurrentUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setCurrentUserId(user?.id || null);
+    };
+    getCurrentUser();
+  }, []);
 
   useEffect(() => {
     fetchLeaderboard();
@@ -386,6 +397,17 @@ const Leaderboard = () => {
                   </CardContent>
                 </Card>
               </Link>
+              {currentUserId === topThree[0]?.user_id && (
+                <ShareLeaderboardRankCard
+                  rank={1}
+                  username={topThree[0]?.username}
+                  title={topThree[0]?.title}
+                  score={topThree[0]?.xp}
+                  scoreLabel="XP"
+                  leaderboardType="professional"
+                  isHrReady={topThree[0]?.hr_ready}
+                />
+              )}
             </div>
 
             {/* 2nd Place - Silver */}
@@ -407,6 +429,17 @@ const Leaderboard = () => {
                   </CardContent>
                 </Card>
               </Link>
+              {currentUserId === topThree[1]?.user_id && (
+                <ShareLeaderboardRankCard
+                  rank={2}
+                  username={topThree[1]?.username}
+                  title={topThree[1]?.title}
+                  score={topThree[1]?.xp}
+                  scoreLabel="XP"
+                  leaderboardType="professional"
+                  isHrReady={topThree[1]?.hr_ready}
+                />
+              )}
             </div>
 
             {/* 3rd Place - Bronze */}
@@ -428,9 +461,21 @@ const Leaderboard = () => {
                   </CardContent>
                 </Card>
               </Link>
+              {currentUserId === topThree[2]?.user_id && (
+                <ShareLeaderboardRankCard
+                  rank={3}
+                  username={topThree[2]?.username}
+                  title={topThree[2]?.title}
+                  score={topThree[2]?.xp}
+                  scoreLabel="XP"
+                  leaderboardType="professional"
+                  isHrReady={topThree[2]?.hr_ready}
+                />
+              )}
             </div>
           </div>
         )}
+
 
         {/* Full Leaderboard Table */}
         <Card className="border-border shadow-card">
@@ -511,6 +556,9 @@ const Leaderboard = () => {
                       </CardContent>
                     </Card>
                   </Link>
+                  {currentUserId === communityTopThree[0]?.user_id && (
+                    <ShareLeaderboardRankCard rank={1} username={communityTopThree[0]?.username} title={communityTopThree[0]?.title} score={communityTopThree[0]?.community_points} scoreLabel="Community Points" leaderboardType="community" isHrReady={communityTopThree[0]?.hr_ready} />
+                  )}
                 </div>
 
                 {/* 2nd Place */}
