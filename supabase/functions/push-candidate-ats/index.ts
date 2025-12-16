@@ -25,7 +25,25 @@ Deno.serve(async (req) => {
 
     const { candidateId, atsConnectionId } = await req.json();
 
-    console.log('Pushing candidate to ATS:', { candidateId, atsConnectionId });
+    console.log('Pushing candidate to ATS:', { candidateId, atsConnectionId, userId: user.id });
+
+    // Check rate limit for ATS pushes (max 10 per day)
+    const { data: rateLimitCheck } = await supabase.rpc('check_ats_push_rate_limit', {
+      p_user_id: user.id
+    });
+
+    console.log('Rate limit check:', rateLimitCheck);
+
+    if (rateLimitCheck && !rateLimitCheck.allowed) {
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: `Daily push limit reached (${rateLimitCheck.count}/${rateLimitCheck.limit}). Try again tomorrow.`,
+          rate_info: rateLimitCheck
+        }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 429 }
+      );
+    }
 
     // Get ATS connection
     const { data: atsConnection, error: atsError } = await supabase
@@ -74,6 +92,14 @@ Deno.serve(async (req) => {
       response: result,
       status: result.success ? 'success' : 'failed',
       error_message: result.error || null,
+    });
+
+    // Log ATS push for rate limiting
+    await supabase.from('ats_push_logs').insert({
+      user_id: user.id,
+      candidate_id: candidateId,
+      integration_id: atsConnectionId,
+      integration_type: 'ats'
     });
 
     return new Response(
