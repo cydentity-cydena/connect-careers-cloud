@@ -10,8 +10,8 @@ interface SEOProps {
 }
 
 const SEO = ({
-  title = "Cydena - The Future of Cyber Recruitment",
-  description = "Connect elite cybersecurity talent with cutting-edge opportunities. Skills-based matching, verified certifications, and real-time collaboration platform for cyber professionals.",
+  title = "Cydena - The Platform for Verified Cyber Talent",
+  description = "The platform for verified cyber talent. Skills-based matching, verified certifications, and real-time collaboration platform for cybersecurity professionals.",
   keywords = "cybersecurity jobs, cyber recruitment, security clearance jobs, penetration testing jobs, CISSP, CEH, cyber talent, infosec careers",
   image = "/og-image.jpg",
   url = "https://cydena.com",

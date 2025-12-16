@@ -16,7 +16,7 @@ const Footer = () => {
               />
             </div>
             <p className="text-sm text-muted-foreground">
-              Connecting cybersecurity talent with opportunity.
+              The platform for verified cyber talent.
             </p>
           </div>
 

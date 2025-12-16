@@ -41,10 +41,10 @@ const generateSchema = (type: string, data?: any) => {
         "@context": "https://schema.org",
         "@type": "Organization",
         "name": "Cydena",
-        "alternateName": "Cydena Cybersecurity Recruitment Platform",
+        "alternateName": "Cydena Cyber Talent Platform",
         "url": baseUrl,
         "logo": `${baseUrl}/logos/cydena-logo.png`,
-        "description": "Connect elite cybersecurity talent with cutting-edge opportunities. Skills-based matching platform for security analysts, penetration testers, and cybersecurity professionals.",
+        "description": "The platform for verified cyber talent. Skills-based matching for security analysts, penetration testers, and cybersecurity professionals.",
         "email": "contact@cydena.com",
         "address": {
           "@type": "PostalAddress",
@@ -76,7 +76,7 @@ const generateSchema = (type: string, data?: any) => {
           "name": "Cydena Team"
         },
         "foundingDate": "2024",
-        "slogan": "The Future of Cyber Recruitment",
+        "slogan": "The platform for verified cyber talent",
         "knowsAbout": [
           "Cybersecurity Recruitment",
           "Information Security Jobs",
@@ -99,7 +99,7 @@ const generateSchema = (type: string, data?: any) => {
         "@type": "WebSite",
         "name": "Cydena",
         "url": baseUrl,
-        "description": "Cybersecurity recruitment platform connecting verified security professionals with top employers. Free for candidates.",
+        "description": "The platform for verified cyber talent. Connecting verified security professionals with top employers. Free for candidates.",
         "publisher": {
           "@type": "Organization",
           "name": "Cydena"
