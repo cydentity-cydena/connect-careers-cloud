@@ -21,7 +21,6 @@ interface ShareProfileCardProps {
   ctfRank?: number | null;
   achievementsCount?: number;
   memberSince?: Date | null;
-  xpProgress?: number; // 0-100 percentage to next level
 }
 
 // Calculate XP needed per level (simple formula)
@@ -42,7 +41,6 @@ export function ShareProfileCard({
   ctfRank,
   achievementsCount = 0,
   memberSince,
-  xpProgress = 0,
 }: ShareProfileCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -125,46 +123,6 @@ export function ShareProfileCard({
     return `${months[date.getMonth()]} ${date.getFullYear()}`;
   };
 
-  // SVG Progress Ring component
-  const ProgressRing = ({ progress, size = 128, strokeWidth = 4 }: { progress: number; size?: number; strokeWidth?: number }) => {
-    const radius = (size - strokeWidth) / 2;
-    const circumference = radius * 2 * Math.PI;
-    const offset = circumference - (progress / 100) * circumference;
-    
-    return (
-      <svg width={size} height={size} className="absolute top-0 left-0 -rotate-90">
-        {/* Background ring */}
-        <circle
-          cx={size / 2}
-          cy={size / 2}
-          r={radius}
-          fill="none"
-          stroke="rgba(255,255,255,0.1)"
-          strokeWidth={strokeWidth}
-        />
-        {/* Progress ring */}
-        <circle
-          cx={size / 2}
-          cy={size / 2}
-          r={radius}
-          fill="none"
-          stroke="url(#progressGradient)"
-          strokeWidth={strokeWidth}
-          strokeDasharray={circumference}
-          strokeDashoffset={offset}
-          strokeLinecap="round"
-        />
-        <defs>
-          <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#06b6d4" />
-            <stop offset="50%" stopColor="#3b82f6" />
-            <stop offset="100%" stopColor="#a855f7" />
-          </linearGradient>
-        </defs>
-      </svg>
-    );
-  };
-
   return (
     <div className="space-y-4">
       {/* The Card to be captured */}
@@ -229,36 +187,26 @@ export function ShareProfileCard({
 
           {/* Profile section */}
           <div className="flex-1 flex flex-col items-center justify-center text-center">
-            {/* Avatar with progress ring */}
+            {/* Level badge */}
             <div className="relative mb-4">
-              {/* Progress ring around avatar */}
-              <div className="relative w-28 h-28">
-                <ProgressRing progress={xpProgress} size={112} strokeWidth={3} />
-                {/* Inner container */}
-                <div 
-                  className="absolute inset-1 rounded-full flex items-center justify-center"
-                  style={{
-                    background: 'linear-gradient(135deg, #9333ea 0%, #7c3aed 50%, #6366f1 100%)',
-                    padding: '2px'
-                  }}
-                >
-                  <div className="w-full h-full rounded-full bg-[#1a1a2e] flex items-center justify-center relative overflow-hidden">
-                    {/* Level badge inside */}
-                    <div 
-                      className="w-14 h-14 rounded-full flex flex-col items-center justify-center"
-                      style={{
-                        background: 'linear-gradient(180deg, #a855f7 0%, #3b82f6 50%, #06b6d4 100%)'
-                      }}
-                    >
-                      <span className="text-white/80 text-[8px] font-medium tracking-wider">LVL</span>
-                      <span className="text-white font-bold text-lg leading-none">{level}</span>
-                    </div>
+              <div 
+                className="w-24 h-24 rounded-full flex items-center justify-center"
+                style={{
+                  background: 'linear-gradient(135deg, #9333ea 0%, #7c3aed 50%, #6366f1 100%)',
+                  padding: '3px'
+                }}
+              >
+                <div className="w-full h-full rounded-full bg-[#1a1a2e] flex items-center justify-center">
+                  <div 
+                    className="w-16 h-16 rounded-full flex flex-col items-center justify-center"
+                    style={{
+                      background: 'linear-gradient(180deg, #a855f7 0%, #3b82f6 50%, #06b6d4 100%)'
+                    }}
+                  >
+                    <span className="text-white/80 text-[9px] font-medium tracking-wider">LVL</span>
+                    <span className="text-white font-bold text-xl leading-none">{level}</span>
                   </div>
                 </div>
-              </div>
-              {/* XP to next level indicator */}
-              <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-[#1a1a2e] px-2 py-0.5 rounded-full border border-cyan-500/30">
-                <span className="text-[9px] text-cyan-400 font-medium">{xpProgress}% to LVL {level + 1}</span>
               </div>
             </div>
 
