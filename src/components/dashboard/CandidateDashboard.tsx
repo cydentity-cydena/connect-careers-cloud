@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { User, Briefcase, FileText, TrendingUp, CheckCircle, ArrowRight, Eye, Bug } from "lucide-react";
+import { User, Briefcase, FileText, TrendingUp, CheckCircle, ArrowRight, Eye, Bug, Share2 } from "lucide-react";
 import { ProfileStrengthMeter } from "@/components/gamification/ProfileStrengthMeter";
 import { AchievementBadges } from "@/components/gamification/AchievementBadges";
 import { XPSystemInfo } from "@/components/gamification/XPSystemInfo";
@@ -21,8 +21,10 @@ import { ReferralSystem } from "./ReferralSystem";
 import { ReferralBlitzBanner } from "./ReferralBlitzBanner";
 import { CareerPathsAI } from "./CareerPathsAI";
 import { SecurityIQ } from "./SecurityIQ";
+import { ShareProfileCard } from "@/components/sharing/ShareProfileCard";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 const CandidateDashboard = () => {
   const [userId, setUserId] = useState<string>("");
@@ -343,7 +345,7 @@ const CandidateDashboard = () => {
       )}
 
       {userId && (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           <ProfileStrengthMeter userId={userId} />
           
           {/* Preview Your Profile Card */}
@@ -359,7 +361,7 @@ const CandidateDashboard = () => {
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground mb-4">
-                View your profile exactly as it appears to hiring managers and recruiters. Make sure your information is accurate and professional.
+                View your profile exactly as it appears to hiring managers and recruiters.
               </p>
               <Button 
                 onClick={() => navigate(`/profiles/${userId}`)}
@@ -369,6 +371,47 @@ const CandidateDashboard = () => {
                 <Eye className="h-4 w-4" />
                 Preview Profile
               </Button>
+            </CardContent>
+          </Card>
+
+          {/* Share Your Profile Card */}
+          <Card className="border-border shadow-card bg-gradient-to-br from-primary/5 to-secondary/5">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Share2 className="h-5 w-5 text-primary" />
+                Share Your Profile
+              </CardTitle>
+              <CardDescription>
+                Spread the word on social media
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground mb-4">
+                Generate a beautiful card to share on LinkedIn & Twitter.
+              </p>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button className="w-full gap-2" variant="cyber">
+                    <Share2 className="h-4 w-4" />
+                    Share Profile
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-lg">
+                  <DialogHeader>
+                    <DialogTitle className="text-center">Share Your Profile 🚀</DialogTitle>
+                  </DialogHeader>
+                  <ShareProfileCard
+                    userName={userName}
+                    title={profile?.desired_job_title}
+                    avatarUrl={profile?.avatar_url}
+                    level={xpData?.level || 1}
+                    totalXp={xpData?.total_xp || 0}
+                    certCount={0}
+                    specializations={[]}
+                    profileUrl={`https://cydena.com/profiles/${userId}`}
+                  />
+                </DialogContent>
+              </Dialog>
             </CardContent>
           </Card>
           

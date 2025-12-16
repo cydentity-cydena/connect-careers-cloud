@@ -1,8 +1,12 @@
-import { Award, Calendar, ExternalLink, CheckCircle, AlertTriangle, XCircle, Shield } from "lucide-react";
+import { useState } from "react";
+import { Award, Calendar, ExternalLink, CheckCircle, AlertTriangle, XCircle, Shield, Share2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { differenceInDays, parseISO } from "date-fns";
+import { ShareableAchievementCard } from "@/components/sharing/ShareableAchievementCard";
 
 interface CertificationCardProps {
   certification: {
@@ -18,13 +22,20 @@ interface CertificationCardProps {
   };
   isUnlocked?: boolean;
   showCredentialUrl?: boolean;
+  userName?: string;
+  avatarUrl?: string;
+  showShare?: boolean;
 }
 
 export function CertificationCard({ 
   certification, 
   isUnlocked = true, 
-  showCredentialUrl = true 
+  showCredentialUrl = true,
+  userName = "User",
+  avatarUrl,
+  showShare = false
 }: CertificationCardProps) {
+  const [shareOpen, setShareOpen] = useState(false);
   
   const getExpiryStatus = () => {
     if (!certification.expiry_date) return null;
@@ -157,6 +168,32 @@ export function CertificationCard({
               </a>
             )}
           </div>
+        )}
+
+        {/* Share Button */}
+        {showShare && (
+          <Dialog open={shareOpen} onOpenChange={setShareOpen}>
+            <DialogTrigger asChild>
+              <Button variant="outline" size="sm" className="w-full mt-2 gap-2">
+                <Share2 className="h-4 w-4" />
+                Share Achievement
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-lg">
+              <DialogHeader>
+                <DialogTitle className="text-center">Share Your Certification 🎉</DialogTitle>
+              </DialogHeader>
+              <ShareableAchievementCard
+                type="certification"
+                title={certification.name}
+                subtitle={certification.issuer}
+                userName={userName}
+                avatarUrl={avatarUrl}
+                date={certification.issue_date ? new Date(certification.issue_date).toLocaleDateString() : undefined}
+                xpEarned={50}
+              />
+            </DialogContent>
+          </Dialog>
         )}
       </CardContent>
     </Card>
