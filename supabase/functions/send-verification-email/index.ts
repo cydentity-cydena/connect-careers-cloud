@@ -25,7 +25,7 @@ const getEmailHtml = (confirmationUrl: string, userEmail: string) => `
             <td style="padding: 40px;">
               <h1 style="color: #0a0a0a; font-size: 24px; font-weight: bold; margin: 0 0 20px 0;">Welcome to Cydena!</h1>
               <p style="color: #404040; font-size: 16px; line-height: 26px; margin: 0 0 20px 0;">
-                Thank you for signing up for Cydena, the evidence-led cybersecurity hiring platform.
+                Thank you for signing up for Cydena, the platform for verified cyber talent.
               </p>
               <p style="color: #404040; font-size: 16px; line-height: 26px; margin: 0 0 27px 0;">
                 To complete your registration and start showcasing your verified certifications and skills, please verify your email address:

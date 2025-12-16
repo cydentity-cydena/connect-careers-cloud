@@ -231,7 +231,7 @@ const Index = () => {
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-12 md:mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-3 md:mb-4">
-              The <span className="bg-gradient-cyber bg-clip-text text-transparent">Recruitment Revolution</span>
+              The platform for <span className="bg-gradient-cyber bg-clip-text text-transparent">verified cyber talent</span>
             </h2>
             <p className="text-base md:text-xl text-muted-foreground max-w-3xl mx-auto px-2">
               Validated, curated, and interview-ready cybersecurity professionals
