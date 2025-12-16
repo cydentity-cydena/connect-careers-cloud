@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { ApplyJobDialog } from "@/components/jobs/ApplyJobDialog";
 import { EditJobButton } from "@/components/jobs/EditJobButton";
+import { ShareJobButton } from "@/components/jobs/ShareJobButton";
 import { VerifiedBadge } from "@/components/verification/VerifiedBadge";
 import SEO from "@/components/SEO";
 
@@ -218,6 +219,11 @@ const JobDetail = () => {
                 createdBy={job.created_by}
                 variant="outline"
               />
+              <ShareJobButton 
+                jobId={job.id} 
+                jobTitle={job.title} 
+                companyName={job.company?.name}
+              />
               <ApplyJobDialog jobId={job.id} jobTitle={job.title}>
                 <Button size="default" variant="hero" className="whitespace-nowrap">
                   Apply Now
@@ -294,6 +300,11 @@ const JobDetail = () => {
                   jobId={job.id} 
                   createdBy={job.created_by}
                   variant="outline"
+                />
+                <ShareJobButton 
+                  jobId={job.id} 
+                  jobTitle={job.title} 
+                  companyName={job.company?.name}
                 />
                 <ApplyJobDialog jobId={job.id} jobTitle={job.title}>
                   <Button size="lg" variant="hero" className="whitespace-nowrap">
