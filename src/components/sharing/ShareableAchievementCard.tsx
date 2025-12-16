@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Download, Linkedin, Twitter, Share2, Check, Award, Shield, Trophy, Zap } from 'lucide-react';
+import { Download, Linkedin, Twitter, Share2, Check, Award, Shield, Trophy, Zap, Facebook, Instagram } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import { toast } from 'sonner';
 
@@ -118,6 +118,24 @@ export function ShareableAchievementCard({
     const url = 'https://cydena.com';
     const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
     window.open(twitterUrl, '_blank', 'width=600,height=400');
+  };
+
+  const shareToFacebook = () => {
+    const url = 'https://cydena.com';
+    const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=${encodeURIComponent(`${config.emoji} ${config.label}: ${title} - Just earned this on Cydena!`)}`;
+    window.open(facebookUrl, '_blank', 'width=600,height=400');
+  };
+
+  const shareToInstagram = async () => {
+    // Instagram doesn't have a web share API - download image for manual sharing
+    const dataUrl = await generateImage();
+    if (!dataUrl) return;
+    
+    const link = document.createElement('a');
+    link.download = `cydena-${type}-instagram.png`;
+    link.href = dataUrl;
+    link.click();
+    toast.success('Image downloaded! Open Instagram and share from your camera roll.', { duration: 5000 });
   };
 
   const copyShareLink = async () => {
@@ -251,6 +269,25 @@ export function ShareableAchievementCard({
           >
             <Twitter className="w-4 h-4 text-[#1DA1F2]" />
             Twitter
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={shareToFacebook}
+            className="gap-2"
+          >
+            <Facebook className="w-4 h-4 text-[#1877F2]" />
+            Facebook
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={shareToInstagram}
+            disabled={isGenerating}
+            className="gap-2"
+          >
+            <Instagram className="w-4 h-4 text-[#E4405F]" />
+            Instagram
           </Button>
           <Button
             variant="outline"
