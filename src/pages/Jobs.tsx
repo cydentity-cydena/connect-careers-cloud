@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Briefcase, MapPin, DollarSign, Clock, Search, Info } from "lucide-react";
+import { ShareJobButton } from "@/components/jobs/ShareJobButton";
 import Navigation from "@/components/Navigation";
 import SEO from "@/components/SEO";
 import Schema from "@/components/Schema";
@@ -419,6 +420,11 @@ const Jobs = () => {
                       >
                         View Details
                       </Button>
+                      <ShareJobButton 
+                        jobId={job.id} 
+                        jobTitle={job.title} 
+                        companyName={job.company?.name}
+                      />
                     </div>
                   </div>
                 </CardContent>
