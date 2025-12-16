@@ -149,7 +149,7 @@ export function ShareProfileCard({
             <img 
               src="/logos/cydena-logo.png" 
               alt="Cydena" 
-              className="h-6 w-auto brightness-0 invert opacity-90"
+              className="h-6 w-auto"
             />
             {isHrReady && (
               <Badge className="bg-green-500/20 text-green-400 border-green-500/30 text-xs">
