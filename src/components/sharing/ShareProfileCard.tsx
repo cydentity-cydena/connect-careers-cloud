@@ -179,19 +179,22 @@ export function ShareProfileCard({
               style={{ height: '20px', width: 'auto' }}
             />
             {isHrReady && (
-              <Badge className="bg-green-500/20 text-green-400 border-green-500/30 text-[10px] px-2 py-0.5" style={{ whiteSpace: 'nowrap' }}>
-                <Check className="w-2.5 h-2.5 mr-1" />
-                HR-Ready
+              <Badge
+                className="h-6 bg-green-500/20 text-green-400 border-green-500/30 text-[10px] px-2 py-0 inline-flex items-center justify-center gap-1 leading-none"
+                style={{ whiteSpace: 'nowrap' }}
+              >
+                <Check className="w-2.5 h-2.5 shrink-0" />
+                <span className="leading-none">HR-Ready</span>
               </Badge>
             )}
             {memberSince && (
               <Badge
                 variant="outline"
-                className="bg-white/5 text-white/60 border-white/20 text-[10px] px-2 py-0.5"
+                className="h-6 bg-white/5 text-white/60 border-white/20 text-[10px] px-2 py-0 inline-flex items-center justify-center gap-1 leading-none"
                 style={{ whiteSpace: 'nowrap' }}
               >
-                <Calendar className="w-2.5 h-2.5 mr-1" />
-                {formatMemberSince(memberSince)}
+                <Calendar className="w-2.5 h-2.5 shrink-0" />
+                <span className="leading-none">{formatMemberSince(memberSince)}</span>
               </Badge>
             )}
           </div>
@@ -284,12 +287,12 @@ export function ShareProfileCard({
             {skills.length > 0 && (
               <div className="flex flex-wrap justify-center gap-1 mb-2">
                 {skills.slice(0, 3).map((skill, index) => (
-                  <Badge 
+                  <Badge
                     key={index}
-                    variant="outline" 
-                    className="bg-cyan-500/10 text-cyan-300/90 border-cyan-500/30 text-[9px] px-1.5 py-0"
+                    variant="outline"
+                    className="h-5 bg-cyan-500/10 text-cyan-300/90 border-cyan-500/30 text-[9px] px-1.5 py-0 inline-flex items-center justify-center leading-none"
                   >
-                    {skill}
+                    <span className="leading-none">{skill}</span>
                   </Badge>
                 ))}
               </div>
@@ -299,13 +302,13 @@ export function ShareProfileCard({
             {specializations.length > 0 && (
               <div className="flex flex-wrap justify-center gap-1">
                 {specializations.slice(0, 2).map((spec, index) => (
-                  <Badge 
+                  <Badge
                     key={index}
-                    variant="outline" 
-                    className="bg-purple-500/10 text-white/80 border-purple-500/30 text-[9px] px-1.5 py-0"
+                    variant="outline"
+                    className="h-5 bg-purple-500/10 text-white/80 border-purple-500/30 text-[9px] px-1.5 py-0 inline-flex items-center justify-center gap-1 leading-none"
                   >
-                    <Shield className="w-2 h-2 mr-0.5 text-purple-400" />
-                    {spec}
+                    <Shield className="w-2 h-2 text-purple-400 shrink-0" />
+                    <span className="leading-none">{spec}</span>
                   </Badge>
                 ))}
               </div>
