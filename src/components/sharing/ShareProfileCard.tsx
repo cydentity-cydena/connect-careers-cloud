@@ -337,9 +337,16 @@ export function ShareProfileCard({
 
             {/* Top Certifications */}
             {certNames.length > 0 && (
-              <div className="mb-2">
+              <div className="mb-2 w-full max-w-[280px]">
                 <p className="text-white/50 text-[9px] uppercase tracking-widest mb-1">Top Certifications</p>
-                <p className="text-white/90 text-xs font-medium">
+                <p 
+                  className="text-white/90 text-xs font-medium"
+                  style={{
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
                   {certNames.slice(0, 3).join(' • ')}
                 </p>
               </div>
