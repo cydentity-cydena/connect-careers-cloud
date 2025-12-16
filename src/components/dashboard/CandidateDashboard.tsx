@@ -210,6 +210,68 @@ const CandidateDashboard = () => {
     enabled: !!userId,
   });
 
+  // Fetch CTF rank
+  const { data: ctfRank } = useQuery({
+    queryKey: ['ctf-rank', userId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('ctf_leaderboard')
+        .select('id, total_points')
+        .order('total_points', { ascending: false });
+      
+      if (error) throw error;
+      if (!data) return null;
+      
+      const rankIndex = data.findIndex(entry => entry.id === userId);
+      return rankIndex >= 0 ? rankIndex + 1 : null;
+    },
+    enabled: !!userId,
+  });
+
+  // Fetch achievements count
+  const { data: achievementsCount = 0 } = useQuery({
+    queryKey: ['achievements-count', userId],
+    queryFn: async () => {
+      const { count, error } = await supabase
+        .from('user_achievements')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', userId);
+      
+      if (error) throw error;
+      return count || 0;
+    },
+    enabled: !!userId,
+  });
+
+  // Fetch top skills for share card
+  const { data: topSkills = [] } = useQuery({
+    queryKey: ['top-skills', userId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('candidate_skills')
+        .select('skills(name)')
+        .eq('candidate_id', userId)
+        .order('proficiency_level', { ascending: false })
+        .limit(3);
+      
+      if (error) throw error;
+      return data?.map((s: any) => s.skills?.name).filter(Boolean) || [];
+    },
+    enabled: !!userId,
+  });
+
+  // Calculate XP progress to next level
+  const calculateXpProgress = () => {
+    if (!xpData) return 0;
+    const currentLevel = xpData.level || 1;
+    const currentXp = xpData.total_xp || 0;
+    const xpForCurrentLevel = currentLevel * 100;
+    const xpForNextLevel = (currentLevel + 1) * 100;
+    const xpIntoLevel = currentXp - (currentLevel * (currentLevel - 1) / 2 * 100);
+    const xpNeeded = xpForNextLevel - xpForCurrentLevel;
+    return Math.min(100, Math.round((xpIntoLevel / xpNeeded) * 100));
+  };
+
   const [showMoreFeatures, setShowMoreFeatures] = useState(false);
 
   return (
@@ -492,8 +554,13 @@ const CandidateDashboard = () => {
                   certCount={certifications.length}
                   certNames={certifications.map(c => c.name)}
                   specializations={candidateProfile?.specializations || []}
+                  skills={topSkills}
                   isHrReady={hrReadyStatus}
                   profileUrl={`https://cydena.com/profiles/${userId}`}
+                  ctfRank={ctfRank}
+                  achievementsCount={achievementsCount}
+                  memberSince={userCreatedAt}
+                  xpProgress={calculateXpProgress()}
                 />
               </CardContent>
             </Card>
