@@ -13,6 +13,7 @@ interface ShareProfileCardProps {
   level: number;
   totalXp: number;
   certCount: number;
+  certNames?: string[];
   specializations?: string[];
   isHrReady?: boolean;
   profileUrl?: string;
@@ -25,6 +26,7 @@ export function ShareProfileCard({
   level,
   totalXp,
   certCount,
+  certNames = [],
   specializations = [],
   isHrReady,
   profileUrl,
@@ -193,13 +195,13 @@ export function ShareProfileCard({
             </div>
 
             {/* Username */}
-            <h2 className="text-white font-bold text-2xl mb-1 tracking-wide">{userName}</h2>
+            <h2 className="text-white font-bold text-2xl mb-0.5 tracking-wide">{userName}</h2>
             {title && (
-              <p className="text-purple-300/80 text-sm mb-4">{title}</p>
+              <p className="text-purple-300/90 text-sm font-medium mb-3">{title}</p>
             )}
 
             {/* Stats */}
-            <div className="flex items-center justify-center gap-8 mb-4">
+            <div className="flex items-center justify-center gap-8 mb-3">
               <div className="text-center">
                 <div className="flex items-center justify-center gap-1.5">
                   <Star className="w-5 h-5 text-cyan-400" strokeWidth={1.5} />
@@ -217,16 +219,26 @@ export function ShareProfileCard({
               </div>
             </div>
 
+            {/* Top Certifications */}
+            {certNames.length > 0 && (
+              <div className="mb-3">
+                <p className="text-white/50 text-[10px] uppercase tracking-widest mb-1.5">Top Certifications</p>
+                <p className="text-white/90 text-sm font-medium">
+                  {certNames.slice(0, 3).join(' • ')}
+                </p>
+              </div>
+            )}
+
             {/* Specializations */}
             {specializations.length > 0 && (
-              <div className="flex flex-wrap justify-center gap-2 mt-2">
-                {specializations.slice(0, 3).map((spec, index) => (
+              <div className="flex flex-wrap justify-center gap-1.5">
+                {specializations.slice(0, 2).map((spec, index) => (
                   <Badge 
                     key={index}
                     variant="outline" 
-                    className="bg-white/5 text-white/70 border-purple-500/30 text-xs"
+                    className="bg-purple-500/10 text-white/80 border-purple-500/30 text-[10px] px-2 py-0.5"
                   >
-                    <Shield className="w-3 h-3 mr-1 text-purple-400" />
+                    <Shield className="w-2.5 h-2.5 mr-1 text-purple-400" />
                     {spec}
                   </Badge>
                 ))}
