@@ -387,7 +387,7 @@ const CandidateDashboard = () => {
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground mb-4">
-                Generate a beautiful card to share on LinkedIn & Twitter.
+                Create a shareable card to promote your profile across social platforms.
               </p>
               <Dialog>
                 <DialogTrigger asChild>
