@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Download, Linkedin, Twitter, Share2, Check, Shield, Award, Star, Facebook, Instagram } from 'lucide-react';
+import { Download, Linkedin, Twitter, Share2, Check, Shield, Award, Star, Facebook, Instagram, Trophy, Calendar, Zap } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import { toast } from 'sonner';
 
@@ -15,9 +15,17 @@ interface ShareProfileCardProps {
   certCount: number;
   certNames?: string[];
   specializations?: string[];
+  skills?: string[];
   isHrReady?: boolean;
   profileUrl?: string;
+  ctfRank?: number | null;
+  achievementsCount?: number;
+  memberSince?: Date | null;
+  xpProgress?: number; // 0-100 percentage to next level
 }
+
+// Calculate XP needed per level (simple formula)
+const getXpForLevel = (level: number) => level * 100;
 
 export function ShareProfileCard({
   userName,
@@ -28,8 +36,13 @@ export function ShareProfileCard({
   certCount,
   certNames = [],
   specializations = [],
+  skills = [],
   isHrReady,
   profileUrl,
+  ctfRank,
+  achievementsCount = 0,
+  memberSince,
+  xpProgress = 0,
 }: ShareProfileCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -105,6 +118,53 @@ export function ShareProfileCard({
     setTimeout(() => setCopied(false), 2000);
   };
 
+  // Format member since date
+  const formatMemberSince = (date: Date | null) => {
+    if (!date) return null;
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return `${months[date.getMonth()]} ${date.getFullYear()}`;
+  };
+
+  // SVG Progress Ring component
+  const ProgressRing = ({ progress, size = 128, strokeWidth = 4 }: { progress: number; size?: number; strokeWidth?: number }) => {
+    const radius = (size - strokeWidth) / 2;
+    const circumference = radius * 2 * Math.PI;
+    const offset = circumference - (progress / 100) * circumference;
+    
+    return (
+      <svg width={size} height={size} className="absolute top-0 left-0 -rotate-90">
+        {/* Background ring */}
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          fill="none"
+          stroke="rgba(255,255,255,0.1)"
+          strokeWidth={strokeWidth}
+        />
+        {/* Progress ring */}
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          fill="none"
+          stroke="url(#progressGradient)"
+          strokeWidth={strokeWidth}
+          strokeDasharray={circumference}
+          strokeDashoffset={offset}
+          strokeLinecap="round"
+        />
+        <defs>
+          <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#06b6d4" />
+            <stop offset="50%" stopColor="#3b82f6" />
+            <stop offset="100%" stopColor="#a855f7" />
+          </linearGradient>
+        </defs>
+      </svg>
+    );
+  };
+
   return (
     <div className="space-y-4">
       {/* The Card to be captured */}
@@ -143,99 +203,149 @@ export function ShareProfileCard({
         />
 
         {/* Content */}
-        <div className="relative h-full p-6 flex flex-col">
+        <div className="relative h-full p-5 flex flex-col">
           {/* Header with logo */}
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-3">
             <img 
               src="/logos/cydena-logo.png" 
               alt="Cydena" 
-              className="h-6 w-auto"
+              className="h-5 w-auto"
             />
-            {isHrReady && (
-              <Badge className="bg-green-500/20 text-green-400 border-green-500/30 text-xs">
-                <Check className="w-3 h-3 mr-1" />
-                HR-Ready
-              </Badge>
-            )}
+            <div className="flex items-center gap-2">
+              {isHrReady && (
+                <Badge className="bg-green-500/20 text-green-400 border-green-500/30 text-[10px] px-2 py-0.5">
+                  <Check className="w-2.5 h-2.5 mr-1" />
+                  HR-Ready
+                </Badge>
+              )}
+              {memberSince && (
+                <Badge variant="outline" className="bg-white/5 text-white/60 border-white/20 text-[10px] px-2 py-0.5">
+                  <Calendar className="w-2.5 h-2.5 mr-1" />
+                  {formatMemberSince(memberSince)}
+                </Badge>
+              )}
+            </div>
           </div>
 
           {/* Profile section */}
           <div className="flex-1 flex flex-col items-center justify-center text-center">
-            {/* Avatar with purple ring */}
-            <div className="relative mb-6">
-              {/* Outer purple ring */}
-              <div 
-                className="w-32 h-32 rounded-full flex items-center justify-center"
-                style={{
-                  background: 'linear-gradient(135deg, #9333ea 0%, #7c3aed 50%, #6366f1 100%)',
-                  padding: '3px'
-                }}
-              >
-                <div className="w-full h-full rounded-full bg-[#1a1a2e] flex items-center justify-center relative overflow-hidden">
-                  {/* Decorative arc */}
-                  <div 
-                    className="absolute top-2 right-4 w-6 h-6 border-t-2 border-r-2 border-white/30 rounded-tr-full"
-                  />
-                  
-                  {/* Level badge inside the ring */}
-                  <div 
-                    className="w-16 h-16 rounded-full flex flex-col items-center justify-center"
-                    style={{
-                      background: 'linear-gradient(180deg, #a855f7 0%, #3b82f6 50%, #06b6d4 100%)'
-                    }}
-                  >
-                    <span className="text-white/80 text-[10px] font-medium tracking-wider">LVL</span>
-                    <span className="text-white font-bold text-xl leading-none">{level}</span>
+            {/* Avatar with progress ring */}
+            <div className="relative mb-4">
+              {/* Progress ring around avatar */}
+              <div className="relative w-28 h-28">
+                <ProgressRing progress={xpProgress} size={112} strokeWidth={3} />
+                {/* Inner container */}
+                <div 
+                  className="absolute inset-1 rounded-full flex items-center justify-center"
+                  style={{
+                    background: 'linear-gradient(135deg, #9333ea 0%, #7c3aed 50%, #6366f1 100%)',
+                    padding: '2px'
+                  }}
+                >
+                  <div className="w-full h-full rounded-full bg-[#1a1a2e] flex items-center justify-center relative overflow-hidden">
+                    {/* Level badge inside */}
+                    <div 
+                      className="w-14 h-14 rounded-full flex flex-col items-center justify-center"
+                      style={{
+                        background: 'linear-gradient(180deg, #a855f7 0%, #3b82f6 50%, #06b6d4 100%)'
+                      }}
+                    >
+                      <span className="text-white/80 text-[8px] font-medium tracking-wider">LVL</span>
+                      <span className="text-white font-bold text-lg leading-none">{level}</span>
+                    </div>
                   </div>
                 </div>
+              </div>
+              {/* XP to next level indicator */}
+              <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-[#1a1a2e] px-2 py-0.5 rounded-full border border-cyan-500/30">
+                <span className="text-[9px] text-cyan-400 font-medium">{xpProgress}% to LVL {level + 1}</span>
               </div>
             </div>
 
             {/* Username */}
-            <h2 className="text-white font-bold text-2xl mb-0.5 tracking-wide">{userName}</h2>
+            <h2 className="text-white font-bold text-xl mb-0.5 tracking-wide">{userName}</h2>
             {title && (
-              <p className="text-purple-300/90 text-sm font-medium mb-3">{title}</p>
+              <p className="text-purple-300/90 text-xs font-medium mb-2">{title}</p>
             )}
 
-            {/* Stats */}
-            <div className="flex items-center justify-center gap-8 mb-3">
+            {/* Stats Row */}
+            <div className="flex items-center justify-center gap-4 mb-2">
               <div className="text-center">
-                <div className="flex items-center justify-center gap-1.5">
-                  <Star className="w-5 h-5 text-cyan-400" strokeWidth={1.5} />
-                  <span className="font-bold text-xl text-cyan-400">{totalXp.toLocaleString()}</span>
+                <div className="flex items-center justify-center gap-1">
+                  <Star className="w-4 h-4 text-cyan-400" strokeWidth={1.5} />
+                  <span className="font-bold text-lg text-cyan-400">{totalXp.toLocaleString()}</span>
                 </div>
-                <span className="text-white/40 text-xs tracking-wider">XP</span>
+                <span className="text-white/40 text-[10px] tracking-wider">XP</span>
               </div>
-              <div className="w-px h-10 bg-white/10" />
+              <div className="w-px h-8 bg-white/10" />
               <div className="text-center">
-                <div className="flex items-center justify-center gap-1.5">
-                  <Award className="w-5 h-5 text-yellow-400" strokeWidth={1.5} />
-                  <span className="font-bold text-xl text-yellow-400">{certCount}</span>
+                <div className="flex items-center justify-center gap-1">
+                  <Award className="w-4 h-4 text-yellow-400" strokeWidth={1.5} />
+                  <span className="font-bold text-lg text-yellow-400">{certCount}</span>
                 </div>
-                <span className="text-white/40 text-xs tracking-wider">Certs</span>
+                <span className="text-white/40 text-[10px] tracking-wider">Certs</span>
               </div>
+              {achievementsCount > 0 && (
+                <>
+                  <div className="w-px h-8 bg-white/10" />
+                  <div className="text-center">
+                    <div className="flex items-center justify-center gap-1">
+                      <Zap className="w-4 h-4 text-purple-400" strokeWidth={1.5} />
+                      <span className="font-bold text-lg text-purple-400">{achievementsCount}</span>
+                    </div>
+                    <span className="text-white/40 text-[10px] tracking-wider">Badges</span>
+                  </div>
+                </>
+              )}
+              {ctfRank && ctfRank <= 100 && (
+                <>
+                  <div className="w-px h-8 bg-white/10" />
+                  <div className="text-center">
+                    <div className="flex items-center justify-center gap-1">
+                      <Trophy className="w-4 h-4 text-orange-400" strokeWidth={1.5} />
+                      <span className="font-bold text-lg text-orange-400">#{ctfRank}</span>
+                    </div>
+                    <span className="text-white/40 text-[10px] tracking-wider">CTF</span>
+                  </div>
+                </>
+              )}
             </div>
 
             {/* Top Certifications */}
             {certNames.length > 0 && (
-              <div className="mb-3">
-                <p className="text-white/50 text-[10px] uppercase tracking-widest mb-1.5">Top Certifications</p>
-                <p className="text-white/90 text-sm font-medium">
+              <div className="mb-2">
+                <p className="text-white/50 text-[9px] uppercase tracking-widest mb-1">Top Certifications</p>
+                <p className="text-white/90 text-xs font-medium">
                   {certNames.slice(0, 3).join(' • ')}
                 </p>
               </div>
             )}
 
+            {/* Skills Tags */}
+            {skills.length > 0 && (
+              <div className="flex flex-wrap justify-center gap-1 mb-2">
+                {skills.slice(0, 3).map((skill, index) => (
+                  <Badge 
+                    key={index}
+                    variant="outline" 
+                    className="bg-cyan-500/10 text-cyan-300/90 border-cyan-500/30 text-[9px] px-1.5 py-0"
+                  >
+                    {skill}
+                  </Badge>
+                ))}
+              </div>
+            )}
+
             {/* Specializations */}
             {specializations.length > 0 && (
-              <div className="flex flex-wrap justify-center gap-1.5">
+              <div className="flex flex-wrap justify-center gap-1">
                 {specializations.slice(0, 2).map((spec, index) => (
                   <Badge 
                     key={index}
                     variant="outline" 
-                    className="bg-purple-500/10 text-white/80 border-purple-500/30 text-[10px] px-2 py-0.5"
+                    className="bg-purple-500/10 text-white/80 border-purple-500/30 text-[9px] px-1.5 py-0"
                   >
-                    <Shield className="w-2.5 h-2.5 mr-1 text-purple-400" />
+                    <Shield className="w-2 h-2 mr-0.5 text-purple-400" />
                     {spec}
                   </Badge>
                 ))}
@@ -244,8 +354,8 @@ export function ShareProfileCard({
           </div>
 
           {/* Footer */}
-          <div className="text-center pt-4">
-            <p className="text-white/30 text-xs tracking-widest">
+          <div className="text-center pt-2">
+            <p className="text-white/30 text-[10px] tracking-widest">
               Cybersecurity Talent Platform
             </p>
           </div>
