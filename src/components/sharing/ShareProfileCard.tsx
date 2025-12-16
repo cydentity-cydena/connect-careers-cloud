@@ -184,8 +184,8 @@ export function ShareProfileCard({
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: '4px',
-                  height: '22px',
-                  padding: '0 8px',
+                  height: '24px',
+                  padding: '0 10px',
                   backgroundColor: 'rgba(34, 197, 94, 0.2)',
                   color: '#4ade80',
                   border: '1px solid rgba(34, 197, 94, 0.3)',
@@ -193,11 +193,10 @@ export function ShareProfileCard({
                   fontSize: '10px',
                   fontWeight: 500,
                   whiteSpace: 'nowrap',
-                  lineHeight: 1,
                 }}
               >
-                <Check style={{ width: '10px', height: '10px', flexShrink: 0 }} />
-                <span style={{ lineHeight: 1 }}>HR-Ready</span>
+                <Check style={{ width: '10px', height: '10px', flexShrink: 0, transform: 'translateY(-0.5px)' }} />
+                <span style={{ display: 'block', lineHeight: 1, transform: 'translateY(-0.5px)' }}>HR-Ready</span>
               </div>
             )}
             {memberSince && (
@@ -206,8 +205,8 @@ export function ShareProfileCard({
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: '4px',
-                  height: '22px',
-                  padding: '0 8px',
+                  height: '24px',
+                  padding: '0 10px',
                   backgroundColor: 'rgba(255, 255, 255, 0.05)',
                   color: 'rgba(255, 255, 255, 0.6)',
                   border: '1px solid rgba(255, 255, 255, 0.2)',
@@ -215,11 +214,10 @@ export function ShareProfileCard({
                   fontSize: '10px',
                   fontWeight: 500,
                   whiteSpace: 'nowrap',
-                  lineHeight: 1,
                 }}
               >
-                <Calendar style={{ width: '10px', height: '10px', flexShrink: 0 }} />
-                <span style={{ lineHeight: 1 }}>{formatMemberSince(memberSince)}</span>
+                <Calendar style={{ width: '10px', height: '10px', flexShrink: 0, transform: 'translateY(-0.5px)' }} />
+                <span style={{ display: 'block', lineHeight: 1, transform: 'translateY(-0.5px)' }}>{formatMemberSince(memberSince)}</span>
               </div>
             )}
           </div>
@@ -326,10 +324,9 @@ export function ShareProfileCard({
                       borderRadius: '9999px',
                       fontSize: '9px',
                       fontWeight: 500,
-                      lineHeight: 1,
                     }}
                   >
-                    {skill}
+                    <span style={{ display: 'block', lineHeight: 1, transform: 'translateY(-0.5px)' }}>{skill}</span>
                   </div>
                 ))}
               </div>
@@ -354,11 +351,10 @@ export function ShareProfileCard({
                       borderRadius: '9999px',
                       fontSize: '9px',
                       fontWeight: 500,
-                      lineHeight: 1,
                     }}
                   >
-                    <Shield style={{ width: '8px', height: '8px', color: '#a855f7', flexShrink: 0 }} />
-                    <span style={{ lineHeight: 1 }}>{spec}</span>
+                    <Shield style={{ width: '8px', height: '8px', color: '#a855f7', flexShrink: 0, transform: 'translateY(-0.5px)' }} />
+                    <span style={{ display: 'block', lineHeight: 1, transform: 'translateY(-0.5px)' }}>{spec}</span>
                   </div>
                 ))}
               </div>
