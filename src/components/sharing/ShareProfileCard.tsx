@@ -179,31 +179,48 @@ export function ShareProfileCard({
               style={{ height: '20px', width: 'auto' }}
             />
             {isHrReady && (
-              <Badge
-                className="h-6 bg-green-500/20 text-green-400 border-green-500/30 text-[10px] px-2 py-0 inline-flex items-center justify-center leading-none"
-                style={{ whiteSpace: 'nowrap' }}
+              <div
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  height: '22px',
+                  padding: '0 8px',
+                  backgroundColor: 'rgba(34, 197, 94, 0.2)',
+                  color: '#4ade80',
+                  border: '1px solid rgba(34, 197, 94, 0.3)',
+                  borderRadius: '9999px',
+                  fontSize: '10px',
+                  fontWeight: 500,
+                  whiteSpace: 'nowrap',
+                  lineHeight: 1,
+                }}
               >
-                <span
-                  className={`inline-flex items-center gap-1 leading-none${isGenerating ? ' relative top-[-1px]' : ''}`}
-                >
-                  <Check className="w-2.5 h-2.5 shrink-0" />
-                  <span className="leading-none">HR-Ready</span>
-                </span>
-              </Badge>
+                <Check style={{ width: '10px', height: '10px', flexShrink: 0 }} />
+                <span style={{ lineHeight: 1 }}>HR-Ready</span>
+              </div>
             )}
             {memberSince && (
-              <Badge
-                variant="outline"
-                className="h-6 bg-white/5 text-white/60 border-white/20 text-[10px] px-2 py-0 inline-flex items-center justify-center leading-none"
-                style={{ whiteSpace: 'nowrap' }}
+              <div
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  height: '22px',
+                  padding: '0 8px',
+                  backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                  color: 'rgba(255, 255, 255, 0.6)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  borderRadius: '9999px',
+                  fontSize: '10px',
+                  fontWeight: 500,
+                  whiteSpace: 'nowrap',
+                  lineHeight: 1,
+                }}
               >
-                <span
-                  className={`inline-flex items-center gap-1 leading-none${isGenerating ? ' relative top-[-1px]' : ''}`}
-                >
-                  <Calendar className="w-2.5 h-2.5 shrink-0" />
-                  <span className="leading-none">{formatMemberSince(memberSince)}</span>
-                </span>
-              </Badge>
+                <Calendar style={{ width: '10px', height: '10px', flexShrink: 0 }} />
+                <span style={{ lineHeight: 1 }}>{formatMemberSince(memberSince)}</span>
+              </div>
             )}
           </div>
 
@@ -293,35 +310,56 @@ export function ShareProfileCard({
 
             {/* Skills Tags */}
             {skills.length > 0 && (
-              <div className="flex flex-wrap justify-center gap-1 mb-2">
+              <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '4px', marginBottom: '8px' }}>
                 {skills.slice(0, 3).map((skill, index) => (
-                  <Badge
+                  <div
                     key={index}
-                    variant="outline"
-                    className="h-5 bg-cyan-500/10 text-cyan-300/90 border-cyan-500/30 text-[9px] px-1.5 py-0 inline-flex items-center justify-center leading-none"
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      height: '20px',
+                      padding: '0 6px',
+                      backgroundColor: 'rgba(6, 182, 212, 0.1)',
+                      color: 'rgba(103, 232, 249, 0.9)',
+                      border: '1px solid rgba(6, 182, 212, 0.3)',
+                      borderRadius: '9999px',
+                      fontSize: '9px',
+                      fontWeight: 500,
+                      lineHeight: 1,
+                    }}
                   >
-                    <span className={`leading-none${isGenerating ? ' relative top-[-1px]' : ''}`}>{skill}</span>
-                  </Badge>
+                    {skill}
+                  </div>
                 ))}
               </div>
             )}
 
             {/* Specializations */}
             {specializations.length > 0 && (
-              <div className="flex flex-wrap justify-center gap-1">
+              <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '4px' }}>
                 {specializations.slice(0, 2).map((spec, index) => (
-                  <Badge
+                  <div
                     key={index}
-                    variant="outline"
-                    className="h-5 bg-purple-500/10 text-white/80 border-purple-500/30 text-[9px] px-1.5 py-0 inline-flex items-center justify-center leading-none"
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '4px',
+                      height: '20px',
+                      padding: '0 6px',
+                      backgroundColor: 'rgba(168, 85, 247, 0.1)',
+                      color: 'rgba(255, 255, 255, 0.8)',
+                      border: '1px solid rgba(168, 85, 247, 0.3)',
+                      borderRadius: '9999px',
+                      fontSize: '9px',
+                      fontWeight: 500,
+                      lineHeight: 1,
+                    }}
                   >
-                    <span
-                      className={`inline-flex items-center gap-1 leading-none${isGenerating ? ' relative top-[-1px]' : ''}`}
-                    >
-                      <Shield className="w-2 h-2 text-purple-400 shrink-0" />
-                      <span className="leading-none">{spec}</span>
-                    </span>
-                  </Badge>
+                    <Shield style={{ width: '8px', height: '8px', color: '#a855f7', flexShrink: 0 }} />
+                    <span style={{ lineHeight: 1 }}>{spec}</span>
+                  </div>
                 ))}
               </div>
             )}
