@@ -25,7 +25,13 @@ import {
   Award,
   Flame,
   Terminal,
-  Download
+  Download,
+  Linkedin,
+  Twitter,
+  Facebook,
+  Share2,
+  Copy,
+  Check
 } from "lucide-react";
 
 interface HintItem {
@@ -81,6 +87,32 @@ const CTF = () => {
   const [revealedHints, setRevealedHints] = useState<Record<string, number[]>>({});
   const [justSolved, setJustSolved] = useState<{ challengeId: string; points: number } | null>(null);
   const [hintDeductions, setHintDeductions] = useState<Record<string, number>>({}); // Track points deducted per challenge
+  const [linkCopied, setLinkCopied] = useState(false);
+
+  const ctfUrl = typeof window !== 'undefined' ? `${window.location.origin}/ctf` : 'https://cydena.com/ctf';
+  const shareText = "🏴 Test your cybersecurity skills! Join the CTF challenge on Cydena - solve challenges, earn points, and compete on the leaderboard. #cybersecurity #CTF #infosec";
+
+  const shareToLinkedIn = () => {
+    const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(ctfUrl)}`;
+    window.open(linkedInUrl, '_blank', 'width=600,height=600');
+  };
+
+  const shareToTwitter = () => {
+    const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(ctfUrl)}`;
+    window.open(twitterUrl, '_blank', 'width=600,height=400');
+  };
+
+  const shareToFacebook = () => {
+    const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(ctfUrl)}&quote=${encodeURIComponent(shareText)}`;
+    window.open(facebookUrl, '_blank', 'width=600,height=400');
+  };
+
+  const copyLink = async () => {
+    await navigator.clipboard.writeText(ctfUrl);
+    setLinkCopied(true);
+    toast.success('Link copied to clipboard!');
+    setTimeout(() => setLinkCopied(false), 2000);
+  };
 
   useEffect(() => {
     fetchData();
@@ -371,9 +403,53 @@ const CTF = () => {
           <h1 className="text-4xl font-bold mb-4">
             Capture The Flag
           </h1>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-muted-foreground max-w-2xl mx-auto mb-6">
             Test your cybersecurity skills by solving challenges. Find flags, earn points, and compete for the top of the leaderboard.
           </p>
+          
+          {/* Share Buttons */}
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            <span className="text-sm text-muted-foreground mr-2">
+              <Share2 className="h-4 w-4 inline mr-1" />
+              Invite friends:
+            </span>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={shareToLinkedIn}
+              className="gap-2"
+            >
+              <Linkedin className="h-4 w-4 text-[#0077B5]" />
+              LinkedIn
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={shareToTwitter}
+              className="gap-2"
+            >
+              <Twitter className="h-4 w-4 text-[#1DA1F2]" />
+              Twitter
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={shareToFacebook}
+              className="gap-2"
+            >
+              <Facebook className="h-4 w-4 text-[#1877F2]" />
+              Facebook
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={copyLink}
+              className="gap-2"
+            >
+              {linkCopied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
+              {linkCopied ? 'Copied!' : 'Copy Link'}
+            </Button>
+          </div>
         </div>
 
         {/* User Stats Bar */}
