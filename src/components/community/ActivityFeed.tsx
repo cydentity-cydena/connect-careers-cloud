@@ -11,6 +11,7 @@ import { EditPostDialog } from './EditPostDialog';
 import { formatDistanceToNow } from 'date-fns';
 import { useToast } from '@/hooks/use-toast';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -355,6 +356,7 @@ export const ActivityFeed = ({ limit = 20 }: { limit?: number }) => {
                   {activity.description && (
                     <div className="text-sm text-muted-foreground prose prose-sm max-w-none dark:prose-invert prose-p:my-3 prose-ul:my-2 prose-ol:my-2 prose-li:my-1 prose-headings:mt-4 prose-headings:mb-2 whitespace-pre-wrap">
                       <ReactMarkdown
+                        remarkPlugins={[remarkGfm]}
                         components={{
                           p: ({children}) => <p className="mb-3 leading-relaxed">{children}</p>,
                           ul: ({children}) => <ul className="mb-3 space-y-1">{children}</ul>,
@@ -363,7 +365,18 @@ export const ActivityFeed = ({ limit = 20 }: { limit?: number }) => {
                           h1: ({children}) => <h1 className="text-xl font-bold mt-4 mb-2">{children}</h1>,
                           h2: ({children}) => <h2 className="text-lg font-bold mt-4 mb-2">{children}</h2>,
                           h3: ({children}) => <h3 className="text-base font-semibold mt-3 mb-2">{children}</h3>,
+                          a: ({href, children}) => (
+                            <a 
+                              href={href} 
+                              target="_blank" 
+                              rel="noopener noreferrer" 
+                              className="text-primary hover:underline break-all"
+                            >
+                              {children}
+                            </a>
+                          ),
                         }}
+                        urlTransform={(url) => url}
                       >
                         {activity.description}
                       </ReactMarkdown>
