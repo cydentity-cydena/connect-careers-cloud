@@ -146,14 +146,11 @@ export function ShareProfileCard({
         <div className="relative h-full p-6 flex flex-col">
           {/* Header with logo */}
           <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
-              <img 
-                src="/logos/cydena-logo.png" 
-                alt="Cydena" 
-                className="h-5 w-auto brightness-0 invert opacity-90"
-              />
-              <span className="text-white/70 text-xs font-medium tracking-wide">CYDENA.COM</span>
-            </div>
+            <img 
+              src="/logos/cydena-logo.png" 
+              alt="Cydena" 
+              className="h-6 w-auto brightness-0 invert opacity-90"
+            />
             {isHrReady && (
               <Badge className="bg-green-500/20 text-green-400 border-green-500/30 text-xs">
                 <Check className="w-3 h-3 mr-1" />
