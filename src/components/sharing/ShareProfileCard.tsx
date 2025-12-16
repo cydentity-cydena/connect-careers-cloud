@@ -147,8 +147,12 @@ export function ShareProfileCard({
         {/* Purple glow accents */}
         <div className="absolute inset-0">
           <div 
-            className="absolute top-1/4 left-1/2 -translate-x-1/2 w-64 h-64 rounded-full blur-3xl"
-            style={{ background: 'radial-gradient(circle, rgba(147, 51, 234, 0.3) 0%, transparent 70%)' }}
+            className="absolute top-1/4 w-64 h-64 rounded-full blur-3xl"
+            style={{
+              left: '50%',
+              marginLeft: '-128px',
+              background: 'radial-gradient(circle, rgba(147, 51, 234, 0.3) 0%, transparent 70%)',
+            }}
           />
           <div 
             className="absolute bottom-0 left-0 w-48 h-48 rounded-full blur-2xl"
@@ -224,9 +228,9 @@ export function ShareProfileCard({
             )}
 
             {/* Stats Row */}
-            <div className="flex items-center justify-center gap-4 mb-2">
+            <div className="flex items-center justify-center space-x-4 mb-2">
               <div className="text-center">
-                <div className="flex items-center justify-center gap-1">
+                <div className="flex items-center justify-center space-x-1">
                   <Star className="w-4 h-4 text-cyan-400" strokeWidth={1.5} />
                   <span className="font-bold text-lg text-cyan-400">{totalXp.toLocaleString()}</span>
                 </div>
@@ -234,7 +238,7 @@ export function ShareProfileCard({
               </div>
               <div className="w-px h-8 bg-white/10" />
               <div className="text-center">
-                <div className="flex items-center justify-center gap-1">
+                <div className="flex items-center justify-center space-x-1">
                   <Award className="w-4 h-4 text-yellow-400" strokeWidth={1.5} />
                   <span className="font-bold text-lg text-yellow-400">{certCount}</span>
                 </div>
@@ -244,7 +248,7 @@ export function ShareProfileCard({
                 <>
                   <div className="w-px h-8 bg-white/10" />
                   <div className="text-center">
-                    <div className="flex items-center justify-center gap-1">
+                    <div className="flex items-center justify-center space-x-1">
                       <Zap className="w-4 h-4 text-purple-400" strokeWidth={1.5} />
                       <span className="font-bold text-lg text-purple-400">{achievementsCount}</span>
                     </div>
@@ -256,7 +260,7 @@ export function ShareProfileCard({
                 <>
                   <div className="w-px h-8 bg-white/10" />
                   <div className="text-center">
-                    <div className="flex items-center justify-center gap-1">
+                    <div className="flex items-center justify-center space-x-1">
                       <Trophy className="w-4 h-4 text-orange-400" strokeWidth={1.5} />
                       <span className="font-bold text-lg text-orange-400">#{ctfRank}</span>
                     </div>
