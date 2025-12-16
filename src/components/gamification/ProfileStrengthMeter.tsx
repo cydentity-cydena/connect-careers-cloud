@@ -11,16 +11,17 @@ interface ProfileStrengthMeterProps {
   userId: string;
 }
 
-interface MissingField {
+interface ProfileField {
   label: string;
   route: string;
   section?: string;
+  completed: boolean;
 }
 
 export const ProfileStrengthMeter = ({ userId }: ProfileStrengthMeterProps) => {
   const navigate = useNavigate();
   const [completion, setCompletion] = useState(0);
-  const [missingFields, setMissingFields] = useState<MissingField[]>([]);
+  const [profileFields, setProfileFields] = useState<ProfileField[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -29,7 +30,7 @@ export const ProfileStrengthMeter = ({ userId }: ProfileStrengthMeterProps) => {
 
   const calculateCompletion = async () => {
     try {
-      const missing: MissingField[] = [];
+      const fields: ProfileField[] = [];
       let score = 0;
 
       // Check profile
@@ -40,17 +41,21 @@ export const ProfileStrengthMeter = ({ userId }: ProfileStrengthMeterProps) => {
         .single();
 
       if (profile) {
-        if (profile.full_name) score += 10;
-        else missing.push({ label: 'Add your full name', route: '/profile', section: 'name' });
+        const hasName = !!profile.full_name;
+        if (hasName) score += 10;
+        fields.push({ label: 'Add your full name', route: '/profile', section: 'name', completed: hasName });
         
-        if (profile.bio) score += 10;
-        else missing.push({ label: 'Write a professional bio', route: '/profile', section: 'bio' });
+        const hasBio = !!profile.bio;
+        if (hasBio) score += 10;
+        fields.push({ label: 'Write a professional bio', route: '/profile', section: 'bio', completed: hasBio });
         
-        if (profile.location) score += 10;
-        else missing.push({ label: 'Add your location', route: '/profile', section: 'location' });
+        const hasLocation = !!profile.location;
+        if (hasLocation) score += 10;
+        fields.push({ label: 'Add your location', route: '/profile', section: 'location', completed: hasLocation });
         
-        if (profile.avatar_url) score += 10;
-        else missing.push({ label: 'Upload a profile photo', route: '/profile', section: 'avatar' });
+        const hasAvatar = !!profile.avatar_url;
+        if (hasAvatar) score += 10;
+        fields.push({ label: 'Upload a profile photo', route: '/profile', section: 'avatar', completed: hasAvatar });
       }
 
       // Check candidate profile
@@ -61,14 +66,17 @@ export const ProfileStrengthMeter = ({ userId }: ProfileStrengthMeterProps) => {
         .single();
 
       if (candidateProfile) {
-        if (candidateProfile.title) score += 10;
-        else missing.push({ label: 'Add your job title', route: '/profile', section: 'title' });
+        const hasTitle = !!candidateProfile.title;
+        if (hasTitle) score += 10;
+        fields.push({ label: 'Add your job title', route: '/profile', section: 'title', completed: hasTitle });
         
-        if (candidateProfile.years_experience > 0) score += 10;
-        else missing.push({ label: 'Add years of experience', route: '/profile', section: 'experience' });
+        const hasExperience = candidateProfile.years_experience > 0;
+        if (hasExperience) score += 10;
+        fields.push({ label: 'Add years of experience', route: '/profile', section: 'experience', completed: hasExperience });
         
-        if (candidateProfile.linkedin_url) score += 10;
-        else missing.push({ label: 'Connect LinkedIn profile', route: '/profile', section: 'linkedin' });
+        const hasLinkedIn = !!candidateProfile.linkedin_url;
+        if (hasLinkedIn) score += 10;
+        fields.push({ label: 'Connect LinkedIn profile', route: '/profile', section: 'linkedin', completed: hasLinkedIn });
       }
 
       // Check for resumes in the candidate_resumes table
@@ -77,8 +85,9 @@ export const ProfileStrengthMeter = ({ userId }: ProfileStrengthMeterProps) => {
         .select('id')
         .eq('candidate_id', userId);
 
-      if (resumes && resumes.length > 0) score += 10;
-      else missing.push({ label: 'Upload your resume', route: '/dashboard', section: 'resume' });
+      const hasResume = resumes && resumes.length > 0;
+      if (hasResume) score += 10;
+      fields.push({ label: 'Upload your resume', route: '/dashboard', section: 'resume', completed: hasResume });
 
       // Check skills
       const { data: skills } = await supabase
@@ -86,8 +95,9 @@ export const ProfileStrengthMeter = ({ userId }: ProfileStrengthMeterProps) => {
         .select('id')
         .eq('candidate_id', userId);
 
-      if (skills && skills.length > 0) score += 10;
-      else missing.push({ label: 'Add your skills', route: '/skills' });
+      const hasSkills = skills && skills.length > 0;
+      if (hasSkills) score += 10;
+      fields.push({ label: 'Add your skills', route: '/skills', completed: hasSkills });
 
       // Check certifications
       const { data: certs } = await supabase
@@ -95,11 +105,12 @@ export const ProfileStrengthMeter = ({ userId }: ProfileStrengthMeterProps) => {
         .select('id')
         .eq('candidate_id', userId);
 
-      if (certs && certs.length > 0) score += 10;
-      else missing.push({ label: 'Add certifications', route: '/certifications' });
+      const hasCerts = certs && certs.length > 0;
+      if (hasCerts) score += 10;
+      fields.push({ label: 'Add certifications', route: '/certifications', completed: hasCerts });
 
       setCompletion(score);
-      setMissingFields(missing);
+      setProfileFields(fields);
 
       // Award achievements for profile completion milestones
       await checkAndAwardProfileAchievements(score);
@@ -177,23 +188,40 @@ export const ProfileStrengthMeter = ({ userId }: ProfileStrengthMeterProps) => {
               </Button>
             </div>
             <div className="space-y-2">
-              {missingFields.slice(0, 5).map((field, index) => (
+              {profileFields.slice(0, 5).map((field, index) => (
                 <button
                   key={index}
-                  onClick={() => navigate(field.route)}
-                  className="w-full flex items-center justify-between gap-2 text-sm text-muted-foreground hover:text-primary p-2 rounded-lg hover:bg-accent/50 transition-all group"
+                  onClick={() => !field.completed && navigate(field.route)}
+                  disabled={field.completed}
+                  className={`w-full flex items-center justify-between gap-2 text-sm p-2 rounded-lg transition-all group ${
+                    field.completed 
+                      ? 'text-green-600 dark:text-green-400 cursor-default' 
+                      : 'text-muted-foreground hover:text-primary hover:bg-accent/50'
+                  }`}
                 >
                   <div className="flex items-center gap-2">
-                    <div className="h-5 w-5 rounded-full border-2 border-muted-foreground/30 group-hover:border-primary flex items-center justify-center flex-shrink-0">
-                      <div className="h-2 w-2 rounded-full bg-muted-foreground/30 group-hover:bg-primary" />
+                    <div className={`h-5 w-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors ${
+                      field.completed 
+                        ? 'border-green-500 bg-green-500' 
+                        : 'border-muted-foreground/30 group-hover:border-primary'
+                    }`}>
+                      {field.completed ? (
+                        <CheckCircle2 className="h-3 w-3 text-white" />
+                      ) : (
+                        <div className="h-2 w-2 rounded-full bg-muted-foreground/30 group-hover:bg-primary" />
+                      )}
                     </div>
-                    <span className="text-left">{field.label}</span>
+                    <span className={`text-left ${field.completed ? 'line-through opacity-70' : ''}`}>
+                      {field.label}
+                    </span>
                   </div>
-                  <ChevronRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  {!field.completed && (
+                    <ChevronRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  )}
                 </button>
               ))}
             </div>
-            {missingFields.length > 0 && (
+            {profileFields.some(f => !f.completed) && (
               <Button 
                 variant="cyber" 
                 size="sm" 
