@@ -31,7 +31,7 @@ const icons = {
 
 export function BadgesRow({ items, showHrReady }: BadgesRowProps) {
   return (
-    <div className="flex items-center gap-2 flex-wrap">
+    <div className="flex items-center justify-center gap-2 flex-wrap">
       <TooltipProvider>
         {items.map((item, index) => {
           const Icon = icons[item.label as keyof typeof icons] || Shield;
