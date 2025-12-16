@@ -3,13 +3,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
-import { Star, Award } from 'lucide-react';
+import { Star, Award, Users } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 interface FeaturedMember {
   id: string;
   user_id: string;
-  spotlight_text: string;
+  spotlight_text: string | null;
   achievements_highlighted: any;
   profiles: {
     full_name: string;
@@ -17,6 +17,7 @@ interface FeaturedMember {
     avatar_url: string;
     desired_job_title: string;
   };
+  source: 'admin' | 'referral';
 }
 
 export const FeaturedMembers = () => {
@@ -30,7 +31,8 @@ export const FeaturedMembers = () => {
 
   const loadFeaturedMembers = async () => {
     try {
-      const { data, error } = await supabase
+      // Fetch admin-featured members
+      const { data: adminFeatured, error: adminError } = await supabase
         .from('featured_members')
         .select(`
           *,
@@ -45,8 +47,44 @@ export const FeaturedMembers = () => {
         .order('feature_date', { ascending: false })
         .limit(3);
 
-      if (error) throw error;
-      setMembers(data || []);
+      if (adminError) throw adminError;
+
+      // Fetch referral-featured profiles (featured_until in future)
+      const { data: referralFeatured, error: referralError } = await supabase
+        .from('profiles')
+        .select('id, full_name, username, avatar_url, desired_job_title, featured_until')
+        .gt('featured_until', new Date().toISOString())
+        .order('featured_until', { ascending: false })
+        .limit(3);
+
+      if (referralError) throw referralError;
+
+      // Combine and dedupe (admin-featured takes priority)
+      const adminUserIds = new Set(adminFeatured?.map(m => m.user_id) || []);
+      
+      const combinedMembers: FeaturedMember[] = [
+        ...(adminFeatured || []).map(m => ({
+          ...m,
+          source: 'admin' as const
+        })),
+        ...(referralFeatured || [])
+          .filter(p => !adminUserIds.has(p.id))
+          .map(p => ({
+            id: p.id,
+            user_id: p.id,
+            spotlight_text: 'Community Builder - Referred 2+ members!',
+            achievements_highlighted: ['Community Builder'],
+            profiles: {
+              full_name: p.full_name,
+              username: p.username,
+              avatar_url: p.avatar_url,
+              desired_job_title: p.desired_job_title
+            },
+            source: 'referral' as const
+          }))
+      ];
+
+      setMembers(combinedMembers.slice(0, 6));
     } catch (error) {
       console.error('Error loading featured members:', error);
     } finally {
@@ -83,7 +121,11 @@ export const FeaturedMembers = () => {
                 <div className="flex-1">
                   <CardTitle className="text-base flex items-center gap-2">
                     @{member.profiles.username}
-                    <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+                    {member.source === 'referral' ? (
+                      <Users className="w-4 h-4 text-primary" />
+                    ) : (
+                      <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+                    )}
                   </CardTitle>
                   {member.profiles.desired_job_title && (
                     <p className="text-xs text-muted-foreground">
@@ -94,9 +136,11 @@ export const FeaturedMembers = () => {
               </div>
             </CardHeader>
             <CardContent className="space-y-3">
-              <p className="text-sm text-muted-foreground">
-                {member.spotlight_text}
-              </p>
+              {member.spotlight_text && (
+                <p className="text-sm text-muted-foreground">
+                  {member.spotlight_text}
+                </p>
+              )}
               {member.achievements_highlighted && Array.isArray(member.achievements_highlighted) && member.achievements_highlighted.length > 0 && (
                 <div className="flex flex-wrap gap-1">
                   {member.achievements_highlighted.slice(0, 3).map((achievement: string, idx: number) => (
