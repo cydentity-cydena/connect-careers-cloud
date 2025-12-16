@@ -160,6 +160,56 @@ const CandidateDashboard = () => {
     },
     enabled: !!userId,
   });
+
+  // Fetch certifications for share card
+  const { data: certifications = [] } = useQuery({
+    queryKey: ['certifications-for-share', userId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('certifications')
+        .select('name')
+        .eq('candidate_id', userId)
+        .order('created_at', { ascending: false })
+        .limit(5);
+      
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: !!userId,
+  });
+
+  // Fetch candidate profile for specializations
+  const { data: candidateProfile } = useQuery({
+    queryKey: ['candidate-profile-share', userId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('candidate_profiles')
+        .select('specializations, title')
+        .eq('user_id', userId)
+        .maybeSingle();
+      
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!userId,
+  });
+
+  // Fetch HR-Ready status
+  const { data: hrReadyStatus } = useQuery({
+    queryKey: ['hr-ready-status', userId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('candidate_verifications')
+        .select('hr_ready')
+        .eq('candidate_id', userId)
+        .maybeSingle();
+      
+      if (error) throw error;
+      return data?.hr_ready || false;
+    },
+    enabled: !!userId,
+  });
+
   const [showMoreFeatures, setShowMoreFeatures] = useState(false);
 
   return (
@@ -435,12 +485,14 @@ const CandidateDashboard = () => {
               <CardContent>
                 <ShareProfileCard
                   userName={userName}
-                  title={profile?.desired_job_title}
+                  title={candidateProfile?.title || profile?.desired_job_title}
                   avatarUrl={profile?.avatar_url}
                   level={xpData?.level || 1}
                   totalXp={xpData?.total_xp || 0}
-                  certCount={0}
-                  specializations={[]}
+                  certCount={certifications.length}
+                  certNames={certifications.map(c => c.name)}
+                  specializations={candidateProfile?.specializations || []}
+                  isHrReady={hrReadyStatus}
                   profileUrl={`https://cydena.com/profiles/${userId}`}
                 />
               </CardContent>
