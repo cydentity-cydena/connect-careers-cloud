@@ -560,7 +560,6 @@ const CandidateDashboard = () => {
                   ctfRank={ctfRank}
                   achievementsCount={achievementsCount}
                   memberSince={userCreatedAt}
-                  xpProgress={calculateXpProgress()}
                 />
               </CardContent>
             </Card>
