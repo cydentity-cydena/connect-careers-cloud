@@ -5,6 +5,8 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+const COMMUNITY_BUILDER_BADGE_ID = 'cb7d8e9f-1a2b-4c3d-5e6f-7a8b9c0d1e2f';
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -86,16 +88,18 @@ Deno.serve(async (req) => {
     console.log('Referral record created');
 
     // Update uses count
-    const { error: usesError } = await supabaseClient
+    const { data: currentCode } = await supabaseClient
       .from('referral_codes')
-      .update({ uses_count: (await supabaseClient.from('referral_codes').select('uses_count').eq('code', referralCode).single()).data?.uses_count + 1 || 1 })
+      .select('uses_count')
+      .eq('code', referralCode)
+      .single();
+    
+    await supabaseClient
+      .from('referral_codes')
+      .update({ uses_count: (currentCode?.uses_count || 0) + 1 })
       .eq('code', referralCode);
 
-    if (usesError) {
-      console.error('Error updating uses count:', usesError);
-    }
-
-    // Award points to referrer
+    // Award points to referrer (50 XP per referral)
     const { error: pointsError } = await supabaseClient
       .from('reward_points')
       .insert({
@@ -109,7 +113,7 @@ Deno.serve(async (req) => {
       console.error('Error awarding referrer points:', pointsError);
     }
 
-    // Update referrer XP using upsert
+    // Update referrer XP
     const { data: referrerXp } = await supabaseClient
       .from('candidate_xp')
       .select('total_xp')
@@ -117,18 +121,13 @@ Deno.serve(async (req) => {
       .maybeSingle();
 
     if (referrerXp) {
-      const { error: referrerXpError } = await supabaseClient
+      await supabaseClient
         .from('candidate_xp')
         .update({ total_xp: referrerXp.total_xp + 50, updated_at: new Date().toISOString() })
         .eq('candidate_id', codeData.user_id);
-      
-      if (referrerXpError) {
-        console.error('Error updating referrer XP:', referrerXpError);
-      } else {
-        console.log('Referrer XP updated:', referrerXp.total_xp + 50);
-      }
+      console.log('Referrer XP updated:', referrerXp.total_xp + 50);
     } else {
-      const { error: referrerXpInsertError } = await supabaseClient
+      await supabaseClient
         .from('candidate_xp')
         .insert({
           candidate_id: codeData.user_id,
@@ -136,16 +135,11 @@ Deno.serve(async (req) => {
           community_points: 0,
           level: 1
         });
-      
-      if (referrerXpInsertError) {
-        console.error('Error creating referrer XP:', referrerXpInsertError);
-      } else {
-        console.log('Referrer XP created with 50 XP');
-      }
+      console.log('Referrer XP created with 50 XP');
     }
 
-    // Award welcome bonus to new user
-    const { error: welcomePointsError } = await supabaseClient
+    // Award welcome bonus to new user (25 XP)
+    await supabaseClient
       .from('reward_points')
       .insert({
         candidate_id: newUserId,
@@ -154,11 +148,6 @@ Deno.serve(async (req) => {
         meta: { referrer: codeData.user_id }
       });
 
-    if (welcomePointsError) {
-      console.error('Error awarding welcome bonus:', welcomePointsError);
-    }
-
-    // Update new user XP using upsert
     const { data: newUserXp } = await supabaseClient
       .from('candidate_xp')
       .select('total_xp')
@@ -166,18 +155,13 @@ Deno.serve(async (req) => {
       .maybeSingle();
 
     if (newUserXp) {
-      const { error: newUserXpError } = await supabaseClient
+      await supabaseClient
         .from('candidate_xp')
         .update({ total_xp: newUserXp.total_xp + 25, updated_at: new Date().toISOString() })
         .eq('candidate_id', newUserId);
-      
-      if (newUserXpError) {
-        console.error('Error updating new user XP:', newUserXpError);
-      } else {
-        console.log('New user XP updated:', newUserXp.total_xp + 25);
-      }
+      console.log('New user XP updated:', newUserXp.total_xp + 25);
     } else {
-      const { error: newUserXpInsertError } = await supabaseClient
+      await supabaseClient
         .from('candidate_xp')
         .insert({
           candidate_id: newUserId,
@@ -185,11 +169,101 @@ Deno.serve(async (req) => {
           community_points: 0,
           level: 1
         });
-      
-      if (newUserXpInsertError) {
-        console.error('Error creating new user XP:', newUserXpInsertError);
-      } else {
-        console.log('New user XP created with 25 XP');
+      console.log('New user XP created with 25 XP');
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // CHECK FOR 2+ REFERRALS MILESTONE REWARDS
+    // ═══════════════════════════════════════════════════════════════════════
+    
+    // Count total completed referrals for this referrer
+    const { data: referralCount, error: countError } = await supabaseClient
+      .from('referrals')
+      .select('id', { count: 'exact' })
+      .eq('referrer_id', codeData.user_id)
+      .in('status', ['completed', 'rewarded']);
+
+    const totalReferrals = referralCount?.length || 0;
+    console.log('Total referrals for user:', totalReferrals);
+
+    if (totalReferrals >= 2) {
+      // Check if milestone reward already given
+      const { data: existingMilestone } = await supabaseClient
+        .from('reward_points')
+        .select('id')
+        .eq('candidate_id', codeData.user_id)
+        .eq('type', 'REFERRAL_MILESTONE_2')
+        .maybeSingle();
+
+      if (!existingMilestone) {
+        console.log('Awarding 2+ referrals milestone rewards!');
+
+        // 1. Award 500 bonus XP
+        await supabaseClient
+          .from('reward_points')
+          .insert({
+            candidate_id: codeData.user_id,
+            type: 'REFERRAL_MILESTONE_2',
+            amount: 500,
+            meta: { milestone: '2_referrals', total_referrals: totalReferrals }
+          });
+
+        // Update XP
+        const { data: currentXp } = await supabaseClient
+          .from('candidate_xp')
+          .select('total_xp')
+          .eq('candidate_id', codeData.user_id)
+          .single();
+
+        if (currentXp) {
+          await supabaseClient
+            .from('candidate_xp')
+            .update({ 
+              total_xp: currentXp.total_xp + 500, 
+              updated_at: new Date().toISOString() 
+            })
+            .eq('candidate_id', codeData.user_id);
+          console.log('Milestone 500 XP awarded. New total:', currentXp.total_xp + 500);
+        }
+
+        // 2. Award Community Builder badge
+        const { data: existingBadge } = await supabaseClient
+          .from('user_badges')
+          .select('id')
+          .eq('user_id', codeData.user_id)
+          .eq('badge_id', COMMUNITY_BUILDER_BADGE_ID)
+          .maybeSingle();
+
+        if (!existingBadge) {
+          await supabaseClient
+            .from('user_badges')
+            .insert({
+              user_id: codeData.user_id,
+              badge_id: COMMUNITY_BUILDER_BADGE_ID
+            });
+          console.log('Community Builder badge awarded');
+        }
+
+        // 3. Set featured profile for 7 days
+        const featuredUntil = new Date();
+        featuredUntil.setDate(featuredUntil.getDate() + 7);
+
+        await supabaseClient
+          .from('profiles')
+          .update({ featured_until: featuredUntil.toISOString() })
+          .eq('id', codeData.user_id);
+        console.log('Featured profile until:', featuredUntil.toISOString());
+
+        // 4. Send notification
+        await supabaseClient
+          .from('notifications')
+          .insert({
+            user_id: codeData.user_id,
+            type: 'achievement',
+            title: '🎉 Referral Milestone Reached!',
+            message: 'You referred 2+ people! You earned 500 bonus XP, the Community Builder badge, and a 7-day featured profile!',
+            link: '/dashboard'
+          });
       }
     }
 
