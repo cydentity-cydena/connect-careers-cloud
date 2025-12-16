@@ -284,6 +284,37 @@ serve(async (req) => {
         console.log('Candidate XP already exists, skipping');
       }
 
+      // Auto-generate referral code for candidate
+      const { data: existingCode } = await supabaseAdmin
+        .from('referral_codes')
+        .select('id')
+        .eq('user_id', userId)
+        .maybeSingle();
+
+      if (!existingCode) {
+        const { data: generatedCode, error: codeGenError } = await supabaseAdmin
+          .rpc('generate_referral_code', { p_user_id: userId });
+
+        if (codeGenError) {
+          console.error('Failed to generate referral code:', codeGenError);
+        } else if (generatedCode) {
+          const { error: codeInsertError } = await supabaseAdmin
+            .from('referral_codes')
+            .insert({
+              user_id: userId,
+              code: generatedCode
+            });
+
+          if (codeInsertError) {
+            console.error('Failed to insert referral code:', codeInsertError);
+          } else {
+            console.log('Referral code generated successfully:', generatedCode);
+          }
+        }
+      } else {
+        console.log('Referral code already exists, skipping');
+      }
+
       // Link to any existing pipeline_candidates record with matching email
       console.log('Checking for existing pipeline candidate with email:', email);
       const { data: pipelineCandidate, error: pipelineCheckError } = await supabaseAdmin
