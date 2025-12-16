@@ -128,7 +128,7 @@ export function VerificationPanel({ verification, onEdit, showEditButton = false
                             {statusIcons[cert.status || 'grey']} {cert.name}
                           </Badge>
                         </div>
-                        <div className="flex items-center gap-2 text-xs text-muted-foreground ml-1">
+                        <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground ml-1">
                           <span>by {cert.issuer || 'Unknown'}</span>
                           {cert.source && (
                             <Badge variant="outline" className="text-xs py-0 h-5">
@@ -136,7 +136,7 @@ export function VerificationPanel({ verification, onEdit, showEditButton = false
                             </Badge>
                           )}
                           {cert.verification_status === 'pending' && (
-                            <Badge variant="outline" className="text-xs py-0 h-5 bg-amber-500/10 text-amber-600 border-amber-500/20">
+                            <Badge variant="outline" className="text-xs py-0 h-5 bg-amber-500/10 text-amber-600 border-amber-500/20 flex items-center justify-center">
                               Pending Review
                             </Badge>
                           )}
