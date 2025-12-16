@@ -169,7 +169,7 @@ export function ShareProfileCard({
               alt="Cydena" 
               className="h-5 w-auto"
             />
-            <div className="flex items-center gap-2">
+            <div className="flex items-center justify-center gap-2">
               {isHrReady && (
                 <Badge className="bg-green-500/20 text-green-400 border-green-500/30 text-[10px] px-2 py-0.5">
                   <Check className="w-2.5 h-2.5 mr-1" />
