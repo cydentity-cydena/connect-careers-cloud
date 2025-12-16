@@ -161,7 +161,7 @@ export function ShareProfileCard({
         />
 
         {/* Content */}
-        <div className="relative h-full p-5 flex flex-col">
+        <div className="relative h-full p-5 pb-8 flex flex-col">
           {/* Header with logo */}
           <div className="grid grid-cols-3 items-center mb-3">
             <img 
