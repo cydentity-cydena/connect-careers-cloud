@@ -579,6 +579,9 @@ const Leaderboard = () => {
                       </CardContent>
                     </Card>
                   </Link>
+                  {currentUserId === communityTopThree[1]?.user_id && (
+                    <ShareLeaderboardRankCard rank={2} username={communityTopThree[1]?.username} title={communityTopThree[1]?.title} score={communityTopThree[1]?.community_points} scoreLabel="Community Points" leaderboardType="community" isHrReady={communityTopThree[1]?.hr_ready} />
+                  )}
                 </div>
 
                 {/* 3rd Place */}
@@ -599,6 +602,9 @@ const Leaderboard = () => {
                       </CardContent>
                     </Card>
                   </Link>
+                  {currentUserId === communityTopThree[2]?.user_id && (
+                    <ShareLeaderboardRankCard rank={3} username={communityTopThree[2]?.username} title={communityTopThree[2]?.title} score={communityTopThree[2]?.community_points} scoreLabel="Community Points" leaderboardType="community" isHrReady={communityTopThree[2]?.hr_ready} />
+                  )}
                 </div>
               </div>
             )}
@@ -693,6 +699,9 @@ const Leaderboard = () => {
                           </CardContent>
                         </Card>
                       </Link>
+                      {currentUserId === securityIQLeaderboard[0]?.user_id && (
+                        <ShareLeaderboardRankCard rank={1} username={securityIQLeaderboard[0]?.username} title={securityIQLeaderboard[0]?.title} score={securityIQLeaderboard[0]?.streak} scoreLabel="Day Streak" leaderboardType="securityiq" />
+                      )}
                     </div>
 
                     {/* 2nd Place */}
@@ -722,6 +731,9 @@ const Leaderboard = () => {
                           </CardContent>
                         </Card>
                       </Link>
+                      {currentUserId === securityIQLeaderboard[1]?.user_id && (
+                        <ShareLeaderboardRankCard rank={2} username={securityIQLeaderboard[1]?.username} title={securityIQLeaderboard[1]?.title} score={securityIQLeaderboard[1]?.streak} scoreLabel="Day Streak" leaderboardType="securityiq" />
+                      )}
                     </div>
 
                     {/* 3rd Place */}
@@ -751,6 +763,9 @@ const Leaderboard = () => {
                           </CardContent>
                         </Card>
                       </Link>
+                      {currentUserId === securityIQLeaderboard[2]?.user_id && (
+                        <ShareLeaderboardRankCard rank={3} username={securityIQLeaderboard[2]?.username} title={securityIQLeaderboard[2]?.title} score={securityIQLeaderboard[2]?.streak} scoreLabel="Day Streak" leaderboardType="securityiq" />
+                      )}
                     </div>
                   </div>
                 )}
