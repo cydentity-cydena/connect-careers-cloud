@@ -35,7 +35,25 @@ Deno.serve(async (req) => {
 
     const { candidateId, webhookId } = await req.json();
 
-    console.log('Pushing candidate to webhook:', { candidateId, webhookId });
+    console.log('Pushing candidate to webhook:', { candidateId, webhookId, userId: user.id });
+
+    // Check rate limit for ATS pushes (max 10 per day)
+    const { data: rateLimitCheck } = await supabase.rpc('check_ats_push_rate_limit', {
+      p_user_id: user.id
+    });
+
+    console.log('Rate limit check:', rateLimitCheck);
+
+    if (rateLimitCheck && !rateLimitCheck.allowed) {
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: `Daily push limit reached (${rateLimitCheck.count}/${rateLimitCheck.limit}). Try again tomorrow.`,
+          rate_info: rateLimitCheck
+        }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 429 }
+      );
+    }
 
     // Get webhook configuration
     const { data: webhook, error: webhookError } = await supabase
@@ -58,7 +76,7 @@ Deno.serve(async (req) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'User-Agent': 'TrecCert-Integration/1.0',
+        'User-Agent': 'Cydena-Integration/1.0',
       },
       body: JSON.stringify({
         event: 'candidate_verified',
@@ -82,11 +100,20 @@ Deno.serve(async (req) => {
       error_message: isSuccess ? null : `HTTP ${webhookResponse.status}: ${responseText}`,
     });
 
+    // Log ATS push for rate limiting
+    await supabase.from('ats_push_logs').insert({
+      user_id: user.id,
+      candidate_id: candidateId,
+      integration_id: webhookId,
+      integration_type: 'webhook'
+    });
+
     return new Response(
       JSON.stringify({
         success: isSuccess,
         message: isSuccess ? 'Candidate pushed successfully' : 'Webhook push failed',
         response: { status: webhookResponse.status, body: responseText },
+        rate_info: rateLimitCheck
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );

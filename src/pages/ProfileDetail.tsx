@@ -13,10 +13,11 @@ import { DirectMessageButton } from "@/components/messaging/DirectMessageButton"
 import { SpecializationBadges } from "@/components/profiles/SpecializationBadges";
 import { detectSpecializations } from "@/lib/specializations";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { 
   Mail, Phone, MapPin, Calendar, Briefcase, Award, 
   Github, Linkedin, Globe, FileText, Shield, ArrowLeft,
-  Building2, GraduationCap, Code, ExternalLink, Eye, Info, ChevronDown, ChevronRight, User
+  Building2, GraduationCap, Code, ExternalLink, Eye, Info, ChevronDown, ChevronRight, User, AlertTriangle
 } from "lucide-react";
 import { CertificationCard } from "@/components/certifications/CertificationCard";
 import { toast } from "sonner";
@@ -28,6 +29,7 @@ import { AssessmentResults } from "@/components/profiles/AssessmentResults";
 import { ProfileBadgeDisplay } from "@/components/badges/ProfileBadgeDisplay";
 import { PushCandidateButton } from "@/components/integrations/PushCandidateButton";
 import { HighValueBadges } from "@/components/profiles/HighValueBadges";
+import { useProfileRateLimit } from "@/hooks/useProfileRateLimit";
 
 export default function ProfileDetail() {
   const { id } = useParams();
@@ -50,6 +52,9 @@ export default function ProfileDetail() {
   const [workHistoryOpen, setWorkHistoryOpen] = useState(false);
   const [educationOpen, setEducationOpen] = useState(false);
   const [verification, setVerification] = useState<any>(null);
+  const [rateLimitError, setRateLimitError] = useState<string | null>(null);
+  
+  const { rateInfo, logProfileView } = useProfileRateLimit();
 
   useEffect(() => {
     loadProfileData();
@@ -109,7 +114,16 @@ export default function ProfileDetail() {
       }
       setIsUnlocked(unlocked);
 
-      // Fetch profile - try direct, fallback to public RPC (RLS-safe)
+      // Log profile view for rate limiting (employers/recruiters only)
+      const isEmployerOrRecruiter = viewerRoleValue === 'employer' || viewerRoleValue === 'recruiter';
+      if (user && isEmployerOrRecruiter && !isOwnProfile && id) {
+        const viewType = unlocked ? 'full' : 'preview';
+        const logResult = await logProfileView(id, viewType, viewerRoleValue);
+        if (!logResult.success && logResult.error?.includes('Rate limit')) {
+          setRateLimitError('You have reached your daily profile viewing limit. Please try again tomorrow.');
+          toast.error('Daily profile view limit reached');
+        }
+      }
       let profileData: any = null;
       const { data: directProfile } = await supabase
         .from("profiles")
@@ -418,6 +432,33 @@ export default function ProfileDetail() {
           <ArrowLeft className="h-4 w-4" />
           {isOwnProfile ? "Back to Dashboard" : "Back to Profiles"}
         </Button>
+
+        {/* Rate Limit Warning */}
+        {rateLimitError && (
+          <Alert variant="destructive" className="mb-6">
+            <AlertTriangle className="h-4 w-4" />
+            <AlertDescription>
+              {rateLimitError} 
+              {rateInfo && (
+                <span className="ml-2 text-sm opacity-80">
+                  ({rateInfo.daily_count}/{rateInfo.daily_limit} views used today)
+                </span>
+              )}
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {/* Rate Limit Info Banner for employers/recruiters */}
+        {!rateLimitError && rateInfo && (viewerRole === 'employer' || viewerRole === 'recruiter') && (
+          <div className="mb-6 bg-muted/50 border border-border/50 rounded-lg p-3 flex items-center justify-between text-sm">
+            <span className="text-muted-foreground">
+              Daily profile views: {rateInfo.daily_count}/{rateInfo.daily_limit}
+            </span>
+            <span className={`font-medium ${rateInfo.daily_remaining < 10 ? 'text-orange-500' : 'text-green-500'}`}>
+              {rateInfo.daily_remaining} remaining
+            </span>
+          </div>
+        )}
 
         {isOwnProfile && (
           <div className="mb-6 bg-blue-500/10 border border-blue-500/20 rounded-lg p-4">

@@ -212,6 +212,33 @@ export type Database = {
         }
         Relationships: []
       }
+      ats_push_logs: {
+        Row: {
+          candidate_id: string
+          created_at: string
+          id: string
+          integration_id: string
+          integration_type: string
+          user_id: string
+        }
+        Insert: {
+          candidate_id: string
+          created_at?: string
+          id?: string
+          integration_id: string
+          integration_type: string
+          user_id: string
+        }
+        Update: {
+          candidate_id?: string
+          created_at?: string
+          id?: string
+          integration_id?: string
+          integration_type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       badge_types: {
         Row: {
           category: string
@@ -2394,6 +2421,39 @@ export type Database = {
         }
         Relationships: []
       }
+      profile_view_logs: {
+        Row: {
+          candidate_id: string
+          created_at: string
+          id: string
+          ip_hash: string | null
+          user_agent: string | null
+          view_type: string
+          viewer_id: string
+          viewer_role: string | null
+        }
+        Insert: {
+          candidate_id: string
+          created_at?: string
+          id?: string
+          ip_hash?: string | null
+          user_agent?: string | null
+          view_type?: string
+          viewer_id: string
+          viewer_role?: string | null
+        }
+        Update: {
+          candidate_id?: string
+          created_at?: string
+          id?: string
+          ip_hash?: string | null
+          user_agent?: string | null
+          view_type?: string
+          viewer_id?: string
+          viewer_role?: string | null
+        }
+        Relationships: []
+      }
       profile_views: {
         Row: {
           candidate_id: string
@@ -3512,6 +3572,7 @@ export type Database = {
         Args: { p_category: string; p_current_count: number; p_user_id: string }
         Returns: undefined
       }
+      check_ats_push_rate_limit: { Args: { p_user_id: string }; Returns: Json }
       check_badge_unlock: {
         Args: { p_badge_id: string; p_user_id: string }
         Returns: boolean
@@ -3521,6 +3582,10 @@ export type Database = {
         Returns: undefined
       }
       check_founding_200_availability: { Args: never; Returns: boolean }
+      check_profile_view_rate_limit: {
+        Args: { p_daily_limit?: number; p_viewer_id: string }
+        Returns: Json
+      }
       count_monthly_assessments: {
         Args: { p_user_id: string }
         Returns: number
@@ -3528,6 +3593,10 @@ export type Database = {
       deduct_credits: {
         Args: { p_amount: number; p_employer_id: string }
         Returns: undefined
+      }
+      detect_suspicious_profile_access: {
+        Args: { p_viewer_id: string }
+        Returns: Json
       }
       generate_invitation_token: { Args: never; Returns: string }
       generate_referral_code: { Args: { p_user_id: string }; Returns: string }
@@ -3584,6 +3653,15 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      log_profile_view: {
+        Args: {
+          p_candidate_id: string
+          p_view_type?: string
+          p_viewer_id: string
+          p_viewer_role?: string
+        }
+        Returns: Json
       }
       mark_as_founding_200: { Args: { user_id: string }; Returns: Json }
       mark_message_read: { Args: { message_id: string }; Returns: undefined }
