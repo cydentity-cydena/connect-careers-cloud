@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { User, Briefcase, FileText, TrendingUp, CheckCircle, ArrowRight, Eye, Bug, Share2 } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { User, Briefcase, FileText, TrendingUp, CheckCircle, ArrowRight, Eye, Bug, Share2, Sparkles, Award, Target, ChevronRight } from "lucide-react";
 import { ProfileStrengthMeter } from "@/components/gamification/ProfileStrengthMeter";
 import { AchievementBadges } from "@/components/gamification/AchievementBadges";
 import { XPSystemInfo } from "@/components/gamification/XPSystemInfo";
@@ -25,6 +26,7 @@ import { ShareProfileCard } from "@/components/sharing/ShareProfileCard";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 const CandidateDashboard = () => {
   const [userId, setUserId] = useState<string>("");
@@ -158,362 +160,366 @@ const CandidateDashboard = () => {
     },
     enabled: !!userId,
   });
+  const [showMoreFeatures, setShowMoreFeatures] = useState(false);
+
   return (
-    <div className="space-y-8 animate-fade-in">
-      {/* Referral Blitz Campaign Banner */}
+    <div className="space-y-6 animate-fade-in">
+      {/* Campaign Banner - Only shows if active */}
       <ReferralBlitzBanner />
 
-      {/* Free Access Banner */}
-      <div className="bg-gradient-to-r from-green-500/10 via-green-400/10 to-emerald-500/10 border border-green-500/20 rounded-lg p-4 md:p-6">
-        <div className="flex items-start gap-3">
-          <div className="bg-green-500/10 rounded-full p-2 flex-shrink-0">
-            <CheckCircle className="h-5 w-5 text-green-500" />
-          </div>
-          <div>
-            <h3 className="font-semibold text-lg mb-1">🎉 100% Free</h3>
-            <p className="text-sm text-muted-foreground">
-              You have complete access to all candidate features at no cost. Browse jobs, showcase your skills, and connect with employers.
+      {/* ═══════════════════════════════════════════════════════════════════════
+          SECTION 1: WELCOME HEADER + QUICK STATS (Primary Focus)
+          Visual weight: HIGH - First thing users see
+      ═══════════════════════════════════════════════════════════════════════ */}
+      <div className="bg-gradient-to-br from-background via-primary/5 to-background border border-border/50 rounded-xl p-6">
+        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+          {/* Welcome Message */}
+          <div className="flex-1">
+            <div className="flex items-center gap-3 mb-2">
+              <h1 className="text-3xl md:text-4xl font-bold">Welcome, {userName}</h1>
+              <div className="flex items-center gap-1">
+                <BadgeSelector />
+                <XPSystemInfo />
+              </div>
+            </div>
+            <p className="text-muted-foreground text-sm">
+              Manage your profile and find your next opportunity
             </p>
+            
+            {/* XP Stats - Inline */}
+            {xpData && (
+              <div className="flex items-center gap-3 mt-4">
+                <div className="bg-primary/10 px-3 py-1.5 rounded-full flex items-center gap-2">
+                  <Target className="h-4 w-4 text-primary" />
+                  <span className="text-sm font-medium">Level {xpData.level}</span>
+                </div>
+                <div className="bg-secondary/10 px-3 py-1.5 rounded-full flex items-center gap-2">
+                  <Sparkles className="h-4 w-4 text-secondary" />
+                  <span className="text-sm font-medium">{xpData.total_xp} XP</span>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Quick Stats - Right Side */}
+          <div className="flex gap-4 md:gap-6">
+            <div className="text-center">
+              <div className="text-2xl md:text-3xl font-bold text-primary">{profileViewsCount}</div>
+              <div className="text-xs text-muted-foreground">Views This Week</div>
+            </div>
+            <div className="w-px bg-border" />
+            <div className="text-center">
+              <div className="text-2xl md:text-3xl font-bold text-secondary">{applicationsCount}</div>
+              <div className="text-xs text-muted-foreground">Applications</div>
+            </div>
+            <div className="w-px bg-border" />
+            <div className="text-center">
+              <div className="text-2xl md:text-3xl font-bold text-accent">{skillsCount}</div>
+              <div className="text-xs text-muted-foreground">Skills</div>
+            </div>
           </div>
         </div>
       </div>
 
-      <div>
-        <div className="flex items-center justify-between mb-2">
-          <h1 className="text-4xl font-bold">Welcome back, {userName}! 👋</h1>
-          <div className="flex items-center gap-2">
-            <BadgeSelector />
-            <XPSystemInfo />
-          </div>
-        </div>
-        <p className="text-muted-foreground">
-          Manage your profile and track your applications
-        </p>
-        {xpData && (
-          <div className="flex flex-wrap items-center gap-4 mt-4">
-            <div className="bg-primary/10 px-4 py-2 rounded-lg group relative">
-              <span className="text-sm text-muted-foreground">Level </span>
-              <span className="text-xl font-bold text-primary">{xpData.level}</span>
-              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-popover text-popover-foreground text-xs rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-10 border">
-                Next level at {xpData.level === 1 ? 100 : xpData.level === 2 ? 250 : xpData.level === 3 ? 500 : xpData.level === 4 ? 1000 : xpData.level === 5 ? 2000 : xpData.level === 6 ? 4000 : xpData.level === 7 ? 8000 : xpData.level === 8 ? 16000 : xpData.level === 9 ? 32000 : '∞'} XP
-              </div>
-            </div>
-            <div className="bg-secondary/10 px-4 py-2 rounded-lg group relative">
-              <span className="text-sm text-muted-foreground">Total XP </span>
-              <span className="text-xl font-bold text-secondary">{xpData.total_xp}</span>
-              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-popover text-popover-foreground text-xs rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-10 border">
-                Permanent progression score
-              </div>
-            </div>
+      {/* ═══════════════════════════════════════════════════════════════════════
+          SECTION 2: PRIMARY ACTIONS (Profile Completion + Job Search)
+          Visual weight: HIGH - Clear call to action
+      ═══════════════════════════════════════════════════════════════════════ */}
+      <div className="grid lg:grid-cols-3 gap-6">
+        {/* Profile Strength - Takes 2 columns on large screens */}
+        {userId && (
+          <div className="lg:col-span-2">
+            <ProfileStrengthMeter userId={userId} />
           </div>
         )}
+
+        {/* Primary CTA Card */}
+        <Card className="border-primary/30 bg-gradient-to-br from-primary/5 to-transparent">
+          <CardHeader className="pb-3">
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <Briefcase className="h-5 w-5 text-primary" />
+              Find Jobs
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <p className="text-sm text-muted-foreground">
+              Browse cybersecurity roles matched to your skills
+            </p>
+            <Button 
+              variant="cyber" 
+              className="w-full"
+              onClick={() => navigate('/jobs')}
+            >
+              Browse Jobs
+              <ArrowRight className="h-4 w-4 ml-2" />
+            </Button>
+          </CardContent>
+        </Card>
       </div>
 
-      {/* HR-Ready CTA Banner */}
+      {/* HR-Ready CTA - Shows only if not verified */}
       {userId && <HRReadyCTA userId={userId} />}
 
+      {/* Getting Started Guide - Only for new users */}
       {!isLoadingProfile && showGettingStarted && (
-        <Card className="border-border shadow-card">
-          <CardHeader>
-            <CardTitle>Getting Started</CardTitle>
-            <CardDescription>
-              Follow these steps to make the most of your profile
-            </CardDescription>
+        <Card className="border-border/50">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg">Getting Started</CardTitle>
+            <CardDescription>Quick steps to set up your profile</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              <Link to="/profile" className="flex items-start gap-4 p-3 rounded-lg hover:bg-muted/50 transition-colors group">
+            <div className="grid md:grid-cols-3 gap-4">
+              <Link to="/profile" className="flex items-center gap-3 p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors group">
                 <div className="bg-primary/10 rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
-                  <span className="text-primary font-semibold">1</span>
+                  <span className="text-primary font-semibold text-sm">1</span>
                 </div>
-                <div className="flex-1">
-                  <h3 className="font-semibold mb-1 group-hover:text-primary transition-colors">Complete Your Profile</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Add your experience, skills, and certifications
-                  </p>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-medium text-sm group-hover:text-primary transition-colors">Complete Profile</h3>
                 </div>
-                <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-primary opacity-0 group-hover:opacity-100 transition-all" />
+                <ChevronRight className="h-4 w-4 text-muted-foreground" />
               </Link>
               
-              <Link to="/jobs" className="flex items-start gap-4 p-3 rounded-lg hover:bg-muted/50 transition-colors group">
+              <Link to="/jobs" className="flex items-center gap-3 p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors group">
                 <div className="bg-primary/10 rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
-                  <span className="text-primary font-semibold">2</span>
+                  <span className="text-primary font-semibold text-sm">2</span>
                 </div>
-                <div className="flex-1">
-                  <h3 className="font-semibold mb-1 group-hover:text-primary transition-colors">Browse Jobs</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Explore cybersecurity roles and find your next opportunity
-                  </p>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-medium text-sm group-hover:text-primary transition-colors">Browse Jobs</h3>
                 </div>
-                <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-primary opacity-0 group-hover:opacity-100 transition-all" />
+                <ChevronRight className="h-4 w-4 text-muted-foreground" />
               </Link>
               
-              <Link to="/hr-ready" className="flex items-start gap-4 p-3 rounded-lg hover:bg-muted/50 transition-colors group">
+              <Link to="/skills" className="flex items-center gap-3 p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors group">
                 <div className="bg-primary/10 rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
-                  <span className="text-primary font-semibold">3</span>
+                  <span className="text-primary font-semibold text-sm">3</span>
                 </div>
-                <div className="flex-1">
-                  <h3 className="font-semibold mb-1 group-hover:text-primary transition-colors">Stand Out with Verification</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Optional: Get verified credentials to fast-track your applications
-                  </p>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-medium text-sm group-hover:text-primary transition-colors">Add Skills</h3>
                 </div>
-                <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-primary opacity-0 group-hover:opacity-100 transition-all" />
+                <ChevronRight className="h-4 w-4 text-muted-foreground" />
               </Link>
             </div>
           </CardContent>
         </Card>
       )}
 
-      {/* Profile Views */}
-      {userId && <ProfileViewsNotification />}
-
-      {/* AI-Powered Features */}
-      <div className="space-y-6">
-        <div className="flex items-center gap-2">
-          <div className="h-1 w-1 rounded-full bg-primary animate-pulse" />
-          <h2 className="text-2xl font-bold">AI-Powered Insights</h2>
-          <div className="h-1 w-1 rounded-full bg-primary animate-pulse" />
-        </div>
-        
-        {userId && <SecurityIQ />}
-        {userId && <CareerPathsAI />}
-      </div>
-
-      {/* Multiple Resumes - Full Width */}
-      {userId && <MultipleResumesManager />}
-
+      {/* ═══════════════════════════════════════════════════════════════════════
+          SECTION 3: PROFILE MANAGEMENT (Tabbed Interface)
+          Visual weight: MEDIUM - Organized secondary features
+      ═══════════════════════════════════════════════════════════════════════ */}
       {userId && (
-        <div className="grid md:grid-cols-2 gap-6">
-          <Card className="border-border shadow-card hover:scale-105 transition-transform">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <User className="h-5 w-5 text-primary" />
-                Profile
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <p className="text-sm">
-                  <span className="font-medium">Name:</span> {profile?.full_name || 'Not set'}
-                </p>
-                <div className="flex items-center justify-between gap-2">
-                  <p className="text-sm">
-                    <span className="font-medium">Username:</span> @{profile?.username || 'Not set'}
+        <Tabs defaultValue="profile" className="w-full">
+          <TabsList className="grid w-full grid-cols-4 mb-4">
+            <TabsTrigger value="profile" className="gap-2">
+              <User className="h-4 w-4" />
+              <span className="hidden sm:inline">Profile</span>
+            </TabsTrigger>
+            <TabsTrigger value="resume" className="gap-2">
+              <FileText className="h-4 w-4" />
+              <span className="hidden sm:inline">Resume</span>
+            </TabsTrigger>
+            <TabsTrigger value="certs" className="gap-2">
+              <Award className="h-4 w-4" />
+              <span className="hidden sm:inline">Certifications</span>
+            </TabsTrigger>
+            <TabsTrigger value="share" className="gap-2">
+              <Share2 className="h-4 w-4" />
+              <span className="hidden sm:inline">Share</span>
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="profile" className="space-y-4">
+            <div className="grid md:grid-cols-2 gap-4">
+              <Card className="border-border/50">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <User className="h-5 w-5 text-primary" />
+                    Your Profile
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Name</span>
+                      <span className="font-medium">{profile?.full_name || 'Not set'}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-muted-foreground">Username</span>
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium">@{profile?.username || 'Not set'}</span>
+                        {profile?.username && user?.id && (
+                          <UsernameChangeDialog 
+                            currentUsername={profile.username}
+                            usernameChanges={profile.username_changes || 0}
+                            userId={user.id}
+                          />
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Email</span>
+                      <span className="font-medium truncate ml-4">{profile?.email}</span>
+                    </div>
+                  </div>
+                  <div className="flex gap-2 pt-2">
+                    <Button variant="cyber" className="flex-1" onClick={() => navigate('/profile')}>
+                      Edit Profile
+                    </Button>
+                    <Button variant="outline" onClick={() => navigate(`/profiles/${userId}`)}>
+                      <Eye className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="border-border/50">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <FileText className="h-5 w-5 text-accent" />
+                    Skills & Specializations
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <p className="text-sm text-muted-foreground">
+                    Showcase your cybersecurity expertise
                   </p>
-                  {profile?.username && user?.id && (
-                    <UsernameChangeDialog 
-                      currentUsername={profile.username}
-                      usernameChanges={profile.username_changes || 0}
-                      userId={user.id}
-                    />
-                  )}
-                </div>
-                <p className="text-sm">
-                  <span className="font-medium">Email:</span> {profile?.email}
-                </p>
-              </div>
-              <div className="space-y-2">
-                <Button variant="cyber" className="w-full" onClick={() => navigate('/profile')}>
-                  Edit Profile
-                </Button>
-                <Button variant="outline" className="w-full" onClick={() => navigate('/profiles')}>
-                  View Public Profile
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-
-
-          <Card className="border-border shadow-card hover:scale-105 transition-transform">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <FileText className="h-5 w-5 text-accent" />
-                Skills & Certifications
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <Button variant="cyber" className="w-full" size="sm" onClick={() => navigate('/skills')}>
-                Add Skills
-              </Button>
-              <Button variant="outline" className="w-full" size="sm" onClick={() => navigate('/specializations')}>
-                Manage Specializations
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      )}
-
-      {userId && (
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <ProfileStrengthMeter userId={userId} />
-          
-          {/* Preview Your Profile Card */}
-          <Card className="border-border shadow-card">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Eye className="h-5 w-5 text-primary" />
-                Preview Your Profile
-              </CardTitle>
-              <CardDescription>
-                See how employers view your profile
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground mb-4">
-                View your profile exactly as it appears to hiring managers and recruiters.
-              </p>
-              <Button 
-                onClick={() => navigate(`/profiles/${userId}`)}
-                className="w-full gap-2"
-                variant="outline"
-              >
-                <Eye className="h-4 w-4" />
-                Preview Profile
-              </Button>
-            </CardContent>
-          </Card>
-
-          {/* Share Your Profile Card */}
-          <Card className="border-border shadow-card bg-gradient-to-br from-primary/5 to-secondary/5">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Share2 className="h-5 w-5 text-primary" />
-                Share Your Profile
-              </CardTitle>
-              <CardDescription>
-                Spread the word on social media
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground mb-4">
-                Create a shareable card to promote your profile across social platforms.
-              </p>
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button className="w-full gap-2" variant="cyber">
-                    <Share2 className="h-4 w-4" />
-                    Share Profile
+                  <Button variant="outline" className="w-full" onClick={() => navigate('/skills')}>
+                    Manage Skills
                   </Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-lg">
-                  <DialogHeader>
-                    <DialogTitle className="text-center">Share Your Profile 🚀</DialogTitle>
-                  </DialogHeader>
-                  <ShareProfileCard
-                    userName={userName}
-                    title={profile?.desired_job_title}
-                    avatarUrl={profile?.avatar_url}
-                    level={xpData?.level || 1}
-                    totalXp={xpData?.total_xp || 0}
-                    certCount={0}
-                    specializations={[]}
-                    profileUrl={`https://cydena.com/profiles/${userId}`}
-                  />
-                </DialogContent>
-              </Dialog>
-            </CardContent>
-          </Card>
-          
-          <Card className="border-border shadow-card">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <TrendingUp className="h-5 w-5 text-primary" />
-                Quick Stats
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-muted-foreground">Profile Views This Week</span>
-                <span className="text-lg font-bold text-primary">{profileViewsCount}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-muted-foreground">Active Applications</span>
-                <span className="text-lg font-bold text-secondary">{applicationsCount}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-muted-foreground">Skills Added</span>
-                <span className="text-lg font-bold text-accent">{skillsCount}</span>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      )}
-
-      {/* Certification Management - Full Width */}
-      {userId && (
-        <Card className="border-border shadow-card">
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <div>
-                <CardTitle className="flex items-center gap-2">
-                  <FileText className="h-5 w-5 text-accent" />
-                  Your Certifications
-                </CardTitle>
-                <CardDescription>
-                  Manage your certifications - edit pending or delete anytime
-                </CardDescription>
-              </div>
-              <Button onClick={() => navigate('/certifications')}>
-                Add Certification
-              </Button>
+                  <Button variant="outline" className="w-full" onClick={() => navigate('/specializations')}>
+                    Manage Specializations
+                  </Button>
+                </CardContent>
+              </Card>
             </div>
-          </CardHeader>
-          <CardContent>
-            <CertificationManager />
-          </CardContent>
-        </Card>
+
+            {/* Profile Views */}
+            <ProfileViewsNotification />
+          </TabsContent>
+
+          <TabsContent value="resume">
+            <MultipleResumesManager />
+          </TabsContent>
+
+          <TabsContent value="certs">
+            <Card className="border-border/50">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <Award className="h-5 w-5 text-accent" />
+                      Your Certifications
+                    </CardTitle>
+                    <CardDescription>Manage and verify your credentials</CardDescription>
+                  </div>
+                  <Button onClick={() => navigate('/certifications')}>
+                    Add Certification
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <CertificationManager />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="share">
+            <Card className="border-border/50">
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Share2 className="h-5 w-5 text-primary" />
+                  Share Your Profile
+                </CardTitle>
+                <CardDescription>Promote yourself on social media</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ShareProfileCard
+                  userName={userName}
+                  title={profile?.desired_job_title}
+                  avatarUrl={profile?.avatar_url}
+                  level={xpData?.level || 1}
+                  totalXp={xpData?.total_xp || 0}
+                  certCount={0}
+                  specializations={[]}
+                  profileUrl={`https://cydena.com/profiles/${userId}`}
+                />
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       )}
 
-      {userId && (
-        <ReferralSystem />
-      )}
-
+      {/* ═══════════════════════════════════════════════════════════════════════
+          SECTION 4: APPLICATIONS & PROGRESS
+          Visual weight: MEDIUM
+      ═══════════════════════════════════════════════════════════════════════ */}
       <ApplicationTracker />
 
-      {userId && (
-        <AchievementBadges userId={userId} />
-      )}
+      {/* ═══════════════════════════════════════════════════════════════════════
+          SECTION 5: AI FEATURES & GROWTH (Collapsible)
+          Visual weight: LOW - Expandable for power users
+      ═══════════════════════════════════════════════════════════════════════ */}
+      <Collapsible open={showMoreFeatures} onOpenChange={setShowMoreFeatures}>
+        <CollapsibleTrigger asChild>
+          <Button variant="outline" className="w-full justify-between">
+            <span className="flex items-center gap-2">
+              <Sparkles className="h-4 w-4 text-primary" />
+              {showMoreFeatures ? 'Hide' : 'Show'} AI Features & Growth Tools
+            </span>
+            <ChevronRight className={`h-4 w-4 transition-transform ${showMoreFeatures ? 'rotate-90' : ''}`} />
+          </Button>
+        </CollapsibleTrigger>
+        <CollapsibleContent className="space-y-6 pt-4">
+          {/* AI-Powered Features */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold flex items-center gap-2">
+              <Sparkles className="h-5 w-5 text-primary" />
+              AI-Powered Insights
+            </h3>
+            {userId && <SecurityIQ />}
+            {userId && <CareerPathsAI />}
+          </div>
 
-      {userId && (
-        <BoostYourScore />
-      )}
+          {/* Achievements */}
+          {userId && <AchievementBadges userId={userId} />}
 
-      {userId && (
-        <SkillsAssessmentCTA />
-      )}
+          {/* Boost & Assessment CTAs */}
+          {userId && <BoostYourScore />}
+          {userId && <SkillsAssessmentCTA />}
 
-      {userId && (
-        <div className="grid md:grid-cols-2 gap-6">
-          <Card className="border-border shadow-card bg-primary/5">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Bug className="h-5 w-5 text-primary" />
-                Report a Bug
-              </CardTitle>
-              <CardDescription>
-                Help us improve Cydena
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground mb-4">
-                Found an issue? Let us know and we'll fix it!
-              </p>
-              <Button 
-                onClick={() => navigate('/bug-report')}
-                variant="outline"
-                className="w-full gap-2"
-              >
-                <Bug className="h-4 w-4" />
-                Report Bug
-              </Button>
-            </CardContent>
-          </Card>
+          {/* Referral System */}
+          {userId && <ReferralSystem />}
 
-          <RecentPointsFeed userId={userId} limit={5} />
-        </div>
-      )}
-
+          {/* Recent Activity & Bug Report */}
+          {userId && (
+            <div className="grid md:grid-cols-2 gap-6">
+              <RecentPointsFeed userId={userId} limit={5} />
+              
+              <Card className="border-border/50">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <Bug className="h-5 w-5 text-muted-foreground" />
+                    Report an Issue
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground mb-3">
+                    Found something that needs fixing?
+                  </p>
+                  <Button 
+                    onClick={() => navigate('/bug-report')}
+                    variant="outline"
+                    size="sm"
+                    className="w-full"
+                  >
+                    Report Bug
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+        </CollapsibleContent>
+      </Collapsible>
     </div>
   );
 };
