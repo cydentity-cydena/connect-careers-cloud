@@ -184,7 +184,8 @@ export function ShareProfileCard({
                 style={{ whiteSpace: 'nowrap' }}
               >
                 <Check className="w-2.5 h-2.5 shrink-0" />
-                <span className="leading-none">HR-Ready</span>
+                {/* Optical alignment: nudge text up slightly for canvas export */}
+                <span className="relative top-[-0.5px] leading-none">HR-Ready</span>
               </Badge>
             )}
             {memberSince && (
@@ -194,7 +195,7 @@ export function ShareProfileCard({
                 style={{ whiteSpace: 'nowrap' }}
               >
                 <Calendar className="w-2.5 h-2.5 shrink-0" />
-                <span className="leading-none">{formatMemberSince(memberSince)}</span>
+                <span className="relative top-[-0.5px] leading-none">{formatMemberSince(memberSince)}</span>
               </Badge>
             )}
           </div>
@@ -292,7 +293,7 @@ export function ShareProfileCard({
                     variant="outline"
                     className="h-5 bg-cyan-500/10 text-cyan-300/90 border-cyan-500/30 text-[9px] px-1.5 py-0 inline-flex items-center justify-center leading-none"
                   >
-                    <span className="leading-none">{skill}</span>
+                    <span className="relative top-[-0.5px] leading-none">{skill}</span>
                   </Badge>
                 ))}
               </div>
@@ -308,7 +309,7 @@ export function ShareProfileCard({
                     className="h-5 bg-purple-500/10 text-white/80 border-purple-500/30 text-[9px] px-1.5 py-0 inline-flex items-center justify-center gap-1 leading-none"
                   >
                     <Shield className="w-2 h-2 text-purple-400 shrink-0" />
-                    <span className="leading-none">{spec}</span>
+                    <span className="relative top-[-0.5px] leading-none">{spec}</span>
                   </Badge>
                 ))}
               </div>
