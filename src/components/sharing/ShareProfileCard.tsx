@@ -48,9 +48,14 @@ export function ShareProfileCard({
 
   const generateImage = async (): Promise<string | null> => {
     if (!cardRef.current) return null;
-    
+
     setIsGenerating(true);
     try {
+      // Ensure web fonts are fully loaded before rasterizing (prevents layout shifts in the export)
+      if (document.fonts?.ready) {
+        await document.fonts.ready;
+      }
+
       const canvas = await html2canvas(cardRef.current, {
         scale: 2,
         backgroundColor: null,
@@ -163,27 +168,29 @@ export function ShareProfileCard({
         {/* Content */}
         <div className="relative h-full p-5 pb-8 flex flex-col">
           {/* Header with logo */}
-          <div className="grid grid-cols-3 items-center mb-3">
-            <img 
-              src="/logos/cydena-logo.png" 
-              alt="Cydena" 
-              className="h-5 w-auto"
+          <div className="relative mb-3 h-6">
+            <img
+              src="/logos/cydena-logo.png"
+              alt="Cydena"
+              className="h-5 w-auto absolute left-0 top-1/2 -translate-y-1/2"
             />
-            <div className="flex items-center justify-center gap-2 col-span-1">
+            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-2 flex-nowrap">
               {isHrReady && (
-                <Badge className="bg-green-500/20 text-green-400 border-green-500/30 text-[10px] px-2 py-0.5">
+                <Badge className="bg-green-500/20 text-green-400 border-green-500/30 text-[10px] px-2 py-0.5 whitespace-nowrap">
                   <Check className="w-2.5 h-2.5 mr-1" />
                   HR-Ready
                 </Badge>
               )}
               {memberSince && (
-                <Badge variant="outline" className="bg-white/5 text-white/60 border-white/20 text-[10px] px-2 py-0.5">
+                <Badge
+                  variant="outline"
+                  className="bg-white/5 text-white/60 border-white/20 text-[10px] px-2 py-0.5 whitespace-nowrap"
+                >
                   <Calendar className="w-2.5 h-2.5 mr-1" />
                   {formatMemberSince(memberSince)}
                 </Badge>
               )}
             </div>
-            <div></div>
           </div>
 
           {/* Profile section */}
