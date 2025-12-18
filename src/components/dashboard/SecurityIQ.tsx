@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { Shield, Flame, Trophy, Share2, CheckCircle, XCircle, Flag, Lightbulb } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import ChessChallenge from "@/components/ctf/ChessChallenge";
+import { QuizChallenge } from "@/components/ctf/QuizChallenge";
 
 interface MCQChallenge {
   type: "mcq";
@@ -301,6 +303,21 @@ export function SecurityIQ() {
           {/* CTF Flag Input */}
           {challenge.type === "ctf" && !hasAnswered && (
             <div className="space-y-3">
+              {/* Interactive Challenge Components */}
+              {challenge.title.trim().toLowerCase() === "advanced chess gambit" ? (
+                <ChessChallenge 
+                  onComplete={(flag) => {
+                    setFlagInput(flag);
+                  }} 
+                />
+              ) : challenge.title.trim().toLowerCase() === "quiz quantlet" ? (
+                <QuizChallenge 
+                  onComplete={(flag) => {
+                    setFlagInput(flag);
+                  }} 
+                />
+              ) : null}
+              
               <Input
                 placeholder="Enter flag (e.g., FLAG{...})"
                 value={flagInput}
