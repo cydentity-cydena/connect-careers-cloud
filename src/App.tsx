@@ -64,6 +64,7 @@ import SecuritySettings from "./pages/SecuritySettings";
 import VerifyEmail from "./pages/VerifyEmail";
 import Unsubscribe from "./pages/Unsubscribe";
 import CTF from "./pages/CTF";
+import BrandingPack from "./pages/BrandingPack";
 import { ScrollToTop } from "./components/ScrollToTop";
 
 const queryClient = new QueryClient();
@@ -144,6 +145,9 @@ const AppContent = () => {
           
           {/* Lead Generation */}
           <Route path="/Early-Access-200" element={<Founding20 />} />
+          
+          {/* Branding */}
+          <Route path="/branding" element={<BrandingPack />} />
           
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
