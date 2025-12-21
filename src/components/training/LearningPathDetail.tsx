@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { YouTubePlayer } from "./YouTubePlayer";
-import { ArrowLeft, Youtube, Star, Trophy, ExternalLink } from "lucide-react";
+import { ArrowLeft, Youtube, Star, Trophy, ExternalLink, Heart } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 
@@ -288,6 +288,38 @@ export function LearningPathDetail({ pathId, onBack }: LearningPathDetailProps) 
           </CardContent>
         </Card>
       </div>
+
+      {/* Creator Attribution */}
+      <Card className="border-primary/20 bg-primary/5">
+        <CardContent className="p-4">
+          <div className="flex items-start gap-3">
+            <div className="p-2 rounded-lg bg-red-500/10">
+              <Heart className="h-5 w-5 text-red-500" />
+            </div>
+            <div className="flex-1">
+              <h3 className="font-semibold text-sm mb-1">Support the Creator</h3>
+              <p className="text-sm text-muted-foreground mb-3">
+                This learning path features content from <strong>{path.channel_name}</strong>. 
+                The videos are freely available on YouTube. Please consider supporting the creator 
+                by subscribing to their channel and engaging with their content directly.
+              </p>
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="gap-2"
+                  asChild
+                >
+                  <a href={path.channel_url || "#"} target="_blank" rel="noopener noreferrer">
+                    <Youtube className="h-4 w-4 text-red-500" />
+                    Subscribe on YouTube
+                  </a>
+                </Button>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
