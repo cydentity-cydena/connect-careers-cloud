@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -29,21 +29,7 @@ interface VideoCount {
   count: number;
 }
 
-const categories = [
-  { value: "all", label: "All" },
-  { value: "penetration-testing", label: "Penetration Testing" },
-  { value: "networking", label: "Networking" },
-  { value: "bug-bounty", label: "Bug Bounty" },
-  { value: "malware-analysis", label: "Malware Analysis" },
-  { value: "web-security", label: "Web Security" },
-];
 
-const difficulties = [
-  { value: "all", label: "All Levels" },
-  { value: "beginner", label: "Beginner" },
-  { value: "intermediate", label: "Intermediate" },
-  { value: "advanced", label: "Advanced" },
-];
 
 export default function LearningPaths() {
   const { pathId: urlPathId } = useParams<{ pathId?: string }>();
@@ -119,6 +105,26 @@ export default function LearningPaths() {
       selectedDifficulty === "all" || path.difficulty === selectedDifficulty;
     return matchesSearch && matchesCategory && matchesDifficulty;
   });
+
+  // Dynamically generate categories from paths data
+  const categories = useMemo(() => {
+    if (!paths) return [{ value: "all", label: "All" }];
+    const uniqueCategories = [...new Set(paths.map(p => p.category).filter(Boolean))];
+    return [
+      { value: "all", label: "All" },
+      ...uniqueCategories.map(cat => ({
+        value: cat!,
+        label: cat!.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
+      }))
+    ];
+  }, [paths]);
+
+  const difficulties = [
+    { value: "all", label: "All Levels" },
+    { value: "beginner", label: "Beginner" },
+    { value: "intermediate", label: "Intermediate" },
+    { value: "advanced", label: "Advanced" },
+  ];
 
   const totalXpAvailable = paths?.reduce((sum, p) => sum + (p.total_xp || 0), 0) || 0;
   const completedPaths = paths?.filter((p) => {
