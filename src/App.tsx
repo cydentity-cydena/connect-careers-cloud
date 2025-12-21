@@ -54,6 +54,7 @@ import PodManagement from "./pages/admin/PodManagement";
 import VerificationReview from "./pages/admin/VerificationReview";
 import AllowedSignups from "./pages/admin/AllowedSignups";
 import CTFManagement from "./pages/admin/CTFManagement";
+import LearningPathsManagement from "./pages/admin/LearningPathsManagement";
 import NotFound from "./pages/NotFound";
 import Messages from "./pages/Messages";
 import EmployerPitchDeck from "./pages/EmployerPitchDeck";
@@ -132,6 +133,7 @@ const AppContent = () => {
           <Route path="/admin/partner-analytics" element={<ProtectedRoute><PartnerAnalytics /></ProtectedRoute>} />
           <Route path="/admin/assessment-review" element={<ProtectedRoute><AssessmentReview /></ProtectedRoute>} />
           <Route path="/admin/ctf" element={<ProtectedRoute><CTFManagement /></ProtectedRoute>} />
+          <Route path="/admin/learning-paths" element={<ProtectedRoute><LearningPathsManagement /></ProtectedRoute>} />
           
           {/* Standalone Presentation */}
           <Route path="/employer-pitch-deck" element={<EmployerPitchDeck />} />
