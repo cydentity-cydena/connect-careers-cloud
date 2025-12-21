@@ -9,10 +9,12 @@ import { FeaturedMembers } from '@/components/community/FeaturedMembers';
 import { XPNotification } from '@/components/community/XPNotification';
 import Navigation from '@/components/Navigation';
 import SEO from '@/components/SEO';
-import { TrendingUp, Map, Users } from 'lucide-react';
+import { TrendingUp, Map, Users, Youtube } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 
 const Community = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('feed');
   const [isAdmin, setIsAdmin] = useState(false);
   const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null);
@@ -121,7 +123,7 @@ const Community = () => {
         </header>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 lg:w-auto lg:inline-flex mb-4 sm:mb-6 md:mb-8">
+          <TabsList className="grid w-full grid-cols-3 lg:w-auto lg:inline-flex mb-4 sm:mb-6 md:mb-8">
             <TabsTrigger value="feed" className="flex items-center gap-1.5 sm:gap-2 text-sm sm:text-base">
               <TrendingUp className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               <span>Activity Feed</span>
@@ -129,6 +131,14 @@ const Community = () => {
             <TabsTrigger value="pathways" className="flex items-center gap-1.5 sm:gap-2 text-sm sm:text-base">
               <Map className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               <span>Skill Pathways</span>
+            </TabsTrigger>
+            <TabsTrigger 
+              value="learning" 
+              className="flex items-center gap-1.5 sm:gap-2 text-sm sm:text-base"
+              onClick={() => navigate('/learning-paths')}
+            >
+              <Youtube className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              <span>Learning Paths</span>
             </TabsTrigger>
           </TabsList>
 
