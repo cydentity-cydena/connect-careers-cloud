@@ -103,6 +103,9 @@ const LearningPathsManagement = () => {
   const [validating, setValidating] = useState(false);
   const [fetchingDuration, setFetchingDuration] = useState(false);
   
+  // Filter state
+  const [creatorCategoryFilter, setCreatorCategoryFilter] = useState<string>("all");
+
   // Playlist import state
   const [playlistDialogOpen, setPlaylistDialogOpen] = useState(false);
   const [playlistUrl, setPlaylistUrl] = useState("");
@@ -917,7 +920,7 @@ const LearningPathsManagement = () => {
           {/* Creators Tab */}
           <TabsContent value="creators">
             <Card>
-              <CardHeader className="flex flex-row items-center justify-between">
+              <CardHeader className="flex flex-row items-center justify-between flex-wrap gap-4">
                 <div>
                   <CardTitle className="flex items-center gap-2">
                     <User className="h-5 w-5" />
@@ -1018,7 +1021,37 @@ const LearningPathsManagement = () => {
                   </DialogContent>
                 </Dialog>
               </CardHeader>
-              <CardContent>
+              <CardContent className="space-y-4">
+                {/* Category Filter Tabs */}
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    variant={creatorCategoryFilter === "all" ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setCreatorCategoryFilter("all")}
+                    className="rounded-full"
+                  >
+                    All
+                  </Button>
+                  {CATEGORIES.map((cat) => {
+                    // Count creators that have paths in this category
+                    const creatorsInCategory = creators.filter(c => 
+                      paths.some(p => p.creator_id === c.id && p.category === cat.value)
+                    ).length;
+                    if (creatorsInCategory === 0) return null;
+                    return (
+                      <Button
+                        key={cat.value}
+                        variant={creatorCategoryFilter === cat.value ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setCreatorCategoryFilter(cat.value)}
+                        className="rounded-full"
+                      >
+                        {cat.label}
+                      </Button>
+                    );
+                  })}
+                </div>
+
                 {loading ? (
                   <div className="flex justify-center py-8">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
@@ -1036,70 +1069,91 @@ const LearningPathsManagement = () => {
                         <TableHead>Channel</TableHead>
                         <TableHead>URL</TableHead>
                         <TableHead>Playlists</TableHead>
+                        <TableHead>Categories</TableHead>
                         <TableHead>Status</TableHead>
                         <TableHead className="text-right">Actions</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {creators.map((creator) => {
-                        const pathCount = paths.filter(p => p.creator_id === creator.id).length;
-                        return (
-                          <TableRow key={creator.id}>
-                            <TableCell className="font-medium">{creator.channel_name}</TableCell>
-                            <TableCell>
-                              {creator.channel_url ? (
-                                <a
-                                  href={creator.channel_url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="flex items-center gap-1 text-primary hover:underline"
-                                >
-                                  Visit <ExternalLink className="h-3 w-3" />
-                                </a>
-                              ) : (
-                                <span className="text-muted-foreground">-</span>
-                              )}
-                            </TableCell>
-                            <TableCell>
-                              <Badge variant="secondary">{pathCount} path{pathCount !== 1 ? 's' : ''}</Badge>
-                            </TableCell>
-                            <TableCell>
-                              {creator.is_active ? (
-                                <Badge className="bg-green-500/20 text-green-500">Active</Badge>
-                              ) : (
-                                <Badge variant="secondary">Hidden</Badge>
-                              )}
-                            </TableCell>
-                            <TableCell className="text-right">
-                              <div className="flex items-center justify-end gap-1">
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  onClick={() => toggleCreatorActive(creator.id, creator.is_active ?? false)}
-                                >
-                                  {creator.is_active ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                                </Button>
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  onClick={() => openEditCreatorDialog(creator)}
-                                >
-                                  <Edit className="h-4 w-4" />
-                                </Button>
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  onClick={() => deleteCreator(creator.id)}
-                                  disabled={pathCount > 0}
-                                  title={pathCount > 0 ? "Unlink paths first" : "Delete creator"}
-                                >
-                                  <Trash2 className="h-4 w-4 text-destructive" />
-                                </Button>
-                              </div>
-                            </TableCell>
-                          </TableRow>
-                        );
-                      })}
+                      {creators
+                        .filter(creator => {
+                          if (creatorCategoryFilter === "all") return true;
+                          return paths.some(p => p.creator_id === creator.id && p.category === creatorCategoryFilter);
+                        })
+                        .map((creator) => {
+                          const pathCount = paths.filter(p => p.creator_id === creator.id).length;
+                          const creatorCategories = [...new Set(
+                            paths.filter(p => p.creator_id === creator.id).map(p => p.category)
+                          )];
+                          return (
+                            <TableRow key={creator.id}>
+                              <TableCell className="font-medium">{creator.channel_name}</TableCell>
+                              <TableCell>
+                                {creator.channel_url ? (
+                                  <a
+                                    href={creator.channel_url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center gap-1 text-primary hover:underline"
+                                  >
+                                    Visit <ExternalLink className="h-3 w-3" />
+                                  </a>
+                                ) : (
+                                  <span className="text-muted-foreground">-</span>
+                                )}
+                              </TableCell>
+                              <TableCell>
+                                <Badge variant="secondary">{pathCount} path{pathCount !== 1 ? 's' : ''}</Badge>
+                              </TableCell>
+                              <TableCell>
+                                <div className="flex flex-wrap gap-1">
+                                  {creatorCategories.slice(0, 2).map(cat => (
+                                    <Badge key={cat} variant="outline" className="text-xs">
+                                      {CATEGORIES.find(c => c.value === cat)?.label || cat}
+                                    </Badge>
+                                  ))}
+                                  {creatorCategories.length > 2 && (
+                                    <Badge variant="outline" className="text-xs">+{creatorCategories.length - 2}</Badge>
+                                  )}
+                                </div>
+                              </TableCell>
+                              <TableCell>
+                                {creator.is_active ? (
+                                  <Badge className="bg-green-500/20 text-green-500">Active</Badge>
+                                ) : (
+                                  <Badge variant="secondary">Hidden</Badge>
+                                )}
+                              </TableCell>
+                              <TableCell className="text-right">
+                                <div className="flex items-center justify-end gap-1">
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={() => toggleCreatorActive(creator.id, creator.is_active ?? false)}
+                                  >
+                                    {creator.is_active ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                  </Button>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={() => openEditCreatorDialog(creator)}
+                                  >
+                                    <Edit className="h-4 w-4" />
+                                  </Button>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={() => deleteCreator(creator.id)}
+                                    disabled={pathCount > 0}
+                                    title={pathCount > 0 ? "Unlink paths first" : "Delete creator"}
+                                  >
+                                    <Trash2 className="h-4 w-4 text-destructive" />
+                                  </Button>
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })}
                     </TableBody>
                   </Table>
                 )}
