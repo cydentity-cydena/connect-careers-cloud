@@ -12,7 +12,9 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { Plus, Edit, Trash2, Eye, EyeOff, ArrowLeft, Youtube, Video, RefreshCw, AlertTriangle, CheckCircle, ExternalLink, Play } from "lucide-react";
+import { Plus, Edit, Trash2, Eye, EyeOff, ArrowLeft, Youtube, Video, RefreshCw, AlertTriangle, CheckCircle, ExternalLink, Play, ListVideo, Download } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import Navigation from "@/components/Navigation";
 import { useNavigate } from "react-router-dom";
 
@@ -47,6 +49,16 @@ interface VideoStatus {
   status: "checking" | "valid" | "invalid" | "unknown";
 }
 
+interface PlaylistVideo {
+  videoId: string;
+  title: string;
+  description: string;
+  thumbnailUrl: string;
+  position: number;
+  durationSeconds: number | null;
+  selected: boolean;
+}
+
 const CATEGORIES = [
   { value: "penetration-testing", label: "Penetration Testing" },
   { value: "networking", label: "Networking" },
@@ -74,6 +86,15 @@ const LearningPathsManagement = () => {
   const [videoStatuses, setVideoStatuses] = useState<Record<string, VideoStatus["status"]>>({});
   const [validating, setValidating] = useState(false);
   const [fetchingDuration, setFetchingDuration] = useState(false);
+  
+  // Playlist import state
+  const [playlistDialogOpen, setPlaylistDialogOpen] = useState(false);
+  const [playlistUrl, setPlaylistUrl] = useState("");
+  const [playlistVideos, setPlaylistVideos] = useState<PlaylistVideo[]>([]);
+  const [playlistTitle, setPlaylistTitle] = useState("");
+  const [playlistChannel, setPlaylistChannel] = useState("");
+  const [fetchingPlaylist, setFetchingPlaylist] = useState(false);
+  const [importingVideos, setImportingVideos] = useState(false);
 
   const [pathForm, setPathForm] = useState({
     title: "",
@@ -425,6 +446,101 @@ const LearningPathsManagement = () => {
     // Fetch video info when we have a valid 11-character ID
     if (videoId.length === 11) {
       await fetchVideoDuration(videoId);
+    }
+  };
+
+  // Playlist import functions
+  const fetchPlaylist = async () => {
+    if (!playlistUrl.trim()) {
+      toast.error("Please enter a playlist URL");
+      return;
+    }
+
+    setFetchingPlaylist(true);
+    setPlaylistVideos([]);
+    
+    try {
+      const { data, error } = await supabase.functions.invoke("fetch-youtube-playlist", {
+        body: { playlistUrl }
+      });
+
+      if (error) throw error;
+      
+      if (data.error) {
+        toast.error(data.error);
+        return;
+      }
+
+      setPlaylistTitle(data.playlistTitle);
+      setPlaylistChannel(data.channelTitle);
+      setPlaylistVideos(
+        data.videos.map((v: any) => ({ ...v, selected: true }))
+      );
+      
+      toast.success(`Found ${data.videoCount} videos in playlist`);
+    } catch (error: any) {
+      console.error("Failed to fetch playlist:", error);
+      toast.error("Failed to fetch playlist");
+    } finally {
+      setFetchingPlaylist(false);
+    }
+  };
+
+  const toggleVideoSelection = (videoId: string) => {
+    setPlaylistVideos(prev => 
+      prev.map(v => v.videoId === videoId ? { ...v, selected: !v.selected } : v)
+    );
+  };
+
+  const toggleAllVideos = (selected: boolean) => {
+    setPlaylistVideos(prev => prev.map(v => ({ ...v, selected })));
+  };
+
+  const importSelectedVideos = async () => {
+    if (!selectedPathId) {
+      toast.error("Please select a learning path first");
+      return;
+    }
+
+    const selectedVideos = playlistVideos.filter(v => v.selected);
+    if (selectedVideos.length === 0) {
+      toast.error("Please select at least one video");
+      return;
+    }
+
+    setImportingVideos(true);
+    
+    try {
+      const currentMaxOrder = videos.length > 0 
+        ? Math.max(...videos.map(v => v.video_order)) 
+        : 0;
+
+      const videosToInsert = selectedVideos.map((v, index) => ({
+        path_id: selectedPathId,
+        title: v.title,
+        youtube_video_id: v.videoId,
+        description: v.description?.substring(0, 500) || null,
+        duration_minutes: v.durationSeconds ? Math.ceil(v.durationSeconds / 60) : 10,
+        video_order: currentMaxOrder + index + 1,
+        xp_reward: 10,
+      }));
+
+      const { error } = await supabase
+        .from("youtube_path_videos")
+        .insert(videosToInsert);
+
+      if (error) throw error;
+
+      toast.success(`Imported ${selectedVideos.length} videos`);
+      setPlaylistDialogOpen(false);
+      setPlaylistUrl("");
+      setPlaylistVideos([]);
+      loadVideos(selectedPathId);
+    } catch (error: any) {
+      console.error("Failed to import videos:", error);
+      toast.error("Failed to import videos");
+    } finally {
+      setImportingVideos(false);
     }
   };
 
@@ -796,25 +912,177 @@ const LearningPathsManagement = () => {
                       </span>
                     </div>
                   </div>
-                  <Dialog
-                    open={videoDialogOpen}
-                    onOpenChange={(open) => {
-                      setVideoDialogOpen(open);
-                      if (!open) resetVideoForm();
-                    }}
-                  >
-                    <DialogTrigger asChild>
-                      <Button
-                        className="gap-2"
-                        onClick={() => {
-                          resetVideoForm();
-                          setVideoDialogOpen(true);
-                        }}
-                      >
-                        <Plus className="h-4 w-4" />
-                        Add Video
-                      </Button>
-                    </DialogTrigger>
+                  <div className="flex gap-2">
+                    {/* Import from Playlist Button */}
+                    <Dialog
+                      open={playlistDialogOpen}
+                      onOpenChange={(open) => {
+                        setPlaylistDialogOpen(open);
+                        if (!open) {
+                          setPlaylistUrl("");
+                          setPlaylistVideos([]);
+                        }
+                      }}
+                    >
+                      <DialogTrigger asChild>
+                        <Button variant="outline" className="gap-2">
+                          <ListVideo className="h-4 w-4" />
+                          Import Playlist
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="max-w-3xl max-h-[85vh] flex flex-col">
+                        <DialogHeader>
+                          <DialogTitle>Import from YouTube Playlist</DialogTitle>
+                          <DialogDescription>
+                            Paste a YouTube playlist URL to import all videos at once
+                          </DialogDescription>
+                        </DialogHeader>
+
+                        <div className="space-y-4 py-4 flex-1 overflow-hidden flex flex-col">
+                          <div className="flex gap-2">
+                            <Input
+                              value={playlistUrl}
+                              onChange={(e) => setPlaylistUrl(e.target.value)}
+                              placeholder="https://www.youtube.com/playlist?list=..."
+                              className="flex-1"
+                            />
+                            <Button 
+                              onClick={fetchPlaylist} 
+                              disabled={fetchingPlaylist}
+                              className="gap-2"
+                            >
+                              {fetchingPlaylist ? (
+                                <>
+                                  <RefreshCw className="h-4 w-4 animate-spin" />
+                                  Fetching...
+                                </>
+                              ) : (
+                                <>
+                                  <Download className="h-4 w-4" />
+                                  Fetch
+                                </>
+                              )}
+                            </Button>
+                          </div>
+
+                          {playlistVideos.length > 0 && (
+                            <>
+                              <div className="flex items-center justify-between border-b pb-2">
+                                <div>
+                                  <p className="font-semibold">{playlistTitle}</p>
+                                  <p className="text-sm text-muted-foreground">
+                                    {playlistChannel} • {playlistVideos.length} videos
+                                  </p>
+                                </div>
+                                <div className="flex items-center gap-4">
+                                  <Button 
+                                    variant="ghost" 
+                                    size="sm"
+                                    onClick={() => toggleAllVideos(true)}
+                                  >
+                                    Select All
+                                  </Button>
+                                  <Button 
+                                    variant="ghost" 
+                                    size="sm"
+                                    onClick={() => toggleAllVideos(false)}
+                                  >
+                                    Deselect All
+                                  </Button>
+                                  <Badge variant="secondary">
+                                    {playlistVideos.filter(v => v.selected).length} selected
+                                  </Badge>
+                                </div>
+                              </div>
+
+                              <ScrollArea className="flex-1 border rounded-md">
+                                <div className="p-2 space-y-1">
+                                  {playlistVideos.map((video, index) => (
+                                    <div
+                                      key={video.videoId}
+                                      className={`flex items-center gap-3 p-2 rounded-md hover:bg-muted/50 cursor-pointer ${
+                                        video.selected ? "bg-primary/5" : ""
+                                      }`}
+                                      onClick={() => toggleVideoSelection(video.videoId)}
+                                    >
+                                      <Checkbox 
+                                        checked={video.selected}
+                                        onCheckedChange={() => toggleVideoSelection(video.videoId)}
+                                      />
+                                      <span className="text-sm text-muted-foreground w-6">
+                                        {index + 1}
+                                      </span>
+                                      <img
+                                        src={video.thumbnailUrl || `https://img.youtube.com/vi/${video.videoId}/default.jpg`}
+                                        alt=""
+                                        className="w-20 h-12 object-cover rounded"
+                                      />
+                                      <div className="flex-1 min-w-0">
+                                        <p className="font-medium text-sm truncate">
+                                          {video.title}
+                                        </p>
+                                        <p className="text-xs text-muted-foreground">
+                                          {video.durationSeconds 
+                                            ? `${Math.ceil(video.durationSeconds / 60)} min` 
+                                            : "Duration unknown"}
+                                        </p>
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              </ScrollArea>
+
+                              <div className="flex justify-end gap-3 pt-2 border-t">
+                                <Button
+                                  variant="outline"
+                                  onClick={() => setPlaylistDialogOpen(false)}
+                                >
+                                  Cancel
+                                </Button>
+                                <Button
+                                  onClick={importSelectedVideos}
+                                  disabled={importingVideos || playlistVideos.filter(v => v.selected).length === 0}
+                                  className="gap-2"
+                                >
+                                  {importingVideos ? (
+                                    <>
+                                      <RefreshCw className="h-4 w-4 animate-spin" />
+                                      Importing...
+                                    </>
+                                  ) : (
+                                    <>
+                                      <Download className="h-4 w-4" />
+                                      Import {playlistVideos.filter(v => v.selected).length} Videos
+                                    </>
+                                  )}
+                                </Button>
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+
+                    {/* Add Video Button */}
+                    <Dialog
+                      open={videoDialogOpen}
+                      onOpenChange={(open) => {
+                        setVideoDialogOpen(open);
+                        if (!open) resetVideoForm();
+                      }}
+                    >
+                      <DialogTrigger asChild>
+                        <Button
+                          className="gap-2"
+                          onClick={() => {
+                            resetVideoForm();
+                            setVideoDialogOpen(true);
+                          }}
+                        >
+                          <Plus className="h-4 w-4" />
+                          Add Video
+                        </Button>
+                      </DialogTrigger>
                     <DialogContent>
                       <DialogHeader>
                         <DialogTitle>
@@ -946,6 +1214,7 @@ const LearningPathsManagement = () => {
                       </div>
                     </DialogContent>
                   </Dialog>
+                  </div>
                 </CardHeader>
                 <CardContent>
                   <Table>
