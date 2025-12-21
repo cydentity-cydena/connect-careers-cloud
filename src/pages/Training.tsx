@@ -1,13 +1,14 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Shield, Upload, CheckCircle, Zap, Star, TrendingUp, Building2 } from "lucide-react";
+import { Shield, Upload, CheckCircle, Zap, Star, TrendingUp, Building2, Youtube, Play, ExternalLink } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import SEO from "@/components/SEO";
 import Schema from "@/components/Schema";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 
 const Training = () => {
   const [featuredPartners, setFeaturedPartners] = useState<any[]>([]);
@@ -26,6 +27,24 @@ const Training = () => {
 
     fetchFeaturedPartners();
   }, []);
+
+  // Fetch learning paths stats
+  const { data: learningPathsData } = useQuery({
+    queryKey: ['learning-paths-summary'],
+    queryFn: async () => {
+      const { data: paths, error } = await supabase
+        .from('youtube_learning_paths')
+        .select('id, total_xp')
+        .eq('is_active', true);
+      
+      if (error) throw error;
+      
+      const totalPaths = paths?.length || 0;
+      const totalXp = paths?.reduce((sum, p) => sum + (p.total_xp || 0), 0) || 0;
+      
+      return { totalPaths, totalXp };
+    },
+  });
 
   // Deduplicate featured partners by name
   const uniqueFeaturedPartners = (() => {
@@ -362,6 +381,65 @@ const Training = () => {
                 </div>
               </div>
             )}
+
+            {/* Free Learning Paths Section */}
+            <Card className="mb-12 border-red-500/30 bg-gradient-to-br from-red-500/5 to-red-500/10 overflow-hidden">
+              <CardHeader className="pb-2">
+                <div className="flex items-center justify-between flex-wrap gap-4">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-red-500/10 p-3 rounded-lg">
+                      <Youtube className="h-7 w-7 text-red-500" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-2xl flex items-center gap-2">
+                        Free Learning Paths
+                        <Badge variant="secondary" className="bg-green-500/20 text-green-400 border-green-500/30">
+                          100% Free
+                        </Badge>
+                      </CardTitle>
+                      <p className="text-muted-foreground text-sm mt-1">
+                        Curated YouTube courses from top cybersecurity creators
+                      </p>
+                    </div>
+                  </div>
+                  <Link to="/learning-paths">
+                    <Button className="gap-2">
+                      <Play className="h-4 w-4" />
+                      Browse All Paths
+                      <ExternalLink className="h-3 w-3" />
+                    </Button>
+                  </Link>
+                </div>
+              </CardHeader>
+              <CardContent className="pt-4">
+                <div className="grid sm:grid-cols-3 gap-4 mb-4">
+                  <div className="bg-background/50 rounded-lg p-4 text-center">
+                    <p className="text-3xl font-bold text-primary">{learningPathsData?.totalPaths || 0}</p>
+                    <p className="text-sm text-muted-foreground">Learning Paths</p>
+                  </div>
+                  <div className="bg-background/50 rounded-lg p-4 text-center">
+                    <p className="text-3xl font-bold text-yellow-500">{learningPathsData?.totalXp?.toLocaleString() || 0}</p>
+                    <p className="text-sm text-muted-foreground">XP Available</p>
+                  </div>
+                  <div className="bg-background/50 rounded-lg p-4 text-center">
+                    <p className="text-3xl font-bold text-green-500">Free</p>
+                    <p className="text-sm text-muted-foreground">No Cost Ever</p>
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-2 mb-4">
+                  <Badge variant="outline">Penetration Testing</Badge>
+                  <Badge variant="outline">Cloud Security</Badge>
+                  <Badge variant="outline">CompTIA</Badge>
+                  <Badge variant="outline">Defensive Security</Badge>
+                  <Badge variant="outline">Network+</Badge>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Complete videos to earn XP, track your progress, and build verified skills. 
+                  Featuring content from <span className="text-foreground font-medium">NetworkChuck</span>, <span className="text-foreground font-medium">Professor Messer</span>, <span className="text-foreground font-medium">IppSec</span>, and more.
+                </p>
+              </CardContent>
+            </Card>
+
             <div className="bg-primary/5 border border-primary/20 rounded-lg p-6 space-y-4">
               <div>
                 <h2 className="text-lg font-semibold mb-2 text-primary flex items-center gap-2">
