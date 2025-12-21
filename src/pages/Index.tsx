@@ -1,13 +1,34 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Shield, Users, Briefcase, TrendingUp, ArrowRight, Clock, DollarSign, Target, CheckCircle, GraduationCap, Eye, Award, Filter, BarChart3, BadgeCheck } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Shield, Users, Briefcase, TrendingUp, ArrowRight, Clock, DollarSign, Target, CheckCircle, GraduationCap, Eye, Award, Filter, BarChart3, BadgeCheck, Youtube, Play, ExternalLink, Share2 } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import SEO from "@/components/SEO";
 import Schema from "@/components/Schema";
 import heroImage from "@/assets/hero-bg.jpg";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 const Index = () => {
+  // Fetch learning paths stats
+  const { data: learningPathsData } = useQuery({
+    queryKey: ['learning-paths-summary-home'],
+    queryFn: async () => {
+      const { data: paths, error } = await supabase
+        .from('youtube_learning_paths')
+        .select('id, total_xp')
+        .eq('is_active', true);
+      
+      if (error) throw error;
+      
+      const totalPaths = paths?.length || 0;
+      const totalXp = paths?.reduce((sum, p) => sum + (p.total_xp || 0), 0) || 0;
+      
+      return { totalPaths, totalXp };
+    },
+  });
+
   return (
     <div className="min-h-screen bg-background">
       <SEO />
@@ -139,6 +160,75 @@ const Index = () => {
                 </div>
               </div>
             </div>
+
+            {/* Free Learning Paths Card */}
+            <Card className="mt-8 border-red-500/30 bg-gradient-to-br from-red-500/5 to-red-500/10 overflow-hidden">
+              <CardHeader className="pb-2">
+                <div className="flex items-center justify-between flex-wrap gap-4">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-red-500/10 p-2.5 rounded-lg">
+                      <Youtube className="h-6 w-6 text-red-500" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-xl flex items-center gap-2">
+                        Free Learning Paths
+                        <Badge variant="secondary" className="bg-green-500/20 text-green-400 border-green-500/30 text-xs">
+                          100% Free
+                        </Badge>
+                      </CardTitle>
+                      <p className="text-muted-foreground text-xs mt-0.5">
+                        Curated YouTube courses from top creators
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="h-8 w-8"
+                      onClick={() => {
+                        const shareUrl = `${window.location.origin}/learning-paths`;
+                        const shareText = `Check out these free cybersecurity learning paths on Cydena! ${learningPathsData?.totalPaths || 0} paths with ${learningPathsData?.totalXp?.toLocaleString() || 0} XP available.`;
+                        if (navigator.share) {
+                          navigator.share({ title: 'Free Cybersecurity Learning Paths', text: shareText, url: shareUrl });
+                        } else {
+                          navigator.clipboard.writeText(`${shareText} ${shareUrl}`);
+                          alert('Link copied to clipboard!');
+                        }
+                      }}
+                    >
+                      <Share2 className="h-4 w-4" />
+                    </Button>
+                    <Link to="/learning-paths">
+                      <Button size="sm" className="gap-1.5">
+                        <Play className="h-3.5 w-3.5" />
+                        Browse Paths
+                        <ExternalLink className="h-3 w-3" />
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="pt-3">
+                <div className="grid grid-cols-3 gap-3 mb-3">
+                  <div className="bg-background/50 rounded-lg p-3 text-center">
+                    <p className="text-2xl font-bold text-primary">{learningPathsData?.totalPaths || 0}</p>
+                    <p className="text-xs text-muted-foreground">Paths</p>
+                  </div>
+                  <div className="bg-background/50 rounded-lg p-3 text-center">
+                    <p className="text-2xl font-bold text-yellow-500">{learningPathsData?.totalXp?.toLocaleString() || 0}</p>
+                    <p className="text-xs text-muted-foreground">XP Available</p>
+                  </div>
+                  <div className="bg-background/50 rounded-lg p-3 text-center">
+                    <p className="text-2xl font-bold text-green-500">Free</p>
+                    <p className="text-xs text-muted-foreground">No Cost</p>
+                  </div>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Complete videos to earn XP and track progress. Content from <span className="text-foreground font-medium">NetworkChuck</span>, <span className="text-foreground font-medium">Professor Messer</span>, <span className="text-foreground font-medium">IppSec</span> & more.
+                </p>
+              </CardContent>
+            </Card>
 
             <div className="text-center mt-8">
               <Link to="/auth">
