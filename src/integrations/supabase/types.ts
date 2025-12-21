@@ -3479,12 +3479,52 @@ export type Database = {
         }
         Relationships: []
       }
+      youtube_creators: {
+        Row: {
+          channel_id: string | null
+          channel_name: string
+          channel_url: string | null
+          created_at: string | null
+          description: string | null
+          display_order: number | null
+          id: string
+          is_active: boolean | null
+          thumbnail_url: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          channel_id?: string | null
+          channel_name: string
+          channel_url?: string | null
+          created_at?: string | null
+          description?: string | null
+          display_order?: number | null
+          id?: string
+          is_active?: boolean | null
+          thumbnail_url?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          channel_id?: string | null
+          channel_name?: string
+          channel_url?: string | null
+          created_at?: string | null
+          description?: string | null
+          display_order?: number | null
+          id?: string
+          is_active?: boolean | null
+          thumbnail_url?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       youtube_learning_paths: {
         Row: {
           category: string | null
           channel_name: string
           channel_url: string | null
           created_at: string | null
+          creator_id: string | null
           description: string | null
           difficulty: string | null
           display_order: number | null
@@ -3500,6 +3540,7 @@ export type Database = {
           channel_name: string
           channel_url?: string | null
           created_at?: string | null
+          creator_id?: string | null
           description?: string | null
           difficulty?: string | null
           display_order?: number | null
@@ -3515,6 +3556,7 @@ export type Database = {
           channel_name?: string
           channel_url?: string | null
           created_at?: string | null
+          creator_id?: string | null
           description?: string | null
           difficulty?: string | null
           display_order?: number | null
@@ -3525,7 +3567,15 @@ export type Database = {
           total_xp?: number | null
           updated_at?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "youtube_learning_paths_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "youtube_creators"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       youtube_path_videos: {
         Row: {
