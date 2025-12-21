@@ -67,6 +67,7 @@ import Unsubscribe from "./pages/Unsubscribe";
 import CTF from "./pages/CTF";
 import BrandingPack from "./pages/BrandingPack";
 import LearningPaths from "./pages/LearningPaths";
+import TrainingPartners from "./pages/TrainingPartners";
 import { ScrollToTop } from "./components/ScrollToTop";
 
 const queryClient = new QueryClient();
@@ -155,6 +156,7 @@ const AppContent = () => {
           {/* Learning */}
           <Route path="/learning-paths" element={<ProtectedRoute><LearningPaths /></ProtectedRoute>} />
           <Route path="/learning-paths/:pathId" element={<ProtectedRoute><LearningPaths /></ProtectedRoute>} />
+          <Route path="/training-partners" element={<TrainingPartners />} />
           
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
