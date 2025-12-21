@@ -88,7 +88,7 @@ export function LearningPathDetail({ pathId, onBack }: LearningPathDetailProps) 
   });
 
   const completeMutation = useMutation({
-    mutationFn: async (video: PathVideo) => {
+    mutationFn: async ({ video, xpToAward }: { video: PathVideo; xpToAward: number }) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
@@ -99,7 +99,7 @@ export function LearningPathDetail({ pathId, onBack }: LearningPathDetailProps) 
           user_id: user.id,
           video_id: video.id,
           path_id: pathId,
-          xp_awarded: video.xp_reward,
+          xp_awarded: xpToAward,
         });
       if (completionError) throw completionError;
 
@@ -108,13 +108,13 @@ export function LearningPathDetail({ pathId, onBack }: LearningPathDetailProps) 
         .from("candidate_xp")
         .select("total_xp")
         .eq("candidate_id", user.id)
-        .single();
+        .maybeSingle();
 
       if (existingXp) {
         await supabase
           .from("candidate_xp")
           .update({ 
-            total_xp: existingXp.total_xp + video.xp_reward,
+            total_xp: existingXp.total_xp + xpToAward,
             last_activity_at: new Date().toISOString()
           })
           .eq("candidate_id", user.id);
@@ -123,11 +123,11 @@ export function LearningPathDetail({ pathId, onBack }: LearningPathDetailProps) 
           .from("candidate_xp")
           .insert({
             candidate_id: user.id,
-            total_xp: video.xp_reward,
+            total_xp: xpToAward,
           });
       }
 
-      return video.xp_reward;
+      return xpToAward;
     },
     onSuccess: (xpAwarded) => {
       queryClient.invalidateQueries({ queryKey: ["video-completions", pathId] });
@@ -164,7 +164,15 @@ export function LearningPathDetail({ pathId, onBack }: LearningPathDetailProps) 
   const totalVideos = videos?.length || 0;
   const progress = totalVideos > 0 ? (completedCount / totalVideos) * 100 : 0;
   const isPathComplete = completedCount === totalVideos && totalVideos > 0;
-  const calculatedTotalXp = videos?.reduce((sum, v) => sum + (v.xp_reward || 0), 0) || 0;
+  
+  // XP based on difficulty: Beginner = 100, Intermediate = 300, Advanced = 500
+  const difficultyXpTotals: Record<string, number> = {
+    beginner: 100,
+    intermediate: 300,
+    advanced: 500,
+  };
+  const pathTotalXp = difficultyXpTotals[path?.difficulty || "beginner"] || 100;
+  const xpPerVideo = totalVideos > 0 ? Math.round(pathTotalXp / totalVideos) : 0;
 
   // Detect path completion to show celebration
   useEffect(() => {
@@ -215,7 +223,7 @@ export function LearningPathDetail({ pathId, onBack }: LearningPathDetailProps) 
             channelName={path.channel_name}
             category={path.category || "general"}
             difficulty={path.difficulty || "beginner"}
-            totalXp={calculatedTotalXp}
+            totalXp={pathTotalXp}
             videoCount={totalVideos}
             completedCount={completedCount}
             pathId={pathId}
@@ -253,7 +261,7 @@ export function LearningPathDetail({ pathId, onBack }: LearningPathDetailProps) 
             </span>
             <span className="flex items-center gap-1 text-primary font-medium">
               <Star className="h-4 w-4" />
-              {calculatedTotalXp} XP total
+              {pathTotalXp} XP total
             </span>
           </div>
           <Progress value={progress} className="h-2" />
@@ -268,9 +276,9 @@ export function LearningPathDetail({ pathId, onBack }: LearningPathDetailProps) 
               title={selectedVideo.title}
               description={selectedVideo.description || undefined}
               durationMinutes={selectedVideo.duration_minutes || undefined}
-              xpReward={selectedVideo.xp_reward}
+              xpReward={xpPerVideo}
               isCompleted={completions?.includes(selectedVideo.id) || false}
-              onComplete={() => completeMutation.mutate(selectedVideo)}
+              onComplete={() => completeMutation.mutate({ video: selectedVideo, xpToAward: xpPerVideo })}
               isLoading={completeMutation.isPending}
             />
           )}
@@ -314,7 +322,7 @@ export function LearningPathDetail({ pathId, onBack }: LearningPathDetailProps) 
                         {video.title}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        {video.duration_minutes} min • +{video.xp_reward} XP
+                        {video.duration_minutes} min • +{xpPerVideo} XP
                       </p>
                     </div>
                   </div>
@@ -372,7 +380,7 @@ export function LearningPathDetail({ pathId, onBack }: LearningPathDetailProps) 
               You completed <strong>{path.title}</strong>!
             </p>
             <p className="text-muted-foreground">
-              You earned <span className="text-primary font-semibold">{calculatedTotalXp} XP</span> from this learning path.
+              You earned <span className="text-primary font-semibold">{pathTotalXp} XP</span> from this learning path.
             </p>
             <div className="pt-4">
               <p className="text-sm text-muted-foreground mb-3">Share your achievement with others:</p>
@@ -381,7 +389,7 @@ export function LearningPathDetail({ pathId, onBack }: LearningPathDetailProps) 
                 channelName={path.channel_name}
                 category={path.category || "general"}
                 difficulty={path.difficulty || "beginner"}
-                totalXp={calculatedTotalXp}
+                totalXp={pathTotalXp}
                 videoCount={totalVideos}
                 completedCount={completedCount}
                 pathId={pathId}
