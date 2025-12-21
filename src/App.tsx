@@ -154,6 +154,7 @@ const AppContent = () => {
           
           {/* Learning */}
           <Route path="/learning-paths" element={<ProtectedRoute><LearningPaths /></ProtectedRoute>} />
+          <Route path="/learning-paths/:pathId" element={<ProtectedRoute><LearningPaths /></ProtectedRoute>} />
           
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
