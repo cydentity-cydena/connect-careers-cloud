@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Shield, Users, Briefcase, AlertCircle, UserCog, CheckCircle, Bug, Settings, FolderKanban, FileCheck, BarChart3, Plus, Brain, Send, Flag } from "lucide-react";
+import { Shield, Users, Briefcase, AlertCircle, UserCog, CheckCircle, Bug, Settings, FolderKanban, FileCheck, BarChart3, Plus, Brain, Send, Flag, Youtube } from "lucide-react";
 import { AdminNotifications } from "@/components/admin/AdminNotifications";
 import { SeedDemoCandidates } from "@/components/admin/SeedDemoCandidates";
 import { RoleSimulator } from "@/components/admin/RoleSimulator";
@@ -425,6 +425,26 @@ const AdminDashboard = ({ onSimulateRole, currentSimulatedRole }: AdminDashboard
             <CardContent>
               <Button variant="outline" className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
                 Manage CTF
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card 
+            className="border-border shadow-card hover:shadow-lg transition-all cursor-pointer group"
+            onClick={() => navigate('/admin/learning-paths')}
+          >
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 group-hover:text-primary transition-colors">
+                <Youtube className="h-5 w-5" />
+                Learning Paths
+              </CardTitle>
+              <CardDescription>
+                Manage YouTube learning paths and validate video links
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button variant="outline" className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                Manage Paths
               </Button>
             </CardContent>
           </Card>
