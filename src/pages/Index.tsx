@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Shield, Users, Briefcase, TrendingUp, ArrowRight, Clock, DollarSign, Target, CheckCircle, GraduationCap, Eye, Award, Filter, BarChart3, BadgeCheck, Youtube, Play, ExternalLink, Share2 } from "lucide-react";
+import { Shield, Users, Briefcase, TrendingUp, ArrowRight, Clock, DollarSign, Target, CheckCircle, GraduationCap, Eye, Award, Filter, BarChart3, BadgeCheck, Youtube, Play, ExternalLink, Share2, Star } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import SEO from "@/components/SEO";
 import Schema from "@/components/Schema";
@@ -771,6 +771,45 @@ const Index = () => {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Training Partner CTA Section */}
+      <section className="py-16 md:py-20 bg-card/30">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10">
+              <CardContent className="p-6 md:p-8">
+                <div className="flex flex-col md:flex-row items-center gap-6">
+                  <div className="bg-primary/10 p-4 rounded-lg flex-shrink-0">
+                    <GraduationCap className="h-10 w-10 text-primary" />
+                  </div>
+                  <div className="flex-1 text-center md:text-left">
+                    <h3 className="text-2xl md:text-3xl font-bold mb-2">
+                      Are You a Training Provider?
+                    </h3>
+                    <p className="text-muted-foreground mb-4">
+                      Join our partner network and give your graduates instant visibility with hiring employers. 
+                      Free integration with Credly, Accredible, or custom badges. Upgrade to featured placement for premium exposure.
+                    </p>
+                    <div className="flex flex-wrap gap-3 justify-center md:justify-start">
+                      <Link to="/partnerships">
+                        <Button className="gap-2">
+                          <Star className="h-4 w-4" />
+                          Become a Partner
+                        </Button>
+                      </Link>
+                      <Link to="/training">
+                        <Button variant="outline">
+                          View Training Partners
+                        </Button>
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
