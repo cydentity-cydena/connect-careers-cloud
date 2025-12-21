@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import SEO from "@/components/SEO";
 import Navigation from "@/components/Navigation";
@@ -44,10 +45,19 @@ const difficulties = [
 ];
 
 export default function LearningPaths() {
-  const [selectedPathId, setSelectedPathId] = useState<string | null>(null);
+  const { pathId: urlPathId } = useParams<{ pathId?: string }>();
+  const navigate = useNavigate();
+  const [selectedPathId, setSelectedPathId] = useState<string | null>(urlPathId || null);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedDifficulty, setSelectedDifficulty] = useState("all");
+
+  // Sync URL param with state
+  useEffect(() => {
+    if (urlPathId) {
+      setSelectedPathId(urlPathId);
+    }
+  }, [urlPathId]);
 
   const { data: paths } = useQuery({
     queryKey: ["learning-paths"],
@@ -116,6 +126,14 @@ export default function LearningPaths() {
     return videoCount > 0 && completed === videoCount;
   }).length || 0;
 
+  const handleBack = () => {
+    setSelectedPathId(null);
+    // If we came from a URL with pathId, navigate back to the main list
+    if (urlPathId) {
+      navigate("/learning-paths");
+    }
+  };
+
   if (selectedPathId) {
     return (
       <>
@@ -128,7 +146,7 @@ export default function LearningPaths() {
           <div className="container mx-auto px-4 py-8">
             <LearningPathDetail
               pathId={selectedPathId}
-              onBack={() => setSelectedPathId(null)}
+              onBack={handleBack}
             />
           </div>
         </main>
