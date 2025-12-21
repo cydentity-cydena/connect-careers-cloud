@@ -8,8 +8,9 @@ import { LearningPathCard } from "@/components/training/LearningPathCard";
 import { LearningPathDetail } from "@/components/training/LearningPathDetail";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Search, Youtube, Star, Trophy } from "lucide-react";
+import { Search, Youtube, Star, Trophy, ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 interface LearningPath {
   id: string;
@@ -163,6 +164,17 @@ export default function LearningPaths() {
       <Navigation />
       <main className="min-h-screen bg-background pt-20">
         <div className="container mx-auto px-4 py-8">
+          {/* Back to Community */}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate("/community")}
+            className="mb-6"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Community
+          </Button>
+
           {/* Header */}
           <div className="text-center mb-8">
             <div className="flex items-center justify-center gap-3 mb-4">
