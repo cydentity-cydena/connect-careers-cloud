@@ -229,7 +229,6 @@ export function ShareLearningPathDialog({
             shareUrl={shareUrl}
             hashtags="#cybersecurity #learning #infosec #cydena"
             title={isComplete ? "Celebrate your achievement!" : "Invite others to learn"}
-            onDownload={generateImage}
           />
         </div>
       </DialogContent>
