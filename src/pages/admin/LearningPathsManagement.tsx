@@ -686,7 +686,48 @@ const LearningPathsManagement = () => {
           </TabsContent>
 
           <TabsContent value="videos">
-            {selectedPath && (
+            {!selectedPath ? (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Video className="h-5 w-5" />
+                    Videos
+                  </CardTitle>
+                  <CardDescription>
+                    Select a learning path to view and manage its videos.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="max-w-md space-y-2">
+                    <Label>Learning Path</Label>
+                    <Select
+                      value={selectedPathId ?? ""}
+                      onValueChange={(value) => {
+                        setSelectedPathId(value);
+                        setActiveTab("videos");
+                      }}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Choose a learning path" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {paths.map((p) => (
+                          <SelectItem key={p.id} value={p.id}>
+                            {p.title}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="flex flex-wrap gap-2">
+                    <Button variant="outline" onClick={() => setActiveTab("paths")}>
+                      Browse learning paths
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ) : (
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between">
                   <div>
@@ -698,15 +739,21 @@ const LearningPathsManagement = () => {
                       Manage videos and check for broken links
                     </CardDescription>
                   </div>
-                  <Dialog open={videoDialogOpen} onOpenChange={(open) => {
-                    setVideoDialogOpen(open);
-                    if (!open) resetVideoForm();
-                  }}>
+                  <Dialog
+                    open={videoDialogOpen}
+                    onOpenChange={(open) => {
+                      setVideoDialogOpen(open);
+                      if (!open) resetVideoForm();
+                    }}
+                  >
                     <DialogTrigger asChild>
-                      <Button className="gap-2" onClick={() => {
-                        resetVideoForm();
-                        setVideoDialogOpen(true);
-                      }}>
+                      <Button
+                        className="gap-2"
+                        onClick={() => {
+                          resetVideoForm();
+                          setVideoDialogOpen(true);
+                        }}
+                      >
                         <Plus className="h-4 w-4" />
                         Add Video
                       </Button>
@@ -717,7 +764,9 @@ const LearningPathsManagement = () => {
                           {editingVideo ? "Edit Video" : "Add Video"}
                         </DialogTitle>
                         <DialogDescription>
-                          {editingVideo ? "Update video details" : "Add a YouTube video to this path"}
+                          {editingVideo
+                            ? "Update video details"
+                            : "Add a YouTube video to this path"}
                         </DialogDescription>
                       </DialogHeader>
 
@@ -726,7 +775,12 @@ const LearningPathsManagement = () => {
                           <Label>Video Title *</Label>
                           <Input
                             value={videoForm.title}
-                            onChange={(e) => setVideoForm(prev => ({ ...prev, title: e.target.value }))}
+                            onChange={(e) =>
+                              setVideoForm((prev) => ({
+                                ...prev,
+                                title: e.target.value,
+                              }))
+                            }
                             placeholder="e.g., Introduction to Nmap"
                           />
                         </div>
@@ -735,10 +789,12 @@ const LearningPathsManagement = () => {
                           <Label>YouTube Video ID or URL *</Label>
                           <Input
                             value={videoForm.youtube_video_id}
-                            onChange={(e) => setVideoForm(prev => ({ 
-                              ...prev, 
-                              youtube_video_id: extractVideoId(e.target.value) 
-                            }))}
+                            onChange={(e) =>
+                              setVideoForm((prev) => ({
+                                ...prev,
+                                youtube_video_id: extractVideoId(e.target.value),
+                              }))
+                            }
                             placeholder="e.g., dIUQvt7KZCE or full YouTube URL"
                           />
                           <p className="text-xs text-muted-foreground">
@@ -750,7 +806,12 @@ const LearningPathsManagement = () => {
                           <Label>Description</Label>
                           <Textarea
                             value={videoForm.description}
-                            onChange={(e) => setVideoForm(prev => ({ ...prev, description: e.target.value }))}
+                            onChange={(e) =>
+                              setVideoForm((prev) => ({
+                                ...prev,
+                                description: e.target.value,
+                              }))
+                            }
                             placeholder="Brief description of what this video covers"
                             rows={2}
                           />
@@ -762,7 +823,12 @@ const LearningPathsManagement = () => {
                             <Input
                               type="number"
                               value={videoForm.duration_minutes}
-                              onChange={(e) => setVideoForm(prev => ({ ...prev, duration_minutes: parseInt(e.target.value) || 0 }))}
+                              onChange={(e) =>
+                                setVideoForm((prev) => ({
+                                  ...prev,
+                                  duration_minutes: parseInt(e.target.value) || 0,
+                                }))
+                              }
                             />
                           </div>
                           <div className="space-y-2">
@@ -770,7 +836,12 @@ const LearningPathsManagement = () => {
                             <Input
                               type="number"
                               value={videoForm.video_order}
-                              onChange={(e) => setVideoForm(prev => ({ ...prev, video_order: parseInt(e.target.value) || 1 }))}
+                              onChange={(e) =>
+                                setVideoForm((prev) => ({
+                                  ...prev,
+                                  video_order: parseInt(e.target.value) || 1,
+                                }))
+                              }
                             />
                           </div>
                           <div className="space-y-2">
@@ -778,24 +849,35 @@ const LearningPathsManagement = () => {
                             <Input
                               type="number"
                               value={videoForm.xp_reward}
-                              onChange={(e) => setVideoForm(prev => ({ ...prev, xp_reward: parseInt(e.target.value) || 10 }))}
+                              onChange={(e) =>
+                                setVideoForm((prev) => ({
+                                  ...prev,
+                                  xp_reward: parseInt(e.target.value) || 10,
+                                }))
+                              }
                             />
                           </div>
                         </div>
 
                         {videoForm.youtube_video_id && (
                           <div className="border rounded-lg p-3 bg-muted/50">
-                            <p className="text-sm text-muted-foreground mb-2">Preview:</p>
+                            <p className="text-sm text-muted-foreground mb-2">
+                              Preview:
+                            </p>
                             <img
                               src={`https://img.youtube.com/vi/${videoForm.youtube_video_id}/mqdefault.jpg`}
-                              alt="Video thumbnail"
+                              alt="YouTube video thumbnail preview"
                               className="w-full max-w-xs rounded"
+                              loading="lazy"
                             />
                           </div>
                         )}
 
                         <div className="flex justify-end gap-3 pt-4">
-                          <Button variant="outline" onClick={() => setVideoDialogOpen(false)}>
+                          <Button
+                            variant="outline"
+                            onClick={() => setVideoDialogOpen(false)}
+                          >
                             Cancel
                           </Button>
                           <Button onClick={handleVideoSubmit}>
@@ -823,7 +905,9 @@ const LearningPathsManagement = () => {
                       {videos.map((video) => (
                         <TableRow key={video.id}>
                           <TableCell>{video.video_order}</TableCell>
-                          <TableCell className="font-medium">{video.title}</TableCell>
+                          <TableCell className="font-medium">
+                            {video.title}
+                          </TableCell>
                           <TableCell>
                             <a
                               href={`https://youtube.com/watch?v=${video.youtube_video_id}`}
@@ -879,7 +963,10 @@ const LearningPathsManagement = () => {
                       ))}
                       {videos.length === 0 && (
                         <TableRow>
-                          <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
+                          <TableCell
+                            colSpan={7}
+                            className="text-center text-muted-foreground py-8"
+                          >
                             No videos yet. Add your first video!
                           </TableCell>
                         </TableRow>
