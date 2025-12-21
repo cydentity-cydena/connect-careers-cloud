@@ -571,8 +571,8 @@ const LearningPathsManagement = () => {
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList>
             <TabsTrigger value="paths">Learning Paths</TabsTrigger>
-            <TabsTrigger value="videos" disabled={!selectedPathId}>
-              Videos {selectedPath && `(${selectedPath.title})`}
+            <TabsTrigger value="videos">
+              Videos {selectedPath ? `(${selectedPath.title})` : "(Select a path)"}
             </TabsTrigger>
           </TabsList>
 
