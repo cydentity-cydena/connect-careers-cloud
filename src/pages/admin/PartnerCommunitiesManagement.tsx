@@ -25,6 +25,7 @@ interface PartnerCommunity {
   specializations: string[] | null;
   is_verified: boolean | null;
   is_active: boolean | null;
+  discord_server_id: string | null;
   created_at: string;
 }
 
@@ -36,6 +37,7 @@ interface CommunityForm {
   logo_url: string;
   member_count: string;
   specializations: string;
+  discord_server_id: string;
   is_verified: boolean;
   is_active: boolean;
 }
@@ -48,6 +50,7 @@ const defaultForm: CommunityForm = {
   logo_url: "",
   member_count: "",
   specializations: "",
+  discord_server_id: "",
   is_verified: false,
   is_active: true,
 };
@@ -82,6 +85,7 @@ export default function PartnerCommunitiesManagement() {
         logo_url: data.logo_url || null,
         member_count: data.member_count ? parseInt(data.member_count) : null,
         specializations: data.specializations ? data.specializations.split(",").map(s => s.trim()).filter(Boolean) : null,
+        discord_server_id: data.discord_server_id || null,
         is_verified: data.is_verified,
         is_active: data.is_active,
       });
@@ -110,6 +114,7 @@ export default function PartnerCommunitiesManagement() {
           logo_url: data.logo_url || null,
           member_count: data.member_count ? parseInt(data.member_count) : null,
           specializations: data.specializations ? data.specializations.split(",").map(s => s.trim()).filter(Boolean) : null,
+          discord_server_id: data.discord_server_id || null,
           is_verified: data.is_verified,
           is_active: data.is_active,
         })
@@ -159,6 +164,7 @@ export default function PartnerCommunitiesManagement() {
       logo_url: community.logo_url || "",
       member_count: community.member_count?.toString() || "",
       specializations: community.specializations?.join(", ") || "",
+      discord_server_id: community.discord_server_id || "",
       is_verified: community.is_verified || false,
       is_active: community.is_active ?? true,
     });
@@ -410,6 +416,19 @@ export default function PartnerCommunitiesManagement() {
                     onChange={(e) => setForm({ ...form, invite_url: e.target.value })}
                     placeholder="https://discord.gg/..."
                   />
+                </div>
+
+                <div className="grid gap-2">
+                  <Label htmlFor="discord_server_id">Discord Server ID (for live online count)</Label>
+                  <Input
+                    id="discord_server_id"
+                    value={form.discord_server_id}
+                    onChange={(e) => setForm({ ...form, discord_server_id: e.target.value })}
+                    placeholder="e.g., 388674437219745793"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Server owner must enable widget in Server Settings → Widget
+                  </p>
                 </div>
 
                 <div className="grid gap-2">

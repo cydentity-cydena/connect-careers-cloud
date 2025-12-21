@@ -1862,6 +1862,7 @@ export type Database = {
         Row: {
           created_at: string
           description: string | null
+          discord_server_id: string | null
           id: string
           invite_url: string
           is_active: boolean | null
@@ -1878,6 +1879,7 @@ export type Database = {
         Insert: {
           created_at?: string
           description?: string | null
+          discord_server_id?: string | null
           id?: string
           invite_url: string
           is_active?: boolean | null
@@ -1894,6 +1896,7 @@ export type Database = {
         Update: {
           created_at?: string
           description?: string | null
+          discord_server_id?: string | null
           id?: string
           invite_url?: string
           is_active?: boolean | null
