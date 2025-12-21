@@ -3,7 +3,6 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import SEO from "@/components/SEO";
 import Navigation from "@/components/Navigation";
-import Footer from "@/components/Footer";
 import { LearningPathCard } from "@/components/training/LearningPathCard";
 import { LearningPathDetail } from "@/components/training/LearningPathDetail";
 import { Input } from "@/components/ui/input";
@@ -133,7 +132,6 @@ export default function LearningPaths() {
             />
           </div>
         </main>
-        <Footer />
       </>
     );
   }
@@ -247,7 +245,6 @@ export default function LearningPaths() {
           )}
         </div>
       </main>
-      <Footer />
     </>
   );
 }
