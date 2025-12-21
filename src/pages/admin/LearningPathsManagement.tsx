@@ -652,19 +652,19 @@ const LearningPathsManagement = () => {
                   <div className="grid grid-cols-3 gap-4">
                     <div className="space-y-2">
                       <Label>Category</Label>
-                      <Select
-                        value={pathForm.category}
-                        onValueChange={(value) => setPathForm(prev => ({ ...prev, category: value }))}
-                      >
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
+                      <div className="relative">
+                        <Input
+                          value={pathForm.category}
+                          onChange={(e) => setPathForm(prev => ({ ...prev, category: e.target.value }))}
+                          placeholder="Type or select..."
+                          list="category-options"
+                        />
+                        <datalist id="category-options">
                           {CATEGORIES.map(cat => (
-                            <SelectItem key={cat.value} value={cat.value}>{cat.label}</SelectItem>
+                            <option key={cat.value} value={cat.value}>{cat.label}</option>
                           ))}
-                        </SelectContent>
-                      </Select>
+                        </datalist>
+                      </div>
                     </div>
                     <div className="space-y-2">
                       <Label>Difficulty</Label>
