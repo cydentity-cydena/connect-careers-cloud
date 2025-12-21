@@ -729,15 +729,32 @@ const LearningPathsManagement = () => {
               </Card>
             ) : (
               <Card>
-                <CardHeader className="flex flex-row items-center justify-between">
-                  <div>
+                <CardHeader className="flex flex-row items-center justify-between flex-wrap gap-4">
+                  <div className="space-y-2">
                     <CardTitle className="flex items-center gap-2">
                       <Video className="h-5 w-5" />
-                      Videos in "{selectedPath.title}"
+                      Videos
                     </CardTitle>
-                    <CardDescription>
-                      Manage videos and check for broken links
-                    </CardDescription>
+                    <div className="flex items-center gap-2">
+                      <Select
+                        value={selectedPathId ?? ""}
+                        onValueChange={(value) => setSelectedPathId(value)}
+                      >
+                        <SelectTrigger className="w-[280px]">
+                          <SelectValue placeholder="Select a path" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {paths.map((p) => (
+                            <SelectItem key={p.id} value={p.id}>
+                              {p.title}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <span className="text-sm text-muted-foreground">
+                        {videos.length} video{videos.length !== 1 ? "s" : ""}
+                      </span>
+                    </div>
                   </div>
                   <Dialog
                     open={videoDialogOpen}
