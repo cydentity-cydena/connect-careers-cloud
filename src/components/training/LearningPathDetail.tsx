@@ -164,6 +164,7 @@ export function LearningPathDetail({ pathId, onBack }: LearningPathDetailProps) 
   const totalVideos = videos?.length || 0;
   const progress = totalVideos > 0 ? (completedCount / totalVideos) * 100 : 0;
   const isPathComplete = completedCount === totalVideos && totalVideos > 0;
+  const calculatedTotalXp = videos?.reduce((sum, v) => sum + (v.xp_reward || 0), 0) || 0;
 
   // Detect path completion to show celebration
   useEffect(() => {
@@ -214,7 +215,7 @@ export function LearningPathDetail({ pathId, onBack }: LearningPathDetailProps) 
             channelName={path.channel_name}
             category={path.category || "general"}
             difficulty={path.difficulty || "beginner"}
-            totalXp={path.total_xp || 0}
+            totalXp={calculatedTotalXp}
             videoCount={totalVideos}
             completedCount={completedCount}
             pathId={pathId}
@@ -252,7 +253,7 @@ export function LearningPathDetail({ pathId, onBack }: LearningPathDetailProps) 
             </span>
             <span className="flex items-center gap-1 text-primary font-medium">
               <Star className="h-4 w-4" />
-              {path.total_xp} XP total
+              {calculatedTotalXp} XP total
             </span>
           </div>
           <Progress value={progress} className="h-2" />
@@ -371,7 +372,7 @@ export function LearningPathDetail({ pathId, onBack }: LearningPathDetailProps) 
               You completed <strong>{path.title}</strong>!
             </p>
             <p className="text-muted-foreground">
-              You earned <span className="text-primary font-semibold">{path.total_xp} XP</span> from this learning path.
+              You earned <span className="text-primary font-semibold">{calculatedTotalXp} XP</span> from this learning path.
             </p>
             <div className="pt-4">
               <p className="text-sm text-muted-foreground mb-3">Share your achievement with others:</p>
@@ -380,7 +381,7 @@ export function LearningPathDetail({ pathId, onBack }: LearningPathDetailProps) 
                 channelName={path.channel_name}
                 category={path.category || "general"}
                 difficulty={path.difficulty || "beginner"}
-                totalXp={path.total_xp || 0}
+                totalXp={calculatedTotalXp}
                 videoCount={totalVideos}
                 completedCount={completedCount}
                 pathId={pathId}
