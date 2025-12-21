@@ -12,11 +12,23 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { Plus, Edit, Trash2, Eye, EyeOff, ArrowLeft, Youtube, Video, RefreshCw, AlertTriangle, CheckCircle, ExternalLink, Play, ListVideo, Download } from "lucide-react";
+import { Plus, Edit, Trash2, Eye, EyeOff, ArrowLeft, Youtube, Video, RefreshCw, AlertTriangle, CheckCircle, ExternalLink, Play, ListVideo, Download, User } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import Navigation from "@/components/Navigation";
 import { useNavigate } from "react-router-dom";
+
+interface Creator {
+  id: string;
+  channel_name: string;
+  channel_url: string | null;
+  channel_id: string | null;
+  thumbnail_url: string | null;
+  description: string | null;
+  is_active: boolean | null;
+  display_order: number | null;
+  created_at: string;
+}
 
 interface LearningPath {
   id: string;
@@ -31,6 +43,7 @@ interface LearningPath {
   is_active: boolean | null;
   display_order: number | null;
   created_at: string;
+  creator_id: string | null;
 }
 
 interface PathVideo {
@@ -76,13 +89,16 @@ const LearningPathsManagement = () => {
   const navigate = useNavigate();
   const [paths, setPaths] = useState<LearningPath[]>([]);
   const [videos, setVideos] = useState<PathVideo[]>([]);
+  const [creators, setCreators] = useState<Creator[]>([]);
   const [loading, setLoading] = useState(true);
   const [pathDialogOpen, setPathDialogOpen] = useState(false);
   const [videoDialogOpen, setVideoDialogOpen] = useState(false);
+  const [creatorDialogOpen, setCreatorDialogOpen] = useState(false);
   const [editingPath, setEditingPath] = useState<LearningPath | null>(null);
   const [editingVideo, setEditingVideo] = useState<PathVideo | null>(null);
+  const [editingCreator, setEditingCreator] = useState<Creator | null>(null);
   const [selectedPathId, setSelectedPathId] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState("paths");
+  const [activeTab, setActiveTab] = useState("creators");
   const [videoStatuses, setVideoStatuses] = useState<Record<string, VideoStatus["status"]>>({});
   const [validating, setValidating] = useState(false);
   const [fetchingDuration, setFetchingDuration] = useState(false);
@@ -96,6 +112,15 @@ const LearningPathsManagement = () => {
   const [fetchingPlaylist, setFetchingPlaylist] = useState(false);
   const [importingVideos, setImportingVideos] = useState(false);
 
+  const [creatorForm, setCreatorForm] = useState({
+    channel_name: "",
+    channel_url: "",
+    channel_id: "",
+    description: "",
+    is_active: true,
+    display_order: 0,
+  });
+
   const [pathForm, setPathForm] = useState({
     title: "",
     description: "",
@@ -106,6 +131,7 @@ const LearningPathsManagement = () => {
     total_xp: 100,
     is_active: true,
     display_order: 0,
+    creator_id: "" as string | null,
   });
 
   const [videoForm, setVideoForm] = useState({
@@ -119,6 +145,7 @@ const LearningPathsManagement = () => {
 
   useEffect(() => {
     loadPaths();
+    loadCreators();
   }, []);
 
   useEffect(() => {
@@ -126,6 +153,19 @@ const LearningPathsManagement = () => {
       loadVideos(selectedPathId);
     }
   }, [selectedPathId]);
+
+  const loadCreators = async () => {
+    const { data, error } = await supabase
+      .from("youtube_creators")
+      .select("*")
+      .order("display_order");
+
+    if (error) {
+      console.error("Failed to load creators:", error);
+    } else {
+      setCreators(data || []);
+    }
+  };
 
   const loadPaths = async () => {
     setLoading(true);
@@ -156,6 +196,18 @@ const LearningPathsManagement = () => {
     }
   };
 
+  const resetCreatorForm = () => {
+    setCreatorForm({
+      channel_name: "",
+      channel_url: "",
+      channel_id: "",
+      description: "",
+      is_active: true,
+      display_order: 0,
+    });
+    setEditingCreator(null);
+  };
+
   const resetPathForm = () => {
     setPathForm({
       title: "",
@@ -167,6 +219,7 @@ const LearningPathsManagement = () => {
       total_xp: 100,
       is_active: true,
       display_order: 0,
+      creator_id: null,
     });
     setEditingPath(null);
   };
@@ -183,6 +236,19 @@ const LearningPathsManagement = () => {
     setEditingVideo(null);
   };
 
+  const openEditCreatorDialog = (creator: Creator) => {
+    setEditingCreator(creator);
+    setCreatorForm({
+      channel_name: creator.channel_name,
+      channel_url: creator.channel_url || "",
+      channel_id: creator.channel_id || "",
+      description: creator.description || "",
+      is_active: creator.is_active ?? true,
+      display_order: creator.display_order || 0,
+    });
+    setCreatorDialogOpen(true);
+  };
+
   const openEditPathDialog = (path: LearningPath) => {
     setEditingPath(path);
     setPathForm({
@@ -195,6 +261,7 @@ const LearningPathsManagement = () => {
       total_xp: path.total_xp || 100,
       is_active: path.is_active ?? true,
       display_order: path.display_order || 0,
+      creator_id: path.creator_id || null,
     });
     setPathDialogOpen(true);
   };
@@ -210,6 +277,81 @@ const LearningPathsManagement = () => {
       xp_reward: video.xp_reward,
     });
     setVideoDialogOpen(true);
+  };
+
+  const handleCreatorSubmit = async () => {
+    if (!creatorForm.channel_name) {
+      toast.error("Please fill in channel name");
+      return;
+    }
+
+    const payload = {
+      channel_name: creatorForm.channel_name,
+      channel_url: creatorForm.channel_url || null,
+      channel_id: creatorForm.channel_id || null,
+      description: creatorForm.description || null,
+      is_active: creatorForm.is_active,
+      display_order: creatorForm.display_order,
+    };
+
+    if (editingCreator) {
+      const { error } = await supabase
+        .from("youtube_creators")
+        .update(payload)
+        .eq("id", editingCreator.id);
+
+      if (error) {
+        toast.error("Failed to update creator");
+      } else {
+        toast.success("Creator updated");
+        setCreatorDialogOpen(false);
+        resetCreatorForm();
+        loadCreators();
+      }
+    } else {
+      const { error } = await supabase
+        .from("youtube_creators")
+        .insert(payload);
+
+      if (error) {
+        toast.error("Failed to create creator");
+      } else {
+        toast.success("Creator added");
+        setCreatorDialogOpen(false);
+        resetCreatorForm();
+        loadCreators();
+      }
+    }
+  };
+
+  const deleteCreator = async (id: string) => {
+    if (!confirm("Delete this creator? Learning paths linked to this creator will be unlinked.")) return;
+
+    const { error } = await supabase
+      .from("youtube_creators")
+      .delete()
+      .eq("id", id);
+
+    if (error) {
+      toast.error("Failed to delete creator");
+    } else {
+      toast.success("Creator deleted");
+      loadCreators();
+    }
+  };
+
+  const toggleCreatorActive = async (id: string, currentState: boolean) => {
+    const { error } = await supabase
+      .from("youtube_creators")
+      .update({ is_active: !currentState })
+      .eq("id", id);
+
+    if (error) {
+      toast.error("Failed to update status");
+    } else {
+      toast.success(currentState ? "Creator hidden" : "Creator published");
+      loadCreators();
+    }
   };
 
   const handlePathSubmit = async () => {
@@ -228,6 +370,7 @@ const LearningPathsManagement = () => {
       total_xp: pathForm.total_xp,
       is_active: pathForm.is_active,
       display_order: pathForm.display_order,
+      creator_id: pathForm.creator_id || null,
     };
 
     if (editingPath) {
@@ -611,6 +754,39 @@ const LearningPathsManagement = () => {
                 </DialogHeader>
 
                 <div className="space-y-4 py-4">
+                  {/* Creator Selection */}
+                  <div className="space-y-2">
+                    <Label>Link to Creator (optional)</Label>
+                    <Select
+                      value={pathForm.creator_id || "none"}
+                      onValueChange={(value) => {
+                        const creatorId = value === "none" ? null : value;
+                        const creator = creators.find(c => c.id === creatorId);
+                        setPathForm(prev => ({ 
+                          ...prev, 
+                          creator_id: creatorId,
+                          channel_name: creator?.channel_name || prev.channel_name,
+                          channel_url: creator?.channel_url || prev.channel_url,
+                        }));
+                      }}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a creator or enter manually" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="none">-- Manual Entry --</SelectItem>
+                        {creators.filter(c => c.is_active).map(creator => (
+                          <SelectItem key={creator.id} value={creator.id}>
+                            {creator.channel_name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <p className="text-xs text-muted-foreground">
+                      Select a creator to auto-fill channel info, or enter manually below
+                    </p>
+                  </div>
+
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label>Title *</Label>
@@ -626,6 +802,7 @@ const LearningPathsManagement = () => {
                         value={pathForm.channel_name}
                         onChange={(e) => setPathForm(prev => ({ ...prev, channel_name: e.target.value }))}
                         placeholder="e.g., IppSec"
+                        disabled={!!pathForm.creator_id}
                       />
                     </div>
                   </div>
@@ -636,6 +813,7 @@ const LearningPathsManagement = () => {
                       value={pathForm.channel_url}
                       onChange={(e) => setPathForm(prev => ({ ...prev, channel_url: e.target.value }))}
                       placeholder="https://youtube.com/@channelname"
+                      disabled={!!pathForm.creator_id}
                     />
                   </div>
 
@@ -726,11 +904,208 @@ const LearningPathsManagement = () => {
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList>
+            <TabsTrigger value="creators" className="gap-2">
+              <User className="h-4 w-4" />
+              Creators
+            </TabsTrigger>
             <TabsTrigger value="paths">Learning Paths</TabsTrigger>
             <TabsTrigger value="videos">
               Videos {selectedPath ? `(${selectedPath.title})` : "(Select a path)"}
             </TabsTrigger>
           </TabsList>
+
+          {/* Creators Tab */}
+          <TabsContent value="creators">
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <div>
+                  <CardTitle className="flex items-center gap-2">
+                    <User className="h-5 w-5" />
+                    Content Creators
+                  </CardTitle>
+                  <CardDescription>
+                    Manage YouTube channels. Link creators to learning paths for easier management.
+                  </CardDescription>
+                </div>
+                <Dialog open={creatorDialogOpen} onOpenChange={(open) => {
+                  setCreatorDialogOpen(open);
+                  if (!open) resetCreatorForm();
+                }}>
+                  <DialogTrigger asChild>
+                    <Button className="gap-2">
+                      <Plus className="h-4 w-4" />
+                      Add Creator
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-md">
+                    <DialogHeader>
+                      <DialogTitle>
+                        {editingCreator ? "Edit Creator" : "Add Creator"}
+                      </DialogTitle>
+                      <DialogDescription>
+                        {editingCreator ? "Update creator details" : "Add a new content creator/channel"}
+                      </DialogDescription>
+                    </DialogHeader>
+
+                    <div className="space-y-4 py-4">
+                      <div className="space-y-2">
+                        <Label>Channel Name *</Label>
+                        <Input
+                          value={creatorForm.channel_name}
+                          onChange={(e) => setCreatorForm(prev => ({ ...prev, channel_name: e.target.value }))}
+                          placeholder="e.g., John Hammond"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label>Channel URL</Label>
+                        <Input
+                          value={creatorForm.channel_url}
+                          onChange={(e) => setCreatorForm(prev => ({ ...prev, channel_url: e.target.value }))}
+                          placeholder="https://youtube.com/@johnhammond"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label>YouTube Channel ID (optional)</Label>
+                        <Input
+                          value={creatorForm.channel_id}
+                          onChange={(e) => setCreatorForm(prev => ({ ...prev, channel_id: e.target.value }))}
+                          placeholder="UCVeW9qkBjo3zosnqUbG7CFw"
+                        />
+                        <p className="text-xs text-muted-foreground">
+                          Used for API fetching playlists
+                        </p>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label>Description</Label>
+                        <Textarea
+                          value={creatorForm.description}
+                          onChange={(e) => setCreatorForm(prev => ({ ...prev, description: e.target.value }))}
+                          placeholder="Brief description of the creator"
+                          rows={2}
+                        />
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label>Display Order</Label>
+                          <Input
+                            type="number"
+                            value={creatorForm.display_order}
+                            onChange={(e) => setCreatorForm(prev => ({ ...prev, display_order: parseInt(e.target.value) || 0 }))}
+                          />
+                        </div>
+                        <div className="flex items-center gap-3 pt-7">
+                          <Switch
+                            checked={creatorForm.is_active}
+                            onCheckedChange={(checked) => setCreatorForm(prev => ({ ...prev, is_active: checked }))}
+                          />
+                          <Label>Active</Label>
+                        </div>
+                      </div>
+
+                      <div className="flex justify-end gap-3 pt-4">
+                        <Button variant="outline" onClick={() => setCreatorDialogOpen(false)}>
+                          Cancel
+                        </Button>
+                        <Button onClick={handleCreatorSubmit}>
+                          {editingCreator ? "Update" : "Create"}
+                        </Button>
+                      </div>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+              </CardHeader>
+              <CardContent>
+                {loading ? (
+                  <div className="flex justify-center py-8">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+                  </div>
+                ) : creators.length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <User className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                    <p>No creators added yet.</p>
+                    <p className="text-sm">Add creators to organize your learning paths by channel.</p>
+                  </div>
+                ) : (
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Channel</TableHead>
+                        <TableHead>URL</TableHead>
+                        <TableHead>Playlists</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead className="text-right">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {creators.map((creator) => {
+                        const pathCount = paths.filter(p => p.creator_id === creator.id).length;
+                        return (
+                          <TableRow key={creator.id}>
+                            <TableCell className="font-medium">{creator.channel_name}</TableCell>
+                            <TableCell>
+                              {creator.channel_url ? (
+                                <a
+                                  href={creator.channel_url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="flex items-center gap-1 text-primary hover:underline"
+                                >
+                                  Visit <ExternalLink className="h-3 w-3" />
+                                </a>
+                              ) : (
+                                <span className="text-muted-foreground">-</span>
+                              )}
+                            </TableCell>
+                            <TableCell>
+                              <Badge variant="secondary">{pathCount} path{pathCount !== 1 ? 's' : ''}</Badge>
+                            </TableCell>
+                            <TableCell>
+                              {creator.is_active ? (
+                                <Badge className="bg-green-500/20 text-green-500">Active</Badge>
+                              ) : (
+                                <Badge variant="secondary">Hidden</Badge>
+                              )}
+                            </TableCell>
+                            <TableCell className="text-right">
+                              <div className="flex items-center justify-end gap-1">
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => toggleCreatorActive(creator.id, creator.is_active ?? false)}
+                                >
+                                  {creator.is_active ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => openEditCreatorDialog(creator)}
+                                >
+                                  <Edit className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => deleteCreator(creator.id)}
+                                  disabled={pathCount > 0}
+                                  title={pathCount > 0 ? "Unlink paths first" : "Delete creator"}
+                                >
+                                  <Trash2 className="h-4 w-4 text-destructive" />
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
 
           <TabsContent value="paths">
             <Card>
