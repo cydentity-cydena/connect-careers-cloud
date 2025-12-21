@@ -6,6 +6,7 @@ import { CreatePostDialog } from '@/components/community/CreatePostDialog';
 import { GenerateContentButton } from '@/components/community/GenerateContentButton';
 import { WeeklyChallenges } from '@/components/community/WeeklyChallenges';
 import { FeaturedMembers } from '@/components/community/FeaturedMembers';
+import { PartnerCommunities } from '@/components/community/PartnerCommunities';
 import { XPNotification } from '@/components/community/XPNotification';
 import Navigation from '@/components/Navigation';
 import SEO from '@/components/SEO';
@@ -143,6 +144,9 @@ const Community = () => {
           </TabsList>
 
           <TabsContent value="feed" className="space-y-4 sm:space-y-6">
+            {/* Partner Communities */}
+            <PartnerCommunities />
+            
             {/* Weekly Challenges */}
             <WeeklyChallenges />
             

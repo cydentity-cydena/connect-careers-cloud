@@ -1858,6 +1858,57 @@ export type Database = {
         }
         Relationships: []
       }
+      partner_communities: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          invite_url: string
+          is_active: boolean | null
+          is_verified: boolean | null
+          logo_url: string | null
+          member_count: number | null
+          name: string
+          platform: string
+          specializations: string[] | null
+          updated_at: string
+          webhook_secret: string | null
+          webhook_url: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          invite_url: string
+          is_active?: boolean | null
+          is_verified?: boolean | null
+          logo_url?: string | null
+          member_count?: number | null
+          name: string
+          platform?: string
+          specializations?: string[] | null
+          updated_at?: string
+          webhook_secret?: string | null
+          webhook_url?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          invite_url?: string
+          is_active?: boolean | null
+          is_verified?: boolean | null
+          logo_url?: string | null
+          member_count?: number | null
+          name?: string
+          platform?: string
+          specializations?: string[] | null
+          updated_at?: string
+          webhook_secret?: string | null
+          webhook_url?: string | null
+        }
+        Relationships: []
+      }
       partner_courses: {
         Row: {
           active: boolean
