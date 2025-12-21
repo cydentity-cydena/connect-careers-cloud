@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Youtube, Play, Star, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ShareLearningPathDialog } from "@/components/sharing/ShareLearningPathDialog";
 
 interface LearningPathCardProps {
   id: string;
@@ -34,6 +35,7 @@ const categoryLabels: Record<string, string> = {
 };
 
 export function LearningPathCard({
+  id,
   title,
   description,
   channelName,
@@ -76,12 +78,24 @@ export function LearningPathCard({
               </a>
             </div>
           </div>
-          <Badge
-            variant="outline"
-            className={cn("capitalize", difficultyColors[difficulty])}
-          >
-            {difficulty}
-          </Badge>
+          <div className="flex items-center gap-2">
+            <ShareLearningPathDialog
+              title={title}
+              channelName={channelName}
+              category={category}
+              difficulty={difficulty}
+              totalXp={totalXp}
+              videoCount={videoCount}
+              completedCount={completedCount}
+              pathId={id}
+            />
+            <Badge
+              variant="outline"
+              className={cn("capitalize", difficultyColors[difficulty])}
+            >
+              {difficulty}
+            </Badge>
+          </div>
         </div>
       </CardHeader>
 

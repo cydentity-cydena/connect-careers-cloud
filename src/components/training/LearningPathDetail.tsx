@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -6,9 +6,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { YouTubePlayer } from "./YouTubePlayer";
-import { ArrowLeft, Youtube, Star, Trophy, ExternalLink, Heart } from "lucide-react";
+import { ArrowLeft, Youtube, Star, Trophy, ExternalLink, Heart, Share2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { ShareLearningPathDialog } from "@/components/sharing/ShareLearningPathDialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 interface LearningPathDetailProps {
   pathId: string;
@@ -33,6 +40,8 @@ const difficultyColors: Record<string, string> = {
 
 export function LearningPathDetail({ pathId, onBack }: LearningPathDetailProps) {
   const [selectedVideoIndex, setSelectedVideoIndex] = useState(0);
+  const [showCelebration, setShowCelebration] = useState(false);
+  const [prevCompletedCount, setPrevCompletedCount] = useState<number | null>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -156,6 +165,16 @@ export function LearningPathDetail({ pathId, onBack }: LearningPathDetailProps) 
   const progress = totalVideos > 0 ? (completedCount / totalVideos) * 100 : 0;
   const isPathComplete = completedCount === totalVideos && totalVideos > 0;
 
+  // Detect path completion to show celebration
+  useEffect(() => {
+    if (prevCompletedCount !== null && completedCount > prevCompletedCount) {
+      if (isPathComplete) {
+        setShowCelebration(true);
+      }
+    }
+    setPrevCompletedCount(completedCount);
+  }, [completedCount, isPathComplete, prevCompletedCount]);
+
   if (!path || !videos) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -189,7 +208,23 @@ export function LearningPathDetail({ pathId, onBack }: LearningPathDetailProps) 
             </a>
           </div>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
+          <ShareLearningPathDialog
+            title={path.title}
+            channelName={path.channel_name}
+            category={path.category || "general"}
+            difficulty={path.difficulty || "beginner"}
+            totalXp={path.total_xp || 0}
+            videoCount={totalVideos}
+            completedCount={completedCount}
+            pathId={pathId}
+            trigger={
+              <Button variant="outline" size="sm" className="gap-2">
+                <Share2 className="h-4 w-4" />
+                Share
+              </Button>
+            }
+          />
           <Badge
             variant="outline"
             className={cn("capitalize", difficultyColors[path.difficulty || "beginner"])}
@@ -320,6 +355,46 @@ export function LearningPathDetail({ pathId, onBack }: LearningPathDetailProps) 
           </div>
         </CardContent>
       </Card>
+
+      {/* Completion Celebration Dialog */}
+      <Dialog open={showCelebration} onOpenChange={setShowCelebration}>
+        <DialogContent className="max-w-md text-center">
+          <DialogHeader>
+            <DialogTitle className="flex items-center justify-center gap-2 text-2xl">
+              <Trophy className="h-8 w-8 text-yellow-500" />
+              Congratulations!
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="text-6xl">🎉</div>
+            <p className="text-lg">
+              You completed <strong>{path.title}</strong>!
+            </p>
+            <p className="text-muted-foreground">
+              You earned <span className="text-primary font-semibold">{path.total_xp} XP</span> from this learning path.
+            </p>
+            <div className="pt-4">
+              <p className="text-sm text-muted-foreground mb-3">Share your achievement with others:</p>
+              <ShareLearningPathDialog
+                title={path.title}
+                channelName={path.channel_name}
+                category={path.category || "general"}
+                difficulty={path.difficulty || "beginner"}
+                totalXp={path.total_xp || 0}
+                videoCount={totalVideos}
+                completedCount={completedCount}
+                pathId={pathId}
+                trigger={
+                  <Button className="gap-2 w-full">
+                    <Share2 className="h-4 w-4" />
+                    Share Your Completion
+                  </Button>
+                }
+              />
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
