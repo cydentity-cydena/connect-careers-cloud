@@ -3479,6 +3479,140 @@ export type Database = {
         }
         Relationships: []
       }
+      youtube_learning_paths: {
+        Row: {
+          category: string | null
+          channel_name: string
+          channel_url: string | null
+          created_at: string | null
+          description: string | null
+          difficulty: string | null
+          display_order: number | null
+          id: string
+          is_active: boolean | null
+          thumbnail_url: string | null
+          title: string
+          total_xp: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          category?: string | null
+          channel_name: string
+          channel_url?: string | null
+          created_at?: string | null
+          description?: string | null
+          difficulty?: string | null
+          display_order?: number | null
+          id?: string
+          is_active?: boolean | null
+          thumbnail_url?: string | null
+          title: string
+          total_xp?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string | null
+          channel_name?: string
+          channel_url?: string | null
+          created_at?: string | null
+          description?: string | null
+          difficulty?: string | null
+          display_order?: number | null
+          id?: string
+          is_active?: boolean | null
+          thumbnail_url?: string | null
+          title?: string
+          total_xp?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      youtube_path_videos: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          duration_minutes: number | null
+          id: string
+          path_id: string
+          title: string
+          video_order: number | null
+          xp_reward: number | null
+          youtube_video_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          duration_minutes?: number | null
+          id?: string
+          path_id: string
+          title: string
+          video_order?: number | null
+          xp_reward?: number | null
+          youtube_video_id: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          duration_minutes?: number | null
+          id?: string
+          path_id?: string
+          title?: string
+          video_order?: number | null
+          xp_reward?: number | null
+          youtube_video_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "youtube_path_videos_path_id_fkey"
+            columns: ["path_id"]
+            isOneToOne: false
+            referencedRelation: "youtube_learning_paths"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      youtube_video_completions: {
+        Row: {
+          completed_at: string | null
+          id: string
+          path_id: string
+          user_id: string
+          video_id: string
+          xp_awarded: number | null
+        }
+        Insert: {
+          completed_at?: string | null
+          id?: string
+          path_id: string
+          user_id: string
+          video_id: string
+          xp_awarded?: number | null
+        }
+        Update: {
+          completed_at?: string | null
+          id?: string
+          path_id?: string
+          user_id?: string
+          video_id?: string
+          xp_awarded?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "youtube_video_completions_path_id_fkey"
+            columns: ["path_id"]
+            isOneToOne: false
+            referencedRelation: "youtube_learning_paths"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "youtube_video_completions_video_id_fkey"
+            columns: ["video_id"]
+            isOneToOne: false
+            referencedRelation: "youtube_path_videos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       ctf_challenges_public: {
