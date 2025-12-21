@@ -1,74 +1,20 @@
-import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Check, ArrowRight, DollarSign, Users, Zap, Sparkles, Shield } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Check, ArrowRight, Users, Zap, Shield, MessageSquare, Building2, UserCheck } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { useSubscription } from "@/hooks/useSubscription";
-import { supabase } from "@/integrations/supabase/client";
 import SEO from "@/components/SEO";
 import Schema from "@/components/Schema";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
-
-const PRICING_IDS = {
-  employer_starter: {
-    monthly: 'price_1SXCuZFnZFXoJvyLnugwAejP',
-    annual: 'price_1SWuPZDOcfakZuIayVMDAWmO',
-  },
-  employer_growth: {
-    monthly: 'price_1SXCupDOcfakZuIaS1ql4wKP',
-    annual: 'price_1SWuQ6FnZFXoJvyLolWy7fSK',
-  },
-  employer_scale: {
-    monthly: 'price_1SXCv4FnZFXoJvyLjZYxVDl9',
-    annual: 'price_1SWuRdDOcfakZuIagcO6GWxx',
-  }
-};
 
 const Pricing = () => {
-  const [billingPeriod, setBillingPeriod] = useState<'monthly' | 'annual'>('annual');
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [checkingAuth, setCheckingAuth] = useState(true);
-  const { createCheckout } = useSubscription();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setIsAuthenticated(!!session);
-      setCheckingAuth(false);
-    });
-  }, []);
-
-  const getPricing = (monthly: number) => {
-    if (billingPeriod === 'annual') {
-      return monthly * 12 * 0.83;
-    }
-    return monthly;
-  };
-
-  const getMonthlyEquivalent = (monthly: number) => {
-    if (billingPeriod === 'annual') {
-      return (monthly * 12 * 0.83) / 12;
-    }
-    return monthly;
-  };
-
-  const handleTierSelect = async (tierKey: keyof typeof PRICING_IDS) => {
-    if (!isAuthenticated) {
-      navigate('/auth');
-      return;
-    }
-    const priceId = PRICING_IDS[tierKey][billingPeriod];
-    await createCheckout(priceId);
-  };
 
   return (
     <div className="min-h-screen bg-background">
       <SEO 
         title="Pricing - Cydena | No Agency Fees"
-        description="Simple subscription pricing for cybersecurity recruitment. From £99/month. No 20% agency fees."
+        description="Access verified cybersecurity talent without traditional agency fees. Contact us for tailored solutions."
         keywords="cybersecurity recruitment pricing, no agency fees, tech hiring costs"
       />
       <Schema type="breadcrumb" data={{
@@ -81,33 +27,23 @@ const Pricing = () => {
 
       <main className="container mx-auto px-4 py-16">
         <div className="text-center mb-12">
+          <Badge className="mb-4" variant="secondary">No Agency Fees</Badge>
           <h1 className="text-5xl font-bold mb-6 bg-gradient-cyber bg-clip-text text-transparent">
-            Simple, Transparent Pricing
+            Tailored Solutions for Your Hiring Needs
           </h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
-            Verified cyber talent and evidence-first profiles for your hiring needs.
+            Access verified cybersecurity talent without traditional agency fees. 
+            We'll work with you to find the right solution for your team.
           </p>
-          
-          <div className="flex items-center justify-center gap-4">
-            <Label htmlFor="billing-toggle">Monthly</Label>
-            <Switch
-              id="billing-toggle"
-              checked={billingPeriod === 'annual'}
-              onCheckedChange={(checked) => setBillingPeriod(checked ? 'annual' : 'monthly')}
-            />
-            <Label htmlFor="billing-toggle">
-              Annual <Badge variant="secondary" className="ml-2">Save 17%</Badge>
-            </Label>
-          </div>
         </div>
 
         <div className="space-y-16">
           {/* Value Props */}
           <Card>
             <CardHeader className="text-center">
-              <CardTitle className="text-2xl">Verified Talent, Transparent Pricing</CardTitle>
+              <CardTitle className="text-2xl">Verified Talent, No Hidden Costs</CardTitle>
               <CardDescription>
-                Access pre-verified, HR-ready cybersecurity professionals. No agency fees.
+                Access pre-verified, HR-ready cybersecurity professionals
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -119,61 +55,37 @@ const Pricing = () => {
                 </div>
                 <div className="p-4 border rounded-lg">
                   <Users className="h-8 w-8 mx-auto mb-2 text-primary" />
-                  <h4 className="font-semibold mb-1">Pay for Value</h4>
-                  <p className="text-sm text-muted-foreground">Only unlock who you contact</p>
+                  <h4 className="font-semibold mb-1">Quality Talent Pool</h4>
+                  <p className="text-sm text-muted-foreground">Curated cybersecurity professionals</p>
                 </div>
                 <div className="p-4 border rounded-lg">
                   <Zap className="h-8 w-8 mx-auto mb-2 text-primary" />
-                  <h4 className="font-semibold mb-1">70% Savings</h4>
-                  <p className="text-sm text-muted-foreground">compared to hidden hiring costs</p>
+                  <h4 className="font-semibold mb-1">No Agency Fees</h4>
+                  <p className="text-sm text-muted-foreground">Eliminate traditional 20%+ placement fees</p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <div className="mb-6">
-            <h3 className="text-2xl font-bold text-center mb-6">Self-Service Subscription Tiers</h3>
-          </div>
-
+          {/* Solutions Grid */}
           <div className="grid md:grid-cols-3 gap-8">
-            <Card>
+            <Card className="hover:border-primary/50 transition-colors">
               <CardHeader>
-                <CardTitle>Starter</CardTitle>
-                <CardDescription>Individual recruiters</CardDescription>
-                <div className="mt-4">
-                  {billingPeriod === 'annual' ? (
-                    <>
-                      <span className="text-4xl font-bold">£{Math.round(getPricing(149))}</span>
-                      <span className="text-muted-foreground">/year</span>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        £{Math.round(getMonthlyEquivalent(149))}/mo
-                      </p>
-                    </>
-                  ) : (
-                    <>
-                      <span className="text-4xl font-bold">£149</span>
-                      <span className="text-muted-foreground">/month</span>
-                    </>
-                  )}
+                <div className="p-3 rounded-lg bg-primary/10 w-fit mb-2">
+                  <Building2 className="h-6 w-6 text-primary" />
                 </div>
+                <CardTitle>For Employers</CardTitle>
+                <CardDescription>Direct access to verified talent</CardDescription>
               </CardHeader>
               <CardContent>
-                <ul className="space-y-2">
+                <ul className="space-y-2 mb-6">
                   <li className="flex gap-2">
                     <Check className="h-5 w-5 text-primary shrink-0" />
-                    <span>1 seat</span>
+                    <span>Advanced candidate filters</span>
                   </li>
                   <li className="flex gap-2">
                     <Check className="h-5 w-5 text-primary shrink-0" />
-                    <span>10 unlocks/year included</span>
-                  </li>
-                  <li className="flex gap-2">
-                    <Check className="h-5 w-5 text-primary shrink-0" />
-                    <span>£75 per additional unlock</span>
-                  </li>
-                  <li className="flex gap-2">
-                    <Check className="h-5 w-5 text-primary shrink-0" />
-                    <span>Advanced filters</span>
+                    <span>Pre-verified profiles</span>
                   </li>
                   <li className="flex gap-2">
                     <Check className="h-5 w-5 text-primary shrink-0" />
@@ -187,284 +99,133 @@ const Pricing = () => {
                     <Check className="h-5 w-5 text-primary shrink-0" />
                     <span>Direct messaging</span>
                   </li>
-                </ul>
-              </CardContent>
-              <CardFooter>
-                <Button 
-                  className="w-full" 
-                  variant="outline"
-                  onClick={() => handleTierSelect('employer_starter')}
-                  disabled={checkingAuth}
-                >
-                  Choose Starter
-                </Button>
-              </CardFooter>
-            </Card>
-
-            <Card className="border-primary relative">
-              <Badge className="absolute -top-3 left-1/2 -translate-x-1/2">Most Popular</Badge>
-              <CardHeader>
-                <CardTitle>Growth</CardTitle>
-                <CardDescription>Growing teams</CardDescription>
-                <div className="mt-4">
-                  {billingPeriod === 'annual' ? (
-                    <>
-                      <span className="text-4xl font-bold">£{Math.round(getPricing(399))}</span>
-                      <span className="text-muted-foreground">/year</span>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        £{Math.round(getMonthlyEquivalent(399))}/mo
-                      </p>
-                    </>
-                  ) : (
-                    <>
-                      <span className="text-4xl font-bold">£399</span>
-                      <span className="text-muted-foreground">/month</span>
-                    </>
-                  )}
-                </div>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-2">
-                  <li className="flex gap-2">
-                    <Check className="h-5 w-5 text-primary shrink-0" />
-                    <span>5 seats</span>
-                  </li>
-                  <li className="flex gap-2">
-                    <Check className="h-5 w-5 text-primary shrink-0" />
-                    <span>30 unlocks/year included</span>
-                  </li>
-                  <li className="flex gap-2">
-                    <Check className="h-5 w-5 text-primary shrink-0" />
-                    <span>£75 per additional unlock</span>
-                  </li>
-                  <li className="flex gap-2">
-                    <Check className="h-5 w-5 text-primary shrink-0" />
-                    <span>Pipeline management</span>
-                  </li>
-                  <li className="flex gap-2">
-                    <Check className="h-5 w-5 text-primary shrink-0" />
-                    <span>All Starter features</span>
-                  </li>
                   <li className="flex gap-2">
                     <Check className="h-5 w-5 text-primary shrink-0" />
                     <span>Team collaboration</span>
                   </li>
-                  <li className="flex gap-2">
-                    <Check className="h-5 w-5 text-primary shrink-0" />
-                    <span>Priority support</span>
-                  </li>
                 </ul>
-              </CardContent>
-              <CardFooter>
                 <Button 
-                  className="w-full"
-                  onClick={() => handleTierSelect('employer_growth')}
-                  disabled={checkingAuth}
+                  className="w-full" 
+                  onClick={() => navigate('/contact?subject=Employer%20Inquiry')}
                 >
-                  Choose Growth
+                  Contact Us
+                  <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
-              </CardFooter>
+              </CardContent>
             </Card>
 
-            <Card>
+            <Card className="border-primary relative hover:border-primary transition-colors">
+              <Badge className="absolute -top-3 left-1/2 -translate-x-1/2">Popular</Badge>
               <CardHeader>
-                <CardTitle>Scale</CardTitle>
-                <CardDescription>High-volume hiring</CardDescription>
-                <div className="mt-4">
-                  {billingPeriod === 'annual' ? (
-                    <>
-                      <span className="text-4xl font-bold">£{Math.round(getPricing(799))}</span>
-                      <span className="text-muted-foreground">/year</span>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        £{Math.round(getMonthlyEquivalent(799))}/mo
-                      </p>
-                    </>
-                  ) : (
-                    <>
-                      <span className="text-4xl font-bold">£799</span>
-                      <span className="text-muted-foreground">/month</span>
-                    </>
-                  )}
+                <div className="p-3 rounded-lg bg-orange-500/10 w-fit mb-2">
+                  <UserCheck className="h-6 w-6 text-orange-600" />
                 </div>
+                <CardTitle>Expert Assist</CardTitle>
+                <CardDescription>Specialist help for complex roles</CardDescription>
               </CardHeader>
               <CardContent>
-                <ul className="space-y-2">
+                <ul className="space-y-2 mb-6">
                   <li className="flex gap-2">
-                    <Check className="h-5 w-5 text-primary shrink-0" />
-                    <span>10 seats</span>
+                    <Check className="h-5 w-5 text-orange-600 shrink-0" />
+                    <span>Executive security roles</span>
                   </li>
                   <li className="flex gap-2">
-                    <Check className="h-5 w-5 text-primary shrink-0" />
-                    <span>100 unlocks/year included</span>
+                    <Check className="h-5 w-5 text-orange-600 shrink-0" />
+                    <span>Niche specializations</span>
                   </li>
                   <li className="flex gap-2">
-                    <Check className="h-5 w-5 text-primary shrink-0" />
-                    <span>£75 per additional unlock</span>
-                  </li>
-                  <li className="flex gap-2">
-                    <Check className="h-5 w-5 text-primary shrink-0" />
-                    <span>Pipeline management</span>
-                  </li>
-                  <li className="flex gap-2">
-                    <Check className="h-5 w-5 text-primary shrink-0" />
-                    <span>All Growth features</span>
-                  </li>
-                  <li className="flex gap-2">
-                    <Check className="h-5 w-5 text-primary shrink-0" />
-                    <span>Custom assessments</span>
-                  </li>
-                  <li className="flex gap-2">
-                    <Check className="h-5 w-5 text-primary shrink-0" />
-                    <span>Dedicated support</span>
-                  </li>
-                </ul>
-              </CardContent>
-              <CardFooter>
-                <Button 
-                  className="w-full"
-                  onClick={() => handleTierSelect('employer_scale')}
-                  disabled={checkingAuth}
-                >
-                  Choose Scale
-                </Button>
-              </CardFooter>
-            </Card>
-          </div>
-        </div>
-
-          {/* Expert Assist Add-On */}
-        <Card className="border border-orange-200 bg-gradient-to-br from-orange-50/30 to-background mt-8">
-          <CardHeader className="text-center">
-            <Badge className="w-fit mx-auto mb-2 bg-orange-600">Optional Add-On</Badge>
-            <CardTitle className="text-xl">Expert Assist Service</CardTitle>
-            <CardDescription className="text-base">
-              Need specialist help with a complex or urgent cybersecurity role?
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="max-w-2xl mx-auto">
-            <div className="grid md:grid-cols-2 gap-6">
-              <div className="space-y-3">
-                <h4 className="font-semibold text-sm">When You Need It:</h4>
-                <ul className="space-y-1.5 text-sm text-muted-foreground">
-                  <li className="flex gap-2">
-                    <Check className="h-4 w-4 text-orange-600 shrink-0 mt-0.5" />
-                    <span>Executive security roles (CISO, Director)</span>
-                  </li>
-                  <li className="flex gap-2">
-                    <Check className="h-4 w-4 text-orange-600 shrink-0 mt-0.5" />
-                    <span>Niche specializations (OT security, crypto)</span>
-                  </li>
-                  <li className="flex gap-2">
-                    <Check className="h-4 w-4 text-orange-600 shrink-0 mt-0.5" />
+                    <Check className="h-5 w-5 text-orange-600 shrink-0" />
                     <span>Urgent critical hires</span>
                   </li>
                   <li className="flex gap-2">
-                    <Check className="h-4 w-4 text-orange-600 shrink-0 mt-0.5" />
-                    <span>First-time hiring for security roles</span>
-                  </li>
-                </ul>
-              </div>
-              <div className="space-y-3">
-                <h4 className="font-semibold text-sm">What We Do:</h4>
-                <ul className="space-y-1.5 text-sm text-muted-foreground mb-4">
-                  <li className="flex gap-2">
-                    <Check className="h-4 w-4 text-orange-600 shrink-0 mt-0.5" />
+                    <Check className="h-5 w-5 text-orange-600 shrink-0" />
                     <span>Deep market expertise</span>
                   </li>
                   <li className="flex gap-2">
-                    <Check className="h-4 w-4 text-orange-600 shrink-0 mt-0.5" />
+                    <Check className="h-5 w-5 text-orange-600 shrink-0" />
                     <span>Candidate shortlisting</span>
                   </li>
                   <li className="flex gap-2">
-                    <Check className="h-4 w-4 text-orange-600 shrink-0 mt-0.5" />
-                    <span>Skills & experience matching</span>
-                  </li>
-                  <li className="flex gap-2">
-                    <Check className="h-4 w-4 text-orange-600 shrink-0 mt-0.5" />
-                    <span>Targeted candidate sourcing</span>
+                    <Check className="h-5 w-5 text-orange-600 shrink-0" />
+                    <span>Targeted sourcing</span>
                   </li>
                 </ul>
-                <div className="bg-white rounded-lg p-3 border border-orange-200">
-                  <div className="text-2xl font-bold text-orange-600 mb-1">8-10%</div>
-                  <p className="text-xs text-muted-foreground">success fee for complex or urgent roles</p>
-                </div>
-              </div>
-            </div>
-            <div className="text-center pt-4 border-t border-orange-100 mt-4">
-              <p className="text-sm text-muted-foreground mb-3">
-                Contact us to discuss your role and get expert assistance
-              </p>
-              <Link to="/contact?subject=Expert%20Assist%20Inquiry">
-                <Button variant="outline" className="border-orange-300 hover:bg-orange-50">
-                  Contact for Expert Assist
+                <Button 
+                  className="w-full bg-orange-600 hover:bg-orange-700"
+                  onClick={() => navigate('/contact?subject=Expert%20Assist%20Inquiry')}
+                >
+                  Contact Us
+                  <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
-              </Link>
-            </div>
-          </CardContent>
-        </Card>
+              </CardContent>
+            </Card>
 
-        {/* Recruiter Partnership Section */}
-        <Card className="border-2 border-purple-500 bg-gradient-to-br from-purple-50/30 to-background mt-8">
-          <CardHeader className="text-center">
-            <Badge className="w-fit mx-auto mb-2 bg-purple-600">For Recruiters</Badge>
-            <CardTitle className="text-2xl">Partner With Cydena</CardTitle>
-            <CardDescription className="text-base">
-              Use our verified candidate pool for your placements. We handle verification, you handle recruiting.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="max-w-3xl mx-auto">
-            <div className="grid md:grid-cols-2 gap-6 mb-6">
-              <div className="space-y-3">
-                <h4 className="font-semibold">What You Get:</h4>
-                <ul className="space-y-2 text-sm text-muted-foreground">
+            <Card className="hover:border-purple-500/50 transition-colors">
+              <CardHeader>
+                <div className="p-3 rounded-lg bg-purple-500/10 w-fit mb-2">
+                  <Users className="h-6 w-6 text-purple-600" />
+                </div>
+                <CardTitle>For Recruiters</CardTitle>
+                <CardDescription>Partnership opportunities</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2 mb-6">
                   <li className="flex gap-2">
-                    <Check className="h-4 w-4 text-purple-600 shrink-0 mt-0.5" />
-                    <span>Access to pre-verified candidate pool</span>
+                    <Check className="h-5 w-5 text-purple-600 shrink-0" />
+                    <span>Pre-verified candidate pool</span>
                   </li>
                   <li className="flex gap-2">
-                    <Check className="h-4 w-4 text-purple-600 shrink-0 mt-0.5" />
+                    <Check className="h-5 w-5 text-purple-600 shrink-0" />
                     <span>Client management tools</span>
                   </li>
                   <li className="flex gap-2">
-                    <Check className="h-4 w-4 text-purple-600 shrink-0 mt-0.5" />
-                    <span>Placement tracking & reporting</span>
+                    <Check className="h-5 w-5 text-purple-600 shrink-0" />
+                    <span>Placement tracking</span>
                   </li>
                   <li className="flex gap-2">
-                    <Check className="h-4 w-4 text-purple-600 shrink-0 mt-0.5" />
+                    <Check className="h-5 w-5 text-purple-600 shrink-0" />
                     <span>No verification overhead</span>
                   </li>
+                  <li className="flex gap-2">
+                    <Check className="h-5 w-5 text-purple-600 shrink-0" />
+                    <span>Partner dashboard</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <Check className="h-5 w-5 text-purple-600 shrink-0" />
+                    <span>Revenue sharing</span>
+                  </li>
                 </ul>
-              </div>
-              <div className="space-y-3">
-                <h4 className="font-semibold">Partnership Model:</h4>
-                <div className="bg-white rounded-lg p-4 border border-purple-200">
-                  <p className="text-sm text-muted-foreground mb-3">
-                    Subscription access + small platform fee on your placements
-                  </p>
-                  <div className="text-2xl font-bold text-purple-600 mb-1">2-3%</div>
-                  <p className="text-xs text-muted-foreground">platform fee on successful placements</p>
-                </div>
-                <p className="text-xs text-purple-600 font-semibold">
-                  You keep 97-98% of your placement fee
-                </p>
-                <p className="text-xs text-muted-foreground mt-1">
-                  Example: £50k salary = £7,500 placement = £150-225 platform fee
-                </p>
-              </div>
-            </div>
-            <div className="text-center pt-4 border-t">
-              <Button size="lg" onClick={() => navigate('/contact')} className="bg-purple-600 hover:bg-purple-700">
-                Become a Partner Recruiter
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+                <Button 
+                  className="w-full bg-purple-600 hover:bg-purple-700"
+                  onClick={() => navigate('/contact?subject=Recruiter%20Partnership')}
+                >
+                  Contact Us
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
 
-        <div className="text-center mt-16">
-          <p className="text-muted-foreground mb-4">Questions about pricing?</p>
-          <Button variant="outline" onClick={() => navigate('/faq')}>
-            View FAQ <ArrowRight className="ml-2 h-4 w-4" />
-          </Button>
+          {/* CTA Section */}
+          <Card className="bg-gradient-to-br from-primary/5 to-background border-primary/20">
+            <CardContent className="py-12 text-center">
+              <MessageSquare className="h-12 w-12 mx-auto mb-4 text-primary" />
+              <h2 className="text-3xl font-bold mb-4">Let's Talk</h2>
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-6">
+                Every team is different. Whether you're hiring one specialist or building 
+                an entire security team, we'll help you find the right approach.
+              </p>
+              <div className="flex flex-wrap justify-center gap-4">
+                <Button size="lg" onClick={() => navigate('/contact')}>
+                  Get in Touch
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+                <Button size="lg" variant="outline" onClick={() => navigate('/faq')}>
+                  View FAQ
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </main>
     </div>
