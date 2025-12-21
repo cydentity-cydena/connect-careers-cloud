@@ -12,7 +12,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { Plus, Edit, Trash2, Eye, EyeOff, ArrowLeft, Youtube, Video, RefreshCw, AlertTriangle, CheckCircle, ExternalLink } from "lucide-react";
+import { Plus, Edit, Trash2, Eye, EyeOff, ArrowLeft, Youtube, Video, RefreshCw, AlertTriangle, CheckCircle, ExternalLink, Play } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import { useNavigate } from "react-router-dom";
 
@@ -645,6 +645,14 @@ const LearningPathsManagement = () => {
                           </TableCell>
                           <TableCell className="text-right">
                             <div className="flex items-center justify-end gap-1" onClick={(e) => e.stopPropagation()}>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => navigate(`/learning-paths/${path.id}`)}
+                                title="Preview learning path"
+                              >
+                                <Play className="h-4 w-4 text-primary" />
+                              </Button>
                               <Button
                                 variant="ghost"
                                 size="icon"
