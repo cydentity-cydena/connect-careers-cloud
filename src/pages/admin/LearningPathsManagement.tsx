@@ -73,6 +73,7 @@ const LearningPathsManagement = () => {
   const [activeTab, setActiveTab] = useState("paths");
   const [videoStatuses, setVideoStatuses] = useState<Record<string, VideoStatus["status"]>>({});
   const [validating, setValidating] = useState(false);
+  const [fetchingDuration, setFetchingDuration] = useState(false);
 
   const [pathForm, setPathForm] = useState({
     title: "",
@@ -386,6 +387,45 @@ const LearningPathsManagement = () => {
       if (match) return match[1] || url;
     }
     return url;
+  };
+
+  const fetchVideoDuration = async (videoId: string) => {
+    if (!videoId || videoId.length !== 11) return;
+    
+    setFetchingDuration(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("fetch-youtube-video-info", {
+        body: { videoId }
+      });
+      
+      if (error) throw error;
+      
+      if (data) {
+        setVideoForm(prev => ({
+          ...prev,
+          title: prev.title || data.title || "",
+          duration_minutes: data.durationMinutes || prev.duration_minutes
+        }));
+        
+        if (data.durationMinutes) {
+          toast.success(`Fetched video duration: ${data.durationMinutes} min`);
+        }
+      }
+    } catch (error) {
+      console.error("Failed to fetch video info:", error);
+    } finally {
+      setFetchingDuration(false);
+    }
+  };
+
+  const handleVideoIdChange = async (value: string) => {
+    const videoId = extractVideoId(value);
+    setVideoForm(prev => ({ ...prev, youtube_video_id: videoId }));
+    
+    // Fetch video info when we have a valid 11-character ID
+    if (videoId.length === 11) {
+      await fetchVideoDuration(videoId);
+    }
   };
 
   const getDifficultyColor = (difficulty: string) => {
@@ -804,18 +844,20 @@ const LearningPathsManagement = () => {
 
                         <div className="space-y-2">
                           <Label>YouTube Video ID or URL *</Label>
-                          <Input
-                            value={videoForm.youtube_video_id}
-                            onChange={(e) =>
-                              setVideoForm((prev) => ({
-                                ...prev,
-                                youtube_video_id: extractVideoId(e.target.value),
-                              }))
-                            }
-                            placeholder="e.g., dIUQvt7KZCE or full YouTube URL"
-                          />
+                          <div className="relative">
+                            <Input
+                              value={videoForm.youtube_video_id}
+                              onChange={(e) => handleVideoIdChange(e.target.value)}
+                              placeholder="e.g., dIUQvt7KZCE or full YouTube URL"
+                            />
+                            {fetchingDuration && (
+                              <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                                <RefreshCw className="h-4 w-4 animate-spin text-muted-foreground" />
+                              </div>
+                            )}
+                          </div>
                           <p className="text-xs text-muted-foreground">
-                            Paste a YouTube URL or video ID (11 characters)
+                            Paste a YouTube URL or video ID — title will auto-fill if available
                           </p>
                         </div>
 
