@@ -70,6 +70,7 @@ const LearningPathsManagement = () => {
   const [editingPath, setEditingPath] = useState<LearningPath | null>(null);
   const [editingVideo, setEditingVideo] = useState<PathVideo | null>(null);
   const [selectedPathId, setSelectedPathId] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState("paths");
   const [videoStatuses, setVideoStatuses] = useState<Record<string, VideoStatus["status"]>>({});
   const [validating, setValidating] = useState(false);
 
@@ -567,7 +568,7 @@ const LearningPathsManagement = () => {
           </div>
         </div>
 
-        <Tabs defaultValue="paths" className="space-y-6">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList>
             <TabsTrigger value="paths">Learning Paths</TabsTrigger>
             <TabsTrigger value="videos" disabled={!selectedPathId}>
@@ -606,7 +607,10 @@ const LearningPathsManagement = () => {
                         <TableRow
                           key={path.id}
                           className={selectedPathId === path.id ? "bg-primary/5" : "cursor-pointer hover:bg-muted/50"}
-                          onClick={() => setSelectedPathId(path.id)}
+                          onClick={() => {
+                            setSelectedPathId(path.id);
+                            setActiveTab("videos");
+                          }}
                         >
                           <TableCell className="font-medium">{path.title}</TableCell>
                           <TableCell>
