@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Users, ExternalLink, Shield, CheckCircle } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useState, useEffect } from "react";
 
 interface PartnerCommunity {
   id: string;
@@ -16,6 +17,131 @@ interface PartnerCommunity {
   member_count: number | null;
   specializations: string[] | null;
   is_verified: boolean;
+  discord_server_id: string | null;
+}
+
+interface DiscordWidgetData {
+  id: string;
+  name: string;
+  presence_count: number;
+}
+
+function useDiscordOnlineCount(serverId: string | null) {
+  const [onlineCount, setOnlineCount] = useState<number | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (!serverId) {
+      setOnlineCount(null);
+      return;
+    }
+
+    const fetchOnlineCount = async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetch(`https://discord.com/api/guilds/${serverId}/widget.json`);
+        if (response.ok) {
+          const data: DiscordWidgetData = await response.json();
+          setOnlineCount(data.presence_count);
+        } else {
+          setOnlineCount(null);
+        }
+      } catch {
+        setOnlineCount(null);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchOnlineCount();
+    // Refresh every 2 minutes
+    const interval = setInterval(fetchOnlineCount, 120000);
+    return () => clearInterval(interval);
+  }, [serverId]);
+
+  return { onlineCount, isLoading };
+}
+
+function CommunityCard({ community }: { community: PartnerCommunity }) {
+  const { onlineCount } = useDiscordOnlineCount(community.discord_server_id);
+
+  return (
+    <Card className="bg-card/50 hover:bg-card/80 transition-colors group">
+      <CardHeader className="pb-3">
+        <div className="flex items-start gap-3">
+          {community.logo_url ? (
+            <img
+              src={community.logo_url}
+              alt={community.name}
+              className="h-12 w-12 rounded-lg object-cover"
+            />
+          ) : (
+            <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center">
+              <Shield className="h-6 w-6 text-primary" />
+            </div>
+          )}
+          <div className="flex-1 min-w-0">
+            <CardTitle className="text-base flex items-center gap-2">
+              {community.name}
+              {community.is_verified && (
+                <CheckCircle className="h-4 w-4 text-green-500" />
+              )}
+            </CardTitle>
+            <CardDescription className="flex items-center gap-1 mt-1 flex-wrap">
+              <Badge variant="outline" className="text-xs capitalize">
+                {community.platform}
+              </Badge>
+              {community.member_count && (
+                <span className="text-xs">
+                  • {community.member_count.toLocaleString()} members
+                </span>
+              )}
+              {onlineCount !== null && (
+                <span className="text-xs text-green-500 flex items-center gap-1">
+                  • <span className="inline-block w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                  {onlineCount.toLocaleString()} online
+                </span>
+              )}
+            </CardDescription>
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        {community.description && (
+          <p className="text-sm text-muted-foreground line-clamp-2">
+            {community.description}
+          </p>
+        )}
+        
+        {community.specializations && community.specializations.length > 0 && (
+          <div className="flex flex-wrap gap-1">
+            {community.specializations.slice(0, 3).map((spec) => (
+              <Badge key={spec} variant="secondary" className="text-xs">
+                {spec}
+              </Badge>
+            ))}
+            {community.specializations.length > 3 && (
+              <Badge variant="secondary" className="text-xs">
+                +{community.specializations.length - 3}
+              </Badge>
+            )}
+          </div>
+        )}
+
+        <Button
+          variant="outline"
+          size="sm"
+          className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors"
+          asChild
+        >
+          <a href={community.invite_url} target="_blank" rel="noopener noreferrer">
+            <ExternalLink className="h-4 w-4 mr-2" />
+            Join Community
+          </a>
+        </Button>
+      </CardContent>
+    </Card>
+  );
 }
 
 export function PartnerCommunities() {
@@ -86,75 +212,7 @@ export function PartnerCommunities() {
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
         {communities.map((community) => (
-          <Card key={community.id} className="bg-card/50 hover:bg-card/80 transition-colors group">
-            <CardHeader className="pb-3">
-              <div className="flex items-start gap-3">
-                {community.logo_url ? (
-                  <img
-                    src={community.logo_url}
-                    alt={community.name}
-                    className="h-12 w-12 rounded-lg object-cover"
-                  />
-                ) : (
-                  <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <Shield className="h-6 w-6 text-primary" />
-                  </div>
-                )}
-                <div className="flex-1 min-w-0">
-                  <CardTitle className="text-base flex items-center gap-2">
-                    {community.name}
-                    {community.is_verified && (
-                      <CheckCircle className="h-4 w-4 text-green-500" />
-                    )}
-                  </CardTitle>
-                  <CardDescription className="flex items-center gap-1 mt-1">
-                    <Badge variant="outline" className="text-xs capitalize">
-                      {community.platform}
-                    </Badge>
-                    {community.member_count && (
-                      <span className="text-xs">
-                        • {community.member_count.toLocaleString()} members
-                      </span>
-                    )}
-                  </CardDescription>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              {community.description && (
-                <p className="text-sm text-muted-foreground line-clamp-2">
-                  {community.description}
-                </p>
-              )}
-              
-              {community.specializations && community.specializations.length > 0 && (
-                <div className="flex flex-wrap gap-1">
-                  {community.specializations.slice(0, 3).map((spec) => (
-                    <Badge key={spec} variant="secondary" className="text-xs">
-                      {spec}
-                    </Badge>
-                  ))}
-                  {community.specializations.length > 3 && (
-                    <Badge variant="secondary" className="text-xs">
-                      +{community.specializations.length - 3}
-                    </Badge>
-                  )}
-                </div>
-              )}
-
-              <Button
-                variant="outline"
-                size="sm"
-                className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors"
-                asChild
-              >
-                <a href={community.invite_url} target="_blank" rel="noopener noreferrer">
-                  <ExternalLink className="h-4 w-4 mr-2" />
-                  Join Community
-                </a>
-              </Button>
-            </CardContent>
-          </Card>
+          <CommunityCard key={community.id} community={community} />
         ))}
       </div>
     </div>
