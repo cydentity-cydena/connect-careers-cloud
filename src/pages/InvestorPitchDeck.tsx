@@ -3,9 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { 
-  ChevronLeft, 
-  ChevronRight, 
+import { toast } from "sonner";
+import html2canvas from "html2canvas";
+import { jsPDF } from "jspdf";
+import {
+  ChevronLeft,
+  ChevronRight,
   X,
   Shield,
   Users,
@@ -22,7 +25,8 @@ import {
   GraduationCap,
   Briefcase,
   ArrowRight,
-  Download
+  Download,
+  Loader2,
 } from "lucide-react";
 
 const slides = [
