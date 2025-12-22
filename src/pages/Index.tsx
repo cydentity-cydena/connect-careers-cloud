@@ -2,7 +2,8 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Shield, Users, Briefcase, TrendingUp, ArrowRight, Clock, DollarSign, Target, CheckCircle, GraduationCap, Eye, Award, Filter, BarChart3, BadgeCheck, Youtube, Play, ExternalLink, Share2, Star } from "lucide-react";
+import { Shield, Users, Briefcase, TrendingUp, ArrowRight, Clock, DollarSign, Target, CheckCircle, GraduationCap, Eye, Award, Filter, BarChart3, BadgeCheck, Youtube, Play, ExternalLink, Share2, Star, Calculator } from "lucide-react";
+import { ROICalculator } from "@/components/pricing/ROICalculator";
 import Navigation from "@/components/Navigation";
 import SEO from "@/components/SEO";
 import Schema from "@/components/Schema";
@@ -426,6 +427,27 @@ const Index = () => {
                 </Button>
               </Link>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ROI Calculator Section */}
+      <section className="py-16 md:py-24 bg-card/30">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-12">
+              <div className="inline-flex items-center gap-2 bg-primary/10 rounded-full px-4 py-2 mb-4">
+                <Calculator className="h-4 w-4 text-primary" />
+                <span className="text-sm font-medium text-primary">Cost Savings Calculator</span>
+              </div>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                See How Much You Could <span className="bg-gradient-cyber bg-clip-text text-transparent">Save</span>
+              </h2>
+              <p className="text-lg text-muted-foreground">
+                Compare traditional agency costs vs direct access to verified talent
+              </p>
+            </div>
+            <ROICalculator />
           </div>
         </div>
       </section>
