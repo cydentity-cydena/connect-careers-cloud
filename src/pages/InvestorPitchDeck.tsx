@@ -758,10 +758,10 @@ const InvestorPitchDeck = () => {
             variant="outline" 
             size="sm" 
             className="gap-2"
-            onClick={() => window.open('/decks/Cydena-Investor-Deck.pdf', '_blank')}
+            onClick={() => window.open('/investor-pitch-deck', '_blank')}
           >
             <Download className="w-4 h-4" />
-            Download Deck
+            View Deck
           </Button>
           <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
             <X className="w-5 h-5" />
