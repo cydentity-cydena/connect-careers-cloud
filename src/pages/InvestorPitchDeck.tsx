@@ -21,7 +21,8 @@ import {
   Building2,
   GraduationCap,
   Briefcase,
-  ArrowRight
+  ArrowRight,
+  Download
 } from "lucide-react";
 
 const slides = [
@@ -753,6 +754,15 @@ const InvestorPitchDeck = () => {
           <span className="text-sm text-muted-foreground">
             {currentSlide + 1} / {slides.length}
           </span>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="gap-2"
+            onClick={() => window.open('/decks/Cydena-Investor-Deck.pdf', '_blank')}
+          >
+            <Download className="w-4 h-4" />
+            Download Deck
+          </Button>
           <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
             <X className="w-5 h-5" />
           </Button>
