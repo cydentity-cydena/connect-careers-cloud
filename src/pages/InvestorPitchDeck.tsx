@@ -226,63 +226,68 @@ const slides = [
     title: "The Flywheel",
     subtitle: "Trust Compounds, Risk Decreases",
     content: (
-      <div className="flex flex-col items-center justify-center h-full space-y-8">
-        <div className="relative w-full max-w-3xl">
-          <div className="grid grid-cols-5 gap-4 items-center">
-            <div className="p-4 bg-primary/20 rounded-xl text-center">
-              <div className="w-12 h-12 mx-auto mb-2 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold">1</div>
-              <p className="text-sm font-semibold">Candidates verify capability</p>
-            </div>
-            <div className="flex justify-center">
-              <ArrowRight className="w-6 h-6 text-primary" />
-            </div>
-            <div className="p-4 bg-primary/20 rounded-xl text-center">
-              <div className="w-12 h-12 mx-auto mb-2 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold">2</div>
-              <p className="text-sm font-semibold">Employers trust the signal</p>
-            </div>
-            <div className="flex justify-center">
-              <ArrowRight className="w-6 h-6 text-primary" />
-            </div>
-            <div className="p-4 bg-primary/20 rounded-xl text-center">
-              <div className="w-12 h-12 mx-auto mb-2 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold">3</div>
-              <p className="text-sm font-semibold">Faster, safer hiring</p>
-            </div>
+      <div className="flex flex-col items-center justify-center h-full space-y-4">
+        <div className="grid grid-cols-6 gap-3 items-center w-full max-w-4xl">
+          {/* Row 1: Steps 1-3 */}
+          <div className="p-3 bg-primary/20 rounded-xl text-center">
+            <div className="w-10 h-10 mx-auto mb-1 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm">1</div>
+            <p className="text-xs font-semibold">Candidates verify capability</p>
           </div>
-          <div className="grid grid-cols-5 gap-4 items-center mt-4">
-            <div className="col-start-5 p-4 bg-green-500/20 rounded-xl text-center">
-              <div className="w-12 h-12 mx-auto mb-2 rounded-full bg-green-500 text-white flex items-center justify-center font-bold">4</div>
-              <p className="text-sm font-semibold">Better security outcomes</p>
+          <div className="flex justify-center">
+            <ArrowRight className="w-5 h-5 text-primary" />
+          </div>
+          <div className="p-3 bg-primary/20 rounded-xl text-center">
+            <div className="w-10 h-10 mx-auto mb-1 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm">2</div>
+            <p className="text-xs font-semibold">Employers trust the signal</p>
+          </div>
+          <div className="flex justify-center">
+            <ArrowRight className="w-5 h-5 text-primary" />
+          </div>
+          <div className="p-3 bg-primary/20 rounded-xl text-center">
+            <div className="w-10 h-10 mx-auto mb-1 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm">3</div>
+            <p className="text-xs font-semibold">Faster, safer hiring</p>
+          </div>
+          <div className="flex justify-center">
+            <ArrowRight className="w-5 h-5 text-green-500 rotate-90" />
+          </div>
+          
+          {/* Row 2: Steps 4-6 (reversed direction) */}
+          <div className="p-3 bg-green-500/20 rounded-xl text-center">
+            <div className="w-10 h-10 mx-auto mb-1 rounded-full bg-green-500 text-white flex items-center justify-center">
+              <TrendingUp className="w-4 h-4" />
             </div>
-            <div className="col-start-4 flex justify-center">
-              <ArrowRight className="w-6 h-6 text-green-500 rotate-180" />
-            </div>
-            <div className="col-start-3 p-4 bg-green-500/20 rounded-xl text-center">
-              <div className="w-12 h-12 mx-auto mb-2 rounded-full bg-green-500 text-white flex items-center justify-center font-bold">5</div>
-              <p className="text-sm font-semibold">Stronger platform reputation</p>
-            </div>
-            <div className="col-start-2 flex justify-center">
-              <ArrowRight className="w-6 h-6 text-green-500 rotate-180" />
-            </div>
-            <div className="col-start-1 p-4 bg-green-500/20 rounded-xl text-center">
-              <div className="w-12 h-12 mx-auto mb-2 rounded-full bg-green-500 text-white flex items-center justify-center">
-                <TrendingUp className="w-5 h-5" />
-              </div>
-              <p className="text-sm font-semibold">More candidates join</p>
-            </div>
+            <p className="text-xs font-semibold">More candidates join</p>
+          </div>
+          <div className="flex justify-center">
+            <ArrowRight className="w-5 h-5 text-green-500 rotate-180" />
+          </div>
+          <div className="p-3 bg-green-500/20 rounded-xl text-center">
+            <div className="w-10 h-10 mx-auto mb-1 rounded-full bg-green-500 text-white flex items-center justify-center font-bold text-sm">5</div>
+            <p className="text-xs font-semibold">Stronger reputation</p>
+          </div>
+          <div className="flex justify-center">
+            <ArrowRight className="w-5 h-5 text-green-500 rotate-180" />
+          </div>
+          <div className="p-3 bg-green-500/20 rounded-xl text-center">
+            <div className="w-10 h-10 mx-auto mb-1 rounded-full bg-green-500 text-white flex items-center justify-center font-bold text-sm">4</div>
+            <p className="text-xs font-semibold">Better security outcomes</p>
+          </div>
+          <div className="flex justify-center">
+            <ArrowRight className="w-5 h-5 text-green-500 -rotate-90" />
           </div>
         </div>
-        <div className="grid grid-cols-3 gap-6 w-full max-w-2xl mt-8">
-          <div className="p-4 bg-muted rounded-xl text-center">
-            <h4 className="text-2xl font-bold text-primary">↑ Trust</h4>
-            <p className="text-sm text-muted-foreground">compounds</p>
+        <div className="grid grid-cols-3 gap-4 w-full max-w-xl">
+          <div className="p-3 bg-muted rounded-xl text-center">
+            <h4 className="text-xl font-bold text-primary">↑ Trust</h4>
+            <p className="text-xs text-muted-foreground">compounds</p>
           </div>
-          <div className="p-4 bg-muted rounded-xl text-center">
-            <h4 className="text-2xl font-bold text-green-500">↓ Risk</h4>
-            <p className="text-sm text-muted-foreground">decreases</p>
+          <div className="p-3 bg-muted rounded-xl text-center">
+            <h4 className="text-xl font-bold text-green-500">↓ Risk</h4>
+            <p className="text-xs text-muted-foreground">decreases</p>
           </div>
-          <div className="p-4 bg-muted rounded-xl text-center">
-            <h4 className="text-2xl font-bold text-primary">↑ Value</h4>
-            <p className="text-sm text-muted-foreground">increases</p>
+          <div className="p-3 bg-muted rounded-xl text-center">
+            <h4 className="text-xl font-bold text-primary">↑ Value</h4>
+            <p className="text-xs text-muted-foreground">increases</p>
           </div>
         </div>
       </div>
