@@ -7,6 +7,7 @@ import { Shield, Users, Briefcase, AlertCircle, UserCog, CheckCircle, Bug, Setti
 import { AdminNotifications } from "@/components/admin/AdminNotifications";
 import { SeedDemoCandidates } from "@/components/admin/SeedDemoCandidates";
 import { RoleSimulator } from "@/components/admin/RoleSimulator";
+import UserStatisticsCard from "@/components/admin/UserStatisticsCard";
 import { toast } from "sonner";
 
 type SimulatedRole = "candidate" | "employer" | "recruiter" | null;
@@ -184,6 +185,9 @@ const AdminDashboard = ({ onSimulateRole, currentSimulatedRole }: AdminDashboard
           </CardContent>
         </Card>
       </div>
+
+      {/* User Statistics Card */}
+      <UserStatisticsCard />
 
       <div className="grid md:grid-cols-2 gap-6">
         <Card className="border-border shadow-card">
