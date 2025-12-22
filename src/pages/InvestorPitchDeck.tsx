@@ -458,7 +458,7 @@ const slides = [
             </div>
             <div className="flex items-center gap-4 p-4 bg-green-500/10 rounded-lg border border-green-500/20">
               <CheckCircle className="w-6 h-6 text-green-500" />
-              <span>Training partner integrations live (Credly, LetsDefend)</span>
+              <span>Training partner integrations live (Credly, TRECCERT, OffSec)</span>
             </div>
             <div className="flex items-center gap-4 p-4 bg-green-500/10 rounded-lg border border-green-500/20">
               <CheckCircle className="w-6 h-6 text-green-500" />
