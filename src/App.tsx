@@ -59,6 +59,7 @@ import PartnerCommunitiesManagement from "./pages/admin/PartnerCommunitiesManage
 import NotFound from "./pages/NotFound";
 import Messages from "./pages/Messages";
 import EmployerPitchDeck from "./pages/EmployerPitchDeck";
+import InvestorPitchDeck from "./pages/InvestorPitchDeck";
 import Founding20 from "./pages/Founding20";
 import AcceptInvitation from "./pages/AcceptInvitation";
 import MFA from "./pages/MFA";
@@ -138,8 +139,9 @@ const AppContent = () => {
           <Route path="/admin/learning-paths" element={<ProtectedRoute><LearningPathsManagement /></ProtectedRoute>} />
           <Route path="/admin/partner-communities" element={<ProtectedRoute><PartnerCommunitiesManagement /></ProtectedRoute>} />
           
-          {/* Standalone Presentation */}
+          {/* Standalone Presentations */}
           <Route path="/employer-pitch-deck" element={<EmployerPitchDeck />} />
+          <Route path="/investor-pitch-deck" element={<InvestorPitchDeck />} />
           
           {/* Marketing PDFs */}
           <Route path="/marketing/candidates" element={<CandidatePDF />} />
