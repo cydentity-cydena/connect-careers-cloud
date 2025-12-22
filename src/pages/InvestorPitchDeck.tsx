@@ -171,7 +171,7 @@ const slides = [
     subtitle: "Integrated with Leading Certification & Training Providers",
     content: (
       <div className="space-y-8">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 items-center justify-items-center">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-6 items-center justify-items-center">
           <div className="p-6 bg-card rounded-xl border flex items-center justify-center h-24 w-full">
             <img src="/logos/credly-logo.png" alt="Credly" className="h-12 object-contain" />
           </div>
@@ -183,6 +183,12 @@ const slides = [
           </div>
           <div className="p-6 bg-card rounded-xl border flex items-center justify-center h-24 w-full">
             <img src="/logos/offsec-logo.png" alt="OffSec Partner Portal" className="h-12 object-contain" />
+          </div>
+          <div className="p-6 bg-card rounded-xl border flex items-center justify-center h-24 w-full">
+            <img src="/logos/hackthebox-logo.png" alt="Hack The Box" className="h-12 object-contain" />
+          </div>
+          <div className="p-6 bg-card rounded-xl border flex items-center justify-center h-24 w-full">
+            <img src="/logos/securecodewarrior-logo.png" alt="Secure Code Warrior" className="h-12 object-contain" />
           </div>
         </div>
         <div className="grid md:grid-cols-3 gap-6 mt-8">
