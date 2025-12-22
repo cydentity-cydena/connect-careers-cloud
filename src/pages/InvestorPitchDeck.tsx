@@ -480,7 +480,7 @@ const slides = [
             </div>
             <div className="text-center p-4 bg-muted rounded-xl">
               <h4 className="text-2xl font-bold">13%</h4>
-              <p className="text-sm text-muted-foreground">CAGR Growth</p>
+              <p className="text-sm text-muted-foreground">CAGR (Compound Annual Growth Rate)</p>
             </div>
           </div>
         </div>
@@ -489,21 +489,21 @@ const slides = [
           <div className="space-y-3">
             <div className="p-4 border rounded-lg">
               <div className="flex justify-between items-center mb-2">
-                <span className="font-medium">TAM</span>
+                <span className="font-medium">TAM (Total Addressable Market)</span>
                 <span className="text-primary font-bold">£12B</span>
               </div>
               <p className="text-sm text-muted-foreground">Global cybersecurity recruitment spend</p>
             </div>
             <div className="p-4 border rounded-lg">
               <div className="flex justify-between items-center mb-2">
-                <span className="font-medium">SAM</span>
+                <span className="font-medium">SAM (Serviceable Available Market)</span>
                 <span className="text-primary font-bold">£3.2B</span>
               </div>
               <p className="text-sm text-muted-foreground">UK, EU & US enterprise security hiring</p>
             </div>
             <div className="p-4 border rounded-lg">
               <div className="flex justify-between items-center mb-2">
-                <span className="font-medium">SOM</span>
+                <span className="font-medium">SOM (Serviceable Obtainable Market)</span>
                 <span className="text-primary font-bold">£160M</span>
               </div>
               <p className="text-sm text-muted-foreground">Year 5 target: 5% of SAM</p>
@@ -563,7 +563,7 @@ const slides = [
               <span className="font-bold">+£15,000/yr</span>
             </div>
             <div className="flex justify-between border-t border-border pt-2">
-              <span className="font-semibold">Blended ACV</span>
+              <span className="font-semibold">Blended ACV (Annual Contract Value)</span>
               <span className="font-bold text-primary">£40,000/yr</span>
             </div>
             <div className="flex justify-between">
@@ -571,17 +571,17 @@ const slides = [
               <span className="font-bold text-green-500">85%</span>
             </div>
             <div className="flex justify-between">
-              <span>Target CAC</span>
+              <span>Target CAC (Customer Acquisition Cost)</span>
               <span className="font-bold">£5,000</span>
             </div>
             <div className="flex justify-between">
-              <span>LTV:CAC Ratio</span>
+              <span>LTV:CAC (Lifetime Value : Acquisition Cost)</span>
               <span className="font-bold text-green-500">24:1</span>
             </div>
           </div>
           <div className="p-4 border-2 border-primary rounded-xl bg-primary/5">
             <p className="text-center font-semibold">
-              Path to £10M ARR with 250 enterprise accounts
+              Path to £10M ARR (Annual Recurring Revenue) with 250 enterprise accounts
             </p>
             <p className="text-center text-sm text-muted-foreground mt-1">
               Enterprises save £50-100K vs agency fees
