@@ -149,11 +149,11 @@ const slides = [
       <div className="grid md:grid-cols-2 gap-6 h-full">
         <div className="space-y-4">
           <h3 className="text-lg font-semibold">Verified Candidate Profiles</h3>
-          <div className="rounded-xl overflow-hidden border shadow-lg">
+          <div className="rounded-xl overflow-hidden border shadow-lg max-w-[400px]">
             <img 
               src="/screenshots/profile-card.png" 
               alt="Verified candidate profile" 
-              className="w-full h-auto"
+              className="w-full h-auto max-h-[320px] object-cover object-top"
             />
           </div>
           <p className="text-sm text-muted-foreground">
