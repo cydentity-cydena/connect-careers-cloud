@@ -242,19 +242,21 @@ const slides = [
       <div className="grid md:grid-cols-2 gap-8 h-full">
         <div className="space-y-4">
           <h3 className="text-xl font-semibold mb-4">Revenue Streams</h3>
-          <Card className="p-4">
+          <Card className="p-4 border-primary">
             <div className="flex items-center gap-3 mb-2">
               <DollarSign className="w-5 h-5 text-green-500" />
-              <span className="font-semibold">Employer Subscriptions</span>
+              <span className="font-semibold">Enterprise Subscriptions</span>
+              <Badge variant="secondary" className="text-xs">Primary</Badge>
             </div>
-            <p className="text-sm text-muted-foreground">£10K-30K/year enterprise subscriptions for unlimited hiring access</p>
+            <p className="text-sm text-muted-foreground">£25K/year base for verified talent access, unlimited searches, priority matching</p>
           </Card>
-          <Card className="p-4">
+          <Card className="p-4 border-primary">
             <div className="flex items-center gap-3 mb-2">
               <DollarSign className="w-5 h-5 text-green-500" />
               <span className="font-semibold">Success Fees</span>
+              <Badge variant="secondary" className="text-xs">Primary</Badge>
             </div>
-            <p className="text-sm text-muted-foreground">5-10% placement fee on successful hires (vs 20-30% agency)</p>
+            <p className="text-sm text-muted-foreground">5-8% per hire (vs 20-30% agency) - aligned incentives, still 70% cheaper</p>
           </Card>
           <Card className="p-4">
             <div className="flex items-center gap-3 mb-2">
@@ -275,8 +277,16 @@ const slides = [
           <h3 className="text-xl font-semibold mb-4">Unit Economics</h3>
           <div className="p-6 bg-muted rounded-xl space-y-4">
             <div className="flex justify-between">
-              <span>Avg. Contract Value (ACV)</span>
-              <span className="font-bold">£20,000/yr</span>
+              <span>Base Subscription</span>
+              <span className="font-bold">£25,000/yr</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Avg. Success Fees (3 hires)</span>
+              <span className="font-bold">+£15,000/yr</span>
+            </div>
+            <div className="flex justify-between border-t border-border pt-2">
+              <span className="font-semibold">Blended ACV</span>
+              <span className="font-bold text-primary">£40,000/yr</span>
             </div>
             <div className="flex justify-between">
               <span>Gross Margin</span>
@@ -284,20 +294,19 @@ const slides = [
             </div>
             <div className="flex justify-between">
               <span>Target CAC</span>
-              <span className="font-bold">£3,000</span>
+              <span className="font-bold">£5,000</span>
             </div>
             <div className="flex justify-between">
               <span>LTV:CAC Ratio</span>
-              <span className="font-bold text-green-500">20:1</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Payback Period</span>
-              <span className="font-bold">2 months</span>
+              <span className="font-bold text-green-500">24:1</span>
             </div>
           </div>
-          <div className="p-4 border-2 border-primary rounded-xl">
+          <div className="p-4 border-2 border-primary rounded-xl bg-primary/5">
             <p className="text-center font-semibold">
-              Path to £10M ARR with 500 enterprise accounts
+              Path to £10M ARR with 250 enterprise accounts
+            </p>
+            <p className="text-center text-sm text-muted-foreground mt-1">
+              Enterprises save £50-100K vs agency fees
             </p>
           </div>
         </div>
