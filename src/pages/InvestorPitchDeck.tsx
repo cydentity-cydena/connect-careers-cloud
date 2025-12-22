@@ -636,17 +636,8 @@ const slides = [
           </div>
           <div className="flex items-center gap-2 text-lg">
             <Briefcase className="w-5 h-5 text-primary" />
-            <span>investors@cydena.com</span>
+            <span>contact@cydena.com</span>
           </div>
-        </div>
-        <div className="flex gap-4 mt-8">
-          <Button size="lg" className="gap-2">
-            Schedule a Call
-            <ArrowRight className="w-4 h-4" />
-          </Button>
-          <Button size="lg" variant="outline">
-            Download Deck
-          </Button>
         </div>
       </div>
     )
