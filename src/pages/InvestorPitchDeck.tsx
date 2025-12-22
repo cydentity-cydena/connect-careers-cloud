@@ -394,29 +394,33 @@ const slides = [
     content: (
       <div className="grid md:grid-cols-2 gap-8 h-full items-center">
         <div className="space-y-6">
-          <h3 className="text-xl font-semibold">Cost Comparison: Per Hire</h3>
+          <h3 className="text-xl font-semibold">The Simple Math</h3>
           <div className="space-y-4">
             <div className="p-6 bg-destructive/10 rounded-xl border border-destructive/20">
               <div className="flex justify-between items-center mb-2">
-                <span className="font-medium">Agency Fee (per hire)</span>
-                <span className="text-2xl font-bold text-destructive">£12,000</span>
+                <span className="font-medium">Agency: 1 Hire</span>
+                <span className="text-2xl font-bold text-destructive">£25,000+</span>
               </div>
-              <p className="text-sm text-muted-foreground">20% of £60K salary - EVERY hire</p>
+              <p className="text-sm text-muted-foreground">20%+ of salary - and you pay this EVERY hire</p>
             </div>
             <div className="p-6 bg-green-500/10 rounded-xl border border-green-500/20">
               <div className="flex justify-between items-center mb-2">
-                <span className="font-medium">Cydena (Flat Fee/Year)</span>
-                <span className="text-2xl font-bold text-green-500">£2,988</span>
+                <span className="font-medium">Cydena: Unlimited Hires</span>
+                <span className="text-2xl font-bold text-green-500">£25,000</span>
               </div>
-              <p className="text-sm text-muted-foreground">Team plan - UNLIMITED hires</p>
+              <p className="text-sm text-muted-foreground">Flat fee/year - hire as many as you need</p>
             </div>
             <div className="p-6 bg-primary/10 rounded-xl border-2 border-primary">
-              <div className="flex justify-between items-center">
-                <span className="font-semibold text-lg">1 Hire Saves You</span>
-                <span className="text-3xl font-bold text-primary">£9,012</span>
-              </div>
-              <p className="text-sm text-muted-foreground mt-1">One hire covers the entire platform cost + £9K savings</p>
+              <p className="text-center text-xl font-bold text-primary mb-2">
+                1 Hire = Break Even
+              </p>
+              <p className="text-center text-muted-foreground">Every additional hire is essentially FREE</p>
             </div>
+          </div>
+          <div className="mt-4 p-4 bg-muted rounded-lg">
+            <p className="text-sm text-center">
+              <span className="font-semibold">3 hires/year?</span> Save £50K+ vs agencies
+            </p>
           </div>
         </div>
         <div className="space-y-4">

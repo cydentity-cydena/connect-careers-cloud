@@ -9,10 +9,12 @@ export const ROICalculator = () => {
   const [avgSalary, setAvgSalary] = useState(60000);
   const [agencyFee, setAgencyFee] = useState(20);
 
-  const agencyCost = hires * avgSalary * (agencyFee / 100);
-  const cydenaCost = 249 * 12; // Team plan annual
-  const savings = agencyCost - cydenaCost;
-  const savingsPercent = ((savings / agencyCost) * 100).toFixed(0);
+  const agencyCostPerHire = avgSalary * (agencyFee / 100);
+  const cydenaCost = 25000; // £25K flat fee annual
+  const savingsFirstHire = agencyCostPerHire - cydenaCost;
+  const totalAgencyCost = hires * agencyCostPerHire;
+  const totalSavings = totalAgencyCost - cydenaCost;
+  const savingsPercent = totalAgencyCost > 0 ? ((totalSavings / totalAgencyCost) * 100).toFixed(0) : "0";
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-GB', {
@@ -71,9 +73,9 @@ export const ROICalculator = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t">
           <div className="space-y-1">
-            <p className="text-sm text-muted-foreground">Agency Cost (per hire)</p>
-            <p className="text-2xl font-bold text-red-500">{formatCurrency(avgSalary * (agencyFee / 100))}</p>
-            <p className="text-xs text-muted-foreground">{agencyFee}% of salary</p>
+            <p className="text-sm text-muted-foreground">Agency Cost ({hires} hire{hires > 1 ? 's' : ''})</p>
+            <p className="text-2xl font-bold text-red-500">{formatCurrency(totalAgencyCost)}</p>
+            <p className="text-xs text-muted-foreground">{formatCurrency(agencyCostPerHire)} per hire</p>
           </div>
           <div className="space-y-1">
             <p className="text-sm text-muted-foreground">Cydena (Flat Fee)</p>
@@ -82,13 +84,13 @@ export const ROICalculator = () => {
           </div>
           <div className="space-y-1">
             <p className="text-sm text-muted-foreground">Your Savings</p>
-            <p className="text-2xl font-bold text-primary">{formatCurrency(savings)}</p>
+            <p className="text-2xl font-bold text-primary">{formatCurrency(totalSavings)}</p>
             <p className="text-xs text-muted-foreground">Save {savingsPercent}%</p>
           </div>
         </div>
         <div className="pt-4 p-4 bg-primary/10 rounded-lg border border-primary/20">
           <p className="text-center font-semibold text-primary">
-            💡 Just 1 hire saves you {formatCurrency((avgSalary * (agencyFee / 100)) - cydenaCost)} vs agency fees
+            💡 £25K = Cost of 1 agency hire. Every additional hire is FREE.
           </p>
         </div>
       </CardContent>
