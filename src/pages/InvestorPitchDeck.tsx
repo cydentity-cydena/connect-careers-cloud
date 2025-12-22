@@ -185,10 +185,10 @@ const slides = [
           <div className="p-6 bg-card rounded-xl border flex items-center justify-center h-24 w-full">
             <img src="/logos/cydentity-academy-logo.png" alt="Cydentity Academy" className="h-12 object-contain" />
           </div>
-          <div className="p-6 bg-card rounded-xl border flex items-center justify-center h-24 w-full">
+          <div className="p-6 bg-white rounded-xl border flex items-center justify-center h-24 w-full">
             <img src="/logos/offsec-logo.png" alt="OffSec Partner Portal" className="h-12 object-contain" />
           </div>
-          <div className="p-6 bg-card rounded-xl border flex items-center justify-center h-24 w-full">
+          <div className="p-6 bg-white rounded-xl border flex items-center justify-center h-24 w-full">
             <img src="/logos/hackthebox-logo.png" alt="Hack The Box" className="h-12 object-contain" />
           </div>
           <div className="p-6 bg-card rounded-xl border flex items-center justify-center h-24 w-full">
