@@ -76,9 +76,23 @@ const CertificationCatalog = () => {
       roles: "Systems Administrator, Security Analyst",
       enrollUrl: "https://www.isc2.org/certifications/sscp"
     },
+    {
+      name: "Offensive Security Certified Professional (OSCP)",
+      description: "Industry-leading penetration testing certification demonstrating hands-on offensive security skills.",
+      provider: "OffSec",
+      roles: "Penetration Tester, Red Team Operator, Security Consultant",
+      enrollUrl: "https://www.offsec.com/courses/pen-200/"
+    },
+    {
+      name: "Offensive Security Web Expert (OSWE)",
+      description: "Advanced web application security certification focusing on whitebox penetration testing.",
+      provider: "OffSec",
+      roles: "Web Application Pentester, Application Security Engineer, Security Researcher",
+      enrollUrl: "https://www.offsec.com/courses/web-300/"
+    },
   ];
 
-  const providers = ["CompTIA", "SANS", "ISC2"];
+  const providers = ["CompTIA", "SANS", "ISC2", "OffSec"];
 
   const getProviderIcon = (provider: string) => {
     const icons: { [key: string]: string } = {
@@ -86,6 +100,7 @@ const CertificationCatalog = () => {
       "SANS": "🟢",
       "ISC2": "🟣",
       "TRECCert": "🔷",
+      "OffSec": "🔶",
     };
     return icons[provider] || "📚";
   };
