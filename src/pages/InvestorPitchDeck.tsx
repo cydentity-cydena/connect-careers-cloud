@@ -389,6 +389,62 @@ const slides = [
     )
   },
   {
+    title: "Employer ROI",
+    subtitle: "See the Savings vs Traditional Agencies",
+    content: (
+      <div className="grid md:grid-cols-2 gap-8 h-full items-center">
+        <div className="space-y-6">
+          <h3 className="text-xl font-semibold">Cost Comparison: 3 Hires/Year</h3>
+          <div className="space-y-4">
+            <div className="p-6 bg-destructive/10 rounded-xl border border-destructive/20">
+              <div className="flex justify-between items-center mb-2">
+                <span className="font-medium">Traditional Agency</span>
+                <span className="text-2xl font-bold text-destructive">£36,000</span>
+              </div>
+              <p className="text-sm text-muted-foreground">20% of £60K avg salary × 3 hires</p>
+            </div>
+            <div className="p-6 bg-green-500/10 rounded-xl border border-green-500/20">
+              <div className="flex justify-between items-center mb-2">
+                <span className="font-medium">Cydena Platform</span>
+                <span className="text-2xl font-bold text-green-500">£2,988</span>
+              </div>
+              <p className="text-sm text-muted-foreground">Team plan (£249/mo × 12 months)</p>
+            </div>
+            <div className="p-6 bg-primary/10 rounded-xl border border-primary/20">
+              <div className="flex justify-between items-center">
+                <span className="font-semibold text-lg">Your Savings</span>
+                <span className="text-3xl font-bold text-primary">£33,012</span>
+              </div>
+              <p className="text-sm text-muted-foreground mt-1">92% reduction in hiring costs</p>
+            </div>
+          </div>
+        </div>
+        <div className="space-y-4">
+          <h3 className="text-xl font-semibold">Why Employers Switch:</h3>
+          <div className="space-y-3">
+            {[
+              "Pre-verified candidates = skip 2 weeks of background checks",
+              "Skills validation = reduce bad hires by 40%",
+              "Direct access = no middleman markup",
+              "Unlimited searches included in subscription",
+              "Success fees only 5-8% (vs 20-30% agencies)"
+            ].map((point, i) => (
+              <div key={i} className="flex items-start gap-3 p-3 bg-muted rounded-lg">
+                <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                <span className="text-sm">{point}</span>
+              </div>
+            ))}
+          </div>
+          <div className="p-4 border-2 border-primary rounded-xl bg-primary/5 mt-4">
+            <p className="text-center font-semibold">
+              Average enterprise saves £50-100K/year vs agencies
+            </p>
+          </div>
+        </div>
+      </div>
+    )
+  },
+  {
     title: "Competitive Advantage",
     subtitle: "Why We Win",
     content: (
