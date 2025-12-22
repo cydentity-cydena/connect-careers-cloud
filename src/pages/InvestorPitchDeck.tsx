@@ -644,15 +644,15 @@ const slides = [
           <div className="p-6 bg-gradient-to-br from-primary/20 to-primary/5 rounded-xl space-y-4">
             <div className="flex items-center gap-3">
               <Rocket className="w-5 h-5 text-primary" />
-              <span>1,000+ verified candidates</span>
+              <span>20,000+ verified candidates</span>
             </div>
             <div className="flex items-center gap-3">
               <Building2 className="w-5 h-5 text-primary" />
-              <span>100+ paying employers</span>
+              <span>150+ paying employers</span>
             </div>
             <div className="flex items-center gap-3">
               <DollarSign className="w-5 h-5 text-primary" />
-              <span>£250K ARR within 12 months</span>
+              <span>£3.75M ARR within 12 months</span>
             </div>
             <div className="flex items-center gap-3">
               <Globe className="w-5 h-5 text-primary" />
