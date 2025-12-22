@@ -150,11 +150,11 @@ const slides = [
           </p>
         </div>
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold">Skills & Leaderboard</h3>
+          <h3 className="text-lg font-semibold">Community Leaderboard</h3>
           <div className="rounded-xl overflow-hidden border shadow-lg">
             <img 
-              src="/screenshots/skills-assessment.png" 
-              alt="Skills assessment" 
+              src="/screenshots/leaderboard.png" 
+              alt="Community leaderboard" 
               className="w-full h-auto"
             />
           </div>
