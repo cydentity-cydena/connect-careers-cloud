@@ -770,35 +770,39 @@ const InvestorPitchDeck = () => {
       );
       if (slideEls.length === 0) throw new Error("No export slides found");
 
+      // Fixed slide dimensions (16:9 aspect ratio)
+      const slideW = 1280;
+      const slideH = 720;
+
       const renderSlide = (el: HTMLElement) =>
         html2canvas(el, {
           scale: 2,
           useCORS: true,
           backgroundColor: null,
+          width: slideW,
+          height: slideH,
           scrollX: 0,
           scrollY: 0,
         });
 
-      const firstCanvas = await renderSlide(slideEls[0]);
+      // Create PDF with fixed 16:9 dimensions in points
       const pdf = new jsPDF({
-        unit: "px",
-        format: [firstCanvas.width, firstCanvas.height],
-        compress: true,
+        orientation: "landscape",
+        unit: "pt",
+        format: [slideW, slideH],
       });
 
       const addCanvas = (canvas: HTMLCanvasElement, addNewPage: boolean) => {
         if (addNewPage) {
-          pdf.addPage([canvas.width, canvas.height]);
+          pdf.addPage([slideW, slideH], "landscape");
         }
 
-        const pageW = pdf.internal.pageSize.getWidth();
-        const pageH = pdf.internal.pageSize.getHeight();
         const imgData = canvas.toDataURL("image/png");
-
-        pdf.addImage(imgData, "PNG", 0, 0, pageW, pageH, undefined, "FAST");
+        // Draw at page size (not canvas size which is 2x due to scale)
+        pdf.addImage(imgData, "PNG", 0, 0, slideW, slideH, undefined, "FAST");
       };
 
-      // First page already exists
+      const firstCanvas = await renderSlide(slideEls[0]);
       addCanvas(firstCanvas, false);
 
       for (let i = 1; i < slideEls.length; i++) {
