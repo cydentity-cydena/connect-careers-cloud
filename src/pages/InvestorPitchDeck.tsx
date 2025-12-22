@@ -775,22 +775,27 @@ const InvestorPitchDeck = () => {
           scale: 2,
           useCORS: true,
           backgroundColor: null,
+          scrollX: 0,
+          scrollY: 0,
         });
 
       const firstCanvas = await renderSlide(slideEls[0]);
       const pdf = new jsPDF({
-        orientation: "landscape",
-        unit: "pt",
+        unit: "px",
         format: [firstCanvas.width, firstCanvas.height],
+        compress: true,
       });
 
       const addCanvas = (canvas: HTMLCanvasElement, addNewPage: boolean) => {
         if (addNewPage) {
-          pdf.addPage([canvas.width, canvas.height], "landscape");
+          pdf.addPage([canvas.width, canvas.height]);
         }
 
+        const pageW = pdf.internal.pageSize.getWidth();
+        const pageH = pdf.internal.pageSize.getHeight();
         const imgData = canvas.toDataURL("image/png");
-        pdf.addImage(imgData, "PNG", 0, 0, canvas.width, canvas.height);
+
+        pdf.addImage(imgData, "PNG", 0, 0, pageW, pageH, undefined, "FAST");
       };
 
       // First page already exists
@@ -918,7 +923,7 @@ const InvestorPitchDeck = () => {
             <section
               key={index}
               data-export-slide
-              className="w-[1280px] h-[720px] bg-background text-foreground p-12 flex flex-col"
+              className="w-[1280px] h-[720px] bg-background text-foreground p-12 flex flex-col [&_img]:max-w-full [&_img]:object-contain [&_img]:max-h-[420px]"
             >
               <header className="mb-8">
                 <h2 className="text-4xl font-bold mb-2">{slide.title}</h2>
