@@ -398,21 +398,21 @@ const slides = [
         <div className="space-y-6">
           <h3 className="text-xl font-semibold">12-Month Roadmap:</h3>
           <div className="space-y-4">
-            <div className="flex items-center gap-4 p-4 border rounded-lg">
+            <div className="flex items-center gap-4 p-4 border rounded-lg bg-green-500/10 border-green-500/30">
               <div className="w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold">Q1</div>
-              <span>50 verified candidates, 5 paying employers</span>
+              <span>2,000 verified candidates, 10 paying employers</span>
             </div>
             <div className="flex items-center gap-4 p-4 border rounded-lg">
               <div className="w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold">Q2</div>
-              <span>200 candidates, 20 employers, first placements</span>
+              <span>5,000 candidates, 30 employers, first placements</span>
             </div>
             <div className="flex items-center gap-4 p-4 border rounded-lg">
               <div className="w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold">Q3</div>
-              <span>500 candidates, 50 employers, £100K ARR</span>
+              <span>10,000 candidates, 75 employers, £500K ARR</span>
             </div>
             <div className="flex items-center gap-4 p-4 border rounded-lg">
               <div className="w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold">Q4</div>
-              <span>1,000 candidates, 100 employers, £250K ARR</span>
+              <span>20,000 candidates, 150 employers, £1M ARR</span>
             </div>
           </div>
         </div>
