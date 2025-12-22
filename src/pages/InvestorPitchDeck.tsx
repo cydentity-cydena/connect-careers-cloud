@@ -132,6 +132,81 @@ const slides = [
     )
   },
   {
+    title: "The Platform",
+    subtitle: "Built for Security Professionals",
+    content: (
+      <div className="grid md:grid-cols-2 gap-6 h-full">
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold">Verified Candidate Profiles</h3>
+          <div className="rounded-xl overflow-hidden border shadow-lg">
+            <img 
+              src="/screenshots/profile-card.png" 
+              alt="Verified candidate profile" 
+              className="w-full h-auto"
+            />
+          </div>
+          <p className="text-sm text-muted-foreground">
+            HR-Ready badge, verified certifications, skills validation scores
+          </p>
+        </div>
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold">Skills & Leaderboard</h3>
+          <div className="rounded-xl overflow-hidden border shadow-lg">
+            <img 
+              src="/screenshots/skills-assessment.png" 
+              alt="Skills assessment" 
+              className="w-full h-auto"
+            />
+          </div>
+          <p className="text-sm text-muted-foreground">
+            CTF challenges, assessments, and community leaderboards
+          </p>
+        </div>
+      </div>
+    )
+  },
+  {
+    title: "Trusted Partners",
+    subtitle: "Integrated with Leading Certification & Training Providers",
+    content: (
+      <div className="space-y-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 items-center justify-items-center">
+          <div className="p-6 bg-card rounded-xl border flex items-center justify-center h-24 w-full">
+            <img src="/logos/credly-logo.png" alt="Credly" className="h-12 object-contain" />
+          </div>
+          <div className="p-6 bg-card rounded-xl border flex items-center justify-center h-24 w-full">
+            <img src="/logos/letsdefend-logo.jpg" alt="LetsDefend" className="h-12 object-contain" />
+          </div>
+          <div className="p-6 bg-card rounded-xl border flex items-center justify-center h-24 w-full">
+            <img src="/logos/treccert-logo-banner.png" alt="TRECCert" className="h-10 object-contain" />
+          </div>
+          <div className="p-6 bg-card rounded-xl border flex items-center justify-center h-24 w-full">
+            <img src="/logos/cydentity-academy-logo.png" alt="Cydentity Academy" className="h-12 object-contain" />
+          </div>
+        </div>
+        <div className="grid md:grid-cols-3 gap-6 mt-8">
+          <Card className="p-4 text-center">
+            <h4 className="font-semibold mb-2">Certification Bodies</h4>
+            <p className="text-sm text-muted-foreground">CompTIA, ISC2, SANS, OffSec, EC-Council</p>
+          </Card>
+          <Card className="p-4 text-center">
+            <h4 className="font-semibold mb-2">Training Platforms</h4>
+            <p className="text-sm text-muted-foreground">TryHackMe, HackTheBox, LetsDefend, RangeForce</p>
+          </Card>
+          <Card className="p-4 text-center">
+            <h4 className="font-semibold mb-2">Badge Providers</h4>
+            <p className="text-sm text-muted-foreground">Credly, Acclaim, Badgr, Canvas Credentials</p>
+          </Card>
+        </div>
+        <div className="text-center mt-4">
+          <Badge variant="outline" className="text-sm px-4 py-2">
+            Direct API integrations for real-time credential verification
+          </Badge>
+        </div>
+      </div>
+    )
+  },
+  {
     title: "How It Works",
     subtitle: "Simple, Fast, Verified",
     content: (
