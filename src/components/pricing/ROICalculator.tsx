@@ -6,7 +6,7 @@ import { Slider } from "@/components/ui/slider";
 
 export const ROICalculator = () => {
   const [hires, setHires] = useState(3);
-  const [avgSalary, setAvgSalary] = useState(60000);
+  const [avgSalary, setAvgSalary] = useState(100000);
   const [agencyFee, setAgencyFee] = useState(20);
 
   const agencyCostPerHire = avgSalary * (agencyFee / 100);
