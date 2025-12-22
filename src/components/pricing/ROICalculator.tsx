@@ -71,18 +71,25 @@ export const ROICalculator = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t">
           <div className="space-y-1">
-            <p className="text-sm text-muted-foreground">Agency Cost</p>
-            <p className="text-2xl font-bold text-red-500">{formatCurrency(agencyCost)}</p>
+            <p className="text-sm text-muted-foreground">Agency Cost (per hire)</p>
+            <p className="text-2xl font-bold text-red-500">{formatCurrency(avgSalary * (agencyFee / 100))}</p>
+            <p className="text-xs text-muted-foreground">{agencyFee}% of salary</p>
           </div>
           <div className="space-y-1">
-            <p className="text-sm text-muted-foreground">Cydena Cost (Team)</p>
+            <p className="text-sm text-muted-foreground">Cydena (Flat Fee)</p>
             <p className="text-2xl font-bold text-green-500">{formatCurrency(cydenaCost)}</p>
+            <p className="text-xs text-muted-foreground">Unlimited hires/year</p>
           </div>
           <div className="space-y-1">
             <p className="text-sm text-muted-foreground">Your Savings</p>
             <p className="text-2xl font-bold text-primary">{formatCurrency(savings)}</p>
             <p className="text-xs text-muted-foreground">Save {savingsPercent}%</p>
           </div>
+        </div>
+        <div className="pt-4 p-4 bg-primary/10 rounded-lg border border-primary/20">
+          <p className="text-center font-semibold text-primary">
+            💡 Just 1 hire saves you {formatCurrency((avgSalary * (agencyFee / 100)) - cydenaCost)} vs agency fees
+          </p>
         </div>
       </CardContent>
     </Card>
