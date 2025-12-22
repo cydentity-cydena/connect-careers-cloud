@@ -247,7 +247,7 @@ const slides = [
               <DollarSign className="w-5 h-5 text-green-500" />
               <span className="font-semibold">Employer Subscriptions</span>
             </div>
-            <p className="text-sm text-muted-foreground">£99-499/month for profile unlocks, job posts, and candidate access</p>
+            <p className="text-sm text-muted-foreground">£10K-30K/year enterprise subscriptions for unlimited hiring access</p>
           </Card>
           <Card className="p-4">
             <div className="flex items-center gap-3 mb-2">
@@ -276,7 +276,7 @@ const slides = [
           <div className="p-6 bg-muted rounded-xl space-y-4">
             <div className="flex justify-between">
               <span>Avg. Contract Value (ACV)</span>
-              <span className="font-bold">£3,500/yr</span>
+              <span className="font-bold">£20,000/yr</span>
             </div>
             <div className="flex justify-between">
               <span>Gross Margin</span>
@@ -284,20 +284,20 @@ const slides = [
             </div>
             <div className="flex justify-between">
               <span>Target CAC</span>
-              <span className="font-bold">£500</span>
+              <span className="font-bold">£3,000</span>
             </div>
             <div className="flex justify-between">
               <span>LTV:CAC Ratio</span>
-              <span className="font-bold text-green-500">7:1</span>
+              <span className="font-bold text-green-500">20:1</span>
             </div>
             <div className="flex justify-between">
               <span>Payback Period</span>
-              <span className="font-bold">3 months</span>
+              <span className="font-bold">2 months</span>
             </div>
           </div>
           <div className="p-4 border-2 border-primary rounded-xl">
             <p className="text-center font-semibold">
-              Path to £10M ARR with 3,000 employer accounts
+              Path to £10M ARR with 500 enterprise accounts
             </p>
           </div>
         </div>
