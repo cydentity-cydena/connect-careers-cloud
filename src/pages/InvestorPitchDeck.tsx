@@ -62,7 +62,7 @@ const slides = [
   },
   {
     title: "The Problem",
-    subtitle: "A $10B+ Hiring Crisis in Cybersecurity",
+    subtitle: "A £8B+ Hiring Crisis in Cybersecurity",
     content: (
       <div className="grid md:grid-cols-2 gap-8 h-full items-center">
         <div className="space-y-6">
@@ -71,7 +71,7 @@ const slides = [
             <p className="text-muted-foreground">Unfilled cybersecurity jobs globally</p>
           </div>
           <div className="p-6 bg-destructive/10 rounded-xl border border-destructive/20">
-            <h3 className="text-4xl font-bold text-destructive mb-2">$4.88M</h3>
+            <h3 className="text-4xl font-bold text-destructive mb-2">£3.9M</h3>
             <p className="text-muted-foreground">Average cost of a data breach (2024)</p>
           </div>
           <div className="p-6 bg-destructive/10 rounded-xl border border-destructive/20">
@@ -278,12 +278,12 @@ const slides = [
       <div className="grid md:grid-cols-2 gap-8 h-full items-center">
         <div className="space-y-6">
           <div className="text-center p-8 bg-gradient-to-br from-primary/20 to-primary/5 rounded-xl">
-            <h3 className="text-5xl font-bold text-primary mb-2">$500B+</h3>
+            <h3 className="text-5xl font-bold text-primary mb-2">£400B+</h3>
             <p className="text-lg text-muted-foreground">Global Cybersecurity Market by 2030</p>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="text-center p-4 bg-muted rounded-xl">
-              <h4 className="text-2xl font-bold">$28B</h4>
+              <h4 className="text-2xl font-bold">£22B</h4>
               <p className="text-sm text-muted-foreground">HR Tech Market</p>
             </div>
             <div className="text-center p-4 bg-muted rounded-xl">
@@ -298,21 +298,21 @@ const slides = [
             <div className="p-4 border rounded-lg">
               <div className="flex justify-between items-center mb-2">
                 <span className="font-medium">TAM</span>
-                <span className="text-primary font-bold">$15B</span>
+                <span className="text-primary font-bold">£12B</span>
               </div>
               <p className="text-sm text-muted-foreground">Global cybersecurity recruitment spend</p>
             </div>
             <div className="p-4 border rounded-lg">
               <div className="flex justify-between items-center mb-2">
                 <span className="font-medium">SAM</span>
-                <span className="text-primary font-bold">$4B</span>
+                <span className="text-primary font-bold">£3.2B</span>
               </div>
               <p className="text-sm text-muted-foreground">UK, EU & US enterprise security hiring</p>
             </div>
             <div className="p-4 border rounded-lg">
               <div className="flex justify-between items-center mb-2">
                 <span className="font-medium">SOM</span>
-                <span className="text-primary font-bold">$200M</span>
+                <span className="text-primary font-bold">£160M</span>
               </div>
               <p className="text-sm text-muted-foreground">Year 5 target: 5% of SAM</p>
             </div>
