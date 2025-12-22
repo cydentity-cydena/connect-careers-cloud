@@ -170,12 +170,9 @@ const slides = [
     subtitle: "Integrated with Leading Certification & Training Providers",
     content: (
       <div className="space-y-8">
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-6 items-center justify-items-center">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 items-center justify-items-center">
           <div className="p-6 bg-card rounded-xl border flex items-center justify-center h-24 w-full">
             <img src="/logos/credly-logo.png" alt="Credly" className="h-12 object-contain" />
-          </div>
-          <div className="p-6 bg-card rounded-xl border flex items-center justify-center h-24 w-full">
-            <img src="/logos/letsdefend-logo.jpg" alt="LetsDefend" className="h-12 object-contain" />
           </div>
           <div className="p-6 bg-card rounded-xl border flex items-center justify-center h-24 w-full">
             <img src="/logos/treccert-logo-banner.png" alt="TRECCert" className="h-10 object-contain" />
@@ -194,7 +191,7 @@ const slides = [
           </Card>
           <Card className="p-4 text-center">
             <h4 className="font-semibold mb-2">Training Platforms</h4>
-            <p className="text-sm text-muted-foreground">TryHackMe, HackTheBox, LetsDefend, RangeForce</p>
+            <p className="text-sm text-muted-foreground">TryHackMe, HackTheBox, RangeForce, Immersive Labs</p>
           </Card>
           <Card className="p-4 text-center">
             <h4 className="font-semibold mb-2">Badge Providers</h4>
