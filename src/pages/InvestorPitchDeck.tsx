@@ -419,7 +419,7 @@ const slides = [
           </div>
           <div className="mt-4 p-4 bg-muted rounded-lg">
             <p className="text-sm text-center">
-              <span className="font-semibold">3 hires/year?</span> Save £50K+ vs agencies
+              <span className="font-semibold">Enterprise avg: 3 hires/year @ £100K salary</span> = Save £35K+ vs agencies
             </p>
           </div>
         </div>
