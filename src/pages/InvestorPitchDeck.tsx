@@ -108,6 +108,187 @@ const slides = [
     )
   },
   {
+    title: "Why Now?",
+    subtitle: "The Perfect Storm for Disruption",
+    content: (
+      <div className="grid md:grid-cols-2 gap-8 h-full items-center">
+        <div className="space-y-4">
+          <h3 className="text-xl font-semibold mb-4">Market Forces Converging:</h3>
+          <div className="space-y-3">
+            {[
+              { icon: "🔥", text: "Cybersecurity hiring fatigue is real", desc: "HR teams drowning in unqualified applicants" },
+              { icon: "📉", text: "Recruiter trust is declining", desc: "30%+ of placements fail within 12 months" },
+              { icon: "📋", text: "Skills-based hiring becoming mandatory", desc: "Regulations demand demonstrable competence" },
+              { icon: "🎯", text: "Employers want control back", desc: "Direct access, no middleman markup" },
+            ].map((item, i) => (
+              <div key={i} className="flex items-start gap-4 p-4 bg-muted rounded-lg">
+                <span className="text-2xl">{item.icon}</span>
+                <div>
+                  <p className="font-semibold">{item.text}</p>
+                  <p className="text-sm text-muted-foreground">{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="space-y-6">
+          <h3 className="text-xl font-semibold">Regulatory Tailwinds:</h3>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="p-4 bg-primary/10 rounded-xl text-center">
+              <h4 className="font-bold text-lg">NIS2</h4>
+              <p className="text-sm text-muted-foreground">EU cyber security directive</p>
+            </div>
+            <div className="p-4 bg-primary/10 rounded-xl text-center">
+              <h4 className="font-bold text-lg">SOC 2</h4>
+              <p className="text-sm text-muted-foreground">Trust service criteria</p>
+            </div>
+            <div className="p-4 bg-primary/10 rounded-xl text-center">
+              <h4 className="font-bold text-lg">ISO 27001</h4>
+              <p className="text-sm text-muted-foreground">Information security</p>
+            </div>
+            <div className="p-4 bg-primary/10 rounded-xl text-center">
+              <h4 className="font-bold text-lg">DORA</h4>
+              <p className="text-sm text-muted-foreground">Digital operational resilience</p>
+            </div>
+          </div>
+          <div className="p-4 border-2 border-primary rounded-xl bg-primary/5 text-center">
+            <p className="font-semibold text-lg">Cyber risk is now a board-level issue</p>
+            <p className="text-sm text-muted-foreground mt-1">Hiring mistakes are security failures</p>
+          </div>
+        </div>
+      </div>
+    )
+  },
+  {
+    title: "Why Cydena Wins",
+    subtitle: "Head-to-Head Comparison",
+    content: (
+      <div className="space-y-8 h-full">
+        <div className="grid md:grid-cols-3 gap-6">
+          <Card className="p-6 border-destructive/30 bg-destructive/5">
+            <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+              <X className="w-5 h-5 text-destructive" />
+              vs Job Boards
+            </h3>
+            <div className="space-y-3 text-sm">
+              <div className="flex items-start gap-2">
+                <span className="text-destructive font-bold">They:</span>
+                <span className="text-muted-foreground">Volume over quality, self-asserted skills</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="text-green-500 font-bold">We:</span>
+                <span>Quality over quantity, verified credentials</span>
+              </div>
+            </div>
+          </Card>
+          <Card className="p-6 border-destructive/30 bg-destructive/5">
+            <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+              <X className="w-5 h-5 text-destructive" />
+              vs Recruiters
+            </h3>
+            <div className="space-y-3 text-sm">
+              <div className="flex items-start gap-2">
+                <span className="text-destructive font-bold">They:</span>
+                <span className="text-muted-foreground">20-30% fees, CV flipping, bias</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="text-green-500 font-bold">We:</span>
+                <span>Flat fees, no commissions, no middleman</span>
+              </div>
+            </div>
+          </Card>
+          <Card className="p-6 border-destructive/30 bg-destructive/5">
+            <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+              <X className="w-5 h-5 text-destructive" />
+              vs ATS Platforms
+            </h3>
+            <div className="space-y-3 text-sm">
+              <div className="flex items-start gap-2">
+                <span className="text-destructive font-bold">They:</span>
+                <span className="text-muted-foreground">Just workflow tools, filter existing</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="text-green-500 font-bold">We:</span>
+                <span>Marketplace + signal creation</span>
+              </div>
+            </div>
+          </Card>
+        </div>
+        <div className="p-6 bg-gradient-to-r from-primary/20 to-primary/5 rounded-xl">
+          <p className="text-center text-xl font-semibold">
+            "We don't sell more applicants — we sell <span className="text-primary">less risk</span>"
+          </p>
+        </div>
+      </div>
+    )
+  },
+  {
+    title: "The Flywheel",
+    subtitle: "Trust Compounds, Risk Decreases",
+    content: (
+      <div className="flex flex-col items-center justify-center h-full space-y-8">
+        <div className="relative w-full max-w-3xl">
+          <div className="grid grid-cols-5 gap-4 items-center">
+            <div className="p-4 bg-primary/20 rounded-xl text-center">
+              <div className="w-12 h-12 mx-auto mb-2 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold">1</div>
+              <p className="text-sm font-semibold">Candidates verify capability</p>
+            </div>
+            <div className="flex justify-center">
+              <ArrowRight className="w-6 h-6 text-primary" />
+            </div>
+            <div className="p-4 bg-primary/20 rounded-xl text-center">
+              <div className="w-12 h-12 mx-auto mb-2 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold">2</div>
+              <p className="text-sm font-semibold">Employers trust the signal</p>
+            </div>
+            <div className="flex justify-center">
+              <ArrowRight className="w-6 h-6 text-primary" />
+            </div>
+            <div className="p-4 bg-primary/20 rounded-xl text-center">
+              <div className="w-12 h-12 mx-auto mb-2 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold">3</div>
+              <p className="text-sm font-semibold">Faster, safer hiring</p>
+            </div>
+          </div>
+          <div className="grid grid-cols-5 gap-4 items-center mt-4">
+            <div className="col-start-5 p-4 bg-green-500/20 rounded-xl text-center">
+              <div className="w-12 h-12 mx-auto mb-2 rounded-full bg-green-500 text-white flex items-center justify-center font-bold">4</div>
+              <p className="text-sm font-semibold">Better security outcomes</p>
+            </div>
+            <div className="col-start-4 flex justify-center">
+              <ArrowRight className="w-6 h-6 text-green-500 rotate-180" />
+            </div>
+            <div className="col-start-3 p-4 bg-green-500/20 rounded-xl text-center">
+              <div className="w-12 h-12 mx-auto mb-2 rounded-full bg-green-500 text-white flex items-center justify-center font-bold">5</div>
+              <p className="text-sm font-semibold">Stronger platform reputation</p>
+            </div>
+            <div className="col-start-2 flex justify-center">
+              <ArrowRight className="w-6 h-6 text-green-500 rotate-180" />
+            </div>
+            <div className="col-start-1 p-4 bg-green-500/20 rounded-xl text-center">
+              <div className="w-12 h-12 mx-auto mb-2 rounded-full bg-green-500 text-white flex items-center justify-center">
+                <TrendingUp className="w-5 h-5" />
+              </div>
+              <p className="text-sm font-semibold">More candidates join</p>
+            </div>
+          </div>
+        </div>
+        <div className="grid grid-cols-3 gap-6 w-full max-w-2xl mt-8">
+          <div className="p-4 bg-muted rounded-xl text-center">
+            <h4 className="text-2xl font-bold text-primary">↑ Trust</h4>
+            <p className="text-sm text-muted-foreground">compounds</p>
+          </div>
+          <div className="p-4 bg-muted rounded-xl text-center">
+            <h4 className="text-2xl font-bold text-green-500">↓ Risk</h4>
+            <p className="text-sm text-muted-foreground">decreases</p>
+          </div>
+          <div className="p-4 bg-muted rounded-xl text-center">
+            <h4 className="text-2xl font-bold text-primary">↑ Value</h4>
+            <p className="text-sm text-muted-foreground">increases</p>
+          </div>
+        </div>
+      </div>
+    )
+  },
+  {
     title: "The Solution",
     subtitle: "Cydena: Verified Talent, Trusted Results",
     content: (
