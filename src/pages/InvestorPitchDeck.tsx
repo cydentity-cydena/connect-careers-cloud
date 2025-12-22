@@ -113,21 +113,27 @@ const slides = [
     content: (
       <div className="grid md:grid-cols-3 gap-6 h-full items-center">
         <Card className="p-6 text-center hover:shadow-lg transition-shadow h-full flex flex-col justify-center">
-          <Shield className="w-12 h-12 mx-auto mb-4 text-primary" />
+          <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-primary/20 flex items-center justify-center">
+            <Shield className="w-6 h-6 text-primary" />
+          </div>
           <h3 className="text-xl font-semibold mb-3">HR-Ready Verification</h3>
           <p className="text-muted-foreground text-sm">
             Every candidate is pre-verified: identity checks, right-to-work, certifications validated directly with issuers, and security clearance confirmation.
           </p>
         </Card>
         <Card className="p-6 text-center hover:shadow-lg transition-shadow h-full flex flex-col justify-center border-primary">
-          <Award className="w-12 h-12 mx-auto mb-4 text-primary" />
+          <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-primary/20 flex items-center justify-center">
+            <Award className="w-6 h-6 text-primary" />
+          </div>
           <h3 className="text-xl font-semibold mb-3">Skills Validation</h3>
           <p className="text-muted-foreground text-sm">
             Hands-on CTF challenges, technical assessments, and peer endorsements prove real-world capabilities beyond paper credentials.
           </p>
         </Card>
         <Card className="p-6 text-center hover:shadow-lg transition-shadow h-full flex flex-col justify-center">
-          <Target className="w-12 h-12 mx-auto mb-4 text-primary" />
+          <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-primary/20 flex items-center justify-center">
+            <Target className="w-6 h-6 text-primary" />
+          </div>
           <h3 className="text-xl font-semibold mb-3">Intelligent Matching</h3>
           <p className="text-muted-foreground text-sm">
             AI-powered matching considers skills, specializations, clearance levels, and culture fit to surface the right candidates instantly.
