@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -718,6 +718,8 @@ const slides = [
 const InvestorPitchDeck = () => {
   const navigate = useNavigate();
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [isDownloading, setIsDownloading] = useState(false);
+  const exportRootRef = useRef<HTMLDivElement | null>(null);
 
   const nextSlide = () => {
     if (currentSlide < slides.length - 1) {
@@ -728,6 +730,78 @@ const InvestorPitchDeck = () => {
   const prevSlide = () => {
     if (currentSlide > 0) {
       setCurrentSlide(currentSlide - 1);
+    }
+  };
+
+  const waitForImages = async (root: HTMLElement) => {
+    const images = Array.from(root.querySelectorAll("img"));
+
+    await Promise.all(
+      images.map((img) => {
+        if (img.complete) return Promise.resolve();
+        return new Promise<void>((resolve) => {
+          const done = () => resolve();
+          img.addEventListener("load", done, { once: true });
+          img.addEventListener("error", done, { once: true });
+        });
+      })
+    );
+  };
+
+  const downloadDeck = async () => {
+    if (isDownloading) return;
+
+    try {
+      setIsDownloading(true);
+
+      const exportRoot = exportRootRef.current;
+      if (!exportRoot) throw new Error("Export root not found");
+
+      await waitForImages(exportRoot);
+
+      const slideEls = Array.from(
+        exportRoot.querySelectorAll<HTMLElement>("[data-export-slide]")
+      );
+      if (slideEls.length === 0) throw new Error("No export slides found");
+
+      const renderSlide = (el: HTMLElement) =>
+        html2canvas(el, {
+          scale: 2,
+          useCORS: true,
+          backgroundColor: null,
+        });
+
+      const firstCanvas = await renderSlide(slideEls[0]);
+      const pdf = new jsPDF({
+        orientation: "landscape",
+        unit: "pt",
+        format: [firstCanvas.width, firstCanvas.height],
+      });
+
+      const addCanvas = (canvas: HTMLCanvasElement, addNewPage: boolean) => {
+        if (addNewPage) {
+          pdf.addPage([canvas.width, canvas.height], "landscape");
+        }
+
+        const imgData = canvas.toDataURL("image/png");
+        pdf.addImage(imgData, "PNG", 0, 0, canvas.width, canvas.height);
+      };
+
+      // First page already exists
+      addCanvas(firstCanvas, false);
+
+      for (let i = 1; i < slideEls.length; i++) {
+        const canvas = await renderSlide(slideEls[i]);
+        addCanvas(canvas, true);
+      }
+
+      pdf.save("Cydena-Investor-Deck.pdf");
+      toast.success("Deck downloaded.");
+    } catch (err) {
+      console.error(err);
+      toast.error("Couldn't generate the PDF deck. Please try again.");
+    } finally {
+      setIsDownloading(false);
     }
   };
 
@@ -751,9 +825,9 @@ const InvestorPitchDeck = () => {
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b bg-card">
         <div className="flex items-center gap-4">
-          <img 
-            src="/logos/cydena-logo.png" 
-            alt="Cydena" 
+          <img
+            src="/logos/cydena-logo.png"
+            alt="Cydena"
             className="h-8 object-contain"
           />
           <Badge variant="outline" className="text-xs">
@@ -764,16 +838,21 @@ const InvestorPitchDeck = () => {
           <span className="text-sm text-muted-foreground">
             {currentSlide + 1} / {slides.length}
           </span>
-          <Button 
-            variant="outline" 
-            size="sm" 
+          <Button
+            variant="outline"
+            size="sm"
             className="gap-2"
-            onClick={() => window.open('/decks/Cydena-Investor-Deck.pdf', '_blank')}
+            onClick={downloadDeck}
+            disabled={isDownloading}
           >
-            <Download className="w-4 h-4" />
-            Download Deck
+            {isDownloading ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <Download className="w-4 h-4" />
+            )}
+            {isDownloading ? "Generating..." : "Download Deck"}
           </Button>
-          <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
+          <Button variant="ghost" size="icon" onClick={() => navigate("/")}> 
             <X className="w-5 h-5" />
           </Button>
         </div>
@@ -783,11 +862,11 @@ const InvestorPitchDeck = () => {
       <div className="flex-1 flex flex-col p-8 max-w-6xl mx-auto w-full">
         <div className="mb-8">
           <h1 className="text-4xl font-bold mb-2">{slides[currentSlide].title}</h1>
-          <p className="text-xl text-muted-foreground">{slides[currentSlide].subtitle}</p>
+          <p className="text-xl text-muted-foreground">
+            {slides[currentSlide].subtitle}
+          </p>
         </div>
-        <div className="flex-1">
-          {slides[currentSlide].content}
-        </div>
+        <div className="flex-1">{slides[currentSlide].content}</div>
       </div>
 
       {/* Navigation */}
@@ -801,15 +880,15 @@ const InvestorPitchDeck = () => {
           <ChevronLeft className="w-4 h-4" />
           Previous
         </Button>
-        
+
         <div className="flex gap-2">
           {slides.map((_, index) => (
             <button
               key={index}
               onClick={() => setCurrentSlide(index)}
               className={`w-2 h-2 rounded-full transition-colors ${
-                index === currentSlide 
-                  ? "bg-primary" 
+                index === currentSlide
+                  ? "bg-primary"
                   : "bg-muted-foreground/30 hover:bg-muted-foreground/50"
               }`}
             />
@@ -824,6 +903,25 @@ const InvestorPitchDeck = () => {
           Next
           <ChevronRight className="w-4 h-4" />
         </Button>
+      </div>
+
+      {/* Offscreen render for PDF export */}
+      <div aria-hidden="true" className="fixed left-[-9999px] top-0">
+        <div ref={exportRootRef} className="space-y-8">
+          {slides.map((slide, index) => (
+            <section
+              key={index}
+              data-export-slide
+              className="w-[1280px] h-[720px] bg-background text-foreground p-12 flex flex-col"
+            >
+              <header className="mb-8">
+                <h2 className="text-4xl font-bold mb-2">{slide.title}</h2>
+                <p className="text-xl text-muted-foreground">{slide.subtitle}</p>
+              </header>
+              <main className="flex-1">{slide.content}</main>
+            </section>
+          ))}
+        </div>
       </div>
     </div>
   );
