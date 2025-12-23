@@ -111,20 +111,28 @@ export function LearningPathDetail({ pathId, onBack }: LearningPathDetailProps) 
         .maybeSingle();
 
       if (existingXp) {
-        await supabase
+        const { error: updateError } = await supabase
           .from("candidate_xp")
           .update({ 
             total_xp: existingXp.total_xp + xpToAward,
             last_activity_at: new Date().toISOString()
           })
           .eq("candidate_id", user.id);
+        if (updateError) {
+          console.error("Failed to update XP:", updateError);
+          throw new Error("Failed to update XP");
+        }
       } else {
-        await supabase
+        const { error: insertError } = await supabase
           .from("candidate_xp")
           .insert({
             candidate_id: user.id,
             total_xp: xpToAward,
           });
+        if (insertError) {
+          console.error("Failed to insert XP:", insertError);
+          throw new Error("Failed to award XP");
+        }
       }
 
       return xpToAward;
