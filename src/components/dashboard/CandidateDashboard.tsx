@@ -464,6 +464,7 @@ const CandidateDashboard = () => {
                             currentUsername={profile.username}
                             usernameChanges={profile.username_changes || 0}
                             userId={user.id}
+                            fullName={profile.full_name}
                           />
                         )}
                       </div>
