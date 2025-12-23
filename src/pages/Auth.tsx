@@ -266,7 +266,7 @@ const Auth = () => {
         for (const part of nameParts) {
           // Check name parts that are at least 3 characters long
           if (part.length >= 3 && usernameToCheck.includes(part)) {
-            toast.error("Username cannot contain parts of your name");
+            toast.error("For your privacy, usernames cannot contain parts of your real name. This helps keep your identity separate from your public profile.");
             return;
           }
         }
