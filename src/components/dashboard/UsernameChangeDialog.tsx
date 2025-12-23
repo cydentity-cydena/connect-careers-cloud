@@ -20,9 +20,10 @@ interface UsernameChangeDialogProps {
   currentUsername: string;
   usernameChanges: number;
   userId: string;
+  fullName?: string;
 }
 
-export function UsernameChangeDialog({ currentUsername, usernameChanges, userId }: UsernameChangeDialogProps) {
+export function UsernameChangeDialog({ currentUsername, usernameChanges, userId, fullName }: UsernameChangeDialogProps) {
   const [open, setOpen] = useState(false);
   const [newUsername, setNewUsername] = useState("");
   const [loading, setLoading] = useState(false);
@@ -37,6 +38,23 @@ export function UsernameChangeDialog({ currentUsername, usernameChanges, userId 
         variant: "destructive",
       });
       return;
+    }
+
+    // Check if username contains parts of the user's name (for privacy)
+    if (fullName) {
+      const nameParts = fullName.trim().toLowerCase().split(/\s+/);
+      const usernameToCheck = newUsername.trim().toLowerCase();
+      
+      for (const part of nameParts) {
+        if (part.length >= 3 && usernameToCheck.includes(part)) {
+          toast({
+            title: "Username not allowed",
+            description: "For your privacy, usernames cannot contain parts of your real name. This helps keep your identity separate from your public profile.",
+            variant: "destructive",
+          });
+          return;
+        }
+      }
     }
 
     setLoading(true);
