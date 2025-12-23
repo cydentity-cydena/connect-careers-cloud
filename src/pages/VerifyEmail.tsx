@@ -26,9 +26,12 @@ const VerifyEmail = () => {
       }
 
       try {
+        // Handle different verification types
+        const verifyType = type === "signup" ? "signup" : type === "invite" ? "invite" : "email";
+        
         const { error } = await supabase.auth.verifyOtp({
           token_hash: token,
-          type: type === "signup" ? "signup" : "email",
+          type: verifyType,
         });
 
         if (error) {
