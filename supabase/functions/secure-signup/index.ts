@@ -173,7 +173,7 @@ serve(async (req) => {
       console.log('Auth user created:', userId);
 
       // Generate email verification link using invite type (doesn't require password)
-      const appUrl = Deno.env.get('APP_URL') || 'https://cydena.com';
+      const appUrl = Deno.env.get('APP_URL') || 'https://cydena.io';
       const { data: linkData, error: linkError } = await supabaseAdmin.auth.admin.generateLink({
         type: 'invite',
         email: email,
