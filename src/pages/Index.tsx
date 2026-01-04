@@ -748,7 +748,7 @@ const Index = () => {
                 </a>
 
                 {/* REAL LMS */}
-                <a href="https://real-lms.com" target="_blank" rel="noopener noreferrer">
+                <a href="https://thereallms.com" target="_blank" rel="noopener noreferrer">
                   <Card className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/40 bg-card/80 backdrop-blur cursor-pointer h-full">
                     <CardContent className="p-8">
                       <div className="flex items-center justify-center mb-6 h-24">
