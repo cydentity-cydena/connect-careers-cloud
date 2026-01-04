@@ -232,7 +232,7 @@ const slides = [
           </a>
 
           {/* REAL LMS */}
-          <a href="https://real-lms.com" target="_blank" rel="noopener noreferrer" className="p-8 bg-card rounded-xl border-2 border-primary/20 hover:border-primary/40 transition-all cursor-pointer">
+          <a href="https://thereallms.com" target="_blank" rel="noopener noreferrer" className="p-8 bg-card rounded-xl border-2 border-primary/20 hover:border-primary/40 transition-all cursor-pointer">
             <div className="flex items-center justify-center mb-6 h-24">
               <img src="/logos/real-lms-logo.png" alt="REAL LMS" className="h-20 object-contain" />
             </div>
