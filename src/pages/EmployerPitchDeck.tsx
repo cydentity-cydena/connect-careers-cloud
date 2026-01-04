@@ -200,7 +200,7 @@ const slides = [
           </a>
 
           {/* Cydentity */}
-          <a href="https://cydentity.com" target="_blank" rel="noopener noreferrer" className="p-8 bg-card rounded-xl border-2 border-primary/20 hover:border-primary/40 transition-all cursor-pointer">
+          <a href="https://www.cydentity.co.uk" target="_blank" rel="noopener noreferrer" className="p-8 bg-card rounded-xl border-2 border-primary/20 hover:border-primary/40 transition-all cursor-pointer">
             <div className="flex items-center justify-center mb-6 h-24">
               <img src="/logos/cydentity-logo-white.png" alt="Cydentity" className="h-16 object-contain" />
             </div>
