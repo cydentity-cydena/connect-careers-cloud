@@ -12,7 +12,6 @@ const BrandingPack = () => {
     { name: "Main Logo", path: "/logos/cydena-main-logo.png", description: "Primary logo for most uses" },
     { name: "Full Logo", path: "/logos/cydena-logo-full.png", description: "Full horizontal logo" },
     { name: "Standard Logo", path: "/logos/cydena-logo.png", description: "Standard square logo" },
-    { name: "TikTok Profile", path: "/logos/cydena-tiktok-profile.png", description: "Social media profile image" },
     { name: "Academy Logo", path: "/logos/cydentity-academy-logo.png", description: "Academy branding (dark)" },
     { name: "Academy Logo White", path: "/logos/cydentity-academy-logo-white.png", description: "Academy branding (white)" },
     { name: "Cydentity White", path: "/logos/cydentity-logo-white.png", description: "White variant for dark backgrounds" },
