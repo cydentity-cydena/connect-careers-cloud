@@ -10,7 +10,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { Search, UserPlus, Trash2 } from "lucide-react";
+import { Search, UserPlus, Trash2, Loader2 } from "lucide-react";
 import {
   Pagination,
   PaginationContent,
@@ -27,6 +27,7 @@ export const RoleManagement = () => {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [selectedEmail, setSelectedEmail] = useState("");
   const [selectedRole, setSelectedRole] = useState<string>("");
+  const [fullName, setFullName] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(20);
 
@@ -57,8 +58,8 @@ export const RoleManagement = () => {
   });
 
   const addRoleMutation = useMutation({
-    mutationFn: async ({ email, role }: { email: string; role: string }) => {
-      // Get user ID from email
+    mutationFn: async ({ email, role, fullName }: { email: string; role: string; fullName?: string }) => {
+      // First, check if user exists
       const { data: profile, error: profileError } = await supabase
         .from("profiles")
         .select("id")
@@ -66,24 +67,52 @@ export const RoleManagement = () => {
         .maybeSingle();
 
       if (profileError) throw profileError;
-      if (!profile) throw new Error("User not found");
 
+      let userId = profile?.id;
+
+      // If user doesn't exist, create them via admin function
+      if (!userId) {
+        const { data: session } = await supabase.auth.getSession();
+        if (!session?.session?.access_token) {
+          throw new Error("Not authenticated");
+        }
+
+        const response = await supabase.functions.invoke('admin-create-user', {
+          body: { email, role, fullName: fullName || email.split('@')[0] },
+        });
+
+        if (response.error) {
+          throw new Error(response.error.message || 'Failed to create user');
+        }
+
+        if (!response.data?.success) {
+          throw new Error(response.data?.error || 'Failed to create user');
+        }
+
+        // User was created with the role already assigned
+        return { created: true };
+      }
+
+      // User exists, just add the role
       const { error } = await supabase
         .from("user_roles")
         .insert([{ 
-          user_id: profile.id, 
+          user_id: userId, 
           role: role as "admin" | "candidate" | "employer" | "recruiter"
         }]);
 
       if (error) throw error;
+      return { created: false };
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["admin-user-roles"] });
       setIsAddDialogOpen(false);
       setSelectedEmail("");
       setSelectedRole("");
+      setFullName("");
       toast({
-        title: "Role added successfully",
+        title: data?.created ? "User created and role assigned" : "Role added successfully",
+        description: data?.created ? "A password reset email will be sent to the user." : undefined,
       });
     },
     onError: (error: any) => {
@@ -149,7 +178,7 @@ export const RoleManagement = () => {
               <DialogHeader>
                 <DialogTitle>Add Role to User</DialogTitle>
                 <DialogDescription>
-                  Assign a role to an existing user
+                  Assign a role to an existing user, or create a new user if they don't exist
                 </DialogDescription>
               </DialogHeader>
               <div className="space-y-4">
@@ -162,6 +191,19 @@ export const RoleManagement = () => {
                     value={selectedEmail}
                     onChange={(e) => setSelectedEmail(e.target.value)}
                   />
+                </div>
+                <div>
+                  <Label htmlFor="fullName">Full Name (for new users)</Label>
+                  <Input
+                    id="fullName"
+                    type="text"
+                    placeholder="John Doe"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Only used if user doesn't exist and needs to be created
+                  </p>
                 </div>
                 <div>
                   <Label htmlFor="role">Role</Label>
@@ -184,10 +226,12 @@ export const RoleManagement = () => {
                     addRoleMutation.mutate({
                       email: selectedEmail,
                       role: selectedRole,
+                      fullName: fullName,
                     })
                   }
-                  disabled={!selectedEmail || !selectedRole}
+                  disabled={!selectedEmail || !selectedRole || addRoleMutation.isPending}
                 >
+                  {addRoleMutation.isPending && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
                   Add Role
                 </Button>
               </DialogFooter>
