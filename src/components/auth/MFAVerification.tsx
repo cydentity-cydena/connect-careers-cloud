@@ -10,12 +10,20 @@ import { useNavigate } from "react-router-dom";
 interface MFAVerificationProps {
   onCancel: () => void;
   onSuccess?: () => void | Promise<void>;
+  returnUrl?: string;
 }
 
-export const MFAVerification = ({ onCancel, onSuccess }: MFAVerificationProps) => {
+export const MFAVerification = ({ onCancel, onSuccess, returnUrl }: MFAVerificationProps) => {
   const navigate = useNavigate();
   const [code, setCode] = useState("");
   const [verifying, setVerifying] = useState(false);
+
+  // Get return URL from props or query params
+  const getReturnUrl = () => {
+    if (returnUrl) return returnUrl;
+    const searchParams = new URLSearchParams(window.location.search);
+    return searchParams.get('returnTo') || '/dashboard';
+  };
 
   const handleVerify = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,7 +60,7 @@ export const MFAVerification = ({ onCancel, onSuccess }: MFAVerificationProps) =
         if (onSuccess) {
           await onSuccess();
         } else {
-          navigate("/dashboard");
+          navigate(getReturnUrl());
         }
       } else {
         // Regular TOTP verification
@@ -73,7 +81,7 @@ export const MFAVerification = ({ onCancel, onSuccess }: MFAVerificationProps) =
         if (onSuccess) {
           await onSuccess();
         } else {
-          navigate("/dashboard");
+          navigate(getReturnUrl());
         }
       }
     } catch (error: any) {

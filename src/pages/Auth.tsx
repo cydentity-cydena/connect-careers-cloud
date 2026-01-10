@@ -70,6 +70,12 @@ const Auth = () => {
   const [verificationEmail, setVerificationEmail] = useState("");
   const oauthProfileStarted = useRef(false);
 
+  // Helper to get return URL from query params
+  const getReturnUrl = () => {
+    const searchParams = new URLSearchParams(window.location.search);
+    return searchParams.get('returnTo') || '/dashboard';
+  };
+
   useEffect(() => {
     // Check for Early Access 200 parameter in URL
     const searchParams = new URLSearchParams(window.location.search);
@@ -115,8 +121,8 @@ const Auth = () => {
           .maybeSingle();
 
         if (roleData?.role) {
-          // User has a role, redirect to dashboard
-          navigate("/dashboard");
+          // User has a role, redirect to return URL or dashboard
+          navigate(getReturnUrl());
         } else {
           // New OAuth user without role - complete profile setup
           console.log('New OAuth user detected, completing profile...');
@@ -147,7 +153,7 @@ const Auth = () => {
           .maybeSingle();
 
         if (roleData?.role) {
-          navigate('/dashboard');
+          navigate(getReturnUrl());
         } else {
           // New OAuth user - complete profile
           console.log('OAuth sign-in detected, completing profile...');
@@ -209,7 +215,7 @@ const Auth = () => {
           toast.success("Welcome! Please set up two-factor authentication to secure your account.");
           navigate('/security-settings');
         } else {
-          navigate('/dashboard');
+          navigate(getReturnUrl());
         }
       } catch {
         // Fallback: send to security settings if we can't determine
