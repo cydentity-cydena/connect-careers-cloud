@@ -31,6 +31,20 @@ export const ApplyJobDialog = ({ jobId, jobTitle, children }: ApplyJobDialogProp
   const [selectedResumeId, setSelectedResumeId] = useState<string>("");
   const [coverLetter, setCoverLetter] = useState("");
 
+  // Check if user is authenticated when dialog opens
+  const handleOpenChange = async (isOpen: boolean) => {
+    if (isOpen) {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        // Redirect to signup with return URL
+        const returnUrl = `/jobs/${jobId}`;
+        navigate(`/auth?returnTo=${encodeURIComponent(returnUrl)}`);
+        return;
+      }
+    }
+    setOpen(isOpen);
+  };
+
   useEffect(() => {
     if (open) {
       loadResumes();
@@ -173,7 +187,7 @@ export const ApplyJobDialog = ({ jobId, jobTitle, children }: ApplyJobDialogProp
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         {children}
       </DialogTrigger>
