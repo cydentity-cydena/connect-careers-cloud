@@ -138,30 +138,32 @@ export function TrustScore({ candidateId, showDetails = false, size = 'md' }: Tr
   // Compact badge version
   if (size === 'sm') {
     return (
-      <TooltipProvider>
+      <TooltipProvider delayDuration={100}>
         <Tooltip>
           <TooltipTrigger asChild>
-            <Badge 
-              variant="outline" 
-              className={cn(
-                "gap-1.5 cursor-help border-current/30",
-                getScoreColor(totalScore)
-              )}
-            >
-              <Shield className="h-3 w-3" />
-              {totalScore}
-            </Badge>
+            <div className="inline-flex">
+              <Badge 
+                variant="outline" 
+                className={cn(
+                  "gap-1.5 cursor-help border-current/30 hover:bg-accent/50 transition-colors",
+                  getScoreColor(totalScore)
+                )}
+              >
+                <Shield className="h-3 w-3" />
+                {totalScore}
+              </Badge>
+            </div>
           </TooltipTrigger>
-          <TooltipContent className="max-w-[200px]">
-            <div className="space-y-1">
-              <div className="flex items-center justify-between gap-3">
+          <TooltipContent side="bottom" className="max-w-[220px]">
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between gap-4">
                 <span className="font-semibold">Trust Score</span>
                 <span className={cn("font-bold", getScoreColor(totalScore))}>{totalScore}/100</span>
               </div>
               <p className="text-xs text-muted-foreground">{getScoreLabel(totalScore)}</p>
-              <p className="text-xs text-muted-foreground border-t pt-1 mt-1">
+              <div className="text-xs text-muted-foreground border-t border-border pt-1.5 mt-1">
                 {getTooltipHint(totalScore)}
-              </p>
+              </div>
             </div>
           </TooltipContent>
         </Tooltip>
