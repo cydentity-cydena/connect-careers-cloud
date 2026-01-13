@@ -49,7 +49,7 @@ export function TrustScore({ candidateId, showDetails = false, size = 'md' }: Tr
   useEffect(() => {
     const fetchTrustScore = async () => {
       try {
-        // First try to get cached score
+        // Try to get cached score first
         const { data: cachedScore } = await supabase
           .from('trust_scores')
           .select('*')
@@ -58,15 +58,16 @@ export function TrustScore({ candidateId, showDetails = false, size = 'md' }: Tr
 
         if (cachedScore) {
           setScore(cachedScore);
+          setLoading(false);
         }
 
-        // Calculate fresh score (this also updates the cache)
-        const { data: freshScore, error } = await supabase.rpc('calculate_trust_score', {
+        // Try to calculate fresh score via RPC
+        const { error } = await supabase.rpc('calculate_trust_score', {
           p_candidate_id: candidateId
         });
 
-        if (!error && freshScore !== null) {
-          // Refetch the detailed score
+        if (!error) {
+          // Refetch the detailed score after recalculation
           const { data: updatedScore } = await supabase
             .from('trust_scores')
             .select('*')
@@ -76,6 +77,8 @@ export function TrustScore({ candidateId, showDetails = false, size = 'md' }: Tr
           if (updatedScore) {
             setScore(updatedScore);
           }
+        } else {
+          console.log('Trust score RPC failed, using cached value:', error.message);
         }
       } catch (error) {
         console.error('Error fetching trust score:', error);
