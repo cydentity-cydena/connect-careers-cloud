@@ -23,6 +23,9 @@ import { ReferralBlitzBanner } from "./ReferralBlitzBanner";
 import { CareerPathsAI } from "./CareerPathsAI";
 import { SecurityIQ } from "./SecurityIQ";
 import { ShareProfileCard } from "@/components/sharing/ShareProfileCard";
+import { JobMatchGraph } from "./JobMatchGraph";
+import { JSONResumeExport } from "./JSONResumeExport";
+import { TrustScore } from "@/components/profiles/TrustScore";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -589,6 +592,12 @@ const CandidateDashboard = () => {
           </Button>
         </CollapsibleTrigger>
         <CollapsibleContent className="space-y-6 pt-4">
+          {/* Trust Score */}
+          {userId && <TrustScore candidateId={userId} showDetails size="lg" />}
+
+          {/* Smart Job Matching */}
+          <JobMatchGraph />
+
           {/* AI-Powered Features */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold flex items-center gap-2">
@@ -598,6 +607,9 @@ const CandidateDashboard = () => {
             {userId && <SecurityIQ />}
             {userId && <CareerPathsAI />}
           </div>
+
+          {/* JSON Resume Export */}
+          <JSONResumeExport variant="card" />
 
           {/* Achievements */}
           {userId && <AchievementBadges userId={userId} />}

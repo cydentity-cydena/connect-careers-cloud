@@ -30,6 +30,7 @@ import { ProfileBadgeDisplay } from "@/components/badges/ProfileBadgeDisplay";
 import { PushCandidateButton } from "@/components/integrations/PushCandidateButton";
 import { HighValueBadges } from "@/components/profiles/HighValueBadges";
 import { useProfileRateLimit } from "@/hooks/useProfileRateLimit";
+import { TrustScore } from "@/components/profiles/TrustScore";
 
 export default function ProfileDetail() {
   const { id } = useParams();
@@ -530,6 +531,8 @@ export default function ProfileDetail() {
                       certifications={candidateProfile?.certifications?.map((c: any) => c.name) || []}
                     />
                   </div>
+                  {/* Trust Score Badge */}
+                  {id && <TrustScore candidateId={id} size="sm" />}
                   {profile.desired_job_title && (
                     <div className="flex items-center gap-2 justify-center">
                       <Badge variant="secondary" className="text-xs">
