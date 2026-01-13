@@ -4006,6 +4006,15 @@ export type Database = {
         Args: { tier_name: Database["public"]["Enums"]["subscription_tier"] }
         Returns: number
       }
+      get_verification_for_trust_score: {
+        Args: { p_candidate_id: string }
+        Returns: {
+          clearance_level: string
+          hr_ready: boolean
+          identity_status: string
+          rtw_status: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
