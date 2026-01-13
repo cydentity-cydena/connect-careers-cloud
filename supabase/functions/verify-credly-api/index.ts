@@ -20,15 +20,6 @@ interface CredlyBadge {
   };
 }
 
-interface AccredibleCredential {
-  id: number;
-  name: string;
-  issued_on: string;
-  expired_on: string | null;
-  issuer: string;
-  url: string;
-}
-
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -107,55 +98,6 @@ serve(async (req) => {
             console.error('Credly API error:', apiError);
             // Fall back to URL verification
             verificationResult = await verifyCredlyByUrl(credentialUrl);
-          }
-        }
-      }
-    }
-
-    // Verify with Accredible API
-    if (provider === 'accredible' || credentialUrl?.includes('accredible.com') || credentialUrl?.includes('credential.net')) {
-      const accredibleApiKey = Deno.env.get('ACCREDIBLE_API_KEY');
-      
-      if (!accredibleApiKey) {
-        console.log('Accredible API key not configured');
-        verificationResult.error = 'Accredible API not configured';
-      } else {
-        // Extract credential ID from URL
-        const credIdMatch = credentialUrl?.match(/\/(\d+)(?:\/|$)/);
-        const credId = credIdMatch?.[1];
-
-        if (credId) {
-          try {
-            const response = await fetch(
-              `https://api.accredible.com/v1/credentials/${credId}`,
-              {
-                headers: {
-                  'Authorization': `Token ${accredibleApiKey}`,
-                  'Accept': 'application/json'
-                }
-              }
-            );
-
-            if (response.ok) {
-              const credData: { credential: AccredibleCredential } = await response.json();
-              verificationResult = {
-                verified: true,
-                provider: 'accredible',
-                details: {
-                  name: credData.credential.name,
-                  issuer: credData.credential.issuer,
-                  issuedAt: credData.credential.issued_on,
-                  expiresAt: credData.credential.expired_on,
-                  verificationUrl: credData.credential.url || credentialUrl
-                },
-                error: null
-              };
-            } else {
-              verificationResult.error = 'Credential not found in Accredible';
-            }
-          } catch (apiError) {
-            console.error('Accredible API error:', apiError);
-            verificationResult.error = 'Failed to verify with Accredible';
           }
         }
       }
