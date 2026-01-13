@@ -2985,6 +2985,38 @@ export type Database = {
           },
         ]
       }
+      skill_certification_map: {
+        Row: {
+          certification_pattern: string
+          created_at: string
+          id: string
+          relevance_weight: number | null
+          skill_id: string | null
+        }
+        Insert: {
+          certification_pattern: string
+          created_at?: string
+          id?: string
+          relevance_weight?: number | null
+          skill_id?: string | null
+        }
+        Update: {
+          certification_pattern?: string
+          created_at?: string
+          id?: string
+          relevance_weight?: number | null
+          skill_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "skill_certification_map_skill_id_fkey"
+            columns: ["skill_id"]
+            isOneToOne: false
+            referencedRelation: "skills"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       skill_pathways: {
         Row: {
           category: string
@@ -3144,6 +3176,66 @@ export type Database = {
           role?: string
           status?: string | null
           user_id?: string
+        }
+        Relationships: []
+      }
+      trust_scores: {
+        Row: {
+          assessment_score: number | null
+          candidate_id: string
+          certification_score: number | null
+          clearance_score: number | null
+          community_score: number | null
+          created_at: string
+          ctf_score: number | null
+          experience_score: number | null
+          hr_ready_score: number | null
+          id: string
+          identity_score: number | null
+          last_calculated_at: string
+          profile_completion_score: number | null
+          rtw_score: number | null
+          skills_score: number | null
+          total_trust_score: number | null
+          updated_at: string
+        }
+        Insert: {
+          assessment_score?: number | null
+          candidate_id: string
+          certification_score?: number | null
+          clearance_score?: number | null
+          community_score?: number | null
+          created_at?: string
+          ctf_score?: number | null
+          experience_score?: number | null
+          hr_ready_score?: number | null
+          id?: string
+          identity_score?: number | null
+          last_calculated_at?: string
+          profile_completion_score?: number | null
+          rtw_score?: number | null
+          skills_score?: number | null
+          total_trust_score?: number | null
+          updated_at?: string
+        }
+        Update: {
+          assessment_score?: number | null
+          candidate_id?: string
+          certification_score?: number | null
+          clearance_score?: number | null
+          community_score?: number | null
+          created_at?: string
+          ctf_score?: number | null
+          experience_score?: number | null
+          hr_ready_score?: number | null
+          id?: string
+          identity_score?: number | null
+          last_calculated_at?: string
+          profile_completion_score?: number | null
+          rtw_score?: number | null
+          skills_score?: number | null
+          total_trust_score?: number | null
+          updated_at?: string
         }
         Relationships: []
       }
@@ -3809,6 +3901,10 @@ export type Database = {
         Args: { p_candidate_id: string }
         Returns: number
       }
+      calculate_trust_score: {
+        Args: { p_candidate_id: string }
+        Returns: number
+      }
       check_and_award_achievements: {
         Args: { p_category: string; p_current_count: number; p_user_id: string }
         Returns: undefined
@@ -3853,6 +3949,19 @@ export type Database = {
           projects_shared: number
         }[]
       }
+      get_job_matches_graph: {
+        Args: { p_candidate_id: string }
+        Returns: {
+          company_name: string
+          job_id: string
+          job_title: string
+          match_score: number
+          matched_certs: string[]
+          matched_skills: string[]
+          missing_certs: string[]
+          missing_skills: string[]
+        }[]
+      }
       get_public_candidate_profile: {
         Args: { profile_user_id: string }
         Returns: {
@@ -3874,6 +3983,15 @@ export type Database = {
           id: string
           location: string
           username: string
+        }[]
+      }
+      get_skill_upgrade_suggestions: {
+        Args: { p_candidate_id: string }
+        Returns: {
+          avg_salary_boost: number
+          demand_count: number
+          related_certs: string[]
+          skill_name: string
         }[]
       }
       get_tier_overage_price: {
