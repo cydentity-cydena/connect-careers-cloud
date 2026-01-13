@@ -125,6 +125,13 @@ export function TrustScore({ candidateId, showDetails = false, size = 'md' }: Tr
 
   const totalScore = score?.total_trust_score ?? 0;
 
+  const getTooltipHint = (value: number) => {
+    if (value >= 80) return 'Highly verified candidate';
+    if (value >= 60) return 'Complete verifications to increase';
+    if (value >= 40) return 'Add certifications & verify identity';
+    return 'Complete profile & get verified';
+  };
+
   // Compact badge version
   if (size === 'sm') {
     return (
@@ -134,7 +141,7 @@ export function TrustScore({ candidateId, showDetails = false, size = 'md' }: Tr
             <Badge 
               variant="outline" 
               className={cn(
-                "gap-1 cursor-help",
+                "gap-1.5 cursor-help border-current/30",
                 getScoreColor(totalScore)
               )}
             >
@@ -142,9 +149,17 @@ export function TrustScore({ candidateId, showDetails = false, size = 'md' }: Tr
               {totalScore}
             </Badge>
           </TooltipTrigger>
-          <TooltipContent>
-            <p>Trust Score: {totalScore}/100</p>
-            <p className="text-xs text-muted-foreground">{getScoreLabel(totalScore)}</p>
+          <TooltipContent className="max-w-[200px]">
+            <div className="space-y-1">
+              <div className="flex items-center justify-between gap-3">
+                <span className="font-semibold">Trust Score</span>
+                <span className={cn("font-bold", getScoreColor(totalScore))}>{totalScore}/100</span>
+              </div>
+              <p className="text-xs text-muted-foreground">{getScoreLabel(totalScore)}</p>
+              <p className="text-xs text-muted-foreground border-t pt-1 mt-1">
+                {getTooltipHint(totalScore)}
+              </p>
+            </div>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
