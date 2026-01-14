@@ -3430,6 +3430,7 @@ export type Database = {
       verification_requests: {
         Row: {
           additional_info: string | null
+          admin_comment: string | null
           business_registration_number: string | null
           candidate_id: string
           company_name: string | null
@@ -3452,6 +3453,7 @@ export type Database = {
         }
         Insert: {
           additional_info?: string | null
+          admin_comment?: string | null
           business_registration_number?: string | null
           candidate_id: string
           company_name?: string | null
@@ -3474,6 +3476,7 @@ export type Database = {
         }
         Update: {
           additional_info?: string | null
+          admin_comment?: string | null
           business_registration_number?: string | null
           candidate_id?: string
           company_name?: string | null
