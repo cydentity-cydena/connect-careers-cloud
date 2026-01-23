@@ -152,7 +152,6 @@ export const InjectionJunctionChallenge: React.FC<InjectionJunctionChallengeProp
   const hints = [
     "💡 Hint 1: This app has a WAF (Web Application Firewall) that blocks common keywords...",
     "💡 Hint 2: The filter blocks OR, AND, --, and ; but what about UNION?",
-    "💡 Hint 3: Try: ' UNION SELECT * FROM users -- (MySQL comment # also works!)",
   ];
 
   useEffect(() => {
