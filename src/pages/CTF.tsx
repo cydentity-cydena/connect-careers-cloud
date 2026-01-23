@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import { Json } from "@/integrations/supabase/types";
 import ChessChallenge from "@/components/ctf/ChessChallenge";
 import { QuizChallenge } from "@/components/ctf/QuizChallenge";
+import PortProbeChallenge from "@/components/ctf/PortProbeChallenge";
 import { 
   Flag, 
   Trophy, 
@@ -595,7 +596,7 @@ const CTF = () => {
                       {/* Expanded Challenge View */}
                       {isSelected && !isSolved && !isJustSolved && (
                         <div className="pt-4 border-t space-y-3" onClick={(e) => e.stopPropagation()}>
-                          {/* Special Interactive Challenge: AI Chess Gambit */}
+                          {/* Special Interactive Challenges */}
                           {challenge.title.trim().toLowerCase() === "advanced chess gambit" ? (
                             <ChessChallenge 
                               onComplete={(flag) => {
@@ -607,6 +608,13 @@ const CTF = () => {
                               onComplete={(flag) => {
                                 setFlagInputs(prev => ({ ...prev, [challenge.id]: flag }));
                               }} 
+                            />
+                          ) : challenge.title.trim().toLowerCase() === "port probe protocols" ? (
+                            <PortProbeChallenge
+                              challengeId={challenge.id}
+                              onSolve={(flag) => {
+                                setFlagInputs(prev => ({ ...prev, [challenge.id]: flag }));
+                              }}
                             />
                           ) : (
                             <>
