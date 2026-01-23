@@ -116,7 +116,7 @@ const getBotResponse = (input: string): string => {
     return "🤖 Some files tell search engines where NOT to look. Try asking politely for their list. Ever heard of robots.txt?";
   }
   if (cmd === 'hint3' || cmd === 'hint 3' || cmd.includes('third hint')) {
-    return "📁 The admin mentioned an older hidden page in the backup folder. What could its name be? Maybe something like /backup/hidden.html?";
+    return "📂 Some pages are hidden in plain sight... Admins often keep old files in backup directories. Check the comments in the pages you find!";
   }
   if (cmd === 'help' || cmd === '?') {
     return "💡 Available commands: 'hint1', 'hint2', 'hint3' for progressive hints. Or just chat with me about web security!";
