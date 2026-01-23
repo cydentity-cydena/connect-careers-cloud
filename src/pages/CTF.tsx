@@ -133,19 +133,22 @@ const CTF = () => {
     const { data: { user } } = await supabase.auth.getUser();
     setUserId(user?.id || null);
 
-    // Check if user is admin
+    // Check if user is admin or staff
     let userIsAdmin = false;
     if (user?.id) {
       const { data: roleData, error: roleError } = await supabase
         .from('user_roles')
         .select('role')
-        .eq('user_id', user.id)
-        .in('role', ['admin', 'staff'])
-        .maybeSingle();
+        .eq('user_id', user.id);
       
-      console.log('CTF Admin check:', { userId: user.id, roleData, roleError });
-      userIsAdmin = !!roleData;
+      // Check if any of the roles is admin or staff
+      const roles = roleData?.map(r => r.role) || [];
+      userIsAdmin = roles.includes('admin') || roles.includes('staff');
+      
+      console.log('CTF Admin check:', { userId: user.id, roles, userIsAdmin, roleError });
       setIsAdmin(userIsAdmin);
+    } else {
+      console.log('CTF Admin check: No user logged in');
     }
 
     // Fetch challenges - use base table for admin drafts, public view otherwise
