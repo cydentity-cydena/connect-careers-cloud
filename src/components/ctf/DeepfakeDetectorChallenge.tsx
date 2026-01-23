@@ -27,7 +27,6 @@ interface TransactionRequest {
   timestamp: string;
   isDeepfake: boolean;
   audioFile: string;
-  context: string;
 }
 
 interface DeepfakeDetectorChallengeProps {
@@ -41,8 +40,7 @@ const transactions: TransactionRequest[] = [
     recipient: "Vendor: Industrial Parts Co",
     timestamp: "2024-03-15 14:12:08 EST",
     isDeepfake: false,
-    audioFile: "/audio/ctf/call1_real.wav",
-    context: "Routine quarterly order to approved vendor"
+    audioFile: "/audio/ctf/call1_real.wav"
   },
   {
     id: 2,
@@ -50,8 +48,7 @@ const transactions: TransactionRequest[] = [
     recipient: "Vendor: TechSupply International",
     timestamp: "2024-03-15 09:23:41 EST",
     isDeepfake: true,
-    audioFile: "/audio/ctf/call2_fake.wav",
-    context: "Urgent transfer request - new vendor"
+    audioFile: "/audio/ctf/call2_fake.wav"
   },
   {
     id: 3,
@@ -59,8 +56,7 @@ const transactions: TransactionRequest[] = [
     recipient: "Vendor: Stealth Holdings LLC",
     timestamp: "2024-03-15 22:47:33 EST",
     isDeepfake: true,
-    audioFile: "/audio/ctf/call3_fake.wav",
-    context: "After-hours payment request"
+    audioFile: "/audio/ctf/call3_fake.wav"
   }
 ];
 
@@ -475,10 +471,6 @@ export const DeepfakeDetectorChallenge = ({ onComplete }: DeepfakeDetectorChalle
             <div>
               <div className="text-xs text-muted-foreground">Timestamp</div>
               <div className="font-mono text-sm">{transaction.timestamp}</div>
-            </div>
-            <div>
-              <div className="text-xs text-muted-foreground">Context</div>
-              <div className="text-sm">{transaction.context}</div>
             </div>
           </div>
 
