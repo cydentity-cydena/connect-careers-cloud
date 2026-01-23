@@ -46,7 +46,7 @@ const transactions: TransactionRequest[] = [
   },
   {
     id: 2,
-    amount: "$2,450,000",
+    amount: "$142,800",
     recipient: "Vendor: TechSupply International",
     timestamp: "2024-03-15 09:23:41 EST",
     isDeepfake: true,
@@ -55,12 +55,12 @@ const transactions: TransactionRequest[] = [
   },
   {
     id: 3,
-    amount: "$5,000,000",
-    recipient: "Acquisition: Stealth Holdings LLC",
+    amount: "$118,250",
+    recipient: "Vendor: Stealth Holdings LLC",
     timestamp: "2024-03-15 22:47:33 EST",
     isDeepfake: true,
     audioFile: "/audio/ctf/call3_fake.wav",
-    context: "After-hours acquisition payment request"
+    context: "After-hours payment request"
   }
 ];
 
