@@ -571,10 +571,15 @@ const CTF = () => {
                 const isSelected = selectedChallenge?.id === challenge.id;
                 const isJustSolved = justSolved?.challengeId === challenge.id;
                 
+                // Check if this is a wide challenge
+                const isWideChallenge = challenge.title.trim().toLowerCase() === "the curious web";
+                
                 return (
                   <Card 
                     key={challenge.id} 
                     className={`transition-all cursor-pointer hover:shadow-lg ${
+                      isWideChallenge ? 'md:col-span-2' : ''
+                    } ${
                       isJustSolved ? 'bg-green-500/20 border-green-500 ring-2 ring-green-500 animate-pulse' :
                       isSolved ? 'bg-green-500/5 border-green-500/30' : 
                       isSelected ? 'ring-2 ring-primary' : ''
