@@ -109,7 +109,14 @@ const PortProbeChallenge = ({ onSolve, challengeId }: PortProbeProps) => {
   };
 
   const parseCurlUrl = (cmd: string): { host: string; port: number; path: string } | null => {
-    const match = cmd.match(/curl\s+https?:\/\/([^:/]+):(\d+)(\/[^\s]*)?/i);
+    // Try with http:// prefix first
+    let match = cmd.match(/curl\s+https?:\/\/([^:/]+):(\d+)(\/[^\s]*)?/i);
+    
+    // If no match, try without http:// prefix (e.g., curl 127.0.0.1:8037/banner.txt)
+    if (!match) {
+      match = cmd.match(/curl\s+([^:/\s]+):(\d+)(\/[^\s]*)?/i);
+    }
+    
     if (!match) return null;
     return {
       host: match[1],
