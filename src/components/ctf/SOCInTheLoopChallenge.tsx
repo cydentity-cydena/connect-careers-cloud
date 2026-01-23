@@ -233,10 +233,10 @@ export function SOCInTheLoopChallenge({ onComplete }: SOCInTheLoopChallengeProps
       { type: 'output', content: 'HOW TO SOLVE:' },
       { type: 'output', content: '  1. cat ai_summary.txt  → Read the AI\'s threat analysis' },
       { type: 'output', content: '  2. cat access.log      → Examine the raw server logs' },
-      { type: 'output', content: '  3. Find the SUCCESSFUL attack (look for HTTP 200 responses)' },
+      { type: 'output', content: '  3. Compare AI conclusions against the raw evidence' },
       { type: 'output', content: '  4. Type the attacker\'s IP address and press Enter' },
       { type: 'output', content: '' },
-      { type: 'output', content: '💡 Hint: Blocked attacks (403/404/500) are NOT successful.' },
+      { type: 'output', content: '💡 Hint: The AI may miss what really matters.' },
       { type: 'output', content: '' },
     ]);
   }, []);
@@ -281,7 +281,7 @@ export function SOCInTheLoopChallenge({ onComplete }: SOCInTheLoopChallengeProps
       addOutput('To submit your answer:');
       addOutput('  Type the attacker\'s IP address directly (e.g., 192.168.1.7)');
       addOutput('');
-      addOutput('💡 TIP: Look for SUCCESSFUL attacks (HTTP 200), not blocked ones.');
+      addOutput('💡 TIP: Trust but verify. AI conclusions may not tell the whole story.');
       addOutput('');
       return;
     }
