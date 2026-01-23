@@ -16,6 +16,7 @@ import { QuizChallenge } from "@/components/ctf/QuizChallenge";
 import PortProbeChallenge from "@/components/ctf/PortProbeChallenge";
 import { CuriousWebChallenge } from "@/components/ctf/CuriousWebChallenge";
 import { InjectionJunctionChallenge } from "@/components/ctf/InjectionJunctionChallenge";
+import { DeepfakeDetectorChallenge } from "@/components/ctf/DeepfakeDetectorChallenge";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { 
@@ -574,7 +575,7 @@ const CTF = () => {
                 
                 // Check if this is a wide challenge (interactive simulations)
                 const challengeTitle = challenge.title.trim().toLowerCase();
-                const isWideChallenge = challengeTitle === "the curious web" || challengeTitle === "injection junction";
+                const isWideChallenge = challengeTitle === "the curious web" || challengeTitle === "injection junction" || challengeTitle === "deepfakes and dollars";
                 
                 return (
                   <Card 
@@ -694,6 +695,12 @@ const CTF = () => {
                           ) : challenge.title.trim().toLowerCase() === "injection junction" ? (
                             <InjectionJunctionChallenge
                               isCompleted={userStats.solvedChallenges.includes(challenge.id)}
+                            />
+                          ) : challenge.title.trim().toLowerCase() === "deepfakes and dollars" ? (
+                            <DeepfakeDetectorChallenge
+                              onComplete={(flag) => {
+                                setFlagInputs(prev => ({ ...prev, [challenge.id]: flag }));
+                              }}
                             />
                           ) : (
                             <>
