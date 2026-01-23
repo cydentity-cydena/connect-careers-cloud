@@ -136,13 +136,14 @@ const CTF = () => {
     // Check if user is admin
     let userIsAdmin = false;
     if (user?.id) {
-      const { data: roleData } = await supabase
+      const { data: roleData, error: roleError } = await supabase
         .from('user_roles')
         .select('role')
         .eq('user_id', user.id)
         .in('role', ['admin', 'staff'])
         .maybeSingle();
       
+      console.log('CTF Admin check:', { userId: user.id, roleData, roleError });
       userIsAdmin = !!roleData;
       setIsAdmin(userIsAdmin);
     }
