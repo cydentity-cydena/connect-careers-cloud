@@ -14,6 +14,7 @@ import { Json } from "@/integrations/supabase/types";
 import ChessChallenge from "@/components/ctf/ChessChallenge";
 import { QuizChallenge } from "@/components/ctf/QuizChallenge";
 import PortProbeChallenge from "@/components/ctf/PortProbeChallenge";
+import { CuriousWebChallenge } from "@/components/ctf/CuriousWebChallenge";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { 
@@ -678,6 +679,10 @@ const CTF = () => {
                               onSolve={(flag) => {
                                 setFlagInputs(prev => ({ ...prev, [challenge.id]: flag }));
                               }}
+                            />
+                          ) : challenge.title.trim().toLowerCase() === "the curious web" ? (
+                            <CuriousWebChallenge
+                              isCompleted={userStats.solvedChallenges.includes(challenge.id)}
                             />
                           ) : (
                             <>

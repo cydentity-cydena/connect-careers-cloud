@@ -14,7 +14,7 @@ interface Message {
 }
 
 interface CuriousWebChallengeProps {
-  onFlagSubmit: (flag: string) => void;
+  onFlagSubmit?: (flag: string) => void;
   isCompleted?: boolean;
 }
 
@@ -154,7 +154,6 @@ const getBotResponse = (input: string): string => {
 };
 
 export const CuriousWebChallenge: React.FC<CuriousWebChallengeProps> = ({ 
-  onFlagSubmit, 
   isCompleted = false 
 }) => {
   // Chat state
@@ -175,9 +174,6 @@ export const CuriousWebChallenge: React.FC<CuriousWebChallengeProps> = ({
   const [showSource, setShowSource] = useState(false);
   const [history, setHistory] = useState<string[]>(['/']);
   const [historyIndex, setHistoryIndex] = useState(0);
-
-  // Flag submission
-  const [flagInput, setFlagInput] = useState('');
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -451,29 +447,12 @@ export const CuriousWebChallenge: React.FC<CuriousWebChallengeProps> = ({
         </TabsContent>
       </Tabs>
 
-      {/* Flag Submission */}
-      <Card className="border-border bg-card">
-        <CardContent className="pt-4">
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              onFlagSubmit(flagInput);
-            }}
-            className="flex gap-2"
-          >
-            <Input
-              value={flagInput}
-              onChange={(e) => setFlagInput(e.target.value)}
-              placeholder="Enter the flag: FLAG{...}"
-              className="flex-1 font-mono"
-              disabled={isCompleted}
-            />
-            <Button type="submit" disabled={isCompleted || !flagInput.trim()}>
-              {isCompleted ? '✓ Solved' : 'Submit Flag'}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+      {/* Hint about flag location */}
+      {!isCompleted && (
+        <div className="text-center text-sm text-muted-foreground">
+          <p>💡 Find the flag in the simulated browser, then submit it below</p>
+        </div>
+      )}
     </div>
   );
 };
