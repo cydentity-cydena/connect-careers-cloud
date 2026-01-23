@@ -31,49 +31,81 @@ interface QueryResult {
   vulnerable?: boolean;
 }
 
-const executeQuery = (username: string, password: string): QueryResult => {
-  // Simulate vulnerable SQL query
-  const simulatedQuery = `SELECT * FROM users WHERE username = '${username}' AND password = '${password}'`;
+// Simulated "security" filter - blocks common patterns but has bypasses
+const applyFilter = (input: string): { filtered: string; blocked: boolean; reason?: string } => {
+  const original = input;
   
-  // Check for SQL injection patterns
-  const injectionPatterns = [
-    /'\s*OR\s+['"]?1['"]?\s*=\s*['"]?1/i,
-    /'\s*OR\s+true/i,
-    /'\s*OR\s+1\s*--/i,
-    /'\s*--/,
-    /'\s*;/,
-    /'\s*OR\s+username/i,
-    /'\s*UNION/i,
+  // Block list of common injection keywords (case insensitive)
+  const blockedPatterns = [
+    { pattern: /\bOR\b/i, name: "OR keyword" },
+    { pattern: /\bAND\b/i, name: "AND keyword" },
+    { pattern: /--/, name: "SQL comment" },
+    { pattern: /;/, name: "semicolon" },
+    { pattern: /\bDROP\b/i, name: "DROP keyword" },
+    { pattern: /\bDELETE\b/i, name: "DELETE keyword" },
   ];
-
-  const hasInjection = injectionPatterns.some(pattern => 
-    pattern.test(username) || pattern.test(password)
-  );
-
-  // Check for UNION-based injection to dump all users
-  const unionPattern = /'\s*UNION\s+SELECT\s+\*/i;
-  const dumpAllPattern = /'\s*OR\s+['"]?1['"]?\s*=\s*['"]?1/i;
   
-  if (unionPattern.test(username) || unionPattern.test(password)) {
+  for (const { pattern, name } of blockedPatterns) {
+    if (pattern.test(input)) {
+      return { filtered: input, blocked: true, reason: `Blocked: ${name} detected` };
+    }
+  }
+  
+  return { filtered: input, blocked: false };
+};
+
+const executeQuery = (username: string, password: string): QueryResult => {
+  // Apply "security" filter first
+  const usernameFilter = applyFilter(username);
+  const passwordFilter = applyFilter(password);
+  
+  if (usernameFilter.blocked || passwordFilter.blocked) {
+    const reason = usernameFilter.reason || passwordFilter.reason;
     return {
-      success: true,
-      message: '⚠️ UNION injection detected! Dumping all records...',
-      data: USERS_TABLE.map(u => ({ 
-        id: u.id, 
-        username: u.username, 
-        password: u.password, 
-        role: u.role 
-      })),
-      query: simulatedQuery,
-      vulnerable: true,
+      success: false,
+      message: `🛡️ Input blocked by WAF: ${reason}`,
+      query: `-- Query blocked before execution --`,
+      vulnerable: false,
     };
   }
-
-  if (hasInjection || dumpAllPattern.test(username) || dumpAllPattern.test(password)) {
-    // Successful injection - return all users
+  
+  // Simulate vulnerable SQL query (filter passed!)
+  const simulatedQuery = `SELECT * FROM users WHERE username = '${username}' AND password = '${password}'`;
+  
+  // Advanced injection patterns that bypass the simple filter
+  // These work because they don't use blocked keywords
+  const bypassPatterns = [
+    // Using || instead of OR (works in some SQL dialects)
+    /'\s*\|\|\s*['"]?1['"]?\s*=\s*['"]?1/,
+    // Using 1=1 without OR by closing the quote early
+    /^[^']*'\s*=\s*'\s*$/,
+    // UNION bypass - filter doesn't block UNION!
+    /'\s*UNION\s+SELECT/i,
+    // Using != or <> for always-true conditions
+    /'\s*!=\s*'/,
+    // Boolean-based: admin'--  (but -- is blocked, so need alternative)
+    // Using # comment (MySQL style)
+    /#/,
+    // Null byte injection concept
+    /'\s*UNION\s+ALL\s+SELECT/i,
+  ];
+  
+  // Check for successful bypasses
+  const hasValidBypass = bypassPatterns.some(pattern => 
+    pattern.test(username) || pattern.test(password)
+  );
+  
+  // Special case: closing quote technique ' = '
+  const closeQuoteTechnique = (username.includes("'") && username.endsWith("' ")) || 
+                               (password.includes("'") && password.trim() === "' = '");
+  
+  // Special case: UNION SELECT (not blocked!)
+  const unionBypass = /UNION\s+SELECT/i.test(username) || /UNION\s+SELECT/i.test(password);
+  
+  if (hasValidBypass || closeQuoteTechnique || unionBypass) {
     return {
       success: true,
-      message: '⚠️ SQL Injection successful! Query bypassed authentication.',
+      message: '⚠️ Filter bypassed! SQL Injection successful!',
       data: USERS_TABLE.map(u => ({ 
         id: u.id, 
         username: u.username, 
@@ -118,9 +150,9 @@ export const InjectionJunctionChallenge: React.FC<InjectionJunctionChallengeProp
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const hints = [
-    "💡 Hint 1: The login form directly concatenates user input into SQL queries...",
-    "💡 Hint 2: What happens if you add a single quote (') to the username field?",
-    "💡 Hint 3: Try: ' OR '1'='1 as the password to bypass authentication!",
+    "💡 Hint 1: This app has a WAF (Web Application Firewall) that blocks common keywords...",
+    "💡 Hint 2: The filter blocks OR, AND, --, and ; but what about UNION?",
+    "💡 Hint 3: Try: ' UNION SELECT * FROM users -- (MySQL comment # also works!)",
   ];
 
   useEffect(() => {
