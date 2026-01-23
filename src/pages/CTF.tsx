@@ -14,6 +14,8 @@ import { Json } from "@/integrations/supabase/types";
 import ChessChallenge from "@/components/ctf/ChessChallenge";
 import { QuizChallenge } from "@/components/ctf/QuizChallenge";
 import PortProbeChallenge from "@/components/ctf/PortProbeChallenge";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import { 
   Flag, 
   Trophy, 
@@ -32,7 +34,9 @@ import {
   Facebook,
   Share2,
   Copy,
-  Check
+  Check,
+  Eye,
+  EyeOff
 } from "lucide-react";
 
 interface HintItem {
@@ -50,6 +54,7 @@ interface CTFChallenge {
   hints: HintItem[] | null;
   file_url: string | null;
   file_name: string | null;
+  is_active?: boolean;
 }
 
 const parseHints = (hints: Json | null): HintItem[] | null => {
@@ -81,6 +86,8 @@ const CTF = () => {
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [showDrafts, setShowDrafts] = useState(false);
   const [userStats, setUserStats] = useState<UserStats>({ solvedChallenges: [], totalPoints: 0, rank: 0 });
   const [selectedChallenge, setSelectedChallenge] = useState<CTFChallenge | null>(null);
   const [flagInputs, setFlagInputs] = useState<Record<string, string>>({});
@@ -117,7 +124,7 @@ const CTF = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [showDrafts]);
 
   const fetchData = async () => {
     setLoading(true);
@@ -126,11 +133,35 @@ const CTF = () => {
     const { data: { user } } = await supabase.auth.getUser();
     setUserId(user?.id || null);
 
-    // Fetch challenges from public view (no flags exposed)
-    const { data: challengesData, error: challengesError } = await supabase
-      .from('ctf_challenges_public')
-      .select('*')
-      .order('points', { ascending: true });
+    // Check if user is admin
+    if (user?.id) {
+      const { data: roleData } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', user.id)
+        .in('role', ['admin', 'staff'])
+        .maybeSingle();
+      
+      setIsAdmin(!!roleData);
+    }
+
+    // Fetch challenges - use base table for admin drafts, public view otherwise
+    let challengesQuery;
+    if (showDrafts && isAdmin) {
+      // Admin preview mode - fetch all challenges including drafts (but exclude flag)
+      challengesQuery = supabase
+        .from('ctf_challenges')
+        .select('id, title, description, category, difficulty, points, hints, is_active, file_url, file_name')
+        .order('points', { ascending: true });
+    } else {
+      // Normal mode - public view only (is_active = true)
+      challengesQuery = supabase
+        .from('ctf_challenges_public')
+        .select('*')
+        .order('points', { ascending: true });
+    }
+    
+    const { data: challengesData, error: challengesError } = await challengesQuery;
 
     if (challengesError) {
       console.error("Error fetching challenges:", challengesError);
@@ -146,7 +177,8 @@ const CTF = () => {
           points: c.points!,
           hints: parseHints(c.hints),
           file_url: c.file_url || null,
-          file_name: c.file_name || null
+          file_name: c.file_name || null,
+          is_active: (c as any).is_active
         }));
       setChallenges(mapped);
     }
@@ -453,6 +485,26 @@ const CTF = () => {
           </div>
         </div>
 
+        {/* Admin Preview Toggle */}
+        {isAdmin && (
+          <Card className="mb-6 border-amber-500/50 bg-amber-500/10">
+            <CardContent className="p-4 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                {showDrafts ? <Eye className="h-5 w-5 text-amber-500" /> : <EyeOff className="h-5 w-5 text-muted-foreground" />}
+                <div>
+                  <Label htmlFor="show-drafts" className="text-sm font-medium">Admin Preview Mode</Label>
+                  <p className="text-xs text-muted-foreground">Test draft challenges before publishing</p>
+                </div>
+              </div>
+              <Switch 
+                id="show-drafts"
+                checked={showDrafts}
+                onCheckedChange={setShowDrafts}
+              />
+            </CardContent>
+          </Card>
+        )}
+
         {/* User Stats Bar */}
         {userId && (
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-8">
@@ -530,6 +582,11 @@ const CTF = () => {
                             <CardTitle className="text-lg flex items-center gap-2">
                               {challenge.title}
                               {isSolved && <CheckCircle2 className="h-4 w-4 text-green-500" />}
+                              {showDrafts && challenge.is_active === false && (
+                                <Badge variant="outline" className="text-amber-500 border-amber-500/50 text-xs">
+                                  Draft
+                                </Badge>
+                              )}
                             </CardTitle>
                             <CardDescription className="text-xs capitalize">{challenge.category}</CardDescription>
                           </div>
