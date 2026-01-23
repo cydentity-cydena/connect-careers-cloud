@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -13,7 +13,10 @@ import {
   Clock,
   FileText,
   Eye,
-  Volume2
+  Volume2,
+  Play,
+  Pause,
+  RotateCcw
 } from 'lucide-react';
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -26,6 +29,7 @@ interface TransactionRequest {
   recipient: string;
   timestamp: string;
   isDeepfake: boolean;
+  audioFile: string;
   videoArtifacts: string[];
   audioArtifacts: string[];
   behavioralFlags: string[];
@@ -43,29 +47,13 @@ interface DeepfakeDetectorChallengeProps {
 const transactions: TransactionRequest[] = [
   {
     id: 1,
-    requestor: "Sarah Chen",
-    role: "CFO",
-    amount: "$2,450,000",
-    recipient: "Vendor: TechSupply International",
-    timestamp: "2024-03-15 09:23:41 EST",
-    isDeepfake: true,
-    videoArtifacts: ["Blinking rate: 2.1/min (avg: 15-20/min)", "Lip sync delay: 180ms", "Edge blur around hairline"],
-    audioArtifacts: ["Breathing pattern irregular", "Background noise mismatch", "Voice pitch variance: ±12Hz (unusual)"],
-    behavioralFlags: ["Request outside normal business hours for CFO", "New vendor not in approved list", "Urgency emphasized 3x"],
-    evidence: {
-      videoAnalysis: "The video shows Sarah Chen at what appears to be her home office. However, the blinking frequency is abnormally low (2.1 per minute vs. typical 15-20), and there's visible artifacting around the hairline during head movements. The lip movements are slightly delayed from the audio.",
-      audioAnalysis: "The audio exhibits subtle but detectable anomalies. The breathing patterns don't match natural speech cadence, and there's a +/-12Hz variance in voice pitch that suggests AI synthesis. Background noise appears layered in post-processing.",
-      contextClues: "This request came at 9:23 AM EST, but Sarah Chen's calendar shows she was presenting at a board meeting at this time. The vendor 'TechSupply International' was registered just 3 days ago."
-    }
-  },
-  {
-    id: 2,
     requestor: "Michael Torres",
     role: "VP of Operations",
     amount: "$127,500",
     recipient: "Vendor: Industrial Parts Co",
     timestamp: "2024-03-15 14:12:08 EST",
     isDeepfake: false,
+    audioFile: "/audio/ctf/call1_real.wav",
     videoArtifacts: ["Blinking rate: 17/min (normal)", "No lip sync delay", "Natural head movements"],
     audioArtifacts: ["Consistent breathing", "Ambient office sounds match visuals", "Voice stable"],
     behavioralFlags: ["Routine purchase order", "Approved vendor", "Standard approval chain"],
@@ -76,6 +64,24 @@ const transactions: TransactionRequest[] = [
     }
   },
   {
+    id: 2,
+    requestor: "Sarah Chen",
+    role: "CFO",
+    amount: "$2,450,000",
+    recipient: "Vendor: TechSupply International",
+    timestamp: "2024-03-15 09:23:41 EST",
+    isDeepfake: true,
+    audioFile: "/audio/ctf/call2_fake.wav",
+    videoArtifacts: ["Blinking rate: 2.1/min (avg: 15-20/min)", "Lip sync delay: 180ms", "Edge blur around hairline"],
+    audioArtifacts: ["Breathing pattern irregular", "Background noise mismatch", "Voice pitch variance: ±12Hz (unusual)"],
+    behavioralFlags: ["Request outside normal business hours for CFO", "New vendor not in approved list", "Urgency emphasized 3x"],
+    evidence: {
+      videoAnalysis: "The video shows Sarah Chen at what appears to be her home office. However, the blinking frequency is abnormally low (2.1 per minute vs. typical 15-20), and there's visible artifacting around the hairline during head movements. The lip movements are slightly delayed from the audio.",
+      audioAnalysis: "The audio exhibits subtle but detectable anomalies. The breathing patterns don't match natural speech cadence, and there's a +/-12Hz variance in voice pitch that suggests AI synthesis. Background noise appears layered in post-processing.",
+      contextClues: "This request came at 9:23 AM EST, but Sarah Chen's calendar shows she was presenting at a board meeting at this time. The vendor 'TechSupply International' was registered just 3 days ago."
+    }
+  },
+  {
     id: 3,
     requestor: "Jennifer Walsh",
     role: "CEO",
@@ -83,6 +89,7 @@ const transactions: TransactionRequest[] = [
     recipient: "Acquisition: Stealth Holdings LLC",
     timestamp: "2024-03-15 22:47:33 EST",
     isDeepfake: true,
+    audioFile: "/audio/ctf/call3_fake.wav",
     videoArtifacts: ["Eye reflection inconsistency", "Skin texture too smooth", "Micro-expression timing off"],
     audioArtifacts: ["Unnatural pauses at odd points", "Consonant sounds slightly distorted", "No natural filler words"],
     behavioralFlags: ["Late night urgent request", "No prior discussion of acquisition", "Requested silence until complete"],
@@ -90,40 +97,6 @@ const transactions: TransactionRequest[] = [
       videoAnalysis: "Multiple deepfake indicators present: The eye reflections don't match the stated lighting environment. Skin texture appears algorithmically smoothed, losing natural pore detail. Micro-expressions that typically accompany speech are delayed by ~200ms.",
       audioAnalysis: "Speech patterns are too perfect—no 'um', 'uh' or natural hesitation. Consonant sounds, especially 's' and 't', show digital compression artifacts not present in genuine recordings. Pauses occur mid-thought rather than between sentences.",
       contextClues: "Request was made at 10:47 PM with extreme urgency. No board discussion, email trail, or legal review exists for this 'acquisition'. Stealth Holdings LLC was incorporated in Delaware 48 hours ago."
-    }
-  },
-  {
-    id: 4,
-    requestor: "David Park",
-    role: "Head of Procurement",
-    amount: "$89,000",
-    recipient: "Vendor: Office Solutions Inc",
-    timestamp: "2024-03-15 11:05:22 EST",
-    isDeepfake: false,
-    videoArtifacts: ["Natural eye movement patterns", "Appropriate facial asymmetry", "Real-time environmental response"],
-    audioArtifacts: ["Natural speech rhythm with filler words", "Consistent vocal tone", "Real background audio"],
-    behavioralFlags: ["Standard Q1 supply order", "Pre-approved budget item", "Normal approval workflow"],
-    evidence: {
-      videoAnalysis: "Genuine video characteristics: Natural asymmetric facial features, appropriate eye tracking, and real-time responses to environmental factors (adjusted glasses, reacted to notification sound).",
-      audioAnalysis: "Authentic speech with natural hesitations ('uh... let me pull that up'), consistent voice quality, and genuine background office sounds that match visual cues.",
-      contextClues: "Quarterly office supply order within pre-approved budget. David Park is at his regular workstation during business hours. Vendor has 6-year relationship with company."
-    }
-  },
-  {
-    id: 5,
-    requestor: "Sarah Chen",
-    role: "CFO",
-    amount: "$890,000",
-    recipient: "Tax Authority: Urgent Compliance Fee",
-    timestamp: "2024-03-15 16:33:19 EST",
-    isDeepfake: true,
-    videoArtifacts: ["Identical head position to video #1", "Same background despite 'different location'", "Temporal artifacts at 0:08, 0:23, 0:41"],
-    audioArtifacts: ["Recycled phrases from previous calls", "Audio quality mismatch with video", "Clipping on loud sounds"],
-    behavioralFlags: ["Second urgent request from CFO today", "Government doesn't request payments this way", "Threatening language used"],
-    evidence: {
-      videoAnalysis: "This video shares 94% visual similarity with transaction #1 despite claiming to be from a 'different location'. The same deepfake source material was used. Temporal glitches visible at specific timestamps where the AI struggled with transitions.",
-      audioAnalysis: "Spectral analysis reveals reused audio segments from transaction #1. The phrase 'we need to act immediately' appears identically in both. Audio compression levels don't match the video quality.",
-      contextClues: "This is the second 'urgent' request from 'Sarah Chen' today, but the real CFO has confirmed she made no such requests. No government agency demands immediate wire transfers for 'compliance fees'. The threatening language ('legal action within 24 hours') is a classic fraud indicator."
     }
   }
 ];
@@ -135,6 +108,8 @@ export const DeepfakeDetectorChallenge = ({ onComplete }: DeepfakeDetectorChalle
   const [analysisTab, setAnalysisTab] = useState<'video' | 'audio' | 'context'>('video');
   const [gameComplete, setGameComplete] = useState(false);
   const [score, setScore] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const transaction = transactions[currentCase];
   const totalCases = transactions.length;
@@ -154,8 +129,8 @@ export const DeepfakeDetectorChallenge = ({ onComplete }: DeepfakeDetectorChalle
       const finalScore = score + (isCorrect ? 1 : 0);
       setGameComplete(true);
       
-      // Need 4/5 correct to get the flag
-      if (finalScore >= 4) {
+      // Need all 3 correct to get the flag
+      if (finalScore === 3) {
         setTimeout(() => {
           onComplete('FLAG{deepfake_detector_elite}');
         }, 1500);
@@ -174,8 +149,32 @@ export const DeepfakeDetectorChallenge = ({ onComplete }: DeepfakeDetectorChalle
         }
         setShowEvidence(false);
         setAnalysisTab('video');
+        // Stop audio when moving to next case
+        if (audioRef.current) {
+          audioRef.current.pause();
+          audioRef.current.currentTime = 0;
+        }
+        setIsPlaying(false);
       }, 500);
     }
+  };
+
+  const toggleAudio = () => {
+    if (!audioRef.current) return;
+    
+    if (isPlaying) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.play();
+    }
+    setIsPlaying(!isPlaying);
+  };
+
+  const restartAudio = () => {
+    if (!audioRef.current) return;
+    audioRef.current.currentTime = 0;
+    audioRef.current.play();
+    setIsPlaying(true);
   };
 
   const getDecisionBadge = (id: number) => {
@@ -202,7 +201,7 @@ export const DeepfakeDetectorChallenge = ({ onComplete }: DeepfakeDetectorChalle
   };
 
   if (gameComplete) {
-    const passed = score >= 4;
+    const passed = score === 3;
     return (
       <Card className="bg-background/80 backdrop-blur border-primary/30">
         <CardHeader className="text-center">
@@ -230,10 +229,10 @@ export const DeepfakeDetectorChallenge = ({ onComplete }: DeepfakeDetectorChalle
           ) : (
             <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-4 mt-4">
               <p className="text-red-400 font-medium">
-                The fraudsters got through. $7.34 million was wired to criminal accounts.
+                The fraudsters got through. Millions were wired to criminal accounts.
               </p>
               <p className="text-sm text-muted-foreground mt-2">
-                You need at least 4/5 correct to pass. Refresh to try again.
+                You need 3/3 correct to pass. Refresh to try again.
               </p>
             </div>
           )}
@@ -347,25 +346,56 @@ export const DeepfakeDetectorChallenge = ({ onComplete }: DeepfakeDetectorChalle
             </div>
           </div>
 
-          {/* Video Call Preview */}
-          <div className="relative bg-black rounded-lg overflow-hidden aspect-video flex items-center justify-center border border-primary/30">
+          {/* Video Call Preview with Audio Player */}
+          <div className="relative bg-black rounded-lg overflow-hidden border border-primary/30">
             <div className="absolute inset-0 bg-gradient-to-br from-gray-900 to-black" />
             <div className="relative z-10 text-center p-6">
-              <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-gradient-to-br from-primary/30 to-primary/10 flex items-center justify-center border-2 border-primary/50">
-                <Video className="h-10 w-10 text-primary" />
+              <div className="w-20 h-20 mx-auto mb-3 rounded-full bg-gradient-to-br from-primary/30 to-primary/10 flex items-center justify-center border-2 border-primary/50">
+                <Phone className="h-8 w-8 text-primary" />
               </div>
               <p className="text-lg font-medium">{transaction.requestor}</p>
-              <p className="text-sm text-muted-foreground">{transaction.role}</p>
-              <div className="flex items-center justify-center gap-4 mt-4">
-                <div className="flex items-center gap-1 text-xs text-green-400">
-                  <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-                  Video Call Recording
+              <p className="text-sm text-muted-foreground mb-4">{transaction.role}</p>
+              
+              {/* Audio Player */}
+              <div className="bg-background/20 backdrop-blur rounded-lg p-4 mx-auto max-w-xs border border-primary/20">
+                <audio 
+                  ref={audioRef}
+                  src={transaction.audioFile}
+                  onEnded={() => setIsPlaying(false)}
+                  onPlay={() => setIsPlaying(true)}
+                  onPause={() => setIsPlaying(false)}
+                />
+                <div className="flex items-center justify-center gap-3 mb-3">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={toggleAudio}
+                    className="h-10 w-10 rounded-full p-0"
+                  >
+                    {isPlaying ? (
+                      <Pause className="h-4 w-4" />
+                    ) : (
+                      <Play className="h-4 w-4 ml-0.5" />
+                    )}
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={restartAudio}
+                    className="h-8 w-8 rounded-full p-0"
+                  >
+                    <RotateCcw className="h-3 w-3" />
+                  </Button>
                 </div>
-                <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                  <Phone className="h-3 w-3" />
-                  Duration: 2:34
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <Volume2 className="h-3 w-3" />
+                  <span>Voice Call Recording</span>
                 </div>
               </div>
+              
+              <p className="text-xs text-amber-400 mt-3">
+                🎧 Listen carefully for audio artifacts
+              </p>
             </div>
           </div>
 
