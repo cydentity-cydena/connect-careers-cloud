@@ -22,72 +22,184 @@ interface SOCInTheLoopChallengeProps {
   onComplete: (flag: string) => void;
 }
 
-const ACCESS_LOG = `192.168.1.10 - - [22/Jan/2026:10:15:01 +0000] "GET /index HTTP/1.1" 200 5123 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
-192.168.1.11 - - [22/Jan/2026:10:15:05 +0000] "GET /index.html HTTP/1.1" 200 4987 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)"
+const ACCESS_LOG = `# Server: web-prod-01 | Log period: 22/Jan/2026 10:00-11:00 UTC
+# Format: IP - - [timestamp] "request" status size "referer" "user-agent"
 
-203.0.113.45 - - [22/Jan/2026:10:16:12 +0000] "POST /login HTTP/1.1" 302 721 "https://example.com/index" "Mozilla/5.0 (X11; Linux x86_64)"
-203.0.113.45 - - [22/Jan/2026:10:16:12 +0000] "POST /login HTTP/1.1" 401 889 "-" "Mozilla/5.0 (X11; Linux x86_64)"
+192.168.1.10 - - [22/Jan/2026:10:00:01 +0000] "GET / HTTP/1.1" 200 5123 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+192.168.1.11 - - [22/Jan/2026:10:00:02 +0000] "GET /static/css/main.css HTTP/1.1" 200 12847 "https://corp.example.com/" "Mozilla/5.0"
+192.168.1.11 - - [22/Jan/2026:10:00:02 +0000] "GET /static/js/app.js HTTP/1.1" 200 89234 "https://corp.example.com/" "Mozilla/5.0"
+10.0.0.5 - - [22/Jan/2026:10:00:05 +0000] "GET /healthcheck HTTP/1.1" 200 15 "-" "ELB-HealthChecker/2.0"
+192.168.1.12 - - [22/Jan/2026:10:00:08 +0000] "GET /api/v1/users/me HTTP/1.1" 401 89 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X)"
+192.168.1.12 - - [22/Jan/2026:10:00:09 +0000] "POST /api/v1/auth/login HTTP/1.1" 200 1247 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X)"
+POST_DATA: username=jsmith&password=********
+
+# Automated scanner noise begins
+198.51.100.23 - - [22/Jan/2026:10:05:12 +0000] "GET /admin HTTP/1.1" 403 512 "-" "Mozilla/5.0"
+198.51.100.23 - - [22/Jan/2026:10:05:13 +0000] "GET /wp-admin HTTP/1.1" 404 0 "-" "Mozilla/5.0"
+198.51.100.23 - - [22/Jan/2026:10:05:13 +0000] "GET /phpmyadmin HTTP/1.1" 404 0 "-" "Mozilla/5.0"
+198.51.100.23 - - [22/Jan/2026:10:05:14 +0000] "GET /.env HTTP/1.1" 403 0 "-" "Mozilla/5.0"
+198.51.100.23 - - [22/Jan/2026:10:05:15 +0000] "GET /config.php HTTP/1.1" 404 0 "-" "Mozilla/5.0"
+
+# Normal user activity
+192.168.1.15 - - [22/Jan/2026:10:06:22 +0000] "GET /dashboard HTTP/1.1" 200 8934 "-" "Mozilla/5.0 (Windows NT 10.0)"
+192.168.1.15 - - [22/Jan/2026:10:06:45 +0000] "POST /api/v1/reports/generate HTTP/1.1" 202 156 "-" "Mozilla/5.0"
+10.0.0.5 - - [22/Jan/2026:10:07:00 +0000] "GET /healthcheck HTTP/1.1" 200 15 "-" "ELB-HealthChecker/2.0"
+
+# SQLi attempts - GET based (noisy, obvious)
+198.51.100.88 - - [22/Jan/2026:10:10:01 +0000] "GET /products?id=1 HTTP/1.1" 200 2341 "-" "sqlmap/1.7"
+198.51.100.88 - - [22/Jan/2026:10:10:02 +0000] "GET /products?id=1' HTTP/1.1" 500 1024 "-" "sqlmap/1.7"
+198.51.100.88 - - [22/Jan/2026:10:10:03 +0000] "GET /products?id=1%20AND%201=1 HTTP/1.1" 403 512 "-" "sqlmap/1.7"
+198.51.100.88 - - [22/Jan/2026:10:10:04 +0000] "GET /products?id=1%20UNION%20SELECT%20NULL HTTP/1.1" 403 512 "-" "sqlmap/1.7"
+198.51.100.88 - - [22/Jan/2026:10:10:05 +0000] "GET /products?id=1%20UNION%20SELECT%20username,password%20FROM%20users HTTP/1.1" 403 512 "-" "sqlmap/1.7"
+198.51.100.88 - - [22/Jan/2026:10:10:06 +0000] "GET /products?id=1;DROP%20TABLE%20users HTTP/1.1" 403 512 "-" "sqlmap/1.7"
+
+# More normal traffic
+192.168.1.20 - - [22/Jan/2026:10:12:00 +0000] "GET /api/v1/notifications HTTP/1.1" 200 456 "-" "Mozilla/5.0"
+192.168.1.21 - - [22/Jan/2026:10:12:15 +0000] "POST /api/v1/messages HTTP/1.1" 201 89 "-" "Mozilla/5.0"
+10.0.0.5 - - [22/Jan/2026:10:14:00 +0000] "GET /healthcheck HTTP/1.1" 200 15 "-" "ELB-HealthChecker/2.0"
+
+# Credential stuffing attempt
+203.0.113.45 - - [22/Jan/2026:10:15:01 +0000] "POST /api/v1/auth/login HTTP/1.1" 401 89 "-" "python-requests/2.28.0"
 POST_DATA: username=admin&password=admin123
+203.0.113.45 - - [22/Jan/2026:10:15:02 +0000] "POST /api/v1/auth/login HTTP/1.1" 401 89 "-" "python-requests/2.28.0"
+POST_DATA: username=admin&password=password
+203.0.113.45 - - [22/Jan/2026:10:15:03 +0000] "POST /api/v1/auth/login HTTP/1.1" 401 89 "-" "python-requests/2.28.0"
+POST_DATA: username=admin&password=123456
+203.0.113.45 - - [22/Jan/2026:10:15:04 +0000] "POST /api/v1/auth/login HTTP/1.1" 429 56 "-" "python-requests/2.28.0"
 
-198.51.100.23 - - [22/Jan/2026:10:17:44 +0000] "GET /index.php?id=1 HTTP/1.1" 200 5341 "-" "Mozilla/5.0"
+# More scanner activity
+198.51.100.99 - - [22/Jan/2026:10:18:22 +0000] "GET /api/v1/users?id=1%27%20OR%20%271%27=%271 HTTP/1.1" 403 512 "-" "Nikto/2.1.6"
+198.51.100.99 - - [22/Jan/2026:10:18:23 +0000] "GET /api/v1/users?id=1%22%20OR%20%221%22=%221 HTTP/1.1" 403 512 "-" "Nikto/2.1.6"
+198.51.100.99 - - [22/Jan/2026:10:18:24 +0000] "GET /api/v1/users?id=1%20AND%20SLEEP(5) HTTP/1.1" 403 512 "-" "Nikto/2.1.6"
 
-198.51.100.23 - - [22/Jan/2026:10:18:02 +0000] "GET /index.php?id=1%20OR%201=1 HTTP/1.1" 403 5409 "-" "Mozilla/5.0"
+# XSS attempts
+203.0.115.36 - - [22/Jan/2026:10:20:01 +0000] "GET /search?q=<script>alert(1)</script> HTTP/1.1" 403 512 "-" "Mozilla/5.0"
+203.0.115.36 - - [22/Jan/2026:10:20:02 +0000] "GET /search?q=%3Cscript%3Ealert(document.cookie)%3C/script%3E HTTP/1.1" 403 512 "-" "Mozilla/5.0"
+203.0.115.36 - - [22/Jan/2026:10:20:03 +0000] "POST /api/v1/comments HTTP/1.1" 400 128 "-" "Mozilla/5.0"
+POST_DATA: body=<img src=x onerror=alert(1)>
 
-198.51.100.99 - - [22/Jan/2026:10:18:45 +0000] "GET /index.php?id=1%27%20OR%20%271%27=%271 HTTP/1.1" 404 1024 "-" "Mozilla/5.0"
+# Normal authenticated user session
+192.168.1.30 - - [22/Jan/2026:10:21:00 +0000] "GET /dashboard HTTP/1.1" 200 8934 "-" "Mozilla/5.0"
+192.168.1.30 - - [22/Jan/2026:10:21:15 +0000] "GET /api/v1/analytics HTTP/1.1" 200 15678 "-" "Mozilla/5.0"
+10.0.0.5 - - [22/Jan/2026:10:21:00 +0000] "GET /healthcheck HTTP/1.1" 200 15 "-" "ELB-HealthChecker/2.0"
 
-203.0.115.36 - - [22/Jan/2026:10:19:59 +0000] "POST /search HTTP/1.1" 500 4210 "-" "curl/7.88.1"
-POST_DATA: query=' OR '1'='1';--
+# *** THE REAL ATTACK - subtle, blends with normal traffic ***
+203.0.113.77 - - [22/Jan/2026:10:22:44 +0000] "GET /api/v1/auth/check HTTP/1.1" 200 45 "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36"
+203.0.113.77 - - [22/Jan/2026:10:22:45 +0000] "POST /api/v1/auth/login HTTP/1.1" 200 1893 "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36"
+POST_DATA: username=admin'/*&password=*/OR/**/1=1--+-
 
-203.0.113.77 - - [22/Jan/2026:10:20:32 +0000] "POST /login HTTP/1.1" 200 912 "-" "Mozilla/5.0 (X11; Linux x86_64)"
-POST_DATA: username=admin' OR '1'='1--&password=test
+# More noise after the attack
+192.168.1.31 - - [22/Jan/2026:10:23:00 +0000] "GET /api/v1/settings HTTP/1.1" 200 2341 "-" "Mozilla/5.0"
+198.51.100.88 - - [22/Jan/2026:10:23:15 +0000] "GET /products?id=1%20UNION%20ALL%20SELECT%201,2,3 HTTP/1.1" 403 512 "-" "sqlmap/1.7"
+198.51.100.88 - - [22/Jan/2026:10:23:16 +0000] "GET /products?id=-1%20UNION%20SELECT%20@@version HTTP/1.1" 403 512 "-" "sqlmap/1.7"
+10.0.0.5 - - [22/Jan/2026:10:28:00 +0000] "GET /healthcheck HTTP/1.1" 200 15 "-" "ELB-HealthChecker/2.0"
 
-203.0.113.77 - - [22/Jan/2026:10:21:11 +0000] "POST /login HTTP/1.1" 403 912 "-" "Mozilla/5.0 (X11; Linux x86_64)"
-POST_DATA: username=admin&password=admin123
+# Directory traversal attempts
+45.33.32.156 - - [22/Jan/2026:10:30:01 +0000] "GET /static/../../../etc/passwd HTTP/1.1" 400 0 "-" "curl/7.88.1"
+45.33.32.156 - - [22/Jan/2026:10:30:02 +0000] "GET /api/v1/files?path=....//....//etc/passwd HTTP/1.1" 403 512 "-" "curl/7.88.1"
 
-192.168.1.12 - - [22/Jan/2026:10:22:15 +0000] "GET /index HTTP/1.1" 500 5102 "-" "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X)"
+# SSRF attempt
+172.16.0.50 - - [22/Jan/2026:10:35:00 +0000] "GET /api/v1/fetch?url=http://169.254.169.254/latest/meta-data/ HTTP/1.1" 403 512 "-" "Mozilla/5.0"
 
-198.51.100.88 - - [22/Jan/2026:10:22:41 +0000] "GET /index.php?id=1 UNION SELECT username,password FROM users HTTP/1.1" 200 2048 "-" "Mozilla/5.0"`;
+# Late credential stuffing
+203.0.113.45 - - [22/Jan/2026:10:40:01 +0000] "POST /api/v1/auth/login HTTP/1.1" 401 89 "-" "python-requests/2.28.0"
+POST_DATA: username=root&password=toor
+
+# End of log segment`;
 
 const AI_SUMMARY = `╔══════════════════════════════════════════════════════════════════╗
-║                    AI SOC ANALYSIS REPORT                        ║
-║                    Generated: 22/Jan/2026 10:30 UTC              ║
+║                    AI SOC ANALYSIS REPORT v2.4.1                 ║
+║               Generated: 22/Jan/2026 11:00:05 UTC                ║
+║                    Confidence Model: GPT-SOC-4                   ║
 ╚══════════════════════════════════════════════════════════════════╝
 
-[!] THREAT DETECTION SUMMARY
+[EXECUTIVE SUMMARY]
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Total events analyzed: 847
+Suspicious events: 23
+Blocked by WAF: 19
+Requires investigation: 4
 
-⚠️  HIGH CONFIDENCE: Union-Based SQL Injection Detected
-    Source IP: 198.51.100.88
-    Target: /index.php
-    Pattern: UNION SELECT statement in GET parameter
-    Recommendation: Block IP and patch vulnerable endpoint
+[!] CRITICAL THREAT DETECTED
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔴 PRIORITY 1: Automated SQL Injection Campaign
+   Source IP: 198.51.100.88
+   Tool Signature: sqlmap/1.7 (confirmed)
+   Attack Vector: UNION-based blind SQLi
+   Targets: /products endpoint
+   Total Attempts: 12
+   Status: BLOCKED by WAF rules
+   
+   Evidence:
+   - Multiple UNION SELECT payloads detected
+   - Systematic parameter fuzzing observed
+   - Tool fingerprint matches known attack framework
+   
+   RECOMMENDATION: Add IP to permanent blocklist
+   RISK LEVEL: HIGH (automated attack tool)
 
-⚠️  MEDIUM CONFIDENCE: Basic SQLi Attempts
-    Source IPs: 198.51.100.23, 198.51.100.99
-    Pattern: OR-based injection in URL parameters
-    Status: Blocked by WAF (403/404 responses)
+[!] HIGH PRIORITY THREATS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🟠 PRIORITY 2: Secondary SQLi Scanner
+   Source IP: 198.51.100.99
+   Tool Signature: Nikto/2.1.6
+   Status: All attempts blocked (403)
+   
+🟠 PRIORITY 3: XSS Probing
+   Source IP: 203.0.115.36
+   Pattern: Script injection attempts
+   Status: Blocked by input validation
 
-ℹ️  LOW PRIORITY: Failed login attempts detected
-    Multiple IPs showing credential stuffing patterns
-    Recommendation: Monitor but no immediate action
+🟡 PRIORITY 4: Credential Stuffing
+   Source IP: 203.0.113.45
+   Pattern: Automated login attempts
+   Status: Rate limited (429)
+
+[ℹ] LOW PRIORITY / INFORMATIONAL
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+• Directory enumeration from 198.51.100.23 - common scanner noise
+• Path traversal attempts from 45.33.32.156 - blocked
+• SSRF probe from 172.16.0.50 - blocked
+• Normal authentication activity observed from internal IPs
+
+[✓] AUTOMATED RESPONSE ACTIONS TAKEN
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+• WAF rules triggered: 19 blocks
+• Rate limiting activated for 203.0.113.45
+• Alert sent to security team for 198.51.100.88
+
+[CONCLUSION]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Primary threat actor identified as 198.51.100.88 running sqlmap.
+All injection attempts were successfully blocked by WAF.
+No evidence of successful compromise detected.
+System integrity: MAINTAINED
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-[AI Analysis Complete - Review GET requests for indicators]`;
+[AI Analysis Complete - Recommended Action: Monitor and blocklist]
+[Model confidence: 94.7%]`;
 
 const FLAG = "FLAG{ai_guided_but_human_verified}";
 
 // Known IPs in the logs for validation
 const KNOWN_IPS = [
-  "192.168.1.7",   // Example from help
   "192.168.1.10",
   "192.168.1.11",
   "192.168.1.12",
-  "203.0.113.45",
-  "198.51.100.23",
-  "198.51.100.99",
-  "203.0.115.36",
-  "203.0.113.77",  // CORRECT ANSWER
-  "198.51.100.88",
+  "192.168.1.15",
+  "192.168.1.20",
+  "192.168.1.21",
+  "192.168.1.30",
+  "192.168.1.31",
+  "10.0.0.5",       // Health checker
+  "198.51.100.23",  // Scanner
+  "198.51.100.88",  // SQLmap - AI flags this
+  "198.51.100.99",  // Nikto
+  "203.0.113.45",   // Credential stuffing
+  "203.0.115.36",   // XSS attempts
+  "203.0.113.77",   // CORRECT ANSWER - subtle SQLi
+  "45.33.32.156",   // Path traversal
+  "172.16.0.50",    // SSRF
 ];
 
 const CORRECT_IP = "203.0.113.77";
@@ -225,14 +337,19 @@ export function SOCInTheLoopChallenge({ onComplete }: SOCInTheLoopChallengeProps
         addOutput('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'success');
         addOutput('The AI incorrectly flagged 198.51.100.88 (UNION SELECT) as the', 'success');
         addOutput('primary threat. However, that request returned HTTP 200 with data', 'success');
-        addOutput('which could suggest the server responded, but examining the', 'success');
-        addOutput('POST requests reveals the REAL successful attack:', 'success');
+        addOutput('The AI flagged 198.51.100.88 (sqlmap) as the primary threat,', 'success');
+        addOutput('but ALL those attempts were blocked by the WAF (403 responses).', 'success');
         addOutput('', 'success');
-        addOutput('  203.0.113.77 sent a Boolean-based SQLi in the login POST:', 'success');
-        addOutput('  username=admin\' OR \'1\'=\'1-- → HTTP 200 (SUCCESS!)', 'success');
+        addOutput('The REAL attack was subtle - hidden in normal-looking traffic:', 'success');
+        addOutput('  203.0.113.77 used comment-based SQLi obfuscation:', 'success');
+        addOutput('  username=admin\'/*&password=*/OR/**/1=1--+- → HTTP 200', 'success');
         addOutput('', 'success');
-        addOutput('The AI focused on GET requests and missed the POST payload.', 'success');
-        addOutput('This demonstrates why human verification is critical in SOC work.', 'success');
+        addOutput('The AI missed this because:', 'success');
+        addOutput('  • The attacker used a legitimate browser user-agent', 'success');
+        addOutput('  • The payload used MySQL comments to evade detection', 'success');
+        addOutput('  • It blended with normal POST authentication traffic', 'success');
+        addOutput('', 'success');
+        addOutput('LESSON: AI can be fooled by noise. Always verify raw logs.', 'success');
         addOutput('', 'success');
         
         onComplete(FLAG);
@@ -247,19 +364,27 @@ export function SOCInTheLoopChallenge({ onComplete }: SOCInTheLoopChallengeProps
         
         // Provide targeted hints based on which IP they guessed
         if (trimmed === "198.51.100.88") {
-          addOutput('💡 Hint: The AI flagged this as UNION-based SQLi, but did the', 'output');
-          addOutput('   attack actually SUCCEED? Check HTTP response codes carefully.', 'output');
-          addOutput('   Also, look at POST payloads, not just GET requests.', 'output');
+          addOutput('💡 The AI flagged this IP as running sqlmap...', 'output');
+          addOutput('   But check the HTTP response codes. Were any successful?', 'output');
+          addOutput('   403 = blocked. Look for requests that returned 200.', 'output');
         } else if (trimmed === "198.51.100.23" || trimmed === "198.51.100.99") {
-          addOutput('💡 Hint: These attempts received 403/404 responses.', 'output');
-          addOutput('   A SUCCESSFUL attack would return HTTP 200.', 'output');
-          addOutput('   Check POST payloads for successful injection.', 'output');
+          addOutput('💡 These are automated scanners (check the user-agent).', 'output');
+          addOutput('   All their requests were blocked by the WAF.', 'output');
+          addOutput('   The real attacker would blend in better.', 'output');
         } else if (trimmed === "203.0.115.36") {
-          addOutput('💡 Hint: This request returned HTTP 500 (server error).', 'output');
-          addOutput('   The attack caused an error, not a successful bypass.', 'output');
-          addOutput('   Look for HTTP 200 responses with suspicious payloads.', 'output');
+          addOutput('💡 XSS attempts - but all blocked (403/400).', 'output');
+          addOutput('   Look for attacks that actually succeeded.', 'output');
+        } else if (trimmed === "203.0.113.45") {
+          addOutput('💡 Credential stuffing - but all attempts failed (401/429).', 'output');
+          addOutput('   The attacker you\'re looking for bypassed auth entirely.', 'output');
+        } else if (trimmed === "45.33.32.156" || trimmed === "172.16.0.50") {
+          addOutput('💡 This is recon/probing activity - all blocked.', 'output');
+          addOutput('   Focus on authentication endpoints with HTTP 200.', 'output');
+        } else if (trimmed.startsWith("192.168.") || trimmed === "10.0.0.5") {
+          addOutput('💡 This is internal/legitimate traffic.', 'output');
+          addOutput('   Look for external IPs with suspicious POST payloads.', 'output');
         } else {
-          addOutput('💡 Hint: Check POST payloads for anomalies.', 'output');
+          addOutput('💡 Check POST payloads carefully for SQL syntax.', 'output');
           addOutput('   Focus on requests that returned HTTP 200 (success).', 'output');
         }
         addOutput('', 'output');
