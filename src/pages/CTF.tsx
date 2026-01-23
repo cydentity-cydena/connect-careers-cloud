@@ -134,6 +134,7 @@ const CTF = () => {
     setUserId(user?.id || null);
 
     // Check if user is admin
+    let userIsAdmin = false;
     if (user?.id) {
       const { data: roleData } = await supabase
         .from('user_roles')
@@ -142,12 +143,13 @@ const CTF = () => {
         .in('role', ['admin', 'staff'])
         .maybeSingle();
       
-      setIsAdmin(!!roleData);
+      userIsAdmin = !!roleData;
+      setIsAdmin(userIsAdmin);
     }
 
     // Fetch challenges - use base table for admin drafts, public view otherwise
     let challengesQuery;
-    if (showDrafts && isAdmin) {
+    if (showDrafts && userIsAdmin) {
       // Admin preview mode - fetch all challenges including drafts (but exclude flag)
       challengesQuery = supabase
         .from('ctf_challenges')
