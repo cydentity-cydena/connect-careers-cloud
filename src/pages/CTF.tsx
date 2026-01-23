@@ -15,6 +15,7 @@ import ChessChallenge from "@/components/ctf/ChessChallenge";
 import { QuizChallenge } from "@/components/ctf/QuizChallenge";
 import PortProbeChallenge from "@/components/ctf/PortProbeChallenge";
 import { CuriousWebChallenge } from "@/components/ctf/CuriousWebChallenge";
+import { InjectionJunctionChallenge } from "@/components/ctf/InjectionJunctionChallenge";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { 
@@ -571,8 +572,9 @@ const CTF = () => {
                 const isSelected = selectedChallenge?.id === challenge.id;
                 const isJustSolved = justSolved?.challengeId === challenge.id;
                 
-                // Check if this is a wide challenge
-                const isWideChallenge = challenge.title.trim().toLowerCase() === "the curious web";
+                // Check if this is a wide challenge (interactive simulations)
+                const challengeTitle = challenge.title.trim().toLowerCase();
+                const isWideChallenge = challengeTitle === "the curious web" || challengeTitle === "injection junction";
                 
                 return (
                   <Card 
@@ -687,6 +689,10 @@ const CTF = () => {
                             />
                           ) : challenge.title.trim().toLowerCase() === "the curious web" ? (
                             <CuriousWebChallenge
+                              isCompleted={userStats.solvedChallenges.includes(challenge.id)}
+                            />
+                          ) : challenge.title.trim().toLowerCase() === "injection junction" ? (
+                            <InjectionJunctionChallenge
                               isCompleted={userStats.solvedChallenges.includes(challenge.id)}
                             />
                           ) : (
