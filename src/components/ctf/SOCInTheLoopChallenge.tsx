@@ -418,14 +418,14 @@ export function SOCInTheLoopChallenge({ onComplete }: SOCInTheLoopChallengeProps
   return (
     <div className="space-y-4">
       {/* Challenge Header */}
-      <div className="flex items-center gap-3 p-3 bg-gradient-to-r from-red-500/10 to-orange-500/10 rounded-lg border border-red-500/20">
-        <Shield className="h-8 w-8 text-red-400" />
-        <div>
-          <h3 className="font-bold text-lg flex items-center gap-2">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 p-3 bg-gradient-to-r from-red-500/10 to-orange-500/10 rounded-lg border border-red-500/20">
+        <Shield className="h-6 w-6 sm:h-8 sm:w-8 text-red-400 flex-shrink-0" />
+        <div className="min-w-0">
+          <h3 className="font-bold text-base sm:text-lg flex flex-wrap items-center gap-2">
             SOC In The Loop
             <Badge className="bg-red-500/20 text-red-400 border-red-500/30">Advanced</Badge>
           </h3>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-xs sm:text-sm text-muted-foreground">
             AI-assisted threat hunting with a twist — the AI isn't always right.
           </p>
         </div>
@@ -433,20 +433,20 @@ export function SOCInTheLoopChallenge({ onComplete }: SOCInTheLoopChallengeProps
 
       {/* Info Cards */}
       <div className="grid grid-cols-3 gap-2">
-        <div className="p-3 bg-blue-500/10 rounded-lg border border-blue-500/20 text-center">
-          <Brain className="h-5 w-5 text-blue-400 mx-auto mb-1" />
-          <p className="text-xs text-muted-foreground">AI Analysis</p>
-          <p className="text-sm font-medium">Available</p>
+        <div className="p-2 sm:p-3 bg-blue-500/10 rounded-lg border border-blue-500/20 text-center">
+          <Brain className="h-4 w-4 sm:h-5 sm:w-5 text-blue-400 mx-auto mb-1" />
+          <p className="text-[10px] sm:text-xs text-muted-foreground">AI Analysis</p>
+          <p className="text-xs sm:text-sm font-medium">Available</p>
         </div>
-        <div className="p-3 bg-yellow-500/10 rounded-lg border border-yellow-500/20 text-center">
-          <AlertTriangle className="h-5 w-5 text-yellow-400 mx-auto mb-1" />
-          <p className="text-xs text-muted-foreground">Trust Level</p>
-          <p className="text-sm font-medium">Verify!</p>
+        <div className="p-2 sm:p-3 bg-yellow-500/10 rounded-lg border border-yellow-500/20 text-center">
+          <AlertTriangle className="h-4 w-4 sm:h-5 sm:w-5 text-yellow-400 mx-auto mb-1" />
+          <p className="text-[10px] sm:text-xs text-muted-foreground">Trust Level</p>
+          <p className="text-xs sm:text-sm font-medium">Verify!</p>
         </div>
-        <div className="p-3 bg-purple-500/10 rounded-lg border border-purple-500/20 text-center">
-          <Activity className="h-5 w-5 text-purple-400 mx-auto mb-1" />
-          <p className="text-xs text-muted-foreground">Attempts</p>
-          <p className="text-sm font-medium">{attempts}</p>
+        <div className="p-2 sm:p-3 bg-purple-500/10 rounded-lg border border-purple-500/20 text-center">
+          <Activity className="h-4 w-4 sm:h-5 sm:w-5 text-purple-400 mx-auto mb-1" />
+          <p className="text-[10px] sm:text-xs text-muted-foreground">Attempts</p>
+          <p className="text-xs sm:text-sm font-medium">{attempts}</p>
         </div>
       </div>
 
@@ -508,7 +508,7 @@ export function SOCInTheLoopChallenge({ onComplete }: SOCInTheLoopChallengeProps
           <Lightbulb className="h-4 w-4 text-yellow-400" />
           <span className="text-sm font-medium">Quick Reference</span>
         </div>
-        <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 sm:gap-2 text-xs text-muted-foreground">
           <div><code className="text-primary">cat ai_summary.txt</code> — AI report</div>
           <div><code className="text-primary">cat access.log</code> — Server logs</div>
           <div><code className="text-primary">help</code> — Show commands</div>

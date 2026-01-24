@@ -392,20 +392,20 @@ export const DeepfakeDetectorChallenge = ({ onComplete }: DeepfakeDetectorChalle
     <div className="space-y-4">
       {/* Header */}
       <Card className="bg-gradient-to-r from-red-950/50 to-background border-red-500/30">
-        <CardContent className="p-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="bg-red-500/20 p-2 rounded-lg">
-                <AlertTriangle className="h-6 w-6 text-red-400" />
+        <CardContent className="p-3 sm:p-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="bg-red-500/20 p-2 rounded-lg flex-shrink-0">
+                <AlertTriangle className="h-5 w-5 sm:h-6 sm:w-6 text-red-400" />
               </div>
-              <div>
-                <h3 className="font-bold text-lg">🏦 FinSecure Voice Fraud Detection</h3>
-                <p className="text-sm text-muted-foreground">Analyze calls from Sarah Chen (Finance) for deepfakes</p>
+              <div className="min-w-0">
+                <h3 className="font-bold text-sm sm:text-lg">🏦 FinSecure Voice Fraud Detection</h3>
+                <p className="text-xs sm:text-sm text-muted-foreground">Analyze calls from Sarah Chen for deepfakes</p>
               </div>
             </div>
-            <div className="text-right">
-              <div className="text-sm text-muted-foreground">Calls Analyzed</div>
-              <div className="text-xl font-bold text-primary">{reviewedCount}/{totalCases}</div>
+            <div className="text-left sm:text-right flex-shrink-0">
+              <div className="text-xs sm:text-sm text-muted-foreground">Calls Analyzed</div>
+              <div className="text-lg sm:text-xl font-bold text-primary">{reviewedCount}/{totalCases}</div>
             </div>
           </div>
           <Progress value={(reviewedCount / totalCases) * 100} className="mt-3 h-2" />
@@ -451,7 +451,7 @@ export const DeepfakeDetectorChallenge = ({ onComplete }: DeepfakeDetectorChalle
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Request Details */}
-          <div className="grid grid-cols-2 gap-4 p-4 bg-muted/30 rounded-lg">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3 sm:p-4 bg-muted/30 rounded-lg">
             <div>
               <div className="text-xs text-muted-foreground">Caller</div>
               <div className="font-semibold">Sarah Chen</div>
@@ -459,18 +459,18 @@ export const DeepfakeDetectorChallenge = ({ onComplete }: DeepfakeDetectorChalle
             </div>
             <div>
               <div className="text-xs text-muted-foreground">Amount Requested</div>
-              <div className="font-bold text-xl text-emerald-400 flex items-center gap-1">
-                <DollarSign className="h-5 w-5" />
+              <div className="font-bold text-lg sm:text-xl text-emerald-400 flex items-center gap-1">
+                <DollarSign className="h-4 w-4 sm:h-5 sm:w-5" />
                 {transaction.amount}
               </div>
             </div>
-            <div className="col-span-2">
+            <div className="sm:col-span-2">
               <div className="text-xs text-muted-foreground">Recipient</div>
-              <div className="font-medium">{transaction.recipient}</div>
+              <div className="font-medium text-sm sm:text-base break-words">{transaction.recipient}</div>
             </div>
-            <div>
+            <div className="sm:col-span-2">
               <div className="text-xs text-muted-foreground">Timestamp</div>
-              <div className="font-mono text-sm">{transaction.timestamp}</div>
+              <div className="font-mono text-xs sm:text-sm">{transaction.timestamp}</div>
             </div>
           </div>
 
@@ -535,9 +535,9 @@ export const DeepfakeDetectorChallenge = ({ onComplete }: DeepfakeDetectorChalle
               mode={visualizerMode}
             />
 
-            <div className="mt-3 text-xs text-muted-foreground text-center">
-              <p>🔍 <strong>Waveform:</strong> Look for unnatural amplitude patterns, robotic consistency</p>
-              <p>📊 <strong>Spectrum:</strong> Synthetic voices often lack natural frequency variation</p>
+            <div className="mt-3 text-xs text-muted-foreground text-center space-y-1">
+              <p className="leading-tight">🔍 <strong>Waveform:</strong> Look for unnatural amplitude patterns, robotic consistency</p>
+              <p className="leading-tight">📊 <strong>Spectrum:</strong> Synthetic voices often lack natural frequency variation</p>
             </div>
           </div>
 
@@ -552,20 +552,21 @@ export const DeepfakeDetectorChallenge = ({ onComplete }: DeepfakeDetectorChalle
 
           {/* Decision Buttons */}
           {!decisions[transaction.id] && (
-            <div className="grid grid-cols-2 gap-4 pt-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
               <Button
                 onClick={() => makeDecision('approved')}
-                className="bg-emerald-600 hover:bg-emerald-700"
+                className="bg-emerald-600 hover:bg-emerald-700 text-sm px-3"
               >
-                <CheckCircle className="h-4 w-4 mr-2" />
-                Genuine - Approve
+                <CheckCircle className="h-4 w-4 mr-2 flex-shrink-0" />
+                <span className="truncate">Genuine - Approve</span>
               </Button>
               <Button
                 onClick={() => makeDecision('flagged')}
                 variant="destructive"
+                className="text-sm px-3"
               >
-                <AlertTriangle className="h-4 w-4 mr-2" />
-                Deepfake - Reject
+                <AlertTriangle className="h-4 w-4 mr-2 flex-shrink-0" />
+                <span className="truncate">Deepfake - Reject</span>
               </Button>
             </div>
           )}
