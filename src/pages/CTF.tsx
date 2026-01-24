@@ -742,18 +742,19 @@ const CTF = () => {
                           )}
 
                           {/* Flag Input */}
-                          <div className="flex gap-2">
+                          <div className="flex flex-col sm:flex-row gap-2">
                             <Input
                               placeholder="FLAG{...}"
                               value={flagInputs[challenge.id] || ""}
                               onChange={(e) => setFlagInputs(prev => ({ ...prev, [challenge.id]: e.target.value }))}
-                              className="font-mono text-sm"
+                              className="font-mono text-sm flex-1"
                               onKeyDown={(e) => e.key === 'Enter' && handleSubmitFlag()}
                             />
                             <Button 
                               onClick={handleSubmitFlag} 
                               disabled={submitting || !(flagInputs[challenge.id] || "").trim()}
                               size="sm"
+                              className="w-full sm:w-auto"
                             >
                               {submitting ? "..." : "Submit"}
                             </Button>
