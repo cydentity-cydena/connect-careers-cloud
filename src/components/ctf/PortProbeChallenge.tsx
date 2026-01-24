@@ -10,7 +10,8 @@ interface PortProbeProps {
 }
 
 const HOST = "127.0.0.1";
-const PORT_RANGE = { min: 8000, max: 8100 };
+const PORT_RANGE = { min: 1, max: 65535 };
+const SCAN_RANGE = "1-65535"; // Full port range for realism
 const BANNER_PATH = "/banner.txt";
 const FLAG = "FLAG{banner_found_via_scan}";
 
@@ -59,24 +60,15 @@ const PortProbeChallenge = ({ onSolve, challengeId }: PortProbeProps) => {
   };
 
   useEffect(() => {
-    // Initial header
+    // Initial header - less hand-holding
     addOutput([
       "=== Challenge: Port Probe Protocols ===",
       "",
-      "There is a service running on localhost in the port range 8000–8100.",
+      "A web service is hidden somewhere on localhost.",
+      "Your mission: Find it and retrieve the banner.",
       "",
-      "Task:",
-      "  1) Scan ports 8000–8100 with nmap",
-      "  2) Use the scan output to identify which service is hosting banner.txt",
-      "  3) Retrieve it with curl",
-      "",
-      "Start with:",
-      `  nmap -p 8000-8100 ${HOST}`,
-      "",
-      "Allowed commands:",
-      `  nmap -p 8000-8100 ${HOST}`,
-      `  curl http://${HOST}:<port>${BANNER_PATH}`,
-      "  help, clear",
+      "Tools available: nmap, curl",
+      "Type 'help' for command syntax.",
       "",
     ]);
   }, []);
@@ -87,9 +79,9 @@ const PortProbeChallenge = ({ onSolve, challengeId }: PortProbeProps) => {
     }
   }, [output]);
 
-  const simulateNmap = () => {
+  const simulateNmap = (portsInRange: number[]) => {
     const now = new Date().toISOString().slice(0, 16).replace("T", " ") + " UTC";
-    const ports = [realPort, redHttpPort, redNonHttpPort].sort((a, b) => a - b);
+    const sortedPorts = portsInRange.sort((a, b) => a - b);
     
     addOutput([
       `Starting Nmap 7.94 ( https://nmap.org ) at ${now}`,
@@ -97,12 +89,9 @@ const PortProbeChallenge = ({ onSolve, challengeId }: PortProbeProps) => {
       "Host is up (0.00025s latency).",
       "",
       "PORT      STATE SERVICE",
-      ...ports.map(p => `${p}/tcp   open  ${serviceNames[p]}`),
+      ...sortedPorts.map(p => `${p}/tcp   open  ${serviceNames[p]}`),
       "",
       "Nmap done: 1 IP address (1 host up) scanned in 0.14 seconds",
-      "",
-      "Note: One of the HTTP services exposes a text file at /banner.txt",
-      "      Use curl against the correct port + path to retrieve it.",
       "",
     ]);
     setScanned(true);
@@ -175,10 +164,12 @@ const PortProbeChallenge = ({ onSolve, challengeId }: PortProbeProps) => {
     if (lower === "help") {
       addOutput([
         "",
-        "Allowed commands:",
-        `  nmap -p 8000-8100 ${HOST}`,
-        `  curl http://${HOST}:<port>${BANNER_PATH}`,
-        "  help, clear",
+        "Available commands:",
+        `  nmap -p <range> <host>    Scan ports on a host`,
+        `  curl <url>                Fetch a URL`,
+        "  clear                     Clear terminal",
+        "",
+        "Example: nmap -p 1-1000 127.0.0.1",
         "",
       ]);
       return;
@@ -189,26 +180,53 @@ const PortProbeChallenge = ({ onSolve, challengeId }: PortProbeProps) => {
       return;
     }
 
-    if (cmd === `nmap -p 8000-8100 ${HOST}`) {
-      simulateNmap();
+    // Accept any valid nmap command with port range
+    const nmapMatch = cmd.match(/^nmap\s+-p\s+(\d+)-(\d+)\s+(\S+)$/i);
+    if (nmapMatch) {
+      const startPort = parseInt(nmapMatch[1], 10);
+      const endPort = parseInt(nmapMatch[2], 10);
+      const targetHost = nmapMatch[3];
+      
+      if (targetHost !== HOST && targetHost !== "localhost") {
+        addOutput([`Failed to resolve "${targetHost}".`, ""]);
+        return;
+      }
+      
+      // Check if the scan range includes our ports
+      const portsInRange = [realPort, redHttpPort, redNonHttpPort].filter(
+        p => p >= startPort && p <= endPort
+      );
+      
+      if (portsInRange.length === 0) {
+        addOutput([
+          `Starting Nmap 7.94 ( https://nmap.org )`,
+          `Nmap scan report for localhost (${HOST})`,
+          "Host is up.",
+          "",
+          `All ${endPort - startPort + 1} scanned ports are closed`,
+          "",
+          "Nmap done: 1 IP address (1 host up) scanned in 0.08 seconds",
+          "",
+        ]);
+        return;
+      }
+      
+      simulateNmap(portsInRange);
       return;
     }
 
     if (cmd.startsWith("curl ")) {
       if (!scanned) {
         addOutput([
-          "❌ Scan first. Start with:",
-          `  nmap -p 8000-8100 ${HOST}`,
+          "Tip: You might want to scan for open services first.",
           "",
         ]);
-        return;
       }
 
       const parsed = parseCurlUrl(cmd);
       if (!parsed) {
         addOutput([
-          "Usage:",
-          `  curl http://${HOST}:<port>${BANNER_PATH}`,
+          "Usage: curl http://<host>:<port>/<path>",
           "",
         ]);
         return;
@@ -225,8 +243,7 @@ const PortProbeChallenge = ({ onSolve, challengeId }: PortProbeProps) => {
         onSolve(FLAG);
       } else {
         addOutput([
-          "Hint: Use the nmap SERVICE column to choose the correct port,",
-          "      and request /banner.txt on the HTTP service that suggests it.",
+          "Try a different port or path.",
           "",
         ]);
       }
@@ -287,7 +304,7 @@ const PortProbeChallenge = ({ onSolve, challengeId }: PortProbeProps) => {
           <div className="mt-4 p-3 bg-blue-900/30 border border-blue-700 rounded-lg text-sm text-blue-300 flex items-start gap-2">
             <HelpCircle className="h-4 w-4 mt-0.5 flex-shrink-0" />
             <span>
-              Start by scanning ports with: <code className="bg-black px-1 rounded">nmap -p 8000-8100 127.0.0.1</code>
+              Hint: Use <code className="bg-black px-1 rounded">nmap</code> to discover open services. Type <code className="bg-black px-1 rounded">help</code> for syntax.
             </span>
           </div>
         )}
