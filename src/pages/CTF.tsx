@@ -576,7 +576,7 @@ const CTF = () => {
                 
                 // Check if this is a wide challenge (interactive simulations)
                 const challengeTitle = challenge.title.trim().toLowerCase();
-                const isWideChallenge = challengeTitle === "the curious web" || challengeTitle === "injection junction" || challengeTitle === "deepfakes and dollars" || challengeTitle === "soc in the loop";
+                const isWideChallenge = challengeTitle === "the curious web" || challengeTitle === "injection junction" || challengeTitle === "deepfakes and dollars" || challengeTitle === "soc in the loop" || challengeTitle === "port probe protocols";
                 
                 return (
                   <Card 
