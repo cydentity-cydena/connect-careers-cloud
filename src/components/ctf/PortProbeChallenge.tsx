@@ -156,7 +156,7 @@ const PortProbeChallenge = ({ onSolve, challengeId }: PortProbeProps) => {
     if (!command.trim() || solved) return;
 
     const cmd = command.trim();
-    addOutput([`student@localhost:~$ ${cmd}`]);
+    addOutput([`ctf@localhost:~$ ${cmd}`]);
     setCommand("");
 
     const lower = cmd.toLowerCase();
@@ -280,7 +280,7 @@ const PortProbeChallenge = ({ onSolve, challengeId }: PortProbeProps) => {
         
         <div className="flex gap-2">
           <span className="text-green-400 font-mono text-sm flex items-center">
-            student@localhost:~$
+            ctf@localhost:~$
           </span>
           <Input
             value={command}
