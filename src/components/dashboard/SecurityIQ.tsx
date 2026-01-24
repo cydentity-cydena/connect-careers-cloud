@@ -8,6 +8,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import ChessChallenge from "@/components/ctf/ChessChallenge";
 import { QuizChallenge } from "@/components/ctf/QuizChallenge";
+import { DeepfakeDetectorChallenge } from "@/components/ctf/DeepfakeDetectorChallenge";
+import { SOCInTheLoopChallenge } from "@/components/ctf/SOCInTheLoopChallenge";
+import InjectionJunctionChallenge from "@/components/ctf/InjectionJunctionChallenge";
+import PortProbeChallenge from "@/components/ctf/PortProbeChallenge";
+import CuriousWebChallenge from "@/components/ctf/CuriousWebChallenge";
 
 interface MCQChallenge {
   type: "mcq";
@@ -316,6 +321,29 @@ export function SecurityIQ() {
                     setFlagInput(flag);
                   }} 
                 />
+              ) : challenge.title.trim().toLowerCase() === "deepfakes and dollars" ? (
+                <DeepfakeDetectorChallenge 
+                  onComplete={(flag) => {
+                    setFlagInput(flag);
+                  }} 
+                />
+              ) : challenge.title.trim().toLowerCase() === "soc in the loop" ? (
+                <SOCInTheLoopChallenge 
+                  onComplete={(flag) => {
+                    setFlagInput(flag);
+                  }} 
+                />
+              ) : challenge.title.trim().toLowerCase() === "injection junction" ? (
+                <InjectionJunctionChallenge 
+                  isCompleted={hasAnswered}
+                />
+              ) : challenge.title.trim().toLowerCase() === "port probe protocols" ? (
+                <PortProbeChallenge 
+                  challengeId={challenge.id}
+                  onSolve={(flag) => setFlagInput(flag)}
+                />
+              ) : challenge.title.trim().toLowerCase() === "the curious web" ? (
+                <CuriousWebChallenge />
               ) : null}
               
               <Input
