@@ -1,0 +1,182 @@
+{
+  "exportedAt": "2026-01-31",
+  "description": "CTF Challenges export for Cydena platform",
+  "challenges": [
+    {
+      "id": "ae98cfd1-34e4-466b-90eb-c75d1fb0b8f4",
+      "title": "Base64 Basics",
+      "category": "Cryptography",
+      "difficulty": "beginner",
+      "points": 20,
+      "description": "Decode this Base64 string: RkxBR3tiYXNlNjRfaXNfZWFzeX0=",
+      "flag": "FLAG{base64_is_easy}",
+      "hints": [
+        { "cost": 5, "hint": "Use a Base64 decoder" },
+        { "cost": 10, "hint": "Many online tools can decode Base64" }
+      ],
+      "is_active": false,
+      "file_name": null,
+      "file_url": null
+    },
+    {
+      "id": "a984fc19-416e-47b3-853f-e955ccbad1c5",
+      "title": "Caesar Cipher",
+      "category": "Cryptography",
+      "difficulty": "intermediate",
+      "points": 75,
+      "description": "Decrypt this Caesar cipher (shift 3): IODJFDHVDU_FLSKHUB",
+      "flag": "FLAG{CAESAR_CIPHERY}",
+      "hints": [
+        { "cost": 15, "hint": "Each letter is shifted by 3 positions" },
+        { "cost": 30, "hint": "A becomes D, B becomes E, etc." }
+      ],
+      "is_active": false,
+      "file_name": null,
+      "file_url": null
+    },
+    {
+      "id": "07fa2f0b-cdf6-4ed5-9b1c-f6a902ddc90f",
+      "title": "SOC In The Loop",
+      "category": "Forensics",
+      "difficulty": "advanced",
+      "points": 250,
+      "description": "Your AI SOC assistant has flagged several suspicious activities in the access logs. But can you trust its analysis? Examine the evidence, cross-reference the AI's findings, and identify the REAL successful attack. The AI may mislead you — human verification is critical.",
+      "flag": "FLAG{ai_guided_but_human_verified}",
+      "hints": [
+        { "cost": 25, "hint": "The AI focuses on GET requests. What about POST payloads?" },
+        { "cost": 50, "hint": "A successful attack returns HTTP 200, not 403/404/500." }
+      ],
+      "is_active": true,
+      "file_name": null,
+      "file_url": null
+    },
+    {
+      "id": "20b54838-d018-4a26-9365-57febe52f0bd",
+      "title": "Deepfakes and Dollars",
+      "category": "Forensics",
+      "difficulty": "intermediate",
+      "points": 150,
+      "description": "A fintech startup is under attack! Fraudsters are using AI-generated deepfakes to authorize wire transfers. Review the evidence and identify which transaction requests are fraudulent. Spot enough fakes to uncover the flag.",
+      "flag": "FLAG{deepfake_detector_elite}",
+      "hints": [
+        { "cost": 25, "text": "Look for visual artifacts around the face and hair edges" },
+        { "cost": 25, "text": "Audio deepfakes often have unnatural pauses or breathing patterns" },
+        { "cost": 25, "text": "Cross-reference the claimed identity with the request timestamp" }
+      ],
+      "is_active": true,
+      "file_name": null,
+      "file_url": null
+    },
+    {
+      "id": "f1cc07d0-1168-48ab-8bb7-da5d7397b23e",
+      "title": "Advanced Chess Gambit",
+      "category": "General",
+      "difficulty": "advanced",
+      "points": 200,
+      "description": "Think like a grandmaster! Solve 4 chess puzzles in sequence - each correct move reveals a letter of the hidden flag. Can you find the winning moves?",
+      "flag": "FLAG{FACE}",
+      "hints": [
+        { "hint": "Use standard algebraic notation (e.g., Qxf7#)" },
+        { "hint": "The destination file of each correct move spells the flag" }
+      ],
+      "is_active": false,
+      "file_name": null,
+      "file_url": null
+    },
+    {
+      "id": "ea6188e2-93c1-448c-8b2b-9b2ae4ebbbc1",
+      "title": "Welcome to CTF",
+      "category": "General",
+      "difficulty": "beginner",
+      "points": 10,
+      "description": "Welcome to Cydena's CTF! This is your first flag - combine the words: welcome, to, cydena, ctf (separated by underscores, all lowercase). Wrap it in FLAG{}.",
+      "flag": "FLAG{welcome_to_cydena_ctf}",
+      "hints": [
+        { "cost": 0, "hint": "Look at the challenge description carefully" }
+      ],
+      "is_active": false,
+      "file_name": null,
+      "file_url": null
+    },
+    {
+      "id": "0f762ef5-5bfc-4181-910e-97e4dc7c389a",
+      "title": "Port Probe Protocols",
+      "category": "Network Security",
+      "difficulty": "beginner",
+      "points": 100,
+      "description": "A service is running on localhost in the port range 8000-8100. Use nmap to scan for open ports, identify the HTTP service hosting banner.txt, and retrieve the flag using curl.",
+      "flag": "FLAG{banner_found_via_scan}",
+      "hints": [
+        { "cost": 10, "hint": "Start with: nmap -p 8000-8100 127.0.0.1" },
+        { "cost": 20, "hint": "Look for the service named http-banner in the nmap output" }
+      ],
+      "is_active": true,
+      "file_name": null,
+      "file_url": null
+    },
+    {
+      "id": "f1ab05f6-40db-4c9a-b178-af5a6d442125",
+      "title": "Port Scanner",
+      "category": "Network Security",
+      "difficulty": "beginner",
+      "points": 25,
+      "description": "Common ports: 21, 22, 80, 443, 3306. One of these is the flag format. Which service uses port 22?",
+      "flag": "FLAG{ssh}",
+      "hints": [
+        { "cost": 5, "hint": "Think about secure remote access" },
+        { "cost": 10, "hint": "Secure Shell" }
+      ],
+      "is_active": false,
+      "file_name": null,
+      "file_url": null
+    },
+    {
+      "id": "puzzle-quiz-001",
+      "title": "Security Quiz",
+      "category": "Puzzle",
+      "difficulty": "beginner",
+      "points": 50,
+      "description": "Think you know cybersecurity? Put your knowledge to the test with this rapid-fire quiz. Each correct answer reveals a piece of the puzzle. Get them all right to unlock the flag!",
+      "flag": "FLAG{NEVERGIVEUP}",
+      "hints": [
+        { "cost": 10, "hint": "Focus on the first letters of each correct answer" }
+      ],
+      "is_active": true,
+      "file_name": null,
+      "file_url": null
+    },
+    {
+      "id": "web-curious-001",
+      "title": "The Curious Web",
+      "category": "Web Security",
+      "difficulty": "intermediate",
+      "points": 150,
+      "description": "A suspicious website has been flagged for review. Use your web reconnaissance skills to explore the site, find hidden pages, and uncover the flag. The AI chatbot might try to mislead you...",
+      "flag": "FLAG{ai_was_trying_to_distract_you}",
+      "hints": [
+        { "cost": 15, "hint": "Check robots.txt for disallowed paths" },
+        { "cost": 25, "hint": "Sometimes backup files are left in obvious places" },
+        { "cost": 35, "hint": "View source is your friend" }
+      ],
+      "is_active": true,
+      "file_name": null,
+      "file_url": null
+    },
+    {
+      "id": "sql-injection-001",
+      "title": "Injection Junction",
+      "category": "Web Security",
+      "difficulty": "intermediate",
+      "points": 150,
+      "description": "SecureBank™ thinks their login is unbreakable. The WAF blocks common SQL injection keywords. Can you find a way to bypass the filter and extract the admin credentials?",
+      "flag": "FLAG{union_select_bypass_master}",
+      "hints": [
+        { "cost": 20, "hint": "The WAF blocks OR, AND, --, ;, DROP, DELETE" },
+        { "cost": 40, "hint": "MySQL comments can help bypass keyword filters" }
+      ],
+      "is_active": true,
+      "file_name": null,
+      "file_url": null
+    }
+  ]
+}
