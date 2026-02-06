@@ -507,9 +507,7 @@ const Auth = () => {
     setIsLoading(true);
 
     try {
-      // First, sign out to clear any existing session
-      await supabase.auth.signOut();
-      
+      // Single sign-in attempt - no sign-out/sign-in cycles
       const { data, error } = await supabase.auth.signInWithPassword({
         email: email.trim().toLowerCase(),
         password,
@@ -523,23 +521,12 @@ const Auth = () => {
       
       if (!hasMFA) {
         toast.warning("Two-factor authentication is required for all users on this platform.");
+        setIsLoading(false);
         navigate("/security-settings");
         return;
       }
 
-      // ALWAYS require MFA verification for security
-      // Sign out again to prevent automatic session creation
-      await supabase.auth.signOut();
-      
-      // Re-authenticate to get to MFA challenge state
-      const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
-        email: email.trim().toLowerCase(),
-        password,
-      });
-
-      if (signInError) throw signInError;
-
-      // Now trigger MFA challenge
+      // User has MFA - trigger the MFA challenge UI
       setMfaRequired(true);
       setIsLoading(false);
     } catch (error: any) {
