@@ -813,17 +813,14 @@ const CTF = () => {
                               <Avatar className="h-8 w-8">
                                 <AvatarImage src={entry.avatar_url || undefined} />
                                 <AvatarFallback>
-                                  {(entry.full_name || entry.username || '?')[0].toUpperCase()}
+                                  {(entry.username || '?')[0].toUpperCase()}
                                 </AvatarFallback>
                               </Avatar>
                               <div>
                                 <p className="font-medium">
-                                  {entry.full_name || entry.username || 'Anonymous'}
+                                  @{entry.username || 'anonymous'}
                                   {entry.id === userId && <span className="text-primary ml-2">(You)</span>}
                                 </p>
-                                {entry.username && entry.full_name && (
-                                  <p className="text-xs text-muted-foreground">@{entry.username}</p>
-                                )}
                               </div>
                             </div>
                           </TableCell>
