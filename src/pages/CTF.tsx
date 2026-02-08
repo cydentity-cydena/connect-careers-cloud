@@ -811,8 +811,7 @@ const CTF = () => {
                           <TableCell>
                             <div className="flex items-center gap-3">
                               <Avatar className="h-8 w-8">
-                                <AvatarImage src={entry.avatar_url || undefined} />
-                                <AvatarFallback>
+                                <AvatarFallback className="bg-primary/20 text-primary">
                                   {(entry.username || '?')[0].toUpperCase()}
                                 </AvatarFallback>
                               </Avatar>
