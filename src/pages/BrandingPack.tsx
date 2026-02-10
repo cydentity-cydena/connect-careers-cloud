@@ -50,6 +50,34 @@ const BrandingPack = () => {
     toast.success(`Downloading ${name}`);
   };
 
+  const downloadResized = (path: string, name: string, size: number) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+      // Draw logo centered and fitted within the square
+      const scale = Math.min(size / img.width, size / img.height) * 0.8;
+      const w = img.width * scale;
+      const h = img.height * scale;
+      ctx.drawImage(img, (size - w) / 2, (size - h) / 2, w, h);
+      canvas.toBlob((blob) => {
+        if (!blob) return;
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = name;
+        link.click();
+        URL.revokeObjectURL(url);
+        toast.success(`Downloading ${name} (${size}×${size})`);
+      }, 'image/png');
+    };
+    img.src = path;
+  };
+
   const downloadAll = () => {
     logos.forEach((logo, index) => {
       setTimeout(() => {
@@ -108,6 +136,15 @@ const BrandingPack = () => {
                     >
                       <Download className="mr-2 h-4 w-4" />
                       Download PNG
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={() => downloadResized(logo.path, `${logo.name.toLowerCase().replace(/\s+/g, '-')}-600x600.png`, 600)}
+                      className="w-full"
+                    >
+                      <Download className="mr-2 h-4 w-4" />
+                      Download 600×600
                     </Button>
                   </div>
                 </CardContent>
