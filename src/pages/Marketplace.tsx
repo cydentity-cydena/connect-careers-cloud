@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Search, Star, Clock, Shield, MapPin, Zap, Users, Code, Target, AlertTriangle, Eye, ClipboardCheck, Cloud, Building, GraduationCap, Microscope, Bug, BookOpen } from "lucide-react";
 import { Link } from "react-router-dom";
+import { BookTalentDialog } from "@/components/marketplace/BookTalentDialog";
 
 const iconMap: Record<string, any> = {
   Shield, Target, AlertTriangle, Eye, ClipboardCheck, Cloud, Code, Search: Search,
@@ -254,8 +255,15 @@ const Marketplace = () => {
                             </span>
                           )}
                         </div>
-                        <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                          <Clock className="h-3 w-3" /> {t.response_time_hours}h
+                        <div className="flex items-center gap-2">
+                          <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                            <Clock className="h-3 w-3" /> {t.response_time_hours}h
+                          </span>
+                          <BookTalentDialog
+                            talentUserId={t.user_id}
+                            talentName={t.profiles?.full_name || "This professional"}
+                            dayRate={t.day_rate_gbp}
+                          />
                         </div>
                       </div>
                     </CardContent>
