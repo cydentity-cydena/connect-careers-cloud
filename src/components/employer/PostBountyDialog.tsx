@@ -26,7 +26,7 @@ const TIER_BOUNTY_LIMITS: Record<string, number> = {
 };
 
 const FEATURED_FEE_GBP = 35;
-const COMMISSION_RATE = 0.12;
+const COMMISSION_RATE = 0.15;
 
 export const PostBountyDialog = ({ onSuccess }: PostBountyDialogProps) => {
   const [open, setOpen] = useState(false);
