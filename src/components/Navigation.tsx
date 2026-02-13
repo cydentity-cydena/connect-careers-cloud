@@ -1,19 +1,28 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Shield, LogOut, Menu, X, Mail } from "lucide-react";
+import { LogOut, Menu, Mail, Briefcase, GraduationCap, Users, Building2, ChevronDown } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useUnreadMessages } from "@/hooks/useUnreadMessages";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu";
+import { cn } from "@/lib/utils";
+import React from "react";
 
-interface NavLink {
-  to: string;
+interface NavGroup {
   label: string;
-  showForRoles?: string[];
-  hideForRoles?: string[];
+  icon: React.ElementType;
+  links: { to: string; label: string; description?: string; showForRoles?: string[]; hideForRoles?: string[] }[];
 }
 
 /**
@@ -21,19 +30,12 @@ interface NavLink {
  * 
  * SECURITY NOTE: Client-side role filtering is used ONLY for UI/UX purposes 
  * (showing/hiding navigation links). This does NOT provide security.
- * 
- * Backend authorization is enforced independently via:
- * - RLS policies using has_role() function (database level)
- * - Edge Functions validating roles from database (API level)
- * 
- * Even if a user bypasses client-side checks, they cannot access protected
- * data or perform privileged operations due to server-side enforcement.
+ * Backend authorization is enforced via RLS policies and Edge Functions.
  */
 const Navigation = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [user, setUser] = useState<any>(null);
-  // NOTE: userRoles is used for UI rendering only - not for security
   const [userRoles, setUserRoles] = useState<string[]>([]);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -85,50 +87,62 @@ const Navigation = () => {
     setMobileMenuOpen(false);
   };
 
-  const allNavLinks: NavLink[] = [
-    { to: "/", label: "Home" },
-    { to: "/marketplace", label: "Marketplace" },
-    { to: "/leaderboard", label: "Leaderboard" },
-    { to: "/ctf", label: "CTF" },
-    { to: "/profiles", label: "Profiles" },
-    { to: "/jobs", label: "Jobs" },
-    { to: "/career-assistant", label: "AI Assistant", showForRoles: ["candidate"] },
-    { to: "/training", label: "Training" },
-    { to: "/certifications-catalog", label: "Certifications" },
-    { to: "/pricing", label: "Pricing" },
-    { to: "/community", label: "Community" },
-    { to: "/contact", label: "Contact" },
+  // Grouped navigation structure
+  const navGroups: NavGroup[] = [
+    {
+      label: "Explore",
+      icon: Briefcase,
+      links: [
+        { to: "/jobs", label: "Jobs", description: "Browse cybersecurity roles" },
+        { to: "/profiles", label: "Talent", description: "Browse verified professionals" },
+        { to: "/marketplace", label: "Marketplace", description: "On-demand talent engagements" },
+      ],
+    },
+    {
+      label: "Learn",
+      icon: GraduationCap,
+      links: [
+        { to: "/training", label: "Training", description: "Courses and resources" },
+        { to: "/certifications-catalog", label: "Certifications", description: "Industry certifications catalog" },
+        { to: "/ctf", label: "CTF Challenges", description: "Test your skills with challenges" },
+        { to: "/learning-paths", label: "Learning Paths", description: "Free curated YouTube courses" },
+        { to: "/career-assistant", label: "AI Assistant", description: "AI-powered career guidance", showForRoles: ["candidate"] },
+      ],
+    },
+    {
+      label: "Community",
+      icon: Users,
+      links: [
+        { to: "/leaderboard", label: "Leaderboard", description: "Top-ranked professionals" },
+        { to: "/community", label: "Forum", description: "Discuss and share with peers", showForRoles: ["candidate", "staff", "admin"] },
+      ],
+    },
+    {
+      label: "Company",
+      icon: Building2,
+      links: [
+        { to: "/pricing", label: "Pricing", description: "Plans and features" },
+        { to: "/contact", label: "Contact", description: "Get in touch with us" },
+        { to: "/partnerships", label: "Partners", description: "Partnership opportunities" },
+      ],
+    },
   ];
 
-  console.log('Current user roles:', userRoles, 'isLoading:', isLoading);
-  
-  const navLinks = allNavLinks.filter(link => {
-    console.log(`Checking ${link.label}:`, { 
-      hideForRoles: link.hideForRoles, 
-      showForRoles: link.showForRoles,
-      userRoles 
-    });
-    
-    // Special handling: Community is visible to candidates, staff, and admin only
-    if (link.to === "/community") {
-      const allowedRoles = ["candidate", "staff", "admin"];
-      const hasAllowedRole = userRoles.some(role => allowedRoles.includes(role));
-      console.log(`Community access check:`, { userRoles, hasAllowedRole });
-      return hasAllowedRole;
-    }
-    
-    // Hide if hideForRoles includes any of the user's roles
-    if (link.hideForRoles && userRoles.some(role => link.hideForRoles?.includes(role))) {
-      console.log(`✓ Hiding ${link.label} for roles:`, userRoles);
-      return false;
-    }
-    // Show only if showForRoles includes any of the user's roles (or if no showForRoles specified)
-    if (link.showForRoles && !userRoles.some(role => link.showForRoles?.includes(role))) {
-      console.log(`✗ Not showing ${link.label} - role requirement not met`);
-      return false;
-    }
+  // Filter links based on roles
+  const filterLink = (link: { showForRoles?: string[]; hideForRoles?: string[] }) => {
+    if (link.hideForRoles && userRoles.some(role => link.hideForRoles?.includes(role))) return false;
+    if (link.showForRoles && !userRoles.some(role => link.showForRoles?.includes(role))) return false;
     return true;
-  });
+  };
+
+  const filteredGroups = navGroups.map(group => ({
+    ...group,
+    links: group.links.filter(filterLink),
+  })).filter(group => group.links.length > 0);
+
+  // Check if a path is active (exact or starts with for nested routes)
+  const isActivePath = (path: string) => location.pathname === path;
+  const isGroupActive = (group: NavGroup) => group.links.some(link => isActivePath(link.to));
 
   return (
     <nav className="border-b border-border backdrop-blur-sm sticky top-0 z-50 bg-background/95">
@@ -143,81 +157,125 @@ const Navigation = () => {
             />
           </Link>
 
-          {/* Desktop Navigation */}
+          {/* Desktop Navigation - Grouped */}
           <TooltipProvider>
-            <div className="hidden lg:flex items-center gap-5 xl:gap-7 ml-8">
-              {!isLoading && navLinks.map((link) => (
-                <Link
-                  key={link.to}
-                  to={link.to}
-                  className={`text-sm font-semibold transition-colors duration-150 whitespace-nowrap ${
-                    location.pathname === link.to 
-                      ? "text-accent" 
-                      : "text-foreground/80 hover:text-primary"
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              ))}
-
-              {user ? (
+            <div className="hidden lg:flex items-center gap-2 ml-6">
+              {!isLoading && (
                 <>
-                  {(userRoles.includes('staff') || userRoles.includes('admin')) && (
-                    <Link to="/staff/funnel">
-                      <Button variant="hero" size="sm" className="font-semibold">
-                        Staff Funnel
-                      </Button>
-                    </Link>
-                  )}
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Link to="/messages" className="relative">
-                        <Button variant="ghost" size="sm">
-                          <Mail className="h-4 w-4" />
-                          {unreadCount > 0 && (
-                            <Badge 
-                              variant="destructive" 
-                              className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center text-xs"
-                            >
-                              {unreadCount}
-                            </Badge>
-                          )}
+                  <Link
+                    to="/"
+                    className={cn(
+                      "text-sm font-semibold px-3 py-2 rounded-md transition-colors",
+                      location.pathname === "/" ? "text-accent" : "text-foreground/80 hover:text-primary"
+                    )}
+                  >
+                    Home
+                  </Link>
+
+                  <NavigationMenu>
+                    <NavigationMenuList>
+                      {filteredGroups.map((group) => (
+                        <NavigationMenuItem key={group.label}>
+                          <NavigationMenuTrigger
+                            className={cn(
+                              "text-sm font-semibold bg-transparent hover:bg-transparent focus:bg-transparent data-[state=open]:bg-transparent",
+                              isGroupActive(group) ? "text-accent" : "text-foreground/80 hover:text-primary"
+                            )}
+                          >
+                            {group.label}
+                          </NavigationMenuTrigger>
+                          <NavigationMenuContent>
+                            <ul className="grid w-[280px] gap-1 p-3">
+                              {group.links.map((link) => (
+                                <li key={link.to}>
+                                  <NavigationMenuLink asChild>
+                                    <Link
+                                      to={link.to}
+                                      className={cn(
+                                        "block select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent/10 hover:text-accent-foreground focus:bg-accent/10",
+                                        isActivePath(link.to) && "bg-accent/10 text-accent"
+                                      )}
+                                    >
+                                      <div className="text-sm font-semibold leading-none mb-1">{link.label}</div>
+                                      {link.description && (
+                                        <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
+                                          {link.description}
+                                        </p>
+                                      )}
+                                    </Link>
+                                  </NavigationMenuLink>
+                                </li>
+                              ))}
+                            </ul>
+                          </NavigationMenuContent>
+                        </NavigationMenuItem>
+                      ))}
+                    </NavigationMenuList>
+                  </NavigationMenu>
+                </>
+              )}
+
+              {/* Auth actions */}
+              <div className="flex items-center gap-2 ml-2 pl-2 border-l border-border">
+                {user ? (
+                  <>
+                    {(userRoles.includes('staff') || userRoles.includes('admin')) && (
+                      <Link to="/staff/funnel">
+                        <Button variant="hero" size="sm" className="font-semibold">
+                          Staff Funnel
                         </Button>
                       </Link>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Messages{unreadCount > 0 ? ` (${unreadCount} unread)` : ''}</p>
-                    </TooltipContent>
-                  </Tooltip>
-                  <Link to="/dashboard">
-                    <Button variant="hero" size="sm" className="font-semibold">
-                      Dashboard
+                    )}
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Link to="/messages" className="relative">
+                          <Button variant="ghost" size="sm">
+                            <Mail className="h-4 w-4" />
+                            {unreadCount > 0 && (
+                              <Badge 
+                                variant="destructive" 
+                                className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center text-xs"
+                              >
+                                {unreadCount}
+                              </Badge>
+                            )}
+                          </Button>
+                        </Link>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Messages{unreadCount > 0 ? ` (${unreadCount} unread)` : ''}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                    <Link to="/dashboard">
+                      <Button variant="hero" size="sm" className="font-semibold">
+                        Dashboard
+                      </Button>
+                    </Link>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          onClick={handleSignOut}
+                          className="flex flex-col items-center gap-0.5 h-auto py-1.5 px-3"
+                        >
+                          <LogOut className="h-4 w-4" />
+                          <span className="text-xs">Sign Out</span>
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Sign out of your account</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </>
+                ) : (
+                  <Link to="/auth">
+                    <Button variant="hero" size="sm">
+                      Sign In
                     </Button>
                   </Link>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        onClick={handleSignOut}
-                        className="flex flex-col items-center gap-0.5 h-auto py-1.5 px-3"
-                      >
-                        <LogOut className="h-4 w-4" />
-                        <span className="text-xs">Sign Out</span>
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Sign out of your account</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </>
-              ) : (
-                <Link to="/auth">
-                  <Button variant="hero" size="sm">
-                    Sign In
-                  </Button>
-                </Link>
-              )}
+                )}
+              </div>
             </div>
           </TooltipProvider>
 
@@ -246,8 +304,8 @@ const Navigation = () => {
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="w-[85vw] max-w-[350px]">
-                <div className="flex flex-col gap-6 mt-6">
-                  {/* Mobile Auth Actions - Prioritized */}
+                <div className="flex flex-col gap-4 mt-6">
+                  {/* Mobile Auth Actions */}
                   {user && (
                     <div className="flex flex-col gap-3">
                       {(userRoles.includes('staff') || userRoles.includes('admin')) && (
@@ -267,10 +325,7 @@ const Navigation = () => {
                           <Mail className="h-4 w-4 mr-2" />
                           Messages
                           {unreadCount > 0 && (
-                            <Badge 
-                              variant="destructive" 
-                              className="ml-auto"
-                            >
+                            <Badge variant="destructive" className="ml-auto">
                               {unreadCount}
                             </Badge>
                           )}
@@ -279,21 +334,26 @@ const Navigation = () => {
                     </div>
                   )}
                   
-                  {/* Mobile Navigation Links */}
-                  <div className="flex flex-col gap-3 pt-4 border-t border-border">
-                    {!isLoading && navLinks.map((link) => (
-                      <Link
-                        key={link.to}
-                        to={link.to}
-                        onClick={handleNavClick}
-                        className={`text-base font-semibold transition-colors duration-150 py-2 px-1 rounded ${
-                          location.pathname === link.to 
-                            ? "text-accent bg-accent/10" 
-                            : "text-foreground/80 hover:text-primary hover:bg-muted/50"
-                        }`}
-                      >
-                        {link.label}
-                      </Link>
+                  {/* Mobile Navigation - Grouped */}
+                  <div className="flex flex-col gap-1 pt-4 border-t border-border">
+                    <Link
+                      to="/"
+                      onClick={handleNavClick}
+                      className={cn(
+                        "text-base font-semibold py-2 px-3 rounded transition-colors",
+                        location.pathname === "/" ? "text-accent bg-accent/10" : "text-foreground/80 hover:text-primary hover:bg-muted/50"
+                      )}
+                    >
+                      Home
+                    </Link>
+
+                    {!isLoading && filteredGroups.map((group) => (
+                      <MobileNavGroup 
+                        key={group.label} 
+                        group={group} 
+                        currentPath={location.pathname}
+                        onNavClick={handleNavClick}
+                      />
                     ))}
                   </div>
 
@@ -319,6 +379,55 @@ const Navigation = () => {
         </div>
       </div>
     </nav>
+  );
+};
+
+// Mobile collapsible nav group
+const MobileNavGroup = ({ group, currentPath, onNavClick }: { 
+  group: NavGroup; 
+  currentPath: string; 
+  onNavClick: () => void;
+}) => {
+  const [open, setOpen] = useState(() => group.links.some(l => l.to === currentPath));
+  const Icon = group.icon;
+
+  return (
+    <div>
+      <button
+        onClick={() => setOpen(!open)}
+        className={cn(
+          "w-full flex items-center justify-between text-base font-semibold py-2 px-3 rounded transition-colors",
+          group.links.some(l => l.to === currentPath)
+            ? "text-accent"
+            : "text-foreground/80 hover:text-primary hover:bg-muted/50"
+        )}
+      >
+        <span className="flex items-center gap-2">
+          <Icon className="h-4 w-4" />
+          {group.label}
+        </span>
+        <ChevronDown className={cn("h-4 w-4 transition-transform", open && "rotate-180")} />
+      </button>
+      {open && (
+        <div className="ml-6 mt-1 space-y-1">
+          {group.links.map((link) => (
+            <Link
+              key={link.to}
+              to={link.to}
+              onClick={onNavClick}
+              className={cn(
+                "block text-sm py-1.5 px-3 rounded transition-colors",
+                currentPath === link.to
+                  ? "text-accent bg-accent/10 font-semibold"
+                  : "text-muted-foreground hover:text-primary hover:bg-muted/50"
+              )}
+            >
+              {link.label}
+            </Link>
+          ))}
+        </div>
+      )}
+    </div>
   );
 };
 
