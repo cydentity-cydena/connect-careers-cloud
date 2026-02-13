@@ -55,10 +55,7 @@ const Marketplace = () => {
     queryFn: async () => {
       let query = supabase
         .from("candidate_profiles")
-        .select(`
-          *,
-          profiles:user_id (id, full_name, username, avatar_url, location, bio)
-        `)
+        .select("*")
         .eq("is_marketplace_visible", true)
         .order("average_rating", { ascending: false });
 
@@ -69,7 +66,24 @@ const Marketplace = () => {
       const { data, error } = await query;
       if (error) throw error;
 
-      let filtered = data || [];
+      // Fetch profile info for each talent
+      const userIds = (data || []).map((t: any) => t.user_id);
+      let profilesMap: Record<string, any> = {};
+      if (userIds.length > 0) {
+        const { data: profiles } = await supabase
+          .from("profiles")
+          .select("id, full_name, username, avatar_url, location, bio")
+          .in("id", userIds);
+        if (profiles) {
+          profilesMap = Object.fromEntries(profiles.map((p: any) => [p.id, p]));
+        }
+      }
+
+      let filtered = (data || []).map((t: any) => ({
+        ...t,
+        profiles: profilesMap[t.user_id] || null,
+      }));
+
       if (searchQuery) {
         const q = searchQuery.toLowerCase();
         filtered = filtered.filter((t: any) =>
