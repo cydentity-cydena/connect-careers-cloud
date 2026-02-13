@@ -389,7 +389,7 @@ export const PostBountyDialog = ({ onSuccess }: PostBountyDialogProps) => {
           {/* Commission info */}
           <div className="p-3 rounded-lg bg-muted/30 text-xs text-muted-foreground space-y-1">
             <p className="font-medium text-foreground text-sm">Pricing</p>
-            <p>• {Math.round(COMMISSION_RATE * 100)}% success commission on completed engagements</p>
+            <p>• {Math.round(COMMISSION_RATE * 100)}% platform fee added to the agreed rate, paid by you</p>
             {isFeatured && <p>• £{FEATURED_FEE_GBP} featured listing fee (one-time)</p>}
             <p>• No charge if the bounty expires unfilled</p>
           </div>
