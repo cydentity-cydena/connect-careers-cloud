@@ -22,6 +22,7 @@ import { ReferralSystem } from "./ReferralSystem";
 import { ReferralBlitzBanner } from "./ReferralBlitzBanner";
 import { CareerPathsAI } from "./CareerPathsAI";
 import { SecurityIQ } from "./SecurityIQ";
+import { MarketplaceSettings } from "./MarketplaceSettings";
 import { ShareProfileCard } from "@/components/sharing/ShareProfileCard";
 import { JobMatchGraph } from "./JobMatchGraph";
 import { JSONResumeExport } from "./JSONResumeExport";
@@ -424,7 +425,7 @@ const CandidateDashboard = () => {
       ═══════════════════════════════════════════════════════════════════════ */}
       {userId && (
         <Tabs defaultValue="profile" className="w-full">
-          <TabsList className="grid w-full grid-cols-4 mb-4">
+          <TabsList className="grid w-full grid-cols-5 mb-4">
             <TabsTrigger value="profile" className="gap-2">
               <User className="h-4 w-4" />
               <span className="hidden sm:inline">Profile</span>
@@ -436,6 +437,10 @@ const CandidateDashboard = () => {
             <TabsTrigger value="certs" className="gap-2">
               <Award className="h-4 w-4" />
               <span className="hidden sm:inline">Certifications</span>
+            </TabsTrigger>
+            <TabsTrigger value="marketplace" className="gap-2">
+              <Briefcase className="h-4 w-4" />
+              <span className="hidden sm:inline">Marketplace</span>
             </TabsTrigger>
             <TabsTrigger value="share" className="gap-2">
               <Share2 className="h-4 w-4" />
@@ -515,6 +520,10 @@ const CandidateDashboard = () => {
 
           <TabsContent value="resume">
             <MultipleResumesManager />
+          </TabsContent>
+
+          <TabsContent value="marketplace">
+            <MarketplaceSettings userId={userId} />
           </TabsContent>
 
           <TabsContent value="certs">
