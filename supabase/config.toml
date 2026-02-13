@@ -83,3 +83,9 @@ verify_jwt = true
 
 [functions.generate-resume-from-profile]
 verify_jwt = true
+
+[functions.marketplace-api]
+verify_jwt = false
+
+[functions.cydena-mcp]
+verify_jwt = false

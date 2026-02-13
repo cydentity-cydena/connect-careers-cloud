@@ -87,6 +87,7 @@ const Navigation = () => {
 
   const allNavLinks: NavLink[] = [
     { to: "/", label: "Home" },
+    { to: "/marketplace", label: "Marketplace" },
     { to: "/leaderboard", label: "Leaderboard" },
     { to: "/ctf", label: "CTF" },
     { to: "/profiles", label: "Profiles" },
