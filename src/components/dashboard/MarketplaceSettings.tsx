@@ -202,7 +202,7 @@ export const MarketplaceSettings = ({ userId }: MarketplaceSettingsProps) => {
                   <SelectContent>
                     <SelectItem value="inside">Inside IR35</SelectItem>
                     <SelectItem value="outside">Outside IR35</SelectItem>
-                    <SelectItem value="either">Either</SelectItem>
+                    <SelectItem value="not_applicable">Not Applicable</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
