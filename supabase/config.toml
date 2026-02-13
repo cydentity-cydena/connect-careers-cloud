@@ -89,3 +89,12 @@ verify_jwt = false
 
 [functions.cydena-mcp]
 verify_jwt = false
+
+[functions.create-connect-account]
+verify_jwt = false
+
+[functions.connect-dashboard-link]
+verify_jwt = false
+
+[functions.create-marketplace-payment]
+verify_jwt = false
