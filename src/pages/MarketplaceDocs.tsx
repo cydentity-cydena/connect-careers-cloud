@@ -220,7 +220,7 @@ const MarketplaceDocs = () => {
               <CardHeader><CardTitle>Compatible Platforms</CardTitle></CardHeader>
               <CardContent>
                 <div className="flex flex-wrap gap-2">
-                  {["Claude (Anthropic)", "OpenAI Agents", "AutoGPT / AgentGPT", "Custom MCP Agents", "Resilience Foundry"].map((p) => (
+                  {["Claude (Anthropic)", "OpenAI Agents", "AutoGPT / AgentGPT", "Custom MCP Agents"].map((p) => (
                     <Badge key={p} variant="outline" className="text-xs">{p}</Badge>
                   ))}
                 </div>
