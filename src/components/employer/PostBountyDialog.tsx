@@ -26,7 +26,8 @@ const TIER_BOUNTY_LIMITS: Record<string, number> = {
 };
 
 const FEATURED_FEE_GBP = 35;
-const COMMISSION_RATE = 0.15;
+const CLIENT_FEE_PERCENT = 15;
+const TALENT_FEE_PERCENT = 15;
 
 export const PostBountyDialog = ({ onSuccess }: PostBountyDialogProps) => {
   const [open, setOpen] = useState(false);
@@ -118,7 +119,7 @@ export const PostBountyDialog = ({ onSuccess }: PostBountyDialogProps) => {
         source: "platform",
         is_featured: isFeatured,
         featured_until: isFeatured ? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString() : null,
-        commission_rate: COMMISSION_RATE,
+        commission_rate: (CLIENT_FEE_PERCENT + TALENT_FEE_PERCENT) / 100,
         featured_fee_gbp: isFeatured ? FEATURED_FEE_GBP : 0,
       });
 
@@ -389,7 +390,8 @@ export const PostBountyDialog = ({ onSuccess }: PostBountyDialogProps) => {
           {/* Commission info */}
           <div className="p-3 rounded-lg bg-muted/30 text-xs text-muted-foreground space-y-1">
             <p className="font-medium text-foreground text-sm">Pricing</p>
-            <p>• {Math.round(COMMISSION_RATE * 100)}% platform fee added to the agreed rate, paid by you</p>
+            <p>• {CLIENT_FEE_PERCENT}% service fee added on top of the agreed rate, paid by you</p>
+            <p>• {TALENT_FEE_PERCENT}% platform fee deducted from the talent's payout</p>
             {isFeatured && <p>• £{FEATURED_FEE_GBP} featured listing fee (one-time)</p>}
             <p>• No charge if the bounty expires unfilled</p>
           </div>
