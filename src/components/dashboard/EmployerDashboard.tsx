@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Building, Users, Briefcase, TrendingUp, Coins, Workflow, CheckCircle, Bug, ArrowRight, BarChart3, ListChecks, Key } from "lucide-react";
+import { Building, Users, Briefcase, TrendingUp, Coins, Workflow, CheckCircle, Bug, ArrowRight, BarChart3, ListChecks, Key, Target } from "lucide-react";
 import { ApplicationPipeline } from "@/components/employer/ApplicationPipeline";
 import { UnlockUsageTracker } from "@/components/employer/UnlockUsageTracker";
 import { VerificationRequestDialog } from "@/components/verification/VerificationRequestDialog";
@@ -19,6 +19,7 @@ import { CustomAssessmentsList } from "@/components/assessments/CustomAssessment
 import { AssessmentQuotaDisplay } from "@/components/assessments/AssessmentQuotaDisplay";
 import { AssignedPods } from "@/components/employer/AssignedPods";
 import { APIKeyManagement } from "@/components/marketplace/APIKeyManagement";
+import { EmployerBounties } from "@/components/employer/EmployerBounties";
 
 const EmployerDashboard = () => {
   const navigate = useNavigate();
@@ -205,7 +206,7 @@ const EmployerDashboard = () => {
       )}
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full max-w-5xl grid-cols-8">
+        <TabsList className="grid w-full max-w-6xl grid-cols-9">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="analytics" className="gap-2">
             <BarChart3 className="h-4 w-4" />
@@ -218,6 +219,10 @@ const EmployerDashboard = () => {
           <TabsTrigger value="jobs" className="gap-2">
             <Briefcase className="h-4 w-4" />
             Jobs
+          </TabsTrigger>
+          <TabsTrigger value="bounties" className="gap-2">
+            <Target className="h-4 w-4" />
+            Bounties
           </TabsTrigger>
           <TabsTrigger value="pods" className="gap-2">
             <Users className="h-4 w-4" />
@@ -377,6 +382,10 @@ const EmployerDashboard = () => {
 
         <TabsContent value="pipeline" className="mt-6">
           <ApplicationPipeline />
+        </TabsContent>
+
+        <TabsContent value="bounties" className="mt-6">
+          <EmployerBounties />
         </TabsContent>
 
         <TabsContent value="team" className="mt-6">
