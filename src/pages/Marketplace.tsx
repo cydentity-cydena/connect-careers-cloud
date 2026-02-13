@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import Navigation from "@/components/Navigation";
@@ -10,8 +10,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Search, Star, Clock, Shield, MapPin, Zap, Users, Code, Target, AlertTriangle, Eye, ClipboardCheck, Cloud, Building, GraduationCap, Microscope, Bug, BookOpen } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Search, Star, Clock, Shield, MapPin, Zap, Users, Code, Target, AlertTriangle, Eye, ClipboardCheck, Cloud, Building, GraduationCap, Microscope, Bug, BookOpen, Plus } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import { BookTalentDialog } from "@/components/marketplace/BookTalentDialog";
 
 const iconMap: Record<string, any> = {
@@ -34,9 +34,27 @@ const availabilityColors: Record<string, string> = {
 };
 
 const Marketplace = () => {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [clearanceFilter, setClearanceFilter] = useState("all");
+  const [userRoles, setUserRoles] = useState<string[]>([]);
+
+  useEffect(() => {
+    const fetchRoles = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', user.id);
+        setUserRoles(data?.map(r => r.role) || []);
+      }
+    };
+    fetchRoles();
+  }, []);
+
+  const isEmployerOrRecruiter = userRoles.some(r => ['employer', 'recruiter'].includes(r));
 
   const { data: categories } = useQuery({
     queryKey: ["task-categories"],
@@ -289,6 +307,14 @@ const Marketplace = () => {
 
           {/* Bounties Tab */}
           <TabsContent value="bounties" className="space-y-6">
+            {isEmployerOrRecruiter && (
+              <div className="flex justify-end">
+                <Button onClick={() => navigate('/dashboard')} className="gap-2">
+                  <Plus className="h-4 w-4" />
+                  Post a Bounty
+                </Button>
+              </div>
+            )}
             {bountiesLoading ? (
               <div className="text-center py-12 text-muted-foreground">Loading bounties...</div>
             ) : bounties?.length === 0 ? (
