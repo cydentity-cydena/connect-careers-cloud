@@ -32,7 +32,7 @@ const EmployerDashboard = () => {
   const [applicationsCount, setApplicationsCount] = useState(0);
   const [userName, setUserName] = useState<string>("");
   const [showGettingStarted, setShowGettingStarted] = useState(true);
-  const [activeTab, setActiveTab] = useState("overview");
+  const [activeTab, setActiveTab] = useState("bounties");
 
   const { data: verificationRequest } = useQuery({
     queryKey: ['verification-request', userId],
