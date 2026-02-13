@@ -278,6 +278,61 @@ export type Database = {
         }
         Relationships: []
       }
+      bounty_applications: {
+        Row: {
+          bounty_id: string
+          cover_message: string | null
+          created_at: string | null
+          estimated_completion: string | null
+          id: string
+          proposed_rate_gbp: number | null
+          status: string | null
+          talent_id: string
+        }
+        Insert: {
+          bounty_id: string
+          cover_message?: string | null
+          created_at?: string | null
+          estimated_completion?: string | null
+          id?: string
+          proposed_rate_gbp?: number | null
+          status?: string | null
+          talent_id: string
+        }
+        Update: {
+          bounty_id?: string
+          cover_message?: string | null
+          created_at?: string | null
+          estimated_completion?: string | null
+          id?: string
+          proposed_rate_gbp?: number | null
+          status?: string | null
+          talent_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bounty_applications_bounty_id_fkey"
+            columns: ["bounty_id"]
+            isOneToOne: false
+            referencedRelation: "task_bounties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bounty_applications_talent_id_fkey"
+            columns: ["talent_id"]
+            isOneToOne: false
+            referencedRelation: "ctf_leaderboard"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bounty_applications_talent_id_fkey"
+            columns: ["talent_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       candidate_notes: {
         Row: {
           content: string
@@ -445,17 +500,32 @@ export type Database = {
       }
       candidate_profiles: {
         Row: {
+          availability_status: string | null
+          available_from: string | null
+          average_rating: number | null
           created_at: string
+          day_rate_gbp: number | null
           github_url: string | null
+          hourly_rate_gbp: number | null
           id: string
+          industries: string[] | null
+          ir35_status: string | null
+          is_api_bookable: boolean | null
+          is_marketplace_visible: boolean | null
+          is_mcp_bookable: boolean | null
           linkedin_url: string | null
+          marketplace_headline: string | null
+          max_concurrent_engagements: number | null
           phone: string | null
           portfolio_url: string | null
           professional_statement: string | null
+          response_time_hours: number | null
           resume_url: string | null
           security_clearance: string | null
           specializations: string[] | null
           title: string | null
+          tools: string[] | null
+          total_engagements_completed: number | null
           updated_at: string
           user_id: string
           willing_to_relocate: boolean | null
@@ -463,17 +533,32 @@ export type Database = {
           years_experience: number | null
         }
         Insert: {
+          availability_status?: string | null
+          available_from?: string | null
+          average_rating?: number | null
           created_at?: string
+          day_rate_gbp?: number | null
           github_url?: string | null
+          hourly_rate_gbp?: number | null
           id?: string
+          industries?: string[] | null
+          ir35_status?: string | null
+          is_api_bookable?: boolean | null
+          is_marketplace_visible?: boolean | null
+          is_mcp_bookable?: boolean | null
           linkedin_url?: string | null
+          marketplace_headline?: string | null
+          max_concurrent_engagements?: number | null
           phone?: string | null
           portfolio_url?: string | null
           professional_statement?: string | null
+          response_time_hours?: number | null
           resume_url?: string | null
           security_clearance?: string | null
           specializations?: string[] | null
           title?: string | null
+          tools?: string[] | null
+          total_engagements_completed?: number | null
           updated_at?: string
           user_id: string
           willing_to_relocate?: boolean | null
@@ -481,17 +566,32 @@ export type Database = {
           years_experience?: number | null
         }
         Update: {
+          availability_status?: string | null
+          available_from?: string | null
+          average_rating?: number | null
           created_at?: string
+          day_rate_gbp?: number | null
           github_url?: string | null
+          hourly_rate_gbp?: number | null
           id?: string
+          industries?: string[] | null
+          ir35_status?: string | null
+          is_api_bookable?: boolean | null
+          is_marketplace_visible?: boolean | null
+          is_mcp_bookable?: boolean | null
           linkedin_url?: string | null
+          marketplace_headline?: string | null
+          max_concurrent_engagements?: number | null
           phone?: string | null
           portfolio_url?: string | null
           professional_statement?: string | null
+          response_time_hours?: number | null
           resume_url?: string | null
           security_clearance?: string | null
           specializations?: string[] | null
           title?: string | null
+          tools?: string[] | null
+          total_engagements_completed?: number | null
           updated_at?: string
           user_id?: string
           willing_to_relocate?: boolean | null
@@ -1466,6 +1566,64 @@ export type Database = {
         }
         Relationships: []
       }
+      engagement_messages: {
+        Row: {
+          agent_identifier: string | null
+          content: string
+          created_at: string | null
+          engagement_id: string
+          id: string
+          is_from_agent: boolean | null
+          is_system_message: boolean | null
+          read_at: string | null
+          sender_id: string | null
+        }
+        Insert: {
+          agent_identifier?: string | null
+          content: string
+          created_at?: string | null
+          engagement_id: string
+          id?: string
+          is_from_agent?: boolean | null
+          is_system_message?: boolean | null
+          read_at?: string | null
+          sender_id?: string | null
+        }
+        Update: {
+          agent_identifier?: string | null
+          content?: string
+          created_at?: string | null
+          engagement_id?: string
+          id?: string
+          is_from_agent?: boolean | null
+          is_system_message?: boolean | null
+          read_at?: string | null
+          sender_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "engagement_messages_engagement_id_fkey"
+            columns: ["engagement_id"]
+            isOneToOne: false
+            referencedRelation: "marketplace_engagements"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "engagement_messages_sender_id_fkey"
+            columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "ctf_leaderboard"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "engagement_messages_sender_id_fkey"
+            columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       featured_certifications: {
         Row: {
           amount_paid: number | null
@@ -1759,6 +1917,245 @@ export type Database = {
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      marketplace_api_keys: {
+        Row: {
+          created_at: string | null
+          expires_at: string | null
+          id: string
+          is_active: boolean | null
+          key_hash: string
+          key_prefix: string
+          last_used_at: string | null
+          name: string
+          permissions: string[] | null
+          profile_id: string
+          rate_limit_per_hour: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          key_hash: string
+          key_prefix: string
+          last_used_at?: string | null
+          name: string
+          permissions?: string[] | null
+          profile_id: string
+          rate_limit_per_hour?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          key_hash?: string
+          key_prefix?: string
+          last_used_at?: string | null
+          name?: string
+          permissions?: string[] | null
+          profile_id?: string
+          rate_limit_per_hour?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "marketplace_api_keys_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "ctf_leaderboard"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "marketplace_api_keys_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      marketplace_api_log: {
+        Row: {
+          agent_identifier: string | null
+          api_key_id: string | null
+          created_at: string | null
+          endpoint: string
+          id: string
+          method: string
+          request_body: Json | null
+          response_time_ms: number | null
+          source: string | null
+          status_code: number | null
+        }
+        Insert: {
+          agent_identifier?: string | null
+          api_key_id?: string | null
+          created_at?: string | null
+          endpoint: string
+          id?: string
+          method: string
+          request_body?: Json | null
+          response_time_ms?: number | null
+          source?: string | null
+          status_code?: number | null
+        }
+        Update: {
+          agent_identifier?: string | null
+          api_key_id?: string | null
+          created_at?: string | null
+          endpoint?: string
+          id?: string
+          method?: string
+          request_body?: Json | null
+          response_time_ms?: number | null
+          source?: string | null
+          status_code?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "marketplace_api_log_api_key_id_fkey"
+            columns: ["api_key_id"]
+            isOneToOne: false
+            referencedRelation: "marketplace_api_keys"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      marketplace_engagements: {
+        Row: {
+          agreed_rate_gbp: number
+          category_id: string | null
+          client_id: string
+          client_rating: number | null
+          client_review: string | null
+          compliance_framework: string | null
+          created_at: string | null
+          deliverables: string | null
+          description: string
+          end_date: string | null
+          engagement_type: string
+          estimated_days: number | null
+          estimated_hours: number | null
+          id: string
+          nda_signed_at: string | null
+          platform_fee_percent: number | null
+          requirements: string | null
+          requires_clearance: string | null
+          requires_nda: boolean | null
+          source: string | null
+          source_agent_id: string | null
+          source_agent_name: string | null
+          start_date: string | null
+          status: string | null
+          talent_id: string
+          talent_rating: number | null
+          talent_review: string | null
+          title: string
+          total_estimated_gbp: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          agreed_rate_gbp: number
+          category_id?: string | null
+          client_id: string
+          client_rating?: number | null
+          client_review?: string | null
+          compliance_framework?: string | null
+          created_at?: string | null
+          deliverables?: string | null
+          description: string
+          end_date?: string | null
+          engagement_type: string
+          estimated_days?: number | null
+          estimated_hours?: number | null
+          id?: string
+          nda_signed_at?: string | null
+          platform_fee_percent?: number | null
+          requirements?: string | null
+          requires_clearance?: string | null
+          requires_nda?: boolean | null
+          source?: string | null
+          source_agent_id?: string | null
+          source_agent_name?: string | null
+          start_date?: string | null
+          status?: string | null
+          talent_id: string
+          talent_rating?: number | null
+          talent_review?: string | null
+          title: string
+          total_estimated_gbp?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          agreed_rate_gbp?: number
+          category_id?: string | null
+          client_id?: string
+          client_rating?: number | null
+          client_review?: string | null
+          compliance_framework?: string | null
+          created_at?: string | null
+          deliverables?: string | null
+          description?: string
+          end_date?: string | null
+          engagement_type?: string
+          estimated_days?: number | null
+          estimated_hours?: number | null
+          id?: string
+          nda_signed_at?: string | null
+          platform_fee_percent?: number | null
+          requirements?: string | null
+          requires_clearance?: string | null
+          requires_nda?: boolean | null
+          source?: string | null
+          source_agent_id?: string | null
+          source_agent_name?: string | null
+          start_date?: string | null
+          status?: string | null
+          talent_id?: string
+          talent_rating?: number | null
+          talent_review?: string | null
+          title?: string
+          total_estimated_gbp?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "marketplace_engagements_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "task_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "marketplace_engagements_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "ctf_leaderboard"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "marketplace_engagements_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "marketplace_engagements_talent_id_fkey"
+            columns: ["talent_id"]
+            isOneToOne: false
+            referencedRelation: "ctf_leaderboard"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "marketplace_engagements_talent_id_fkey"
+            columns: ["talent_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -3145,6 +3542,142 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      task_bounties: {
+        Row: {
+          budget_max_gbp: number | null
+          budget_min_gbp: number | null
+          category_id: string | null
+          client_id: string
+          created_at: string | null
+          current_applicants: number | null
+          deadline: string | null
+          description: string
+          engagement_type: string
+          expires_at: string | null
+          id: string
+          location_city: string | null
+          location_requirement: string | null
+          max_applicants: number | null
+          required_certifications: string[] | null
+          required_clearance: string | null
+          requirements: string | null
+          source: string | null
+          source_agent_id: string | null
+          start_date: string | null
+          status: string | null
+          title: string
+          urgency: string | null
+        }
+        Insert: {
+          budget_max_gbp?: number | null
+          budget_min_gbp?: number | null
+          category_id?: string | null
+          client_id: string
+          created_at?: string | null
+          current_applicants?: number | null
+          deadline?: string | null
+          description: string
+          engagement_type: string
+          expires_at?: string | null
+          id?: string
+          location_city?: string | null
+          location_requirement?: string | null
+          max_applicants?: number | null
+          required_certifications?: string[] | null
+          required_clearance?: string | null
+          requirements?: string | null
+          source?: string | null
+          source_agent_id?: string | null
+          start_date?: string | null
+          status?: string | null
+          title: string
+          urgency?: string | null
+        }
+        Update: {
+          budget_max_gbp?: number | null
+          budget_min_gbp?: number | null
+          category_id?: string | null
+          client_id?: string
+          created_at?: string | null
+          current_applicants?: number | null
+          deadline?: string | null
+          description?: string
+          engagement_type?: string
+          expires_at?: string | null
+          id?: string
+          location_city?: string | null
+          location_requirement?: string | null
+          max_applicants?: number | null
+          required_certifications?: string[] | null
+          required_clearance?: string | null
+          requirements?: string | null
+          source?: string | null
+          source_agent_id?: string | null
+          start_date?: string | null
+          status?: string | null
+          title?: string
+          urgency?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "task_bounties_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "task_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "task_bounties_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "ctf_leaderboard"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "task_bounties_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      task_categories: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          icon: string | null
+          id: string
+          min_certification_level: string | null
+          name: string
+          requires_clearance: string | null
+          slug: string
+          sort_order: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          icon?: string | null
+          id?: string
+          min_certification_level?: string | null
+          name: string
+          requires_clearance?: string | null
+          slug: string
+          sort_order?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          icon?: string | null
+          id?: string
+          min_certification_level?: string | null
+          name?: string
+          requires_clearance?: string | null
+          slug?: string
+          sort_order?: number | null
+        }
+        Relationships: []
       }
       team_members: {
         Row: {
