@@ -7,7 +7,8 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-const PLATFORM_FEE_PERCENT = 15;
+const CLIENT_FEE_PERCENT = 15; // Added on top of agreed rate, paid by client
+const TALENT_FEE_PERCENT = 15; // Deducted from agreed rate, kept by platform
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -65,13 +66,24 @@ serve(async (req) => {
 
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
 
-    const grossAmountGbp = engagement.total_estimated_gbp || engagement.agreed_rate_gbp;
-    const grossAmountPence = Math.round(grossAmountGbp * 100);
-    const platformFeePence = Math.round(grossAmountPence * (PLATFORM_FEE_PERCENT / 100));
+    const agreedAmountGbp = engagement.total_estimated_gbp || engagement.agreed_rate_gbp;
+    const agreedAmountPence = Math.round(agreedAmountGbp * 100);
+
+    // Client pays agreed rate + 15% on top
+    const clientSurchargePence = Math.round(agreedAmountPence * (CLIENT_FEE_PERCENT / 100));
+    const totalChargedPence = agreedAmountPence + clientSurchargePence;
+
+    // Talent receives agreed rate minus 15%
+    const talentDeductionPence = Math.round(agreedAmountPence * (TALENT_FEE_PERCENT / 100));
+    const talentPayoutPence = agreedAmountPence - talentDeductionPence;
+
+    // Platform keeps both fees (client surcharge + talent deduction)
+    const totalPlatformFeePence = totalChargedPence - talentPayoutPence;
 
     const origin = req.headers.get("origin") || Deno.env.get("APP_URL") || "https://cydena.lovable.app";
 
     // Create Checkout Session with Connect destination charge
+    // application_fee_amount = total charged minus what talent receives
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       line_items: [
@@ -82,13 +94,13 @@ serve(async (req) => {
               name: engagement.title,
               description: `Marketplace engagement: ${engagement.description?.substring(0, 200) || engagement.title}`,
             },
-            unit_amount: grossAmountPence,
+            unit_amount: totalChargedPence,
           },
           quantity: 1,
         },
       ],
       payment_intent_data: {
-        application_fee_amount: platformFeePence,
+        application_fee_amount: totalPlatformFeePence,
         transfer_data: {
           destination: talentProfile.stripe_connect_account_id,
         },
@@ -103,13 +115,15 @@ serve(async (req) => {
     });
 
     // Record the payout intent
+    const clientFeeGbp = Number((agreedAmountGbp * CLIENT_FEE_PERCENT / 100).toFixed(2));
+    const talentFeeGbp = Number((agreedAmountGbp * TALENT_FEE_PERCENT / 100).toFixed(2));
     await adminClient.from("marketplace_payouts").insert({
       engagement_id: engagement.id,
       talent_id: engagement.talent_id,
       client_id: clientUserId,
-      gross_amount_gbp: grossAmountGbp,
-      platform_fee_gbp: Number((grossAmountGbp * PLATFORM_FEE_PERCENT / 100).toFixed(2)),
-      net_amount_gbp: Number((grossAmountGbp * (1 - PLATFORM_FEE_PERCENT / 100)).toFixed(2)),
+      gross_amount_gbp: agreedAmountGbp,
+      platform_fee_gbp: Number((clientFeeGbp + talentFeeGbp).toFixed(2)),
+      net_amount_gbp: Number((agreedAmountGbp - talentFeeGbp).toFixed(2)),
       status: "checkout_created",
     });
 
