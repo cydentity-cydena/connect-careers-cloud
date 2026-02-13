@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Shield, Users, Briefcase, TrendingUp, ArrowRight, Clock, DollarSign, Target, CheckCircle, GraduationCap, Eye, Award, Filter, BarChart3, BadgeCheck, Youtube, Play, ExternalLink, Share2, Star, Calculator } from "lucide-react";
+import { Shield, Users, Briefcase, TrendingUp, ArrowRight, Clock, DollarSign, Target, CheckCircle, GraduationCap, Eye, Award, Filter, BarChart3, BadgeCheck, Youtube, Play, ExternalLink, Share2, Star, Calculator, Zap, Code } from "lucide-react";
 import { ROICalculator } from "@/components/pricing/ROICalculator";
 import Navigation from "@/components/Navigation";
 import SEO from "@/components/SEO";
@@ -510,11 +510,11 @@ const Index = () => {
                     </li>
                     <li className="flex gap-3">
                       <span className="font-bold text-secondary">4.</span>
-                      <span>Shorten time-to-hire with evidence based shortlists</span>
+                      <span>Post work bounties on the Marketplace for on-demand talent engagements</span>
                     </li>
                     <li className="flex gap-3">
                       <span className="font-bold text-secondary">5.</span>
-                      <span>Speed up compliance verification</span>
+                      <span>Shorten time-to-hire with evidence based shortlists</span>
                     </li>
                   </ol>
                 </div>
@@ -832,6 +832,72 @@ const Index = () => {
                 </div>
               </CardContent>
             </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Talent Marketplace Section */}
+      <section className="py-16 md:py-24 bg-gradient-to-br from-primary/5 via-background to-accent/5">
+        <div className="container mx-auto px-4">
+          <div className="max-w-5xl mx-auto">
+            <div className="text-center mb-12">
+              <Badge className="mb-4 bg-primary/10 text-primary border-primary/20">
+                <Zap className="h-3 w-3 mr-1" /> Talent Marketplace
+              </Badge>
+              <h2 className="text-3xl md:text-5xl font-bold mb-4">
+                On-Demand Cyber Talent.{" "}
+                <span className="bg-gradient-cyber bg-clip-text text-transparent">Book or Post.</span>
+              </h2>
+              <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+                Need a pen tester for a week? A GRC consultant for a compliance audit? 
+                Post a bounty or browse our verified talent — available via dashboard, API, or AI agent.
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-6 mb-10">
+              <Card className="border-border bg-card/80">
+                <CardContent className="p-6 text-center">
+                  <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+                    <Briefcase className="h-6 w-6 text-primary" />
+                  </div>
+                  <h3 className="font-semibold mb-2">Employers: Post Bounties</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Describe your security need, set a budget, and let qualified professionals apply. 
+                    Go to Dashboard → Bounties tab → Post Bounty.
+                  </p>
+                </CardContent>
+              </Card>
+              <Card className="border-border bg-card/80">
+                <CardContent className="p-6 text-center">
+                  <div className="h-12 w-12 rounded-full bg-secondary/10 flex items-center justify-center mx-auto mb-4">
+                    <Users className="h-6 w-6 text-secondary" />
+                  </div>
+                  <h3 className="font-semibold mb-2">Candidates: Get Listed</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Opt in from your Dashboard → Marketplace tab. Set your rate, availability, and specialisms to appear in search results.
+                  </p>
+                </CardContent>
+              </Card>
+              <Card className="border-border bg-card/80">
+                <CardContent className="p-6 text-center">
+                  <div className="h-12 w-12 rounded-full bg-accent/10 flex items-center justify-center mx-auto mb-4">
+                    <Code className="h-6 w-6 text-accent" />
+                  </div>
+                  <h3 className="font-semibold mb-2">API & MCP Ready</h3>
+                  <p className="text-sm text-muted-foreground">
+                    AI agents and platforms can search talent and post bounties programmatically via our REST API or MCP server.
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+
+            <div className="text-center">
+              <Link to="/marketplace">
+                <Button variant="hero" size="lg" className="gap-2">
+                  Explore the Marketplace <ArrowRight className="h-5 w-5" />
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </section>
