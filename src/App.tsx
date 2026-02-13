@@ -72,7 +72,7 @@ import LearningPaths from "./pages/LearningPaths";
 import TrainingPartners from "./pages/TrainingPartners";
 import Marketplace from "./pages/Marketplace";
 import MarketplaceDocs from "./pages/MarketplaceDocs";
-import Bounties from "./pages/Bounties";
+
 import { ScrollToTop } from "./components/ScrollToTop";
 
 const queryClient = new QueryClient();
@@ -169,8 +169,6 @@ const AppContent = () => {
           <Route path="/marketplace" element={<Marketplace />} />
           <Route path="/marketplace/docs" element={<MarketplaceDocs />} />
           
-          {/* Bounties */}
-          <Route path="/bounties" element={<Bounties />} />
           
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
