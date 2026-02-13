@@ -3549,13 +3549,17 @@ export type Database = {
           budget_min_gbp: number | null
           category_id: string | null
           client_id: string
+          commission_rate: number
           created_at: string | null
           current_applicants: number | null
           deadline: string | null
           description: string
           engagement_type: string
           expires_at: string | null
+          featured_fee_gbp: number | null
+          featured_until: string | null
           id: string
+          is_featured: boolean
           location_city: string | null
           location_requirement: string | null
           max_applicants: number | null
@@ -3574,13 +3578,17 @@ export type Database = {
           budget_min_gbp?: number | null
           category_id?: string | null
           client_id: string
+          commission_rate?: number
           created_at?: string | null
           current_applicants?: number | null
           deadline?: string | null
           description: string
           engagement_type: string
           expires_at?: string | null
+          featured_fee_gbp?: number | null
+          featured_until?: string | null
           id?: string
+          is_featured?: boolean
           location_city?: string | null
           location_requirement?: string | null
           max_applicants?: number | null
@@ -3599,13 +3607,17 @@ export type Database = {
           budget_min_gbp?: number | null
           category_id?: string | null
           client_id?: string
+          commission_rate?: number
           created_at?: string | null
           current_applicants?: number | null
           deadline?: string | null
           description?: string
           engagement_type?: string
           expires_at?: string | null
+          featured_fee_gbp?: number | null
+          featured_until?: string | null
           id?: string
+          is_featured?: boolean
           location_city?: string | null
           location_requirement?: string | null
           max_applicants?: number | null
@@ -4463,6 +4475,7 @@ export type Database = {
         Args: { p_user_id: string }
         Returns: number
       }
+      count_monthly_bounties: { Args: { p_user_id: string }; Returns: number }
       deduct_credits: {
         Args: { p_amount: number; p_employer_id: string }
         Returns: undefined
@@ -4529,6 +4542,10 @@ export type Database = {
           related_certs: string[]
           skill_name: string
         }[]
+      }
+      get_tier_bounty_limit: {
+        Args: { tier_name: Database["public"]["Enums"]["subscription_tier"] }
+        Returns: number
       }
       get_tier_overage_price: {
         Args: { tier_name: Database["public"]["Enums"]["subscription_tier"] }
