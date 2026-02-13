@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Building2, Users, Briefcase, TrendingUp, PoundSterling, UserPlus, Bug, Award, ListChecks, Workflow, Upload } from "lucide-react";
+import { Building2, Users, Briefcase, TrendingUp, PoundSterling, UserPlus, Bug, Award, ListChecks, Workflow, Upload, Target } from "lucide-react";
 import RecruiterClientsList from "./RecruiterClientsList";
 import RecruiterPlacements from "./RecruiterPlacements";
 import { ApplicationPipeline } from "@/components/employer/ApplicationPipeline";
@@ -19,6 +19,7 @@ import { CustomAssessmentsList } from "@/components/assessments/CustomAssessment
 import { AssessmentQuotaDisplay } from "@/components/assessments/AssessmentQuotaDisplay";
 import { AssignedPods } from "@/components/employer/AssignedPods";
 import { SubscriptionStatus } from "@/components/subscription/SubscriptionStatus";
+import { EmployerBounties } from "@/components/employer/EmployerBounties";
 
 const RecruiterDashboard = () => {
   const navigate = useNavigate();
@@ -148,12 +149,16 @@ const RecruiterDashboard = () => {
       )}
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full max-w-6xl grid-cols-10">
+        <TabsList className="grid w-full max-w-6xl grid-cols-11">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="analytics">Analytics</TabsTrigger>
           <TabsTrigger value="pipeline">Pipeline</TabsTrigger>
           <TabsTrigger value="imported">Imported</TabsTrigger>
           <TabsTrigger value="jobs">Jobs</TabsTrigger>
+          <TabsTrigger value="bounties" className="gap-2">
+            <Target className="h-4 w-4" />
+            Bounties
+          </TabsTrigger>
           <TabsTrigger value="clients">Clients</TabsTrigger>
           <TabsTrigger value="placements">Placements</TabsTrigger>
           <TabsTrigger value="pods">Pods</TabsTrigger>
@@ -396,6 +401,10 @@ const RecruiterDashboard = () => {
 
         <TabsContent value="jobs" className="mt-6">
           <JobManagement />
+        </TabsContent>
+
+        <TabsContent value="bounties" className="mt-6">
+          <EmployerBounties />
         </TabsContent>
 
         <TabsContent value="clients" className="mt-6">
