@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { useNavigate, Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Shield, LogOut, Loader2, Menu, X } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import SEO from "@/components/SEO";
+import Navigation from "@/components/Navigation";
 import CandidateDashboard from "@/components/dashboard/CandidateDashboard";
 import EmployerDashboard from "@/components/dashboard/EmployerDashboard";
 import AdminDashboard from "@/components/dashboard/AdminDashboard";
@@ -17,10 +17,8 @@ const Dashboard = () => {
   const [userRole, setUserRole] = useState<string | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [user, setUser] = useState<any>(null);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { simulatedRole, setRole: setSimulatedRole, clearSimulation } = useRoleSimulator();
 
-  // Effective role is either simulated (for admins) or actual role
   const effectiveRole = isAdmin && simulatedRole ? simulatedRole : userRole;
 
   useEffect(() => {
@@ -28,7 +26,7 @@ const Dashboard = () => {
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_OUT') {
-        clearSimulation(); // Clear simulation on sign out
+        clearSimulation();
         navigate("/auth");
       } else if (event === 'SIGNED_IN' && session) {
         checkUser();
@@ -49,7 +47,6 @@ const Dashboard = () => {
 
       setUser(session.user);
 
-      // Get all user roles (user may have multiple)
       const { data: roleData, error: roleError } = await supabase
         .from("user_roles")
         .select("role")
@@ -61,27 +58,19 @@ const Dashboard = () => {
         return;
       }
 
-      // Priority: admin > recruiter > employer > candidate
       let selectedRole = null;
       let userIsAdmin = false;
       if (roleData && roleData.length > 0) {
         const roles = roleData.map(r => r.role);
         userIsAdmin = roles.includes('admin');
-        if (userIsAdmin) {
-          selectedRole = 'admin';
-        } else if (roles.includes('recruiter')) {
-          selectedRole = 'recruiter';
-        } else if (roles.includes('employer')) {
-          selectedRole = 'employer';
-        } else if (roles.includes('candidate')) {
-          selectedRole = 'candidate';
-        }
+        if (userIsAdmin) selectedRole = 'admin';
+        else if (roles.includes('recruiter')) selectedRole = 'recruiter';
+        else if (roles.includes('employer')) selectedRole = 'employer';
+        else if (roles.includes('candidate')) selectedRole = 'candidate';
       }
       setIsAdmin(userIsAdmin);
 
-      // If no role found and we haven't retried too many times, retry after a delay
       if (!selectedRole && retryCount < 3) {
-        console.log(`No role found, retrying (${retryCount + 1}/3)...`);
         setTimeout(() => checkUser(retryCount + 1), 1000);
         return;
       }
@@ -93,14 +82,6 @@ const Dashboard = () => {
       setIsLoading(false);
     }
   };
-
-  const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    toast.success("Signed out successfully");
-  };
-
-  // Removed early return on loading to always render navigation
-
 
   return (
     <div className={`min-h-screen bg-background ${isAdmin && simulatedRole ? 'pt-10' : ''}`}>
@@ -120,170 +101,8 @@ const Dashboard = () => {
         />
       )}
 
-      {/* Navigation */}
-      <nav className={`border-b border-border backdrop-blur-sm sticky ${isAdmin && simulatedRole ? 'top-10' : 'top-0'} z-50 bg-background/80`}>
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Link to="/" className="flex items-center">
-              <img 
-                src="/logos/cydena-logo.png" 
-                alt="Cydena" 
-                className="h-8 md:h-10 w-auto"
-              />
-            </Link>
-
-            {/* Desktop Navigation */}
-            <div className="hidden xl:flex items-center gap-6">
-              <Link to="/" className="text-sm font-medium hover:text-primary transition-colors">
-                Home
-              </Link>
-              <Link to="/leaderboard" className="text-sm font-medium hover:text-primary transition-colors">
-                Leaderboard
-              </Link>
-              {!(effectiveRole === 'employer' || effectiveRole === 'recruiter') && (
-                <Link to="/community" className="text-sm font-medium hover:text-primary transition-colors">
-                  Community
-                </Link>
-              )}
-              <Link to="/profiles" className="text-sm font-medium hover:text-primary transition-colors">
-                Profiles
-              </Link>
-              <Link to="/jobs" className="text-sm font-medium hover:text-primary transition-colors">
-                Jobs
-              </Link>
-              {effectiveRole === 'candidate' && (
-                <Link to="/career-assistant" className="text-sm font-medium hover:text-primary transition-colors">
-                  AI Assistant
-                </Link>
-              )}
-              <Link to="/training" className="text-sm font-medium hover:text-primary transition-colors">
-                Training
-              </Link>
-              <Link to="/certifications-catalog" className="text-sm font-medium hover:text-primary transition-colors">
-                Certifications
-              </Link>
-{/* Pricing temporarily hidden */}
-              <Link to="/contact" className="text-sm font-medium hover:text-primary transition-colors">
-                Contact
-              </Link>
-
-              <div className="flex items-center gap-2 ml-4 pl-4 border-l border-border">
-                <span className="text-sm text-muted-foreground">
-                  {user?.email}
-                </span>
-                <Link to="/security">
-                  <Button variant="ghost" size="icon" title="Security Settings">
-                    <Shield className="h-5 w-5" />
-                  </Button>
-                </Link>
-                <Button variant="ghost" size="icon" onClick={handleSignOut} title="Sign Out">
-                  <LogOut className="h-5 w-5" />
-                </Button>
-              </div>
-            </div>
-
-            {/* Mobile Menu Button */}
-            <div className="flex xl:hidden items-center gap-2">
-              <Button 
-                variant="ghost" 
-                size="icon"
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              >
-                {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-              </Button>
-            </div>
-          </div>
-
-          {/* Mobile Navigation */}
-          {mobileMenuOpen && (
-            <div className="xl:hidden mt-4 pb-4 space-y-3">
-              <Link 
-                to="/" 
-                className="block text-sm font-medium hover:text-primary transition-colors py-2"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Home
-              </Link>
-              <Link 
-                to="/leaderboard" 
-                className="block text-sm font-medium hover:text-primary transition-colors py-2"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Leaderboard
-              </Link>
-              {!(effectiveRole === 'employer' || effectiveRole === 'recruiter') && (
-                <Link 
-                  to="/community" 
-                  className="block text-sm font-medium hover:text-primary transition-colors py-2"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Community
-                </Link>
-              )}
-              <Link 
-                to="/profiles" 
-                className="block text-sm font-medium hover:text-primary transition-colors py-2"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Profiles
-              </Link>
-              <Link 
-                to="/jobs" 
-                className="block text-sm font-medium hover:text-primary transition-colors py-2"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Jobs
-              </Link>
-              {effectiveRole === 'candidate' && (
-                <Link 
-                  to="/career-assistant" 
-                  className="block text-sm font-medium hover:text-primary transition-colors py-2"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  AI Assistant
-                </Link>
-              )}
-              <Link 
-                to="/training" 
-                className="block text-sm font-medium hover:text-primary transition-colors py-2"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Training
-              </Link>
-              <Link 
-                to="/certifications-catalog" 
-                className="block text-sm font-medium hover:text-primary transition-colors py-2"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Certifications
-              </Link>
-{/* Pricing temporarily hidden in mobile menu */}
-              <Link 
-                to="/contact" 
-                className="block text-sm font-medium hover:text-primary transition-colors py-2"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Contact
-              </Link>
-              <div className="pt-3 border-t border-border">
-                <p className="text-xs text-muted-foreground mb-2">{user?.email}</p>
-                <div className="space-y-2">
-                  <Link to="/security" onClick={() => setMobileMenuOpen(false)}>
-                    <Button variant="outline" size="sm" className="w-full">
-                      <Shield className="h-4 w-4 mr-2" />
-                      Security Settings
-                    </Button>
-                  </Link>
-                  <Button variant="outline" size="sm" onClick={handleSignOut} className="w-full">
-                    <LogOut className="h-4 w-4 mr-2" />
-                    Sign Out
-                  </Button>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      </nav>
+      {/* Unified Navigation */}
+      <Navigation />
 
       <main className="container mx-auto px-4 py-8">
         {isLoading ? (

@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Shield, Users, Briefcase, TrendingUp, ArrowRight, Clock, DollarSign, Target, CheckCircle, GraduationCap, Eye, Award, Filter, BarChart3, BadgeCheck, Youtube, Play, ExternalLink, Share2, Star, Calculator, Zap, Code } from "lucide-react";
+import { Shield, Users, Briefcase, ArrowRight, CheckCircle, GraduationCap, Eye, Award, Filter, BarChart3, BadgeCheck, Youtube, Play, ExternalLink, Share2, Star, Calculator, Zap, Code, Target, DollarSign } from "lucide-react";
 import { ROICalculator } from "@/components/pricing/ROICalculator";
 import Navigation from "@/components/Navigation";
 import SEO from "@/components/SEO";
@@ -12,7 +12,6 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
 const Index = () => {
-  // Fetch learning paths stats
   const { data: learningPathsData } = useQuery({
     queryKey: ['learning-paths-summary-home'],
     queryFn: async () => {
@@ -79,11 +78,10 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Animated grid background */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000,transparent)] opacity-20" />
       </section>
 
-      {/* For Candidates Section - Moved to top for visibility */}
+      {/* Section 1: For Candidates — Free & Accessible */}
       <section className="py-16 md:py-24 bg-card/30">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
@@ -92,88 +90,43 @@ const Index = () => {
                 Free for <span className="bg-gradient-cyber bg-clip-text text-transparent">Candidates</span>
               </h2>
               <p className="text-lg md:text-xl text-muted-foreground">
-                From entry-level to CISO - everyone gets equal access
+                From entry-level to CISO — everyone gets equal access
               </p>
             </div>
 
             <div className="grid md:grid-cols-2 gap-4 md:gap-6">
-              <div className="flex items-start gap-3">
-                <div className="flex-shrink-0 mt-0.5">
-                  <CheckCircle className="h-5 w-5 md:h-6 md:w-6 text-primary" />
+              {[
+                { title: "Real-Time Application Tracking", desc: "Never wonder where your application stands — watch it progress from Applied → Under Review → Offer in real-time" },
+                { title: "Career Transitioners Welcome", desc: "Breaking into cybersecurity? We support entry-level talent with partner certifications" },
+                { title: "Get HR-Ready Verified", desc: "Submit identity & right-to-work securely once, apply everywhere. Stand out with verified badges" },
+                { title: "Showcase Your Certifications", desc: "CompTIA, CISSP, CEH, SANS — verified credentials get you noticed" },
+                { title: "Prove Your Skills with Assessments", desc: "Take TryHackMe and HackTheBox verified assessments to showcase real technical ability" },
+                { title: "Gamified Profile & Peer Endorsements", desc: "Earn XP, climb the leaderboard, get endorsed by peers, unlock achievements as you grow" },
+              ].map((item, i) => (
+                <div key={i} className="flex items-start gap-3">
+                  <div className="flex-shrink-0 mt-0.5">
+                    <CheckCircle className="h-5 w-5 md:h-6 md:w-6 text-primary" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold mb-1 text-sm md:text-base">{item.title}</h3>
+                    <p className="text-xs md:text-sm text-muted-foreground">{item.desc}</p>
+                  </div>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold mb-1 text-sm md:text-base">Real-Time Application Tracking</h3>
-                  <p className="text-xs md:text-sm text-muted-foreground">Never wonder where your application stands - watch it progress from Applied → Under Review → Offer in real-time</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <div className="flex-shrink-0 mt-0.5">
-                  <CheckCircle className="h-5 w-5 md:h-6 md:w-6 text-primary" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold mb-1 text-sm md:text-base">Career Transitioners Welcome</h3>
-                  <p className="text-xs md:text-sm text-muted-foreground">Breaking into cybersecurity? We support entry-level talent with partner certifications</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <div className="flex-shrink-0 mt-0.5">
-                  <CheckCircle className="h-5 w-5 md:h-6 md:w-6 text-primary" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold mb-1 text-sm md:text-base">Get HR-Ready Verified</h3>
-                  <p className="text-xs md:text-sm text-muted-foreground">Submit identity & right-to-work securely once, apply everywhere. Stand out with verified badges</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <div className="flex-shrink-0 mt-0.5">
-                  <CheckCircle className="h-5 w-5 md:h-6 md:w-6 text-primary" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold mb-1 text-sm md:text-base">Showcase Your Certifications</h3>
-                  <p className="text-xs md:text-sm text-muted-foreground">CompTIA, CISSP, CEH, SANS - verified credentials get you noticed</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <div className="flex-shrink-0 mt-0.5">
-                  <CheckCircle className="h-5 w-5 md:h-6 md:w-6 text-primary" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold mb-1 text-sm md:text-base">Prove Your Skills with Assessments</h3>
-                  <p className="text-xs md:text-sm text-muted-foreground">Take TryHackMe and HackTheBox verified assessments to showcase real technical ability</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <div className="flex-shrink-0 mt-0.5">
-                  <CheckCircle className="h-5 w-5 md:h-6 md:w-6 text-primary" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold mb-1 text-sm md:text-base">Gamified Profile & Peer Endorsements</h3>
-                  <p className="text-xs md:text-sm text-muted-foreground">Earn XP, climb the leaderboard, get endorsed by peers, unlock achievements as you grow</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <div className="flex-shrink-0 mt-0.5">
-                  <CheckCircle className="h-5 w-5 md:h-6 md:w-6 text-primary" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold mb-1 text-sm md:text-base">Great Application Transparency</h3>
-                  <p className="text-xs md:text-sm text-muted-foreground">See employer updates, status notes, and timeline of your application progress</p>
-                </div>
-              </div>
+              ))}
             </div>
 
             {/* Free Learning Paths Card */}
-            <Card className="mt-8 border-red-500/30 bg-gradient-to-br from-red-500/5 to-red-500/10 overflow-hidden">
+            <Card className="mt-8 border-primary/30 bg-gradient-to-br from-primary/5 to-primary/10 overflow-hidden">
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between flex-wrap gap-4">
                   <div className="flex items-center gap-3">
-                    <div className="bg-red-500/10 p-2.5 rounded-lg">
-                      <Youtube className="h-6 w-6 text-red-500" />
+                    <div className="bg-destructive/10 p-2.5 rounded-lg">
+                      <Youtube className="h-6 w-6 text-destructive" />
                     </div>
                     <div>
                       <CardTitle className="text-xl flex items-center gap-2">
                         Free Learning Paths
-                        <Badge variant="secondary" className="bg-green-500/20 text-green-400 border-green-500/30 text-xs">
+                        <Badge variant="secondary" className="bg-success/20 text-success border-success/30 text-xs">
                           100% Free
                         </Badge>
                       </CardTitle>
@@ -217,11 +170,11 @@ const Index = () => {
                     <p className="text-xs text-muted-foreground">Paths</p>
                   </div>
                   <div className="bg-background/50 rounded-lg p-3 text-center">
-                    <p className="text-2xl font-bold text-yellow-500">{learningPathsData?.totalXp?.toLocaleString() || 0}</p>
+                    <p className="text-2xl font-bold text-warning">{learningPathsData?.totalXp?.toLocaleString() || 0}</p>
                     <p className="text-xs text-muted-foreground">XP Available</p>
                   </div>
                   <div className="bg-background/50 rounded-lg p-3 text-center">
-                    <p className="text-2xl font-bold text-green-500">Free</p>
+                    <p className="text-2xl font-bold text-success">Free</p>
                     <p className="text-xs text-muted-foreground">No Cost</p>
                   </div>
                 </div>
@@ -242,122 +195,86 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Features */}
+      {/* Section 2: Platform Features + How It Works (consolidated) */}
       <section className="py-16 md:py-24">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12 md:mb-16 animate-fade-in">
-            <h2 className="text-3xl md:text-4xl font-bold mb-3 md:mb-4">Why Choose Cydena?</h2>
-            <p className="text-muted-foreground text-base md:text-lg">
-              Built specifically for the cybersecurity industry
-            </p>
-          </div>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
-            <div className="bg-gradient-card backdrop-blur-sm border border-border rounded-lg p-5 md:p-6 lg:p-8 hover:scale-105 transition-transform animate-slide-up">
-              <div className="bg-primary/10 w-11 h-11 md:w-12 md:h-12 lg:w-14 lg:h-14 rounded-lg flex items-center justify-center mb-3 md:mb-4 lg:mb-6 flex-shrink-0">
-                <Shield className="h-5 w-5 md:h-6 md:w-6 lg:h-7 lg:w-7 text-primary" />
-              </div>
-              <h3 className="text-base md:text-lg lg:text-xl font-semibold mb-2 md:mb-3">HR-Aligned Verification Hub</h3>
-              <p className="text-xs md:text-sm lg:text-base text-muted-foreground leading-relaxed">
-                Bring clarity and control together: identity, certifications, and eligibility — safely stored, ready for review.
-              </p>
-            </div>
-
-            <div className="bg-gradient-card backdrop-blur-sm border border-border rounded-lg p-5 md:p-6 lg:p-8 hover:scale-105 transition-transform animate-slide-up" style={{animationDelay: '0.1s'}}>
-              <div className="bg-accent/10 w-11 h-11 md:w-12 md:h-12 lg:w-14 lg:h-14 rounded-lg flex items-center justify-center mb-3 md:mb-4 lg:mb-6 flex-shrink-0">
-                <Users className="h-5 w-5 md:h-6 md:w-6 lg:h-7 lg:w-7 text-accent" />
-              </div>
-              <h3 className="text-base md:text-lg lg:text-xl font-semibold mb-2 md:mb-3">Candidate Pod Management</h3>
-              <p className="text-xs md:text-sm lg:text-base text-muted-foreground leading-relaxed">
-                Curate and assign groups of pre-vetted candidates to employers. Streamline hiring with ready-to-interview talent pools.
-              </p>
-            </div>
-
-            <div className="bg-gradient-card backdrop-blur-sm border border-border rounded-lg p-5 md:p-6 lg:p-8 hover:scale-105 transition-transform animate-slide-up" style={{animationDelay: '0.15s'}}>
-              <div className="bg-primary/10 w-11 h-11 md:w-12 md:h-12 lg:w-14 lg:h-14 rounded-lg flex items-center justify-center mb-3 md:mb-4 lg:mb-6 flex-shrink-0">
-                <Filter className="h-5 w-5 md:h-6 md:w-6 lg:h-7 lg:w-7 text-primary" />
-              </div>
-              <h3 className="text-base md:text-lg lg:text-xl font-semibold mb-2 md:mb-3">Intelligent Job Matching</h3>
-              <p className="text-xs md:text-sm lg:text-base text-muted-foreground leading-relaxed">
-                Jobs are hidden from candidates who don't meet must-have requirements. No more spray-and-pray—only qualified matches see relevant opportunities.
-              </p>
-            </div>
-
-            <div className="bg-gradient-card backdrop-blur-sm border border-border rounded-lg p-5 md:p-6 lg:p-8 hover:scale-105 transition-transform animate-slide-up" style={{animationDelay: '0.2s'}}>
-              <div className="bg-secondary/10 w-11 h-11 md:w-12 md:h-12 lg:w-14 lg:h-14 rounded-lg flex items-center justify-center mb-3 md:mb-4 lg:mb-6 flex-shrink-0">
-                <Briefcase className="h-5 w-5 md:h-6 md:w-6 lg:h-7 lg:w-7 text-secondary" />
-              </div>
-              <h3 className="text-base md:text-lg lg:text-xl font-semibold mb-2 md:mb-3">ATS & Webhook Integration</h3>
-              <p className="text-xs md:text-sm lg:text-base text-muted-foreground leading-relaxed">
-                Push candidates to Workday and SAP SuccessFactors. Automate workflows with webhooks
-              </p>
-            </div>
-
-            <div className="bg-gradient-card backdrop-blur-sm border border-border rounded-lg p-5 md:p-6 lg:p-8 hover:scale-105 transition-transform animate-slide-up" style={{animationDelay: '0.25s'}}>
-              <div className="bg-accent/10 w-11 h-11 md:w-12 md:h-12 lg:w-14 lg:h-14 rounded-lg flex items-center justify-center mb-3 md:mb-4 lg:mb-6 flex-shrink-0">
-                <BarChart3 className="h-5 w-5 md:h-6 md:w-6 lg:h-7 lg:w-7 text-accent" />
-              </div>
-              <h3 className="text-base md:text-lg lg:text-xl font-semibold mb-2 md:mb-3">Analytics & Insights</h3>
-              <p className="text-xs md:text-sm lg:text-base text-muted-foreground leading-relaxed">
-                Track hiring metrics, time-to-hire, and pipeline performance. Data-driven decisions for better recruitment outcomes.
-              </p>
-            </div>
-
-            <div className="bg-gradient-card backdrop-blur-sm border border-border rounded-lg p-5 md:p-6 lg:p-8 hover:scale-105 transition-transform animate-slide-up" style={{animationDelay: '0.3s'}}>
-              <div className="bg-primary/10 w-11 h-11 md:w-12 md:h-12 lg:w-14 lg:h-14 rounded-lg flex items-center justify-center mb-3 md:mb-4 lg:mb-6 flex-shrink-0">
-                <BadgeCheck className="h-5 w-5 md:h-6 md:w-6 lg:h-7 lg:w-7 text-primary" />
-              </div>
-              <h3 className="text-base md:text-lg lg:text-xl font-semibold mb-2 md:mb-3">Skills Verification</h3>
-              <p className="text-xs md:text-sm lg:text-base text-muted-foreground leading-relaxed">
-                Pre-validated technical skills and certifications. Reduce interview time with candidates who've proven their expertise.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Value Proposition for Employers */}
-      <section className="py-16 md:py-24 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-cyber opacity-5" />
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="text-center mb-12 md:mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-3 md:mb-4">
               The platform for <span className="bg-gradient-cyber bg-clip-text text-transparent">verified cyber talent</span>
             </h2>
-            <p className="text-base md:text-xl text-muted-foreground max-w-3xl mx-auto px-2">
-              Validated, curated, and interview-ready cybersecurity professionals
+            <p className="text-muted-foreground text-base md:text-lg max-w-3xl mx-auto">
+              Built specifically for cybersecurity — validated, curated, and interview-ready professionals
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-5xl mx-auto">
-            <div className="text-center p-5 md:p-6 rounded-lg border border-primary/20 bg-gradient-card hover:scale-105 transition-transform">
-              <div className="bg-primary/10 w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center mx-auto mb-3 md:mb-4">
-                <CheckCircle className="h-7 w-7 md:h-8 md:w-8 text-primary" />
+          {/* Feature cards */}
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8 mb-16">
+            {[
+              { icon: Shield, title: "HR-Aligned Verification Hub", desc: "Identity, certifications, and eligibility — safely stored, ready for review.", color: "primary" },
+              { icon: Users, title: "Candidate Pod Management", desc: "Curate and assign groups of pre-vetted candidates to employers.", color: "accent" },
+              { icon: Filter, title: "Intelligent Job Matching", desc: "Only qualified matches see relevant opportunities — no spray-and-pray.", color: "primary" },
+              { icon: Briefcase, title: "ATS & Webhook Integration", desc: "Push candidates to Workday and SAP SuccessFactors. Automate workflows.", color: "secondary" },
+              { icon: BarChart3, title: "Analytics & Insights", desc: "Track hiring metrics, time-to-hire, and pipeline performance.", color: "accent" },
+              { icon: BadgeCheck, title: "Skills Verification", desc: "Pre-validated technical skills and certifications reduce interview time.", color: "primary" },
+            ].map((feature, i) => (
+              <div
+                key={i}
+                className="bg-gradient-card backdrop-blur-sm border border-border rounded-lg p-5 md:p-6 lg:p-8 hover:scale-105 transition-transform animate-slide-up"
+                style={{ animationDelay: `${i * 0.05}s` }}
+              >
+                <div className={`bg-${feature.color}/10 w-11 h-11 md:w-12 md:h-12 lg:w-14 lg:h-14 rounded-lg flex items-center justify-center mb-3 md:mb-4 lg:mb-6 flex-shrink-0`}>
+                  <feature.icon className={`h-5 w-5 md:h-6 md:w-6 lg:h-7 lg:w-7 text-${feature.color}`} />
+                </div>
+                <h3 className="text-base md:text-lg lg:text-xl font-semibold mb-2 md:mb-3">{feature.title}</h3>
+                <p className="text-xs md:text-sm lg:text-base text-muted-foreground leading-relaxed">{feature.desc}</p>
               </div>
-              <h3 className="text-xl md:text-2xl font-bold mb-2">Validated Candidates</h3>
-              <p className="text-sm md:text-base text-muted-foreground">Pre-verified identity, right-to-work, and certifications checked by our team</p>
-            </div>
+            ))}
+          </div>
 
-            <div className="text-center p-5 md:p-6 rounded-lg border border-primary/20 bg-gradient-card hover:scale-105 transition-transform" style={{animationDelay: '0.1s'}}>
-              <div className="bg-primary/10 w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center mx-auto mb-3 md:mb-4">
-                <Target className="h-7 w-7 md:h-8 md:w-8 text-primary" />
+          {/* How It Works - side by side */}
+          <div className="max-w-4xl mx-auto">
+            <h3 className="text-2xl md:text-3xl font-bold text-center mb-8">How Cydena Works</h3>
+            <div className="grid md:grid-cols-2 gap-8">
+              <div className="bg-gradient-card border border-border rounded-lg p-6">
+                <h4 className="text-xl font-bold mb-3 text-primary">For Cybersecurity Professionals</h4>
+                <ol className="space-y-3 text-muted-foreground">
+                  {[
+                    "Create your free profile in minutes — no payment required",
+                    "Get HR-Ready verified — submit identity, right-to-work & clearance once securely",
+                    "Upload and verify your certifications (CISSP, CEH, Security+, etc.)",
+                    "Apply to jobs instantly with verified badges",
+                    "Track applications in real-time",
+                  ].map((step, i) => (
+                    <li key={i} className="flex gap-3">
+                      <span className="font-bold text-primary">{i + 1}.</span>
+                      <span>{step}</span>
+                    </li>
+                  ))}
+                </ol>
               </div>
-              <h3 className="text-xl md:text-2xl font-bold mb-2">Curated Talent</h3>
-              <p className="text-sm md:text-base text-muted-foreground">Expert screening and skills-match technology to surface the best fit</p>
-            </div>
-
-            <div className="text-center p-5 md:p-6 rounded-lg border border-primary/20 bg-gradient-card hover:scale-105 transition-transform sm:col-span-2 lg:col-span-1" style={{animationDelay: '0.2s'}}>
-              <div className="bg-primary/10 w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center mx-auto mb-3 md:mb-4">
-                <Shield className="h-7 w-7 md:h-8 md:w-8 text-primary" />
+              <div className="bg-gradient-card border border-border rounded-lg p-6">
+                <h4 className="text-xl font-bold mb-3 text-secondary">For Employers & Recruiters</h4>
+                <ol className="space-y-3 text-muted-foreground">
+                  {[
+                    "Choose a subscription plan that fits your hiring needs",
+                    "Filter by HR-Ready candidates — identity, RTW & clearance pre-verified",
+                    "Access verified candidates with credentials already confirmed",
+                    "Post work bounties on the Marketplace for on-demand talent",
+                    "Shorten time-to-hire with evidence-based shortlists",
+                  ].map((step, i) => (
+                    <li key={i} className="flex gap-3">
+                      <span className="font-bold text-secondary">{i + 1}.</span>
+                      <span>{step}</span>
+                    </li>
+                  ))}
+                </ol>
               </div>
-              <h3 className="text-xl md:text-2xl font-bold mb-2">Confidence to Hire</h3>
-              <p className="text-sm md:text-base text-muted-foreground">Compliance Support with documented verification and expert guidance</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Hire with Confidence Section */}
+      {/* Section 3: Hire with Confidence + ROI (consolidated) */}
       <section className="py-16 md:py-24 bg-gradient-to-br from-primary/5 via-background to-secondary/5">
         <div className="container mx-auto px-4">
           <div className="max-w-5xl mx-auto">
@@ -366,58 +283,44 @@ const Index = () => {
                 Hire with <span className="bg-gradient-cyber bg-clip-text text-transparent">Confidence</span>
               </h2>
               <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
-                Expert support to curate top talent. We don't just connect you with candidates—we help you find the perfect fit.
+                Expert support to curate top talent. We don't just connect you with candidates — we help you find the perfect fit.
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-6 md:gap-8">
-              <Card className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/50 bg-card/80 backdrop-blur">
-                <CardContent className="p-6 md:p-8">
-                  <div className="bg-primary/10 w-14 h-14 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <Shield className="h-7 w-7 text-primary" />
-                  </div>
-                  <h3 className="text-xl md:text-2xl font-bold mb-3">Pre-Vetted Talent Pool</h3>
-                  <p className="text-muted-foreground leading-relaxed">
-                    Every candidate on Cydena is verified for identity, right-to-work, and certifications. Focus on skills and culture fit, not paperwork validation.
-                  </p>
-                </CardContent>
-              </Card>
+            <div className="grid md:grid-cols-2 gap-6 md:gap-8 mb-16">
+              {[
+                { icon: Shield, title: "Pre-Vetted Talent Pool", desc: "Every candidate is verified for identity, right-to-work, and certifications. Focus on skills and culture fit, not paperwork.", color: "primary" },
+                { icon: Users, title: "Expert Curation Support", desc: "Our team understands cybersecurity roles deeply. Get guidance on talent selection and hiring best practices.", color: "secondary" },
+                { icon: Target, title: "Skills-Match Technology", desc: "Intelligent matching considers certifications, experience levels, and specializations to surface candidates who truly fit.", color: "accent" },
+                { icon: Briefcase, title: "Dedicated Partner Success", desc: "From onboarding to your first hire and beyond, our team optimizes your hiring strategy and maximizes ROI.", color: "primary" },
+              ].map((card, i) => (
+                <Card key={i} className={`group hover:shadow-xl transition-all duration-300 border-2 hover:border-${card.color}/50 bg-card/80 backdrop-blur`}>
+                  <CardContent className="p-6 md:p-8">
+                    <div className={`bg-${card.color}/10 w-14 h-14 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+                      <card.icon className={`h-7 w-7 text-${card.color}`} />
+                    </div>
+                    <h3 className="text-xl md:text-2xl font-bold mb-3">{card.title}</h3>
+                    <p className="text-muted-foreground leading-relaxed">{card.desc}</p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
 
-              <Card className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-secondary/50 bg-card/80 backdrop-blur">
-                <CardContent className="p-6 md:p-8">
-                  <div className="bg-secondary/10 w-14 h-14 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <Users className="h-7 w-7 text-secondary" />
-                  </div>
-                  <h3 className="text-xl md:text-2xl font-bold mb-3">Expert Curation Support</h3>
-                  <p className="text-muted-foreground leading-relaxed">
-                    Our team understands cybersecurity roles deeply. Get guidance on talent selection, market insights, and hiring best practices tailored to your needs.
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-accent/50 bg-card/80 backdrop-blur">
-                <CardContent className="p-6 md:p-8">
-                  <div className="bg-accent/10 w-14 h-14 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <Target className="h-7 w-7 text-accent" />
-                  </div>
-                  <h3 className="text-xl md:text-2xl font-bold mb-3">Skills-Match Technology</h3>
-                  <p className="text-muted-foreground leading-relaxed">
-                    Our intelligent matching algorithm considers certifications, experience levels, and specializations to surface candidates who truly fit your requirements.
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/50 bg-card/80 backdrop-blur">
-                <CardContent className="p-6 md:p-8">
-                  <div className="bg-primary/10 w-14 h-14 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <Briefcase className="h-7 w-7 text-primary" />
-                  </div>
-                  <h3 className="text-xl md:text-2xl font-bold mb-3">Dedicated Partner Success</h3>
-                  <p className="text-muted-foreground leading-relaxed">
-                    From onboarding to your first hire and beyond, our partner success team is here to optimize your hiring strategy and maximize ROI.
-                  </p>
-                </CardContent>
-              </Card>
+            {/* ROI Calculator inline */}
+            <div className="max-w-4xl mx-auto">
+              <div className="text-center mb-8">
+                <div className="inline-flex items-center gap-2 bg-primary/10 rounded-full px-4 py-2 mb-4">
+                  <Calculator className="h-4 w-4 text-primary" />
+                  <span className="text-sm font-medium text-primary">Cost Savings Calculator</span>
+                </div>
+                <h3 className="text-2xl md:text-3xl font-bold mb-2">
+                  See How Much You Could <span className="bg-gradient-cyber bg-clip-text text-transparent">Save</span>
+                </h3>
+                <p className="text-muted-foreground">
+                  Compare traditional agency costs vs direct access to verified talent
+                </p>
+              </div>
+              <ROICalculator />
             </div>
 
             <div className="text-center mt-10 md:mt-12">
@@ -431,197 +334,11 @@ const Index = () => {
         </div>
       </section>
 
-      {/* ROI Calculator Section */}
+      {/* Section 4: Partners + Marketplace + CTA (consolidated) */}
       <section className="py-16 md:py-24 bg-card/30">
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-12">
-              <div className="inline-flex items-center gap-2 bg-primary/10 rounded-full px-4 py-2 mb-4">
-                <Calculator className="h-4 w-4 text-primary" />
-                <span className="text-sm font-medium text-primary">Cost Savings Calculator</span>
-              </div>
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                See How Much You Could <span className="bg-gradient-cyber bg-clip-text text-transparent">Save</span>
-              </h2>
-              <p className="text-lg text-muted-foreground">
-                Compare traditional agency costs vs direct access to verified talent
-              </p>
-            </div>
-            <ROICalculator />
-          </div>
-        </div>
-      </section>
-
-      {/* How It Works Section */}
-      <section className="py-16 md:py-24 bg-card/20">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                How Cydena Works
-              </h2>
-              <p className="text-lg text-muted-foreground">
-                A streamlined cybersecurity recruitment process built for the modern workforce
-              </p>
-            </div>
-
-            <div className="space-y-12">
-              <div className="grid md:grid-cols-2 gap-8">
-                <div className="bg-gradient-card border border-border rounded-lg p-6">
-                  <h3 className="text-xl font-bold mb-3 text-primary">For Cybersecurity Professionals</h3>
-                  <ol className="space-y-3 text-muted-foreground">
-                    <li className="flex gap-3">
-                      <span className="font-bold text-primary">1.</span>
-                      <span>Create your free profile in minutes - no payment required</span>
-                    </li>
-                    <li className="flex gap-3">
-                      <span className="font-bold text-primary">2.</span>
-                      <span>Get HR-Ready verified - submit identity, right-to-work & security clearance once in a secure environment</span>
-                    </li>
-                    <li className="flex gap-3">
-                      <span className="font-bold text-primary">3.</span>
-                      <span>Upload and verify your certifications (CISSP, CEH, Security+, etc.)</span>
-                    </li>
-                    <li className="flex gap-3">
-                      <span className="font-bold text-primary">4.</span>
-                      <span>Apply to jobs instantly with verified badges - remove blocks to verifying your skills</span>
-                    </li>
-                    <li className="flex gap-3">
-                      <span className="font-bold text-primary">5.</span>
-                      <span>Track applications in real-time</span>
-                    </li>
-                  </ol>
-                </div>
-
-                <div className="bg-gradient-card border border-border rounded-lg p-6">
-                  <h3 className="text-xl font-bold mb-3 text-secondary">For Employers & Recruiters</h3>
-                  <ol className="space-y-3 text-muted-foreground">
-                    <li className="flex gap-3">
-                      <span className="font-bold text-secondary">1.</span>
-                      <span>Choose a subscription plan that fits your hiring needs</span>
-                    </li>
-                    <li className="flex gap-3">
-                      <span className="font-bold text-secondary">2.</span>
-                      <span>Filter by HR-Ready candidates - identity, RTW & security clearance pre-verified</span>
-                    </li>
-                    <li className="flex gap-3">
-                      <span className="font-bold text-secondary">3.</span>
-                      <span>Access verified candidates with credentials already confirmed</span>
-                    </li>
-                    <li className="flex gap-3">
-                      <span className="font-bold text-secondary">4.</span>
-                      <span>Post work bounties on the Marketplace for on-demand talent engagements</span>
-                    </li>
-                    <li className="flex gap-3">
-                      <span className="font-bold text-secondary">5.</span>
-                      <span>Shorten time-to-hire with evidence based shortlists</span>
-                    </li>
-                  </ol>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Why Cybersecurity Professionals Choose Cydena */}
-      <section className="py-16 md:py-24 bg-gradient-to-b from-background to-muted/20">
-        <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-5xl font-bold mb-4">
-                Why Cybersecurity Professionals Choose Cydena
-              </h2>
-              <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-                Traditional cybersecurity job boards create barriers. We remove them by connecting specialists directly with employers who value their skills.
-              </p>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-6 mb-12">
-              {/* Skills-Based Recognition */}
-              <Card className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/50 bg-card/50 backdrop-blur">
-                <CardContent className="p-6">
-              <div className="flex items-start gap-3 md:gap-4">
-                <div className="flex-shrink-0 w-10 h-10 md:w-12 md:h-12 rounded-lg bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <Shield className="h-5 w-5 md:h-6 md:w-6 text-primary" />
-                </div>
-                    <div className="flex-1">
-                      <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors">
-                        Skills-Based Recognition
-                      </h3>
-                      <p className="text-muted-foreground leading-relaxed">
-                        Our platform recognizes that cybersecurity is a skills-based field where certifications, practical experience, and continuous learning matter more than traditional credentials. Whether you're a penetration tester with OSCP certification, a security analyst with CompTIA Security+, or a CISO with years of experience, showcase your expertise to employers who understand its value.
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Career Growth Partnerships */}
-              <Card className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/50 bg-card/50 backdrop-blur">
-                <CardContent className="p-6">
-              <div className="flex items-start gap-3 md:gap-4">
-                <div className="flex-shrink-0 w-10 h-10 md:w-12 md:h-12 rounded-lg bg-green-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <GraduationCap className="h-5 w-5 md:h-6 md:w-6 text-green-600 dark:text-green-400" />
-                </div>
-                    <div className="flex-1">
-                      <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors">
-                        Career Growth Partnerships
-                      </h3>
-                      <p className="text-muted-foreground leading-relaxed">
-                        Entry-level professionals and career transitioners benefit from our partnerships with leading training providers like Cydentity Academy and LetsDefend, gaining access to certification paths that open doors to cybersecurity careers.
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Transparent Process */}
-              <Card className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/50 bg-card/50 backdrop-blur">
-                <CardContent className="p-6">
-              <div className="flex items-start gap-3 md:gap-4">
-                <div className="flex-shrink-0 w-10 h-10 md:w-12 md:h-12 rounded-lg bg-blue-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <Eye className="h-5 w-5 md:h-6 md:w-6 text-blue-600 dark:text-blue-400" />
-                </div>
-                    <div className="flex-1">
-                      <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors">
-                        Transparent Application Process
-                      </h3>
-                      <p className="text-muted-foreground leading-relaxed">
-                        Experienced professionals appreciate our transparent application process, real-time status updates, and direct communication with decision-makers. No more black holes or endless waiting.
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Fair Pricing Model */}
-              <Card className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/50 bg-card/50 backdrop-blur">
-                <CardContent className="p-6">
-              <div className="flex items-start gap-3 md:gap-4">
-                <div className="flex-shrink-0 w-10 h-10 md:w-12 md:h-12 rounded-lg bg-amber-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <DollarSign className="h-5 w-5 md:h-6 md:w-6 text-amber-600 dark:text-amber-400" />
-                </div>
-                    <div className="flex-1">
-                      <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors">
-                        Fair Pricing Model
-                      </h3>
-                      <p className="text-muted-foreground leading-relaxed">
-                        Our competitive pricing models allow you to increase your value while not impacting the cost of hire.
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Partners Section */}
-      <section className="py-16 md:py-24 bg-gradient-to-br from-primary/5 via-background to-secondary/5">
-        <div className="container mx-auto px-4">
-          <div className="max-w-6xl mx-auto">
+            {/* Partners */}
             <div className="text-center mb-12 md:mb-16 animate-fade-in">
               <div className="inline-block px-4 py-2 bg-primary/10 rounded-full mb-4">
                 <span className="text-sm font-semibold text-primary">PARTNERS</span>
@@ -629,191 +346,48 @@ const Index = () => {
               <h2 className="text-3xl md:text-5xl font-bold mb-4">
                 Meet Our <span className="bg-gradient-cyber bg-clip-text text-transparent">Partners</span>
               </h2>
-              <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-                Connecting you with industry-leading organizations that power our training ecosystem. From certification authorities to cybersecurity experts and recruitment specialists.
+              <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+                Connecting you with industry-leading organizations that power our training ecosystem
               </p>
             </div>
 
-            {/* The Power of Partnership */}
-            <div className="mb-16">
-              <h3 className="text-2xl md:text-3xl font-bold text-center mb-8">The Power of Partnership</h3>
-              <p className="text-center text-muted-foreground mb-8 max-w-3xl mx-auto">
-                Our strategic partnerships enable us to deliver exceptional training experiences, globally recognized certifications, and cutting-edge learning technology
-              </p>
-              <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <Card className="group hover:shadow-xl transition-all duration-300 bg-card/80 backdrop-blur text-center">
-                  <CardContent className="p-6">
-                <div className="bg-primary/10 w-10 h-10 md:w-12 md:h-12 rounded-lg flex items-center justify-center mx-auto mb-3 md:mb-4 group-hover:scale-110 transition-transform flex-shrink-0">
-                  <Shield className="h-5 w-5 md:h-6 md:w-6 text-primary" />
-                </div>
-                    <h4 className="font-semibold mb-2">Accredited Excellence</h4>
-                    <p className="text-sm text-muted-foreground">TRECCERT accreditation ensures internationally recognized certifications</p>
-                  </CardContent>
-                </Card>
-                <Card className="group hover:shadow-xl transition-all duration-300 bg-card/80 backdrop-blur text-center">
-                  <CardContent className="p-6">
-                    <div className="bg-secondary/10 w-10 h-10 md:w-12 md:h-12 rounded-lg flex items-center justify-center mx-auto mb-3 md:mb-4 group-hover:scale-110 transition-transform flex-shrink-0">
-                      <Users className="h-5 w-5 md:h-6 md:w-6 text-secondary" />
-                    </div>
-                    <h4 className="font-semibold mb-2">Expert Network</h4>
-                    <p className="text-sm text-muted-foreground">Access to industry-leading cybersecurity professionals and thought leaders</p>
-                  </CardContent>
-                </Card>
-                <Card className="group hover:shadow-xl transition-all duration-300 bg-card/80 backdrop-blur text-center">
-                  <CardContent className="p-6">
-                    <div className="bg-accent/10 w-10 h-10 md:w-12 md:h-12 rounded-lg flex items-center justify-center mx-auto mb-3 md:mb-4 group-hover:scale-110 transition-transform flex-shrink-0">
-                      <Eye className="h-5 w-5 md:h-6 md:w-6 text-accent" />
-                    </div>
-                    <h4 className="font-semibold mb-2">Global Reach</h4>
-                    <p className="text-sm text-muted-foreground">Training and certification recognized across international markets</p>
-                  </CardContent>
-                </Card>
-                <Card className="group hover:shadow-xl transition-all duration-300 bg-card/80 backdrop-blur text-center">
-                  <CardContent className="p-6">
-                    <div className="bg-accent/10 w-10 h-10 md:w-12 md:h-12 rounded-lg flex items-center justify-center mx-auto mb-3 md:mb-4 group-hover:scale-110 transition-transform flex-shrink-0">
-                      <Award className="h-5 w-5 md:h-6 md:w-6 text-accent" />
-                    </div>
-                    <h4 className="font-semibold mb-2">Skills Validation</h4>
-                    <p className="text-sm text-muted-foreground">Verified competency assessments ensuring job-ready professionals</p>
-                  </CardContent>
-                </Card>
-              </div>
+            <div className="grid md:grid-cols-2 gap-8 mb-16">
+              {[
+                { name: "TRECCERT", href: "https://treccert.com", logo: "/logos/treccert-logo-banner.png", tag: "Accreditation", tagColor: "info", desc: "Certification body providing certifications that attest the competencies of professionals in information security and compliance." },
+                { name: "Cydentity", href: "https://www.cydentity.co.uk", logo: "/logos/cydentity-logo-white.png", tag: "Cybersecurity", tagColor: "primary", desc: "Leading cybersecurity solutions provider, delivering comprehensive security services and training." },
+                { name: "Cydentity Academy", href: "https://cydentityacademy.com", logo: "/logos/cydentity-academy-logo-white.png", tag: "Training & Education", tagColor: "primary", desc: "Leading provider of cybersecurity and AI security training, offering comprehensive courses." },
+                { name: "REAL LMS", href: "https://thereallms.com", logo: "/logos/real-lms-logo.png", tag: "Training Platform", tagColor: "secondary", desc: "Real-world SOC analyst training platform with hands-on labs and simulations." },
+              ].map((partner) => (
+                <a key={partner.name} href={partner.href} target="_blank" rel="noopener noreferrer">
+                  <Card className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/40 bg-card/80 backdrop-blur cursor-pointer h-full">
+                    <CardContent className="p-8">
+                      <div className="flex items-center justify-center mb-6 h-24">
+                        <img src={partner.logo} alt={partner.name} className="h-16 object-contain" />
+                      </div>
+                      <div className="mb-4">
+                        <span className={`px-4 py-1 bg-${partner.tagColor}/20 text-${partner.tagColor} rounded-full text-sm font-semibold`}>
+                          {partner.tag}
+                        </span>
+                      </div>
+                      <h4 className="text-2xl font-bold mb-3">{partner.name}</h4>
+                      <p className="text-muted-foreground">{partner.desc}</p>
+                    </CardContent>
+                  </Card>
+                </a>
+              ))}
             </div>
 
-            {/* Partner Logos Grid */}
-            <div className="space-y-8">
-              <h3 className="text-2xl md:text-3xl font-bold text-center">Our Partners</h3>
-              <p className="text-center text-muted-foreground mb-8">
-                Collaborating with industry leaders to deliver world-class training and certification
-              </p>
-              <div className="grid md:grid-cols-2 gap-8">
-                {/* TRECCERT */}
-                <a href="https://treccert.com" target="_blank" rel="noopener noreferrer">
-                  <Card className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/40 bg-card/80 backdrop-blur cursor-pointer h-full">
-                    <CardContent className="p-8">
-                      <div className="flex items-center justify-center mb-6 h-24">
-                        <img src="/logos/treccert-logo-banner.png" alt="TRECCERT" className="h-16 object-contain" />
-                      </div>
-                      <div className="mb-4">
-                        <span className="px-4 py-1 bg-blue-500/20 text-blue-600 rounded-full text-sm font-semibold">
-                          Accreditation
-                        </span>
-                      </div>
-                      <h4 className="text-2xl font-bold mb-3">TRECCERT</h4>
-                      <p className="text-muted-foreground">
-                        Certification body providing certifications that attest the competencies of professionals in information security and compliance.
-                      </p>
-                    </CardContent>
-                  </Card>
-                </a>
-
-                {/* Cydentity */}
-                <a href="https://www.cydentity.co.uk" target="_blank" rel="noopener noreferrer">
-                  <Card className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/40 bg-card/80 backdrop-blur cursor-pointer h-full">
-                    <CardContent className="p-8">
-                      <div className="flex items-center justify-center mb-6 h-24">
-                        <img src="/logos/cydentity-logo-white.png" alt="Cydentity" className="h-16 object-contain" />
-                      </div>
-                      <div className="mb-4">
-                        <span className="px-4 py-1 bg-primary/20 text-primary rounded-full text-sm font-semibold">
-                          Cybersecurity
-                        </span>
-                      </div>
-                      <h4 className="text-2xl font-bold mb-3">Cydentity</h4>
-                      <p className="text-muted-foreground">
-                        Leading cybersecurity solutions provider, delivering comprehensive security services and training to protect organizations from evolving digital threats.
-                      </p>
-                    </CardContent>
-                  </Card>
-                </a>
-
-                {/* Cydentity Academy */}
-                <a href="https://cydentityacademy.com" target="_blank" rel="noopener noreferrer">
-                  <Card className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/40 bg-card/80 backdrop-blur cursor-pointer h-full">
-                    <CardContent className="p-8">
-                      <div className="flex items-center justify-center mb-6 h-24">
-                        <img src="/logos/cydentity-academy-logo-white.png" alt="Cydentity Academy" className="h-16 object-contain" />
-                      </div>
-                      <div className="mb-4">
-                        <span className="px-4 py-1 bg-primary/20 text-primary rounded-full text-sm font-semibold">
-                          Training & Education
-                        </span>
-                      </div>
-                      <h4 className="text-2xl font-bold mb-3">Cydentity Academy</h4>
-                      <p className="text-muted-foreground">
-                        Leading provider of cybersecurity and AI security training, offering comprehensive courses to upskill professionals and students in cutting-edge security practices.
-                      </p>
-                    </CardContent>
-                  </Card>
-                </a>
-
-                {/* REAL LMS */}
-                <a href="https://thereallms.com" target="_blank" rel="noopener noreferrer">
-                  <Card className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/40 bg-card/80 backdrop-blur cursor-pointer h-full">
-                    <CardContent className="p-8">
-                      <div className="flex items-center justify-center mb-6 h-24">
-                        <img src="/logos/real-lms-logo.png" alt="REAL LMS" className="h-20 object-contain" />
-                      </div>
-                      <div className="mb-4">
-                        <span className="px-4 py-1 bg-purple-500/20 text-purple-600 rounded-full text-sm font-semibold">
-                          Training Platform
-                        </span>
-                      </div>
-                      <h4 className="text-2xl font-bold mb-3">REAL LMS</h4>
-                      <p className="text-muted-foreground">
-                        Real-world SOC analyst training platform with hands-on labs and simulations, helping students gain practical blue team experience in a realistic environment.
-                      </p>
-                    </CardContent>
-                  </Card>
-                </a>
-              </div>
-            </div>
-
-            {/* Partner Value Proposition */}
-            <div className="mt-12 p-8 bg-primary/10 rounded-xl">
-              <h4 className="text-2xl font-semibold mb-4 text-center">The Value of Our Partnerships</h4>
-              <p className="text-lg text-center mb-6 text-muted-foreground">
-                Through our partner network, students gain access to industry-recognized certifications, comprehensive training programs, and real-world labs—ensuring they're job-ready from day one.
-              </p>
-              <div className="grid md:grid-cols-3 gap-6 mt-6">
-                <div className="text-center">
-                  <div className="text-4xl mb-2">🎓</div>
-                  <p className="font-semibold">Industry Certifications</p>
-                  <p className="text-sm text-muted-foreground">TRECCERT accredited programs</p>
-                </div>
-                <div className="text-center">
-                  <div className="text-4xl mb-2">🛡️</div>
-                  <p className="font-semibold">Expert Training</p>
-                  <p className="text-sm text-muted-foreground">Cydentity & Academy courses</p>
-                </div>
-                <div className="text-center">
-                  <div className="text-4xl mb-2">💻</div>
-                  <p className="font-semibold">Practical Experience</p>
-                  <p className="text-sm text-muted-foreground">Hands-on labs & simulations</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Training Partner CTA Section */}
-      <section className="py-16 md:py-20 bg-card/30">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10">
+            {/* Training Partner CTA */}
+            <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10 mb-16">
               <CardContent className="p-6 md:p-8">
                 <div className="flex flex-col md:flex-row items-center gap-6">
                   <div className="bg-primary/10 p-4 rounded-lg flex-shrink-0">
                     <GraduationCap className="h-10 w-10 text-primary" />
                   </div>
                   <div className="flex-1 text-center md:text-left">
-                    <h3 className="text-2xl md:text-3xl font-bold mb-2">
-                      Are You a Training Provider?
-                    </h3>
+                    <h3 className="text-2xl md:text-3xl font-bold mb-2">Are You a Training Provider?</h3>
                     <p className="text-muted-foreground mb-4">
-                      Join our partner network and give your graduates instant visibility with hiring employers. 
-                      Free integration with Credly, Accredible, or custom badges. Upgrade to featured placement for premium exposure.
+                      Join our partner network and give your graduates instant visibility with hiring employers.
                     </p>
                     <div className="flex flex-wrap gap-3 justify-center md:justify-start">
                       <Link to="/partnerships">
@@ -823,72 +397,45 @@ const Index = () => {
                         </Button>
                       </Link>
                       <Link to="/training">
-                        <Button variant="outline">
-                          View Training Partners
-                        </Button>
+                        <Button variant="outline">View Training Partners</Button>
                       </Link>
                     </div>
                   </div>
                 </div>
               </CardContent>
             </Card>
-          </div>
-        </div>
-      </section>
 
-      {/* Talent Marketplace Section */}
-      <section className="py-16 md:py-24 bg-gradient-to-br from-primary/5 via-background to-accent/5">
-        <div className="container mx-auto px-4">
-          <div className="max-w-5xl mx-auto">
+            {/* Talent Marketplace */}
             <div className="text-center mb-12">
               <Badge className="mb-4 bg-primary/10 text-primary border-primary/20">
                 <Zap className="h-3 w-3 mr-1" /> Talent Marketplace
               </Badge>
-              <h2 className="text-3xl md:text-5xl font-bold mb-4">
+              <h3 className="text-3xl md:text-4xl font-bold mb-4">
                 On-Demand Cyber Talent.{" "}
                 <span className="bg-gradient-cyber bg-clip-text text-transparent">Book or Post.</span>
-              </h2>
+              </h3>
               <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-                Need a pen tester for a week? A GRC consultant for a compliance audit? 
+                Need a pen tester for a week? A GRC consultant for a compliance audit?
                 Post a bounty or browse our verified talent — available via dashboard, API, or AI agent.
               </p>
             </div>
 
             <div className="grid md:grid-cols-3 gap-6 mb-10">
-              <Card className="border-border bg-card/80">
-                <CardContent className="p-6 text-center">
-                  <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                    <Briefcase className="h-6 w-6 text-primary" />
-                  </div>
-                  <h3 className="font-semibold mb-2">Employers: Post Bounties</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Describe your security need, set a budget, and let qualified professionals apply. 
-                    Go to Dashboard → Bounties tab → Post Bounty.
-                  </p>
-                </CardContent>
-              </Card>
-              <Card className="border-border bg-card/80">
-                <CardContent className="p-6 text-center">
-                  <div className="h-12 w-12 rounded-full bg-secondary/10 flex items-center justify-center mx-auto mb-4">
-                    <Users className="h-6 w-6 text-secondary" />
-                  </div>
-                  <h3 className="font-semibold mb-2">Candidates: Get Listed</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Opt in from your Dashboard → Marketplace tab. Set your rate, availability, and specialisms to appear in search results.
-                  </p>
-                </CardContent>
-              </Card>
-              <Card className="border-border bg-card/80">
-                <CardContent className="p-6 text-center">
-                  <div className="h-12 w-12 rounded-full bg-accent/10 flex items-center justify-center mx-auto mb-4">
-                    <Code className="h-6 w-6 text-accent" />
-                  </div>
-                  <h3 className="font-semibold mb-2">API & MCP Ready</h3>
-                  <p className="text-sm text-muted-foreground">
-                    AI agents and platforms can search talent and post bounties programmatically via our REST API or MCP server.
-                  </p>
-                </CardContent>
-              </Card>
+              {[
+                { icon: Briefcase, title: "Employers: Post Bounties", desc: "Describe your security need, set a budget, and let qualified professionals apply.", color: "primary" },
+                { icon: Users, title: "Candidates: Get Listed", desc: "Opt in from your Dashboard. Set your rate, availability, and specialisms.", color: "secondary" },
+                { icon: Code, title: "API & MCP Ready", desc: "AI agents and platforms can search talent and post bounties programmatically.", color: "accent" },
+              ].map((item, i) => (
+                <Card key={i} className="border-border bg-card/80">
+                  <CardContent className="p-6 text-center">
+                    <div className={`h-12 w-12 rounded-full bg-${item.color}/10 flex items-center justify-center mx-auto mb-4`}>
+                      <item.icon className={`h-6 w-6 text-${item.color}`} />
+                    </div>
+                    <h4 className="font-semibold mb-2">{item.title}</h4>
+                    <p className="text-sm text-muted-foreground">{item.desc}</p>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
 
             <div className="text-center">
@@ -902,7 +449,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* Final CTA */}
       <section className="py-24 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-cyber opacity-10" />
         <div className="container mx-auto px-4 relative z-10">
@@ -913,13 +460,12 @@ const Index = () => {
             </p>
             <Link to="/auth">
               <Button variant="hero" size="lg" className="gap-2">
-                Get Started Now - Free for Candidates <ArrowRight className="h-5 w-5" />
+                Get Started Now — Free for Candidates <ArrowRight className="h-5 w-5" />
               </Button>
             </Link>
           </div>
         </div>
       </section>
-
     </div>
   );
 };
