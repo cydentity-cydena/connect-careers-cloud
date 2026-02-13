@@ -372,34 +372,34 @@ const Marketplace = () => {
                 <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
                   <Users className="h-6 w-6 text-primary" />
                 </div>
-                <h3 className="font-semibold mb-2">For Security Teams</h3>
+                <h3 className="font-semibold mb-2">For Employers</h3>
                 <p className="text-sm text-muted-foreground">
-                  Post your requirement or search our verified talent pool. 
-                  Book, engage, and pay with full audit trail.
+                  Post work bounties from your <strong>Dashboard → Bounties</strong> tab. 
+                  Set budget, clearance, and urgency. Choose public or invite-only visibility.
                 </p>
               </CardContent>
             </Card>
             <Card className="bg-card border-border">
               <CardContent className="p-6 text-center">
                 <div className="h-12 w-12 rounded-full bg-secondary/10 flex items-center justify-center mx-auto mb-4">
-                  <Code className="h-6 w-6 text-secondary" />
+                  <Shield className="h-6 w-6 text-secondary" />
                 </div>
-                <h3 className="font-semibold mb-2">For AI Agents & Platforms</h3>
+                <h3 className="font-semibold mb-2">For Candidates</h3>
                 <p className="text-sm text-muted-foreground">
-                  Connect via MCP server or REST API. Programmatically search and 
-                  auto-book verified professionals.
+                  Opt in from your <strong>Dashboard → Marketplace</strong> tab. 
+                  Set your day rate, availability, and specialisms to appear here.
                 </p>
               </CardContent>
             </Card>
             <Card className="bg-card border-border">
               <CardContent className="p-6 text-center">
                 <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                  <Shield className="h-6 w-6 text-primary" />
+                  <Code className="h-6 w-6 text-primary" />
                 </div>
-                <h3 className="font-semibold mb-2">For Professionals</h3>
+                <h3 className="font-semibold mb-2">For AI Agents & Platforms</h3>
                 <p className="text-sm text-muted-foreground">
-                  Create your profile, get verified against industry standards, and 
-                  receive bookings from clients and AI platforms.
+                  Connect via MCP server or REST API. Programmatically search and 
+                  auto-book verified professionals.
                 </p>
               </CardContent>
             </Card>
