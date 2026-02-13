@@ -523,6 +523,8 @@ export type Database = {
           resume_url: string | null
           security_clearance: string | null
           specializations: string[] | null
+          stripe_connect_account_id: string | null
+          stripe_connect_onboarding_complete: boolean | null
           title: string | null
           tools: string[] | null
           total_engagements_completed: number | null
@@ -556,6 +558,8 @@ export type Database = {
           resume_url?: string | null
           security_clearance?: string | null
           specializations?: string[] | null
+          stripe_connect_account_id?: string | null
+          stripe_connect_onboarding_complete?: boolean | null
           title?: string | null
           tools?: string[] | null
           total_engagements_completed?: number | null
@@ -589,6 +593,8 @@ export type Database = {
           resume_url?: string | null
           security_clearance?: string | null
           specializations?: string[] | null
+          stripe_connect_account_id?: string | null
+          stripe_connect_onboarding_complete?: boolean | null
           title?: string | null
           tools?: string[] | null
           total_engagements_completed?: number | null
@@ -2156,6 +2162,59 @@ export type Database = {
             columns: ["talent_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      marketplace_payouts: {
+        Row: {
+          client_id: string
+          created_at: string
+          engagement_id: string | null
+          gross_amount_gbp: number
+          id: string
+          net_amount_gbp: number
+          platform_fee_gbp: number
+          status: string
+          stripe_payment_intent_id: string | null
+          stripe_transfer_id: string | null
+          talent_id: string
+          updated_at: string
+        }
+        Insert: {
+          client_id: string
+          created_at?: string
+          engagement_id?: string | null
+          gross_amount_gbp: number
+          id?: string
+          net_amount_gbp: number
+          platform_fee_gbp: number
+          status?: string
+          stripe_payment_intent_id?: string | null
+          stripe_transfer_id?: string | null
+          talent_id: string
+          updated_at?: string
+        }
+        Update: {
+          client_id?: string
+          created_at?: string
+          engagement_id?: string | null
+          gross_amount_gbp?: number
+          id?: string
+          net_amount_gbp?: number
+          platform_fee_gbp?: number
+          status?: string
+          stripe_payment_intent_id?: string | null
+          stripe_transfer_id?: string | null
+          talent_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "marketplace_payouts_engagement_id_fkey"
+            columns: ["engagement_id"]
+            isOneToOne: false
+            referencedRelation: "marketplace_engagements"
             referencedColumns: ["id"]
           },
         ]

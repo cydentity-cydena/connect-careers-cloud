@@ -9,7 +9,7 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Store, Eye, Zap, Globe } from "lucide-react";
+import { Store, Eye, Zap, Globe, CreditCard, ExternalLink, CheckCircle2, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 interface MarketplaceSettingsProps {
@@ -253,15 +253,105 @@ export const MarketplaceSettings = ({ userId }: MarketplaceSettingsProps) => {
         </Button>
 
         {isVisible && (
-          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            <Badge variant="outline" className="text-xs">
-              {getValue("availability_status", "available")}
-            </Badge>
-            <span>•</span>
-            <span>Your profile will appear in marketplace search results</span>
-          </div>
+          <>
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+              <Badge variant="outline" className="text-xs">
+                {getValue("availability_status", "available")}
+              </Badge>
+              <span>•</span>
+              <span>Your profile will appear in marketplace search results</span>
+            </div>
+
+            {/* Stripe Connect Payout Setup */}
+            <StripeConnectSection userId={userId} profile={profile} />
+          </>
         )}
       </CardContent>
     </Card>
   );
 };
+
+function StripeConnectSection({ userId, profile }: { userId: string; profile: any }) {
+  const [loading, setLoading] = useState(false);
+  const hasAccount = !!profile?.stripe_connect_account_id;
+  const onboardingComplete = !!profile?.stripe_connect_onboarding_complete;
+
+  const handleOnboard = async () => {
+    setLoading(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) throw new Error("Not authenticated");
+
+      const res = await supabase.functions.invoke("create-connect-account", {
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      });
+
+      if (res.error) throw new Error(res.error.message);
+      const { url } = res.data;
+      if (url) window.location.href = url;
+    } catch (err: any) {
+      toast.error(err.message || "Failed to start onboarding");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDashboard = async () => {
+    setLoading(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) throw new Error("Not authenticated");
+
+      const res = await supabase.functions.invoke("connect-dashboard-link", {
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      });
+
+      if (res.error) throw new Error(res.error.message);
+      const { url } = res.data;
+      if (url) window.open(url, "_blank");
+    } catch (err: any) {
+      toast.error(err.message || "Failed to open dashboard");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <Card className="border-border/50 bg-muted/20">
+      <CardHeader className="pb-3">
+        <CardTitle className="flex items-center gap-2 text-sm">
+          <CreditCard className="h-4 w-4 text-primary" />
+          Payout Setup
+        </CardTitle>
+        <CardDescription className="text-xs">
+          Connect your bank account to receive payments from marketplace engagements (12% platform fee applies)
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        {hasAccount ? (
+          <div className="space-y-3">
+            <div className="flex items-center gap-2 text-sm text-primary">
+              <CheckCircle2 className="h-4 w-4" />
+              <span>Payment account connected</span>
+            </div>
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" onClick={handleOnboard} disabled={loading}>
+                {loading ? <Loader2 className="h-3 w-3 animate-spin mr-1" /> : null}
+                Update Details
+              </Button>
+              <Button variant="outline" size="sm" onClick={handleDashboard} disabled={loading}>
+                <ExternalLink className="h-3 w-3 mr-1" />
+                View Payouts
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <Button onClick={handleOnboard} disabled={loading} size="sm">
+            {loading ? <Loader2 className="h-3 w-3 animate-spin mr-1" /> : <CreditCard className="h-3 w-3 mr-1" />}
+            Set Up Payouts
+          </Button>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
