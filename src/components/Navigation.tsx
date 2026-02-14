@@ -158,7 +158,7 @@ const Navigation = () => {
 
           {/* Desktop Navigation - Grouped */}
           <TooltipProvider>
-            <div className="hidden xl:flex items-center gap-1 ml-4 flex-1 min-w-0">
+            <div className="hidden xl:flex items-center gap-1 ml-4 flex-shrink-0">
               {!isLoading && (
                 <>
                   <Link
