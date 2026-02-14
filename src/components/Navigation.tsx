@@ -158,7 +158,7 @@ const Navigation = () => {
 
           {/* Desktop Navigation - Grouped */}
           <TooltipProvider>
-            <div className="hidden lg:flex items-center gap-2 ml-6">
+            <div className="hidden xl:flex items-center gap-1 ml-4">
               {!isLoading && (
                 <>
                   <Link
@@ -279,7 +279,7 @@ const Navigation = () => {
           </TooltipProvider>
 
           {/* Mobile Menu */}
-          <div className="lg:hidden flex items-center gap-1.5 flex-shrink-0">
+          <div className="xl:hidden flex items-center gap-1.5 flex-shrink-0">
             {user && (
               <Link to="/messages" onClick={handleNavClick} className="relative">
                 <Button variant="ghost" size="sm" className="h-9 w-9 p-0">
@@ -298,7 +298,7 @@ const Navigation = () => {
             
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="sm" className="lg:hidden h-9 w-9 p-0">
+                <Button variant="ghost" size="sm" className="xl:hidden h-9 w-9 p-0">
                   <Menu className="h-5 w-5" />
                 </Button>
               </SheetTrigger>
