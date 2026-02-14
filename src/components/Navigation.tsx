@@ -192,7 +192,7 @@ const Navigation = () => {
                                     <Link
                                       to={link.to}
                                       className={cn(
-                                        "block select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent/10 hover:text-accent-foreground focus:bg-accent/10",
+                                        "block select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent/10 hover:text-accent focus:bg-accent/10",
                                         isActivePath(link.to) && "bg-accent/10 text-accent"
                                       )}
                                     >
