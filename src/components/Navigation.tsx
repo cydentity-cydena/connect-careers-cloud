@@ -4,18 +4,10 @@ import { Badge } from "@/components/ui/badge";
 import { LogOut, Menu, Mail, Briefcase, GraduationCap, Users, Building2, ChevronDown } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useUnreadMessages } from "@/hooks/useUnreadMessages";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-} from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
 import React from "react";
 
@@ -171,46 +163,15 @@ const Navigation = () => {
                     Home
                   </Link>
 
-                  <NavigationMenu>
-                    <NavigationMenuList>
-                      {filteredGroups.map((group) => (
-                        <NavigationMenuItem key={group.label}>
-                          <NavigationMenuTrigger
-                            className={cn(
-                              "text-sm font-semibold bg-transparent hover:bg-transparent focus:bg-transparent data-[state=open]:bg-transparent",
-                              isGroupActive(group) ? "text-accent" : "text-foreground/80 hover:text-primary"
-                            )}
-                          >
-                            {group.label}
-                          </NavigationMenuTrigger>
-                          <NavigationMenuContent>
-                            <ul className="grid w-[280px] gap-1 p-3">
-                              {group.links.map((link) => (
-                                <li key={link.to}>
-                                  <NavigationMenuLink asChild>
-                                    <Link
-                                      to={link.to}
-                                      className={cn(
-                                        "block select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent/10 hover:text-accent focus:bg-accent/10",
-                                        isActivePath(link.to) && "bg-accent/10 text-accent"
-                                      )}
-                                    >
-                                      <div className="text-sm font-semibold leading-none mb-1">{link.label}</div>
-                                      {link.description && (
-                                        <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
-                                          {link.description}
-                                        </p>
-                                      )}
-                                    </Link>
-                                  </NavigationMenuLink>
-                                </li>
-                              ))}
-                            </ul>
-                          </NavigationMenuContent>
-                        </NavigationMenuItem>
-                      ))}
-                    </NavigationMenuList>
-                  </NavigationMenu>
+                  {filteredGroups.map((group, index) => (
+                    <NavDropdown
+                      key={group.label}
+                      group={group}
+                      isActive={isGroupActive(group)}
+                      isActivePath={isActivePath}
+                      alignRight={index >= filteredGroups.length - 1}
+                    />
+                  ))}
                 </>
               )}
 
@@ -378,6 +339,70 @@ const Navigation = () => {
         </div>
       </div>
     </nav>
+  );
+};
+
+// Desktop hover dropdown
+const NavDropdown = ({ group, isActive, isActivePath, alignRight }: {
+  group: NavGroup;
+  isActive: boolean;
+  isActivePath: (path: string) => boolean;
+  alignRight?: boolean;
+}) => {
+  const [open, setOpen] = useState(false);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleEnter = () => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    setOpen(true);
+  };
+
+  const handleLeave = () => {
+    timeoutRef.current = setTimeout(() => setOpen(false), 150);
+  };
+
+  return (
+    <div
+      className="relative"
+      onMouseEnter={handleEnter}
+      onMouseLeave={handleLeave}
+    >
+      <button
+        onClick={() => setOpen(!open)}
+        className={cn(
+          "inline-flex items-center gap-1 text-sm font-semibold px-3 py-2 rounded-md transition-colors",
+          isActive ? "text-accent" : "text-foreground/80 hover:text-primary"
+        )}
+      >
+        {group.label}
+        <ChevronDown className={cn("h-3 w-3 transition-transform", open && "rotate-180")} />
+      </button>
+      {open && (
+        <div className={cn("absolute top-full mt-1.5 w-[280px] rounded-md border bg-popover text-popover-foreground shadow-lg z-50 p-3", alignRight ? "right-0" : "left-0")}>
+          <ul className="grid gap-1">
+            {group.links.map((link) => (
+              <li key={link.to}>
+                <Link
+                  to={link.to}
+                  onClick={() => setOpen(false)}
+                  className={cn(
+                    "block select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent/10 hover:text-accent focus:bg-accent/10",
+                    isActivePath(link.to) && "bg-accent/10 text-accent"
+                  )}
+                >
+                  <div className="text-sm font-semibold leading-none mb-1">{link.label}</div>
+                  {link.description && (
+                    <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
+                      {link.description}
+                    </p>
+                  )}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
   );
 };
 
