@@ -84,13 +84,13 @@ const Marketplace = () => {
       const { data, error } = await query;
       if (error) throw error;
 
-      // Fetch profile info for each talent
+      // Fetch profile info for each talent (username only for anonymity)
       const userIds = (data || []).map((t: any) => t.user_id);
       let profilesMap: Record<string, any> = {};
       if (userIds.length > 0) {
         const { data: profiles } = await supabase
           .from("profiles")
-          .select("id, full_name, username, avatar_url, location, bio")
+          .select("id, username")
           .in("id", userIds);
         if (profiles) {
           profilesMap = Object.fromEntries(profiles.map((p: any) => [p.id, p]));
@@ -107,7 +107,7 @@ const Marketplace = () => {
         filtered = filtered.filter((t: any) =>
           t.marketplace_headline?.toLowerCase().includes(q) ||
           t.title?.toLowerCase().includes(q) ||
-          t.profiles?.full_name?.toLowerCase().includes(q) ||
+          t.profiles?.username?.toLowerCase().includes(q) ||
           t.specializations?.some((s: string) => s.toLowerCase().includes(q)) ||
           t.tools?.some((s: string) => s.toLowerCase().includes(q))
         );
@@ -241,14 +241,14 @@ const Marketplace = () => {
                         <div className="relative">
                           <Avatar className="h-12 w-12">
                             <AvatarFallback className="bg-primary/20 text-primary font-semibold">
-                              {(t.profiles?.full_name || "?")[0]}
+                              {(t.profiles?.username || "?")[0]?.toUpperCase()}
                             </AvatarFallback>
                           </Avatar>
                           <div className={`absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full border-2 border-card ${availabilityColors[t.availability_status] || "bg-muted"}`} />
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2">
-                            <h3 className="font-semibold truncate">{t.profiles?.full_name || "Anonymous"}</h3>
+                            <h3 className="font-semibold truncate">{t.profiles?.username || "Anonymous"}</h3>
                             <Shield className="h-4 w-4 text-primary flex-shrink-0" />
                           </div>
                           <p className="text-sm text-muted-foreground truncate">
@@ -257,11 +257,6 @@ const Marketplace = () => {
                         </div>
                       </div>
 
-                      {t.profiles?.location && (
-                        <div className="flex items-center gap-1 text-xs text-muted-foreground mb-2">
-                          <MapPin className="h-3 w-3" /> {t.profiles.location}
-                        </div>
-                      )}
 
                       {t.security_clearance && t.security_clearance !== "none" && (
                         <Badge variant="outline" className="text-xs mb-2 mr-1">
@@ -293,7 +288,7 @@ const Marketplace = () => {
                           </span>
                           <BookTalentDialog
                             talentUserId={t.user_id}
-                            talentName={t.profiles?.full_name || "This professional"}
+                            talentName={t.profiles?.username || "This professional"}
                             dayRate={t.day_rate_gbp}
                           />
                         </div>
