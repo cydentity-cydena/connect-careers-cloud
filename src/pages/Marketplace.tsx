@@ -10,7 +10,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Search, Star, Clock, Shield, MapPin, Zap, Users, Code, Target, AlertTriangle, Eye, ClipboardCheck, Cloud, Building, GraduationCap, Microscope, Bug, BookOpen, Plus } from "lucide-react";
+import { Search, Star, Clock, Shield, MapPin, Zap, Users, Code, Target, AlertTriangle, Eye, ClipboardCheck, Cloud, Building, GraduationCap, Microscope, Bug, BookOpen, Plus, Briefcase, Award, CheckCircle, Calendar } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { BookTalentDialog } from "@/components/marketplace/BookTalentDialog";
 
@@ -87,19 +87,35 @@ const Marketplace = () => {
       // Fetch profile info for each talent (username only for anonymity)
       const userIds = (data || []).map((t: any) => t.user_id);
       let profilesMap: Record<string, any> = {};
+      let certsMap: Record<string, any[]> = {};
+      let verificationsMap: Record<string, any> = {};
+      
       if (userIds.length > 0) {
-        const { data: profiles } = await supabase
-          .from("profiles")
-          .select("id, username")
-          .in("id", userIds);
-        if (profiles) {
-          profilesMap = Object.fromEntries(profiles.map((p: any) => [p.id, p]));
+        const [profilesRes, certsRes, verificationsRes] = await Promise.all([
+          supabase.from("profiles").select("id, username").in("id", userIds),
+          supabase.from("certifications").select("candidate_id, name, verification_status").in("candidate_id", userIds).eq("verification_status", "verified"),
+          supabase.from("candidate_verifications").select("candidate_id, hr_ready").in("candidate_id", userIds),
+        ]);
+        
+        if (profilesRes.data) {
+          profilesMap = Object.fromEntries(profilesRes.data.map((p: any) => [p.id, p]));
+        }
+        if (certsRes.data) {
+          certsRes.data.forEach((c: any) => {
+            if (!certsMap[c.candidate_id]) certsMap[c.candidate_id] = [];
+            certsMap[c.candidate_id].push(c);
+          });
+        }
+        if (verificationsRes.data) {
+          verificationsMap = Object.fromEntries(verificationsRes.data.map((v: any) => [v.candidate_id, v]));
         }
       }
 
       let filtered = (data || []).map((t: any) => ({
         ...t,
         profiles: profilesMap[t.user_id] || null,
+        certs: certsMap[t.user_id] || [],
+        verification: verificationsMap[t.user_id] || null,
       }));
 
       if (searchQuery) {
@@ -237,6 +253,7 @@ const Marketplace = () => {
                 {talent?.map((t: any) => (
                   <Card key={t.id} className="bg-card border-border hover:border-primary/30 transition-colors">
                     <CardContent className="p-5">
+                      {/* Header */}
                       <div className="flex items-start gap-3 mb-3">
                         <div className="relative">
                           <Avatar className="h-12 w-12">
@@ -250,6 +267,11 @@ const Marketplace = () => {
                           <div className="flex items-center gap-2">
                             <h3 className="font-semibold truncate">{t.profiles?.username || "Anonymous"}</h3>
                             <Shield className="h-4 w-4 text-primary flex-shrink-0" />
+                            {t.verification?.hr_ready && (
+                              <Badge className="text-[10px] px-1.5 py-0 bg-emerald-500/20 text-emerald-400 border-emerald-500/30">
+                                <CheckCircle className="h-3 w-3 mr-0.5" /> HR-Ready
+                              </Badge>
+                            )}
                           </div>
                           <p className="text-sm text-muted-foreground truncate">
                             {t.marketplace_headline || t.title || "Cybersecurity Professional"}
@@ -257,19 +279,90 @@ const Marketplace = () => {
                         </div>
                       </div>
 
+                      {/* Experience & Engagements row */}
+                      <div className="flex items-center gap-3 text-xs text-muted-foreground mb-2">
+                        {t.years_experience && (
+                          <span className="flex items-center gap-1">
+                            <Briefcase className="h-3 w-3" /> {t.years_experience} yrs exp
+                          </span>
+                        )}
+                        {Number(t.total_engagements_completed) > 0 && (
+                          <span className="flex items-center gap-1">
+                            <CheckCircle className="h-3 w-3" /> {t.total_engagements_completed} engagements
+                          </span>
+                        )}
+                        {t.ir35_status && t.ir35_status !== "not_applicable" && (
+                          <span className="flex items-center gap-1">
+                            {t.ir35_status === "outside" ? "Outside IR35" : "Inside IR35"}
+                          </span>
+                        )}
+                      </div>
 
-                      {t.security_clearance && t.security_clearance !== "none" && (
-                        <Badge variant="outline" className="text-xs mb-2 mr-1">
-                          {t.security_clearance} Cleared
-                        </Badge>
+                      {/* Availability */}
+                      {t.available_from && (
+                        <div className="flex items-center gap-1 text-xs text-muted-foreground mb-2">
+                          <Calendar className="h-3 w-3" />
+                          {t.availability_status === "available" 
+                            ? "Available now" 
+                            : `Available from ${new Date(t.available_from).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}`
+                          }
+                        </div>
                       )}
 
-                      {t.specializations?.slice(0, 3).map((s: string) => (
-                        <Badge key={s} variant="secondary" className="text-xs mr-1 mb-1">
-                          {s}
-                        </Badge>
-                      ))}
+                      {/* Clearance & Specializations */}
+                      <div className="flex flex-wrap gap-1 mb-2">
+                        {t.security_clearance && t.security_clearance !== "none" && (
+                          <Badge variant="outline" className="text-xs">
+                            {t.security_clearance} Cleared
+                          </Badge>
+                        )}
+                        {t.specializations?.slice(0, 3).map((s: string) => (
+                          <Badge key={s} variant="secondary" className="text-xs">
+                            {s}
+                          </Badge>
+                        ))}
+                      </div>
 
+                      {/* Tools */}
+                      {t.tools?.length > 0 && (
+                        <div className="flex flex-wrap gap-1 mb-2">
+                          {t.tools.slice(0, 4).map((tool: string) => (
+                            <Badge key={tool} variant="outline" className="text-[10px] px-1.5 py-0 text-muted-foreground border-border">
+                              {tool}
+                            </Badge>
+                          ))}
+                          {t.tools.length > 4 && (
+                            <span className="text-[10px] text-muted-foreground">+{t.tools.length - 4} more</span>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Industries */}
+                      {t.industries?.length > 0 && (
+                        <div className="flex flex-wrap gap-1 mb-2">
+                          {t.industries.slice(0, 3).map((ind: string) => (
+                            <Badge key={ind} className="text-[10px] px-1.5 py-0 bg-accent/50 text-accent-foreground border-accent">
+                              <Building className="h-2.5 w-2.5 mr-0.5" /> {ind}
+                            </Badge>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Top Certifications */}
+                      {t.certs?.length > 0 && (
+                        <div className="flex flex-wrap gap-1 mb-2">
+                          {t.certs.slice(0, 2).map((c: any) => (
+                            <Badge key={c.name} className="text-[10px] px-1.5 py-0 bg-primary/10 text-primary border-primary/20">
+                              <Award className="h-2.5 w-2.5 mr-0.5" /> {c.name}
+                            </Badge>
+                          ))}
+                          {t.certs.length > 2 && (
+                            <span className="text-[10px] text-muted-foreground">+{t.certs.length - 2} certs</span>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Footer */}
                       <div className="mt-3 pt-3 border-t border-border flex items-center justify-between">
                         <div className="flex items-center gap-3 text-sm">
                           {t.day_rate_gbp && (
@@ -277,7 +370,7 @@ const Marketplace = () => {
                           )}
                           {Number(t.average_rating) > 0 && (
                             <span className="flex items-center gap-1 text-muted-foreground">
-                              <Star className="h-3 w-3 text-amber-400 fill-amber-400" />
+                              <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
                               {Number(t.average_rating).toFixed(1)}
                             </span>
                           )}
