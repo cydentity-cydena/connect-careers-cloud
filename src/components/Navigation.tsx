@@ -146,7 +146,7 @@ const Navigation = () => {
   return (
     <nav className="border-b border-border backdrop-blur-sm sticky top-0 z-50 bg-background/95">
       <div className="container mx-auto px-4 py-3 md:py-4">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between min-w-0">
           {/* Logo */}
           <Link to="/" className="flex items-center flex-shrink-0" onClick={handleNavClick}>
             <img 
@@ -158,7 +158,7 @@ const Navigation = () => {
 
           {/* Desktop Navigation - Grouped */}
           <TooltipProvider>
-            <div className="hidden xl:flex items-center gap-1 ml-4">
+            <div className="hidden xl:flex items-center gap-1 ml-4 flex-1 min-w-0">
               {!isLoading && (
                 <>
                   <Link
@@ -215,7 +215,7 @@ const Navigation = () => {
               )}
 
               {/* Auth actions */}
-              <div className="flex items-center gap-2 ml-2 pl-2 border-l border-border">
+              <div className="flex items-center gap-2 ml-2 pl-2 border-l border-border flex-shrink-0">
                 {user ? (
                   <>
                     {(userRoles.includes('staff') || userRoles.includes('admin')) && (
