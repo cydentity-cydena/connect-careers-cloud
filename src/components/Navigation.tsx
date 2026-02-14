@@ -65,7 +65,6 @@ const Navigation = () => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user);
       if (session?.user) {
-        setIsLoading(true);
         fetchUserRoles(session.user.id);
       } else {
         setUserRoles([]);
