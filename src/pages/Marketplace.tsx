@@ -412,7 +412,7 @@ const Marketplace = () => {
                 </div>
                 <h3 className="font-semibold mb-2">For Candidates</h3>
                 <p className="text-sm text-muted-foreground">
-                  Opt in from your <strong>Dashboard → Marketplace</strong> tab. 
+                  Opt in from your <strong>Dashboard → Settings</strong> tab. 
                   Set your day rate, availability, and specialisms to appear here.
                 </p>
               </CardContent>
