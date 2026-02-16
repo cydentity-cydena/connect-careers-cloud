@@ -1,8 +1,9 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Shield, Users, Briefcase, ArrowRight, CheckCircle, GraduationCap, Eye, Award, Filter, BarChart3, BadgeCheck, Youtube, Play, ExternalLink, Share2, Star, Calculator, Zap, Code, Target, DollarSign } from "lucide-react";
+import { Shield, Users, Briefcase, ArrowRight, CheckCircle, GraduationCap, Eye, Award, Filter, BarChart3, BadgeCheck, Youtube, Play, ExternalLink, Share2, Star, Calculator, Zap, Code, Target, DollarSign, Clock, XCircle, AlertTriangle, ChevronDown, ChevronUp, Lock } from "lucide-react";
 import { ROICalculator } from "@/components/pricing/ROICalculator";
 import Navigation from "@/components/Navigation";
 import SEO from "@/components/SEO";
@@ -10,6 +11,22 @@ import Schema from "@/components/Schema";
 import heroImage from "@/assets/hero-bg.jpg";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+
+const FAQItem = ({ question, answer }: { question: string; answer: string }) => {
+  const [open, setOpen] = useState(false);
+  return (
+    <Collapsible open={open} onOpenChange={setOpen}>
+      <CollapsibleTrigger className="flex items-center justify-between w-full text-left p-4 bg-card/80 border border-border rounded-lg hover:border-primary/30 transition-colors">
+        <span className="font-semibold text-sm md:text-base pr-4">{question}</span>
+        {open ? <ChevronUp className="h-4 w-4 text-muted-foreground flex-shrink-0" /> : <ChevronDown className="h-4 w-4 text-muted-foreground flex-shrink-0" />}
+      </CollapsibleTrigger>
+      <CollapsibleContent className="px-4 pt-3 pb-1 text-sm text-muted-foreground leading-relaxed">
+        {answer}
+      </CollapsibleContent>
+    </Collapsible>
+  );
+};
 
 const Index = () => {
   const { data: learningPathsData } = useQuery({
@@ -36,7 +53,7 @@ const Index = () => {
       <Schema type="website" />
       <Navigation />
 
-      {/* Hero Section */}
+      {/* Hero Section — Specific, outcome-driven */}
       <section className="relative pt-16 md:pt-24 pb-20 md:pb-32 overflow-hidden">
         <div 
           className="absolute inset-0 opacity-20"
@@ -50,18 +67,22 @@ const Index = () => {
         
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto text-center animate-fade-in">
+            <Badge variant="outline" className="mb-4 border-primary/30 text-primary bg-primary/5">
+              <Shield className="h-3 w-3 mr-1" />
+              Trusted by cybersecurity teams across the UK
+            </Badge>
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 md:mb-6">
-              Join the{" "}
+              Hire Pre-Verified{" "}
               <span className="bg-gradient-cyber bg-clip-text text-transparent">
-                Evidence-Led Future
+                Cyber Talent
               </span>
-              {" "}of Cyber Hiring
+              {" "}— Without Recruiter Fees
             </h1>
             <p className="text-xl md:text-2xl font-semibold mb-3 md:mb-4">
-              Prove your skills. Hire with confidence.
+              Cut hiring costs by up to 90%. Fill roles faster with proof, not paper CVs.
             </p>
             <p className="text-base md:text-lg text-muted-foreground mb-6 md:mb-8 max-w-2xl mx-auto px-2">
-              Cydena connects verified cybersecurity professionals with employers who value real-world skills, certified credibility, and faster decisions.
+              Cydena is a verified cybersecurity talent marketplace connecting skilled professionals with hiring teams who value real-world skills and certified credibility.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center px-4">
               <Link to="/profiles" className="w-full sm:w-auto">
@@ -75,10 +96,111 @@ const Index = () => {
                 </Button>
               </Link>
             </div>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mt-4 text-xs text-muted-foreground">
+              <span className="flex items-center gap-1 justify-center"><CheckCircle className="h-3 w-3 text-success" /> Free for candidates</span>
+              <span className="flex items-center gap-1 justify-center"><CheckCircle className="h-3 w-3 text-success" /> No agency commissions</span>
+              <span className="flex items-center gap-1 justify-center"><CheckCircle className="h-3 w-3 text-success" /> Cancel anytime</span>
+            </div>
+
+            {/* Partner logos trust strip */}
+            <div className="mt-10 pt-8 border-t border-border/50">
+              <p className="text-xs text-muted-foreground mb-4 uppercase tracking-wider">Partnered With</p>
+              <div className="flex flex-wrap items-center justify-center gap-8 opacity-70">
+                <img src="/logos/treccert-logo-banner.png" alt="TRECCERT" className="h-8 object-contain" />
+                <img src="/logos/cydentity-logo-white.png" alt="Cydentity" className="h-8 object-contain" />
+                <img src="/logos/cydentity-academy-logo-white.png" alt="Cydentity Academy" className="h-7 object-contain" />
+                <img src="/logos/real-lms-logo.png" alt="REAL LMS" className="h-8 object-contain" />
+              </div>
+            </div>
           </div>
         </div>
 
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000,transparent)] opacity-20" />
+      </section>
+
+      {/* Problem Section — Pain Agitation */}
+      <section className="py-12 md:py-16 border-b border-border/30">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Cyber Hiring Is <span className="text-destructive">Broken</span>
+            </h2>
+            <p className="text-muted-foreground mb-10 text-lg">
+              Traditional recruiting wastes time and money. Here's what you're dealing with:
+            </p>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {[
+                { icon: DollarSign, stat: "15–25%", label: "Agency fees per hire" },
+                { icon: Clock, stat: "3+ months", label: "Average time to fill" },
+                { icon: XCircle, stat: "70%+", label: "CVs are unverified" },
+                { icon: AlertTriangle, stat: "£12K", label: "Cost of a bad hire" },
+              ].map((item, i) => (
+                <div key={i} className="bg-destructive/5 border border-destructive/20 rounded-lg p-5 text-center">
+                  <item.icon className="h-6 w-6 text-destructive mx-auto mb-2" />
+                  <p className="text-2xl font-bold text-destructive">{item.stat}</p>
+                  <p className="text-xs text-muted-foreground mt-1">{item.label}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Old Way vs Cydena Comparison */}
+      <section className="py-12 md:py-16">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-2xl md:text-3xl font-bold text-center mb-8">
+              The Old Way vs <span className="bg-gradient-cyber bg-clip-text text-transparent">The Cydena Way</span>
+            </h2>
+            <div className="grid md:grid-cols-2 gap-6">
+              <Card className="border-destructive/30 bg-destructive/5">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-lg text-destructive flex items-center gap-2">
+                    <XCircle className="h-5 w-5" /> Traditional Recruiting
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  {[
+                    "20% agency fee per placement",
+                    "3+ month average hiring cycle",
+                    "CV-based screening — no skill proof",
+                    "No credential verification",
+                    "Recruiter gatekeeping",
+                    "Unpredictable costs",
+                  ].map((item, i) => (
+                    <div key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
+                      <XCircle className="h-4 w-4 text-destructive flex-shrink-0 mt-0.5" />
+                      <span>{item}</span>
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+              <Card className="border-primary/30 bg-primary/5">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-lg text-primary flex items-center gap-2">
+                    <CheckCircle className="h-5 w-5" /> Cydena
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  {[
+                    "Flat subscription fee — no commissions",
+                    "Pre-verified, interview-ready candidates",
+                    "Skills assessments prove real ability",
+                    "Certifications verified automatically",
+                    "Direct access — no middleman",
+                    "Predictable, budgetable hiring costs",
+                  ].map((item, i) => (
+                    <div key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
+                      <CheckCircle className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                      <span>{item}</span>
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* Section 1: For Candidates — Free & Accessible */}
@@ -86,11 +208,14 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
+              <Badge variant="outline" className="mb-3 border-success/30 text-success bg-success/5">
+                Always Free
+              </Badge>
               <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                Free for <span className="bg-gradient-cyber bg-clip-text text-transparent">Candidates</span>
+                Free for <span className="bg-gradient-cyber bg-clip-text text-transparent">Cybersecurity Professionals</span>
               </h2>
               <p className="text-lg md:text-xl text-muted-foreground">
-                From entry-level to CISO — everyone gets equal access
+                From entry-level to CISO — get hired based on proof, not paper CVs
               </p>
             </div>
 
@@ -190,32 +315,33 @@ const Index = () => {
                   Create Free Profile <ArrowRight className="h-5 w-5" />
                 </Button>
               </Link>
+              <p className="text-xs text-muted-foreground mt-2">Takes 2 minutes. No credit card required.</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Section 2: Platform Features + How It Works (consolidated) */}
+      {/* Section 2: Platform Features — benefit-driven headlines */}
       <section className="py-16 md:py-24">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12 md:mb-16 animate-fade-in">
             <h2 className="text-3xl md:text-4xl font-bold mb-3 md:mb-4">
-              The platform for <span className="bg-gradient-cyber bg-clip-text text-transparent">verified cyber talent</span>
+              Everything you need to <span className="bg-gradient-cyber bg-clip-text text-transparent">hire with confidence</span>
             </h2>
             <p className="text-muted-foreground text-base md:text-lg max-w-3xl mx-auto">
               Built specifically for cybersecurity — validated, curated, and interview-ready professionals
             </p>
           </div>
 
-          {/* Feature cards */}
+          {/* Feature cards — benefit-driven */}
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8 mb-16">
             {[
-              { icon: Shield, title: "HR-Aligned Verification Hub", desc: "Identity, certifications, and eligibility — safely stored, ready for review.", color: "primary" },
-              { icon: Users, title: "Candidate Pod Management", desc: "Curate and assign groups of pre-vetted candidates to employers.", color: "accent" },
-              { icon: Filter, title: "Intelligent Job Matching", desc: "Only qualified matches see relevant opportunities — no spray-and-pray.", color: "primary" },
-              { icon: Briefcase, title: "ATS & Webhook Integration", desc: "Push candidates to Workday and SAP SuccessFactors. Automate workflows.", color: "secondary" },
-              { icon: BarChart3, title: "Analytics & Insights", desc: "Track hiring metrics, time-to-hire, and pipeline performance.", color: "accent" },
-              { icon: BadgeCheck, title: "Skills Verification", desc: "Pre-validated technical skills and certifications reduce interview time.", color: "primary" },
+              { icon: Shield, title: "Hire 3x Faster with HR-Ready Candidates", desc: "Identity, certifications, and right-to-work verified upfront. Focus on skills and culture fit, not paperwork.", color: "primary" },
+              { icon: Users, title: "Curated Talent Pods — Ready to Review", desc: "Pre-vetted candidate groups assigned to your team. No more sifting through hundreds of unqualified CVs.", color: "accent" },
+              { icon: Filter, title: "Only Qualified Matches — Zero Noise", desc: "Intelligent matching considers certifications, experience, and specializations. No spray-and-pray.", color: "primary" },
+              { icon: Briefcase, title: "Push to Your ATS in One Click", desc: "Integrates with Workday, SAP SuccessFactors and webhooks. Automate your existing workflow.", color: "secondary" },
+              { icon: BarChart3, title: "Track Every Hiring Metric That Matters", desc: "Time-to-hire, pipeline performance, cost-per-hire — all in your dashboard.", color: "accent" },
+              { icon: BadgeCheck, title: "Reduce Interview Time with Skill Proof", desc: "Pre-validated technical skills and certifications mean you interview fewer, better candidates.", color: "primary" },
             ].map((feature, i) => (
               <div
                 key={i}
@@ -229,6 +355,26 @@ const Index = () => {
                 <p className="text-xs md:text-sm lg:text-base text-muted-foreground leading-relaxed">{feature.desc}</p>
               </div>
             ))}
+          </div>
+
+          {/* What a Verified Profile Includes */}
+          <div className="max-w-3xl mx-auto mb-16">
+            <h3 className="text-2xl font-bold text-center mb-6">What a Cydena Verified Profile Includes</h3>
+            <div className="grid sm:grid-cols-2 gap-3">
+              {[
+                "Identity verified (ID check)",
+                "Right-to-work confirmed",
+                "Security clearance validated",
+                "Certifications auto-verified",
+                "Skills assessments completed",
+                "Peer endorsements collected",
+              ].map((item, i) => (
+                <div key={i} className="flex items-center gap-2 bg-card/80 border border-border rounded-lg px-4 py-3">
+                  <BadgeCheck className="h-4 w-4 text-primary flex-shrink-0" />
+                  <span className="text-sm">{item}</span>
+                </div>
+              ))}
+            </div>
           </div>
 
           {/* How It Works - side by side */}
@@ -274,53 +420,65 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Section 3: Hire with Confidence + ROI (consolidated) */}
+      {/* Section 3: ROI + Value Stack */}
       <section className="py-16 md:py-24 bg-gradient-to-br from-primary/5 via-background to-secondary/5">
         <div className="container mx-auto px-4">
           <div className="max-w-5xl mx-auto">
+            {/* Bold savings claim */}
             <div className="text-center mb-12 md:mb-16 animate-fade-in">
+              <Badge variant="outline" className="mb-4 border-primary/30 text-primary bg-primary/5">
+                <Calculator className="h-3 w-3 mr-1" />
+                Cost Savings Calculator
+              </Badge>
               <h2 className="text-3xl md:text-5xl font-bold mb-4">
-                Hire with <span className="bg-gradient-cyber bg-clip-text text-transparent">Confidence</span>
+                Companies Save Up to <span className="bg-gradient-cyber bg-clip-text text-transparent">90%</span> vs Agencies
               </h2>
               <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
-                Expert support to curate top talent. We don't just connect you with candidates — we help you find the perfect fit.
+                See exactly how much you could save with direct access to verified talent
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-6 md:gap-8 mb-16">
-              {[
-                { icon: Shield, title: "Pre-Vetted Talent Pool", desc: "Every candidate is verified for identity, right-to-work, and certifications. Focus on skills and culture fit, not paperwork.", color: "primary" },
-                { icon: Users, title: "Expert Curation Support", desc: "Our team understands cybersecurity roles deeply. Get guidance on talent selection and hiring best practices.", color: "secondary" },
-                { icon: Target, title: "Skills-Match Technology", desc: "Intelligent matching considers certifications, experience levels, and specializations to surface candidates who truly fit.", color: "accent" },
-                { icon: Briefcase, title: "Dedicated Partner Success", desc: "From onboarding to your first hire and beyond, our team optimizes your hiring strategy and maximizes ROI.", color: "primary" },
-              ].map((card, i) => (
-                <Card key={i} className={`group hover:shadow-xl transition-all duration-300 border-2 hover:border-${card.color}/50 bg-card/80 backdrop-blur`}>
-                  <CardContent className="p-6 md:p-8">
-                    <div className={`bg-${card.color}/10 w-14 h-14 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
-                      <card.icon className={`h-7 w-7 text-${card.color}`} />
-                    </div>
-                    <h3 className="text-xl md:text-2xl font-bold mb-3">{card.title}</h3>
-                    <p className="text-muted-foreground leading-relaxed">{card.desc}</p>
-                  </CardContent>
-                </Card>
-              ))}
+            {/* ROI Calculator */}
+            <div className="max-w-4xl mx-auto mb-10">
+              <ROICalculator />
+              <div className="mt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
+                <Link to="/contact">
+                  <Button variant="hero" size="lg" className="gap-2">
+                    Book a Demo to Validate These Numbers <ArrowRight className="h-5 w-5" />
+                  </Button>
+                </Link>
+              </div>
+              <p className="text-xs text-muted-foreground text-center mt-3">
+                Based on UK agency averages (15–25% placement fee). Your actual savings may vary.
+              </p>
             </div>
 
-            {/* ROI Calculator inline */}
-            <div className="max-w-4xl mx-auto">
-              <div className="text-center mb-8">
-                <div className="inline-flex items-center gap-2 bg-primary/10 rounded-full px-4 py-2 mb-4">
-                  <Calculator className="h-4 w-4 text-primary" />
-                  <span className="text-sm font-medium text-primary">Cost Savings Calculator</span>
+            {/* Value Stack */}
+            <div className="max-w-3xl mx-auto mt-16">
+              <h3 className="text-2xl md:text-3xl font-bold text-center mb-8">
+                Everything You Get With <span className="bg-gradient-cyber bg-clip-text text-transparent">Cydena</span>
+              </h3>
+              <div className="bg-card/80 border border-primary/20 rounded-xl p-6 md:p-8">
+                <div className="grid sm:grid-cols-2 gap-3">
+                  {[
+                    "Flat subscription — no commissions",
+                    "Pre-verified cybersecurity professionals",
+                    "Credential & right-to-work validation",
+                    "Skills assessments built in",
+                    "ATS integration (Workday, SAP, webhooks)",
+                    "Talent pod management",
+                    "Hiring analytics dashboard",
+                    "Marketplace for on-demand talent",
+                    "API & AI agent access",
+                    "Dedicated partner support",
+                  ].map((item, i) => (
+                    <div key={i} className="flex items-center gap-2">
+                      <CheckCircle className="h-4 w-4 text-primary flex-shrink-0" />
+                      <span className="text-sm">{item}</span>
+                    </div>
+                  ))}
                 </div>
-                <h3 className="text-2xl md:text-3xl font-bold mb-2">
-                  See How Much You Could <span className="bg-gradient-cyber bg-clip-text text-transparent">Save</span>
-                </h3>
-                <p className="text-muted-foreground">
-                  Compare traditional agency costs vs direct access to verified talent
-                </p>
               </div>
-              <ROICalculator />
             </div>
 
             <div className="text-center mt-10 md:mt-12">
@@ -329,12 +487,13 @@ const Index = () => {
                   Start Hiring Top Talent <ArrowRight className="h-5 w-5" />
                 </Button>
               </Link>
+              <p className="text-xs text-muted-foreground mt-2">No long-term contracts. Cancel anytime.</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Section 4: Partners + Marketplace + CTA (consolidated) */}
+      {/* Section 4: Partners + Marketplace */}
       <section className="py-16 md:py-24 bg-card/30">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
@@ -424,7 +583,7 @@ const Index = () => {
               {[
                 { icon: Briefcase, title: "Employers: Post Bounties", desc: "Describe your security need, set a budget, and let qualified professionals apply.", color: "primary" },
                 { icon: Users, title: "Candidates: Get Listed", desc: "Opt in from your Dashboard. Set your rate, availability, and specialisms.", color: "secondary" },
-                { icon: Code, title: "API & MCP Ready", desc: "AI agents and platforms can search talent and post bounties programmatically.", color: "accent" },
+                { icon: Code, title: "Integrate Into Your Workflow", desc: "Connect Cydena directly into your hiring systems via API or AI agents. No manual steps.", color: "accent" },
               ].map((item, i) => (
                 <Card key={i} className="border-border bg-card/80">
                   <CardContent className="p-6 text-center">
@@ -449,20 +608,114 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Final CTA */}
+      {/* Trust & Security Section */}
+      <section className="py-12 md:py-16">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-2xl md:text-3xl font-bold text-center mb-8">
+              Built for <span className="bg-gradient-cyber bg-clip-text text-transparent">Enterprise Security</span>
+            </h2>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {[
+                { icon: Shield, label: "GDPR Compliant" },
+                { icon: Lock, label: "Encrypted Data Storage" },
+                { icon: BadgeCheck, label: "Verified Credentials" },
+                { icon: Eye, label: "SOC-Ready Audit Trail" },
+              ].map((item, i) => (
+                <div key={i} className="flex items-center gap-3 bg-card/80 border border-border rounded-lg px-4 py-3">
+                  <item.icon className="h-5 w-5 text-primary flex-shrink-0" />
+                  <span className="text-sm font-medium">{item.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="py-16 md:py-24 bg-card/30">
+        <div className="container mx-auto px-4">
+          <div className="max-w-3xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold text-center mb-10">
+              Frequently Asked <span className="bg-gradient-cyber bg-clip-text text-transparent">Questions</span>
+            </h2>
+            
+            <div className="mb-8">
+              <h3 className="text-lg font-semibold text-primary mb-4">For Employers</h3>
+              <div className="space-y-3">
+                <FAQItem 
+                  question="How is Cydena different from recruitment agencies?" 
+                  answer="Cydena gives you direct access to pre-verified cybersecurity professionals for a flat subscription fee — no 15–25% agency commissions. Every candidate's identity, right-to-work, certifications, and skills are validated before you see them." 
+                />
+                <FAQItem 
+                  question="What does verification include?" 
+                  answer="Our HR-Ready verification covers identity checks, right-to-work validation, security clearance confirmation, and automated certification verification. Skills assessments from platforms like TryHackMe and HackTheBox prove technical ability." 
+                />
+                <FAQItem 
+                  question="Is there a contract or commitment?" 
+                  answer="No long-term contracts. All plans are month-to-month and you can cancel anytime. We also offer annual billing with a 15% discount for teams that prefer it." 
+                />
+                <FAQItem 
+                  question="How quickly can we start hiring?" 
+                  answer="You can browse verified candidates immediately after signing up. Most employers have a shortlist within the first week. Our talent pods and intelligent matching accelerate time-to-hire significantly." 
+                />
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-lg font-semibold text-secondary mb-4">For Candidates</h3>
+              <div className="space-y-3">
+                <FAQItem 
+                  question="Is Cydena really free for candidates?" 
+                  answer="Yes, 100% free. Creating your profile, getting verified, applying to jobs, and accessing learning paths costs you nothing. We're funded by employer subscriptions." 
+                />
+                <FAQItem 
+                  question="How long does verification take?" 
+                  answer="Basic profile setup takes about 2 minutes. HR-Ready verification (identity, right-to-work) is typically reviewed within 24–48 hours. Certification verification is often instant for supported providers." 
+                />
+                <FAQItem 
+                  question="Do I need certifications to join?" 
+                  answer="No. Cydena welcomes professionals at all levels, including career transitioners. Certifications boost your profile visibility, but skills assessments and peer endorsements also help you stand out." 
+                />
+                <FAQItem 
+                  question="Who can see my profile?" 
+                  answer="Your profile is visible to verified employers and recruiters on the platform. Sensitive information like identity documents is never shared — only your verification status badges are shown." 
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Final CTA — Urgency + Risk Reversal */}
       <section className="py-24 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-cyber opacity-10" />
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-4xl font-bold mb-6">Proof. Not promises. For cyber talent and teams.</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Stop Paying 20% Recruiter Fees.<br />
+              Start Hiring Verified Cyber Talent Today.
+            </h2>
             <p className="text-xl text-muted-foreground mb-8">
-              Show what you can do. Find those who truly can. Join Cydena.
+              The best verified candidates are matched quickly. Join now to secure priority access.
             </p>
-            <Link to="/auth">
-              <Button variant="hero" size="lg" className="gap-2">
-                Get Started Now — Free for Candidates <ArrowRight className="h-5 w-5" />
-              </Button>
-            </Link>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link to="/auth">
+                <Button variant="hero" size="lg" className="gap-2">
+                  Start Hiring — Free Trial <ArrowRight className="h-5 w-5" />
+                </Button>
+              </Link>
+              <Link to="/auth">
+                <Button variant="cyber" size="lg" className="gap-2">
+                  Create Free Candidate Profile
+                </Button>
+              </Link>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mt-4 text-xs text-muted-foreground">
+              <span className="flex items-center gap-1 justify-center"><CheckCircle className="h-3 w-3 text-success" /> No credit card required</span>
+              <span className="flex items-center gap-1 justify-center"><CheckCircle className="h-3 w-3 text-success" /> No long-term contracts</span>
+              <span className="flex items-center gap-1 justify-center"><CheckCircle className="h-3 w-3 text-success" /> Cancel anytime</span>
+            </div>
           </div>
         </div>
       </section>
