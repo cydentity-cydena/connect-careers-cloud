@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Shield, Trash2, Plus, Search } from "lucide-react";
+import { Shield, Trash2, Plus, Search, Pencil } from "lucide-react";
 
 const TIERS = [
   { value: "employer_starter", label: "Employer Starter" },
@@ -23,6 +23,10 @@ export default function SubscriptionOverrides() {
   const [reason, setReason] = useState("");
   const [expiresAt, setExpiresAt] = useState("");
   const [foundUser, setFoundUser] = useState<any>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editTier, setEditTier] = useState("");
+  const [editReason, setEditReason] = useState("");
+  const [editExpires, setEditExpires] = useState("");
 
   const { data: overrides, isLoading } = useQuery({
     queryKey: ["subscription-overrides"],
@@ -92,6 +96,22 @@ export default function SubscriptionOverrides() {
     onError: (e: any) => toast.error(e.message),
   });
 
+  const updateOverride = useMutation({
+    mutationFn: async ({ id, tier, reason, expires_at }: { id: string; tier: string; reason: string; expires_at: string }) => {
+      const { error } = await supabase
+        .from("subscription_overrides" as any)
+        .update({ tier, reason: reason || null, expires_at: expires_at || null })
+        .eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Override updated");
+      queryClient.invalidateQueries({ queryKey: ["subscription-overrides"] });
+      setEditingId(null);
+    },
+    onError: (e: any) => toast.error(e.message),
+  });
+
   const revokeOverride = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase
@@ -106,6 +126,28 @@ export default function SubscriptionOverrides() {
     },
     onError: (e: any) => toast.error(e.message),
   });
+
+  const deleteOverride = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase
+        .from("subscription_overrides" as any)
+        .delete()
+        .eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Override deleted");
+      queryClient.invalidateQueries({ queryKey: ["subscription-overrides"] });
+    },
+    onError: (e: any) => toast.error(e.message),
+  });
+
+  const startEdit = (o: any) => {
+    setEditingId(o.id);
+    setEditTier(o.tier);
+    setEditReason(o.reason || "");
+    setEditExpires(o.expires_at ? o.expires_at.split("T")[0] : "");
+  };
 
   return (
     <div className="space-y-6">
@@ -185,34 +227,64 @@ export default function SubscriptionOverrides() {
           ) : (
             <div className="space-y-3">
               {overrides.map((o: any) => (
-                <div key={o.id} className="flex items-center justify-between border rounded-lg p-3">
-                  <div className="space-y-1">
-                    <p className="font-medium">{o.profile?.full_name || o.profile?.username || o.user_id}</p>
-                    <p className="text-sm text-muted-foreground">{o.profile?.email}</p>
-                    <div className="flex gap-2 items-center">
-                      <Badge variant={o.is_active ? "default" : "secondary"}>
-                        {o.is_active ? "Active" : "Revoked"}
-                      </Badge>
-                      <Badge variant="outline">{o.tier}</Badge>
-                      {o.expires_at && (
-                        <span className="text-xs text-muted-foreground">
-                          Expires: {new Date(o.expires_at).toLocaleDateString()}
-                        </span>
-                      )}
-                      {o.reason && (
-                        <span className="text-xs text-muted-foreground">— {o.reason}</span>
-                      )}
+                <div key={o.id} className="border rounded-lg p-3 space-y-2">
+                  {editingId === o.id ? (
+                    <div className="space-y-3">
+                      <p className="font-medium">{o.profile?.full_name || o.profile?.username || o.user_id}</p>
+                      <p className="text-sm text-muted-foreground">{o.profile?.email}</p>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <Select value={editTier} onValueChange={setEditTier}>
+                          <SelectTrigger><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            {TIERS.map((t) => (
+                              <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <Input type="date" value={editExpires} onChange={(e) => setEditExpires(e.target.value)} />
+                        <Input placeholder="Reason" value={editReason} onChange={(e) => setEditReason(e.target.value)} />
+                      </div>
+                      <div className="flex gap-2">
+                        <Button size="sm" onClick={() => updateOverride.mutate({ id: o.id, tier: editTier, reason: editReason, expires_at: editExpires })} disabled={updateOverride.isPending}>
+                          Save
+                        </Button>
+                        <Button size="sm" variant="outline" onClick={() => setEditingId(null)}>Cancel</Button>
+                      </div>
                     </div>
-                  </div>
-                  {o.is_active && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => revokeOverride.mutate(o.id)}
-                      disabled={revokeOverride.isPending}
-                    >
-                      <Trash2 className="h-4 w-4 text-destructive" />
-                    </Button>
+                  ) : (
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-1">
+                        <p className="font-medium">{o.profile?.full_name || o.profile?.username || o.user_id}</p>
+                        <p className="text-sm text-muted-foreground">{o.profile?.email}</p>
+                        <div className="flex gap-2 items-center flex-wrap">
+                          <Badge variant={o.is_active ? "default" : "secondary"}>
+                            {o.is_active ? "Active" : "Revoked"}
+                          </Badge>
+                          <Badge variant="outline">{o.tier}</Badge>
+                          {o.expires_at && (
+                            <span className="text-xs text-muted-foreground">
+                              Expires: {new Date(o.expires_at).toLocaleDateString()}
+                            </span>
+                          )}
+                          {o.reason && (
+                            <span className="text-xs text-muted-foreground">— {o.reason}</span>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex gap-1">
+                        <Button variant="ghost" size="sm" onClick={() => startEdit(o)}>
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                        {o.is_active && (
+                          <Button variant="ghost" size="sm" onClick={() => revokeOverride.mutate(o.id)} disabled={revokeOverride.isPending}>
+                            <Trash2 className="h-4 w-4 text-muted-foreground" />
+                          </Button>
+                        )}
+                        <Button variant="ghost" size="sm" onClick={() => { if (confirm("Permanently delete this override?")) deleteOverride.mutate(o.id); }} disabled={deleteOverride.isPending}>
+                          <Trash2 className="h-4 w-4 text-destructive" />
+                        </Button>
+                      </div>
+                    </div>
                   )}
                 </div>
               ))}
