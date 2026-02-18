@@ -50,6 +50,36 @@ serve(async (req) => {
     if (!user?.email) throw new Error("User not authenticated");
     logStep("User authenticated", { userId: user.id });
 
+    // Check for admin-granted subscription override first
+    const { data: override } = await supabaseClient
+      .from('subscription_overrides')
+      .select('*')
+      .eq('user_id', user.id)
+      .eq('is_active', true)
+      .maybeSingle();
+
+    if (override) {
+      // Check if override has expired
+      if (override.expires_at && new Date(override.expires_at) < new Date()) {
+        logStep("Override expired, deactivating", { userId: user.id });
+        await supabaseClient
+          .from('subscription_overrides')
+          .update({ is_active: false })
+          .eq('id', override.id);
+      } else {
+        logStep("Active subscription override found", { tier: override.tier });
+        return new Response(JSON.stringify({
+          subscribed: true,
+          tier: override.tier,
+          subscription_end: override.expires_at,
+          override: true
+        }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 200,
+        });
+      }
+    }
+
     const { data: localSub } = await supabaseClient
       .from('user_subscriptions')
       .select('*')
