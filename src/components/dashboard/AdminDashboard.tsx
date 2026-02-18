@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Shield, Users, Briefcase, AlertCircle, UserCog, CheckCircle, Bug, Settings, FolderKanban, FileCheck, BarChart3, Plus, Brain, Send, Flag, Youtube, Users2 } from "lucide-react";
+import { Shield, Users, Briefcase, AlertCircle, UserCog, CheckCircle, Bug, Settings, FolderKanban, FileCheck, BarChart3, Plus, Brain, Send, Flag, Youtube, Users2, CreditCard } from "lucide-react";
 import { AdminNotifications } from "@/components/admin/AdminNotifications";
 import { SeedDemoCandidates } from "@/components/admin/SeedDemoCandidates";
 import { RoleSimulator } from "@/components/admin/RoleSimulator";
@@ -469,6 +469,26 @@ const AdminDashboard = ({ onSimulateRole, currentSimulatedRole }: AdminDashboard
             <CardContent>
               <Button variant="outline" className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
                 Manage Communities
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card 
+            className="border-border shadow-card hover:shadow-lg transition-all cursor-pointer group"
+            onClick={() => navigate('/admin/subscription-overrides')}
+          >
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 group-hover:text-primary transition-colors">
+                <CreditCard className="h-5 w-5" />
+                Subscription Overrides
+              </CardTitle>
+              <CardDescription>
+                Grant free subscription access to employers and recruiters
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button variant="outline" className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                Manage Overrides
               </Button>
             </CardContent>
           </Card>
