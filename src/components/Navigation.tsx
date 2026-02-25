@@ -112,6 +112,7 @@ const Navigation = () => {
       label: "Company",
       icon: Building2,
       links: [
+        { to: "/why-cydena", label: "Why Cydena", description: "How we compare to volume platforms" },
         { to: "/pricing", label: "Pricing", description: "Plans and features" },
         { to: "/contact", label: "Contact", description: "Get in touch with us" },
         { to: "/partnerships", label: "Partners", description: "Partnership opportunities" },
