@@ -69,20 +69,20 @@ const Index = () => {
           <div className="max-w-4xl mx-auto text-center animate-fade-in">
             <Badge variant="outline" className="mb-4 border-primary/30 text-primary bg-primary/5">
               <Shield className="h-3 w-3 mr-1" />
-              Trusted by cybersecurity teams across the UK
+              Built technology-first. No agency rebrand.
             </Badge>
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 md:mb-6">
-              Hire Pre-Verified{" "}
+              Every Candidate{" "}
               <span className="bg-gradient-cyber bg-clip-text text-transparent">
-                Cyber Talent
+                Validated
               </span>
-              {" "}— Without Recruiter Fees
+              , Not Just Listed
             </h1>
             <p className="text-xl md:text-2xl font-semibold mb-3 md:mb-4">
-              Cut hiring costs by up to 90%. Fill roles faster with proof, not paper CVs.
+              We validate capability — not scale headcount. Hire verified cyber talent without recruiter fees.
             </p>
             <p className="text-base md:text-lg text-muted-foreground mb-6 md:mb-8 max-w-2xl mx-auto px-2">
-              Cydena is a verified cybersecurity talent marketplace connecting skilled professionals with hiring teams who value real-world skills and certified credibility.
+              Identity checked. Right-to-work confirmed. Certifications auto-verified. Skills assessed. The UK's only cybersecurity talent platform where every professional is proven, not just registered.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center px-4">
               <Link to="/profiles" className="w-full sm:w-auto">
@@ -98,12 +98,19 @@ const Index = () => {
             </div>
             <div className="flex flex-col sm:flex-row gap-4 justify-center mt-4 text-xs text-muted-foreground">
               <span className="flex items-center gap-1 justify-center"><CheckCircle className="h-3 w-3 text-success" /> Free for candidates</span>
-              <span className="flex items-center gap-1 justify-center"><CheckCircle className="h-3 w-3 text-success" /> No agency commissions</span>
-              <span className="flex items-center gap-1 justify-center"><CheckCircle className="h-3 w-3 text-success" /> Cancel anytime</span>
+              <span className="flex items-center gap-1 justify-center"><CheckCircle className="h-3 w-3 text-success" /> No agency heritage — technology-first</span>
+              <span className="flex items-center gap-1 justify-center"><CheckCircle className="h-3 w-3 text-success" /> UK compliance: CBEST, SC/DV, NIS2</span>
+            </div>
+
+            {/* Why Cydena link */}
+            <div className="mt-6">
+              <Link to="/why-cydena" className="text-sm text-primary hover:underline inline-flex items-center gap-1">
+                See why employers choose Cydena over volume platforms <ArrowRight className="h-3 w-3" />
+              </Link>
             </div>
 
             {/* Partner logos trust strip */}
-            <div className="mt-10 pt-8 border-t border-border/50">
+            <div className="mt-8 pt-8 border-t border-border/50">
               <p className="text-xs text-muted-foreground mb-4 uppercase tracking-wider">Partnered With</p>
               <div className="flex flex-wrap items-center justify-center gap-8 opacity-70">
                 <img src="/logos/treccert-logo-banner.png" alt="TRECCERT" className="h-8 object-contain" />
@@ -336,12 +343,12 @@ const Index = () => {
           {/* Feature cards — benefit-driven */}
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8 mb-16">
             {[
-              { icon: Shield, title: "Hire 3x Faster with HR-Ready Candidates", desc: "Identity, certifications, and right-to-work verified upfront. Focus on skills and culture fit, not paperwork.", color: "primary" },
-              { icon: Users, title: "Curated Talent Pods — Ready to Review", desc: "Pre-vetted candidate groups assigned to your team. No more sifting through hundreds of unqualified CVs.", color: "accent" },
-              { icon: Filter, title: "Only Qualified Matches — Zero Noise", desc: "Intelligent matching considers certifications, experience, and specializations. No spray-and-pray.", color: "primary" },
+                { icon: Shield, title: "HR-Ready: Verified Before You See Them", desc: "Identity, certifications, right-to-work, and security clearance validated upfront — not self-declared on a CV.", color: "primary" },
+              { icon: Target, title: "Skills-Based, Not CV-Based", desc: "LLM-powered assessments and CTF challenges prove real capability. No more guessing from keyword-stuffed CVs.", color: "accent" },
+              { icon: Filter, title: "UK Compliance Built In", desc: "CBEST, TIBER-UK, NIS2, SC/DV clearance filters — frameworks volume platforms don't speak to.", color: "primary" },
               { icon: Briefcase, title: "Push to Your ATS in One Click", desc: "Integrates with Workday, SAP SuccessFactors and webhooks. Automate your existing workflow.", color: "secondary" },
-              { icon: BarChart3, title: "Track Every Hiring Metric That Matters", desc: "Time-to-hire, pipeline performance, cost-per-hire — all in your dashboard.", color: "accent" },
-              { icon: BadgeCheck, title: "Reduce Interview Time with Skill Proof", desc: "Pre-validated technical skills and certifications mean you interview fewer, better candidates.", color: "primary" },
+              { icon: Users, title: "Community, Not Just Transactions", desc: "CTF challenges, learning paths, peer endorsements — talent that grows on the platform, not just passes through.", color: "accent" },
+              { icon: BadgeCheck, title: "Zero Agency Heritage", desc: "Built technology-first without recruitment agency baggage. Direct access to validated professionals — no middlemen.", color: "primary" },
             ].map((feature, i) => (
               <div
                 key={i}
@@ -644,8 +651,8 @@ const Index = () => {
               <h3 className="text-lg font-semibold text-primary mb-4">For Employers</h3>
               <div className="space-y-3">
                 <FAQItem 
-                  question="How is Cydena different from recruitment agencies?" 
-                  answer="Cydena gives you direct access to pre-verified cybersecurity professionals for a flat subscription fee — no 15–25% agency commissions. Every candidate's identity, right-to-work, certifications, and skills are validated before you see them." 
+                  question="How is Cydena different from recruitment agencies and volume platforms?" 
+                  answer="Most platforms scale headcount — they list thousands of unverified CVs. Cydena validates capability. Every candidate's identity, right-to-work, certifications, and skills are proven before you see them. We're built technology-first with no recruitment agency heritage, and we specialise in UK compliance frameworks like CBEST, TIBER-UK, and SC/DV clearance." 
                 />
                 <FAQItem 
                   question="What does verification include?" 

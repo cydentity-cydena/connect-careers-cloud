@@ -73,6 +73,7 @@ import LearningPaths from "./pages/LearningPaths";
 import TrainingPartners from "./pages/TrainingPartners";
 import Marketplace from "./pages/Marketplace";
 import MarketplaceDocs from "./pages/MarketplaceDocs";
+import WhyCydena from "./pages/WhyCydena";
 
 import { ScrollToTop } from "./components/ScrollToTop";
 
@@ -170,6 +171,7 @@ const AppContent = () => {
           {/* Marketplace */}
           <Route path="/marketplace" element={<Marketplace />} />
           <Route path="/marketplace/docs" element={<MarketplaceDocs />} />
+          <Route path="/why-cydena" element={<WhyCydena />} />
           
           
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
