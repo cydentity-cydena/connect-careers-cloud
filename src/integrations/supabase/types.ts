@@ -501,6 +501,7 @@ export type Database = {
       candidate_profiles: {
         Row: {
           availability_status: string | null
+          available_for_bounties: boolean
           available_from: string | null
           average_rating: number | null
           created_at: string
@@ -536,6 +537,7 @@ export type Database = {
         }
         Insert: {
           availability_status?: string | null
+          available_for_bounties?: boolean
           available_from?: string | null
           average_rating?: number | null
           created_at?: string
@@ -571,6 +573,7 @@ export type Database = {
         }
         Update: {
           availability_status?: string | null
+          available_for_bounties?: boolean
           available_from?: string | null
           average_rating?: number | null
           created_at?: string

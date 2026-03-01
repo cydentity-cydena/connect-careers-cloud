@@ -9,7 +9,7 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Store, Eye, Zap, Globe, CreditCard, ExternalLink, CheckCircle2, Loader2 } from "lucide-react";
+import { Store, Eye, Zap, Globe, CreditCard, ExternalLink, CheckCircle2, Loader2, Target } from "lucide-react";
 import { toast } from "sonner";
 
 interface MarketplaceSettingsProps {
@@ -46,6 +46,7 @@ export const MarketplaceSettings = ({ userId }: MarketplaceSettingsProps) => {
     mutationFn: async () => {
       const updates = {
         is_marketplace_visible: getValue("is_marketplace_visible", false),
+        available_for_bounties: getValue("available_for_bounties", false),
         marketplace_headline: getValue("marketplace_headline", ""),
         day_rate_gbp: getValue("day_rate_gbp", null) ? Number(getValue("day_rate_gbp")) : null,
         hourly_rate_gbp: getValue("hourly_rate_gbp", null) ? Number(getValue("hourly_rate_gbp")) : null,
@@ -108,6 +109,21 @@ export const MarketplaceSettings = ({ userId }: MarketplaceSettingsProps) => {
           <Switch
             checked={isVisible}
             onCheckedChange={(v) => updateField("is_marketplace_visible", v)}
+          />
+        </div>
+
+        {/* Available for Bounties Toggle */}
+        <div className="flex items-center justify-between p-4 rounded-lg bg-muted/30 border border-border/50">
+          <div className="flex items-center gap-3">
+            <Target className="h-5 w-5 text-secondary" />
+            <div>
+              <p className="font-medium text-sm">Available for Task Bounties</p>
+              <p className="text-xs text-muted-foreground">Accept scoped paid tasks while job searching — get value from day one</p>
+            </div>
+          </div>
+          <Switch
+            checked={getValue("available_for_bounties", false)}
+            onCheckedChange={(v) => updateField("available_for_bounties", v)}
           />
         </div>
 
