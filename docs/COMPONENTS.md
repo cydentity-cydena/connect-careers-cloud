@@ -149,3 +149,10 @@ Candidate dashboard settings including:
 - Marketplace visibility toggle
 - API/MCP bookability toggle
 - **Available for bounties toggle** — Opts candidate into task bounty work, shows purple "Bounties" badge on talent cards
+
+## Landing Page Components
+
+### `Index.tsx` — Hero Section
+- **Three Hiring Mode Cards**: Compact grid below hero CTA showing Book Talent, Post a Bounty, and AI Agent Hiring (Coming Soon)
+- Links to `/profiles`, `/marketplace`, and future AI agent feature
+- Trust signal strip with partner logos

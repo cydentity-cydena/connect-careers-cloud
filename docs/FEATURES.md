@@ -122,7 +122,19 @@
 - **MCP server**: Model Context Protocol for AI agent integration
 - **API key management**: Generate and manage API keys
 
-## 6. Marketing & Sales
+## 6. Landing Page (Hero Section)
+
+### Three Hiring Modes (Hero Cards)
+Immediately below the main CTA, three cards present Cydena's differentiated hiring approaches:
+- **Book Talent** — Links to `/profiles`; browse and hire pre-verified professionals directly
+- **Post a Bounty** — Links to `/marketplace`; scope a task, set a budget, talent applies
+- **AI Agent Hiring** — Coming Soon badge; AI matches, shortlists & schedules autonomously
+
+### Trust Signals
+- Free for candidates, no agency heritage, UK compliance (CBEST, SC/DV, NIS2)
+- Partner logo strip (TRECCERT, Cydentity, Cydentity Academy, REAL LMS)
+
+## 7. Marketing & Sales
 
 ### Export Pages (PDF-optimized)
 - `/marketing/candidates` — Candidate-facing one-pager
