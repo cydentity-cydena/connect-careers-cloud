@@ -96,7 +96,34 @@ const Index = () => {
                 </Button>
               </Link>
             </div>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mt-4 text-xs text-muted-foreground">
+
+            {/* 3 Hiring Modes — Key Differentiator */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-8 max-w-3xl mx-auto px-2">
+              <Link to="/profiles" className="group">
+                <div className="bg-card/60 backdrop-blur border border-border/50 rounded-xl p-4 text-center hover:border-primary/40 transition-all hover:bg-primary/5">
+                  <Users className="h-6 w-6 text-primary mx-auto mb-2" />
+                  <p className="font-semibold text-sm">Book Talent</p>
+                  <p className="text-[11px] text-muted-foreground mt-1">Browse & hire pre-verified professionals directly</p>
+                </div>
+              </Link>
+              <Link to="/marketplace" className="group">
+                <div className="bg-card/60 backdrop-blur border border-border/50 rounded-xl p-4 text-center hover:border-secondary/40 transition-all hover:bg-secondary/5">
+                  <Target className="h-6 w-6 text-secondary mx-auto mb-2" />
+                  <p className="font-semibold text-sm">Post a Bounty</p>
+                  <p className="text-[11px] text-muted-foreground mt-1">Scope a task, set a budget — talent comes to you</p>
+                </div>
+              </Link>
+              <div className="group cursor-default">
+                <div className="bg-card/60 backdrop-blur border border-border/50 rounded-xl p-4 text-center relative overflow-hidden">
+                  <Badge variant="outline" className="absolute top-2 right-2 text-[9px] px-1.5 py-0 border-accent/30 text-accent">Coming Soon</Badge>
+                  <Zap className="h-6 w-6 text-accent mx-auto mb-2" />
+                  <p className="font-semibold text-sm">AI Agent Hiring</p>
+                  <p className="text-[11px] text-muted-foreground mt-1">AI matches, shortlists & schedules — autonomously</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mt-6 text-xs text-muted-foreground">
               <span className="flex items-center gap-1 justify-center"><CheckCircle className="h-3 w-3 text-success" /> Free for candidates</span>
               <span className="flex items-center gap-1 justify-center"><CheckCircle className="h-3 w-3 text-success" /> No agency heritage — technology-first</span>
               <span className="flex items-center gap-1 justify-center"><CheckCircle className="h-3 w-3 text-success" /> UK compliance: CBEST, SC/DV, NIS2</span>
