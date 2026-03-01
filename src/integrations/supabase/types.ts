@@ -4268,6 +4268,66 @@ export type Database = {
         }
         Relationships: []
       }
+      yoti_verifications: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          date_of_birth: string | null
+          document_type: string | null
+          expires_at: string | null
+          full_name_on_id: string | null
+          id: string
+          nationality: string | null
+          qr_code_url: string | null
+          result: Json | null
+          rtw_expiry: string | null
+          rtw_status: string | null
+          session_id: string | null
+          status: string
+          updated_at: string
+          user_id: string
+          verification_type: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          date_of_birth?: string | null
+          document_type?: string | null
+          expires_at?: string | null
+          full_name_on_id?: string | null
+          id?: string
+          nationality?: string | null
+          qr_code_url?: string | null
+          result?: Json | null
+          rtw_expiry?: string | null
+          rtw_status?: string | null
+          session_id?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+          verification_type: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          date_of_birth?: string | null
+          document_type?: string | null
+          expires_at?: string | null
+          full_name_on_id?: string | null
+          id?: string
+          nationality?: string | null
+          qr_code_url?: string | null
+          result?: Json | null
+          rtw_expiry?: string | null
+          rtw_status?: string | null
+          session_id?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+          verification_type?: string
+        }
+        Relationships: []
+      }
       youtube_creators: {
         Row: {
           channel_id: string | null

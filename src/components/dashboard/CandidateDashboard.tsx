@@ -26,6 +26,7 @@ import { ShareProfileCard } from "@/components/sharing/ShareProfileCard";
 import { JobMatchGraph } from "./JobMatchGraph";
 import { JSONResumeExport } from "./JSONResumeExport";
 import { TrustScore } from "@/components/profiles/TrustScore";
+import { YotiVerificationCard } from "@/components/verification/YotiVerificationCard";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -403,6 +404,9 @@ const CandidateDashboard = () => {
               </CardContent>
             </Card>
           </div>
+
+          {/* Yoti Identity Verification */}
+          {userId && <YotiVerificationCard userId={userId} types={["identity", "rtw"]} />}
 
           {/* HR-Ready CTA */}
           {userId && <HRReadyCTA userId={userId} />}
