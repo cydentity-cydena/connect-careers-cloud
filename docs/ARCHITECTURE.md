@@ -78,7 +78,8 @@ Routes are defined in `src/App.tsx`. Key patterns:
 - `/contact`, `/terms`, `/privacy`
 - `/ctf` — CTF challenges
 - `/why-cydena` — Competitive comparison
-- `/marketplace`, `/marketplace/docs`
+- `/marketplace` — Unified talent & bounty marketplace (3-tab: Browse Talent / Task Bounties / API & MCP)
+- `/marketplace/docs`
 - `/Early-Access-200` — Founding member signup
 
 ### Protected Routes (auth + MFA required)
