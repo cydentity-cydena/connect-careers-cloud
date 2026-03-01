@@ -10,7 +10,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Search, Star, Clock, Shield, MapPin, Zap, Users, Code, Target, AlertTriangle, Eye, ClipboardCheck, Cloud, Building, GraduationCap, Microscope, Bug, BookOpen, Plus, Briefcase, Award, CheckCircle, Calendar } from "lucide-react";
+import { Search, Star, Clock, Shield, MapPin, Zap, Users, Code, Target, AlertTriangle, Eye, ClipboardCheck, Cloud, Building, GraduationCap, Microscope, Bug, BookOpen, Plus, Briefcase, Award, CheckCircle, Calendar, Globe } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { BookTalentDialog } from "@/components/marketplace/BookTalentDialog";
 
@@ -206,12 +206,15 @@ const Marketplace = () => {
       {/* Content */}
       <section className="container mx-auto px-4 py-8">
         <Tabs defaultValue="talent" className="space-y-6">
-          <TabsList className="grid w-full max-w-md mx-auto grid-cols-2">
+          <TabsList className="grid w-full max-w-lg mx-auto grid-cols-3">
             <TabsTrigger value="talent">
               <Users className="h-4 w-4 mr-2" /> Browse Talent
             </TabsTrigger>
             <TabsTrigger value="bounties">
               <Target className="h-4 w-4 mr-2" /> Task Bounties
+            </TabsTrigger>
+            <TabsTrigger value="api">
+              <Code className="h-4 w-4 mr-2" /> API & MCP
             </TabsTrigger>
           </TabsList>
 
@@ -270,6 +273,11 @@ const Marketplace = () => {
                             {t.verification?.hr_ready && (
                               <Badge className="text-[10px] px-1.5 py-0 bg-emerald-500/20 text-emerald-400 border-emerald-500/30">
                                 <CheckCircle className="h-3 w-3 mr-0.5" /> HR-Ready
+                              </Badge>
+                            )}
+                            {t.available_for_bounties && (
+                              <Badge className="text-[10px] px-1.5 py-0 bg-secondary/20 text-secondary border-secondary/30">
+                                <Target className="h-3 w-3 mr-0.5" /> Bounties
                               </Badge>
                             )}
                           </div>
@@ -474,6 +482,51 @@ const Marketplace = () => {
                 ))}
               </div>
             )}
+          </TabsContent>
+
+          {/* API & MCP Tab */}
+          <TabsContent value="api" className="space-y-6">
+            <div className="max-w-2xl mx-auto text-center py-8">
+              <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-6">
+                <Code className="h-8 w-8 text-primary" />
+              </div>
+              <h2 className="text-2xl font-bold mb-3">Programmatic Access</h2>
+              <p className="text-muted-foreground mb-6">
+                Connect your AI agents, ATS, or custom tools to the Cydena talent marketplace 
+                via REST API or Model Context Protocol (MCP).
+              </p>
+              <div className="grid md:grid-cols-2 gap-4 mb-8">
+                <Card className="bg-card border-border text-left">
+                  <CardContent className="p-5">
+                    <h3 className="font-semibold mb-2 flex items-center gap-2">
+                      <Globe className="h-4 w-4 text-primary" /> REST API
+                    </h3>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      Search talent, post bounties, and manage engagements via standard HTTP endpoints.
+                    </p>
+                    <Badge variant="outline" className="text-xs">SHA-256 Key Auth</Badge>
+                  </CardContent>
+                </Card>
+                <Card className="bg-card border-border text-left">
+                  <CardContent className="p-5">
+                    <h3 className="font-semibold mb-2 flex items-center gap-2">
+                      <Zap className="h-4 w-4 text-secondary" /> MCP Server
+                    </h3>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      Let Claude, GPT, or AutoGPT agents discover and book talent autonomously.
+                    </p>
+                    <Badge variant="outline" className="text-xs">Model Context Protocol</Badge>
+                  </CardContent>
+                </Card>
+              </div>
+              <div className="flex justify-center gap-3">
+                <Link to="/marketplace/docs">
+                  <Button variant="default" size="lg">
+                    <BookOpen className="h-4 w-4 mr-2" /> View Full Documentation
+                  </Button>
+                </Link>
+              </div>
+            </div>
           </TabsContent>
         </Tabs>
 
