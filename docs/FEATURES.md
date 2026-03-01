@@ -4,7 +4,8 @@
 
 ### Profile & Verification
 - **Profile creation** with bio, skills, certifications, education, experience
-- **HR-Ready verification**: Identity check, Right-to-Work, security clearance, logistics
+- **HR-Ready verification**: Automated Yoti identity + Right-to-Work check, security clearance, logistics
+- **Yoti integration**: Automated identity & RTW verification (no manual review — UK Home Office compliant)
 - **Certification management**: Manual add, Credly import, AI verification, webhook auto-verify
 - **Multiple resumes**: Upload and manage multiple CVs
 - **Platform profiles**: Link TryHackMe, HackTheBox, etc.
@@ -52,6 +53,11 @@
 - **ATS integrations**: Push candidates to Workday, Greenhouse, Lever, BambooHR, Bullhorn
 - **Webhook connections**: Custom webhook endpoints
 - **Integration logs**: Track all push operations
+
+### Employer Verification (Required)
+- **Yoti company verification**: Automated identity check before accessing candidate data
+- **Verified employer badge**: Displayed to candidates to build trust
+- **Cleared-tier access**: Only verified employers can query clearance-match system
 
 ### Team Management
 - **Team members**: Invite and manage team seats

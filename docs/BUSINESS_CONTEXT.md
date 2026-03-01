@@ -9,13 +9,21 @@ Cydena operates in UK cybersecurity recruitment, positioned against:
 
 ## Competitive Moat
 
-### 1. Verification Infrastructure
-Every candidate goes through multi-layer verification:
-- Identity check (passport/driving licence)
-- Right-to-Work confirmation (UK-specific)
+### 1. Verification Infrastructure (Yoti-Powered)
+Both candidates AND employers go through automated verification via **Yoti** — no manual verification:
+
+**Candidate Verification:**
+- Identity check via Yoti (passport/driving licence — automated, UK Home Office compliant)
+- Right-to-Work confirmation via Yoti (statutory UK RTW check)
 - Certification auto-verification (Credly API, AI document analysis)
 - Skills assessment (LLM-graded technical tests)
 - Security clearance tracking (SC, DV, CTC)
+
+**Employer Verification:**
+- Company identity verification via Yoti (confirms legitimate hiring entity)
+- Prevents unvetted or bad-faith actors from accessing candidate data
+- Required before employers can query clearance-match or unlock profiles
+- Critical for cleared-tier trust: SC/DV candidates won't join unless employers are also verified
 
 ### 2. UK Compliance Depth
 Unique focus on UK regulatory frameworks:
