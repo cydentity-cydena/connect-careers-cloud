@@ -8,6 +8,7 @@ import { Building, Users, Briefcase, TrendingUp, Coins, Workflow, CheckCircle, B
 import { ApplicationPipeline } from "@/components/employer/ApplicationPipeline";
 import { UnlockUsageTracker } from "@/components/employer/UnlockUsageTracker";
 import { VerificationRequestDialog } from "@/components/verification/VerificationRequestDialog";
+import { YotiVerificationCard } from "@/components/verification/YotiVerificationCard";
 import { SubscriptionStatus } from "@/components/subscription/SubscriptionStatus";
 import { SubscriptionManagement } from "@/components/subscription/SubscriptionManagement";
 import { JobManagement } from "./JobManagement";
@@ -146,6 +147,9 @@ const EmployerDashboard = () => {
           </CardContent>
         </Card>
       )}
+
+      {/* Yoti Identity Verification for Employers */}
+      {userId && <YotiVerificationCard userId={userId} types={["identity"]} />}
 
       {/* Subscription Status */}
       <SubscriptionStatus />

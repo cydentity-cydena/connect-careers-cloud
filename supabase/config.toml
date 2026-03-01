@@ -98,3 +98,9 @@ verify_jwt = false
 
 [functions.create-marketplace-payment]
 verify_jwt = false
+
+[functions.yoti-create-session]
+verify_jwt = false
+
+[functions.yoti-check-status]
+verify_jwt = false

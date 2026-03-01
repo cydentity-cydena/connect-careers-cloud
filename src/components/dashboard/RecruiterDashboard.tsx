@@ -20,6 +20,7 @@ import { AssessmentQuotaDisplay } from "@/components/assessments/AssessmentQuota
 import { AssignedPods } from "@/components/employer/AssignedPods";
 import { SubscriptionStatus } from "@/components/subscription/SubscriptionStatus";
 import { EmployerBounties } from "@/components/employer/EmployerBounties";
+import { YotiVerificationCard } from "@/components/verification/YotiVerificationCard";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const RecruiterDashboard = () => {
@@ -251,6 +252,9 @@ const RecruiterDashboard = () => {
           </div>
 
           <SubscriptionStatus />
+
+          {/* Yoti Identity Verification for Recruiters */}
+          {userId && <YotiVerificationCard userId={userId} types={["identity"]} />}
 
           <AnalyticsDashboard />
 
