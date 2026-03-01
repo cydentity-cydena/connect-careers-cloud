@@ -55,8 +55,9 @@ Unique focus on UK regulatory frameworks:
 2. **Overage unlocks** — Pay-per-unlock beyond allocation
 3. **Credit packs** — One-time credit purchases
 4. **Featured slots** — Training partners pay for visibility
-5. **Marketplace** — Commission on talent engagements (Stripe Connect)
+5. **Marketplace** — Commission on talent engagements & task bounties (Stripe Connect)
 6. **Single unlocks** — £75/each for non-subscribers
+7. **Task bounties** — Scoped security engagements (pen tests, audits) with platform commission
 
 ## Growth Strategy
 
@@ -71,6 +72,7 @@ Unique focus on UK regulatory frameworks:
 - "No agency fees" messaging vs traditional recruitment
 - ROI calculator demonstrates savings
 - Pod system (curated candidate groups) adds service layer
+- **Task bounties as trial runs** — Employers can engage candidates for scoped bounty work before committing to a full hire, lowering the commitment barrier and delivering value from day one
 
 ## Key Partnerships
 

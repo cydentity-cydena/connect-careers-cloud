@@ -37,7 +37,7 @@ User profiles linked to auth.users. Contains: `id`, `full_name`, `username`, `em
 Role assignments. Columns: `id`, `user_id`, `role` (app_role enum), `created_at`.
 
 ### `candidate_profiles`
-Extended candidate data: `user_id`, `title`, `years_experience`, `specializations[]`, `tools[]`, `industries[]`, `security_clearance`, `work_mode_preference`, `availability_status`, `day_rate_gbp`, `hourly_rate_gbp`, `ir35_status`, `linkedin_url`, `github_url`, `portfolio_url`, `resume_url`, `phone`, `professional_statement`, `willing_to_relocate`, marketplace fields (`is_marketplace_visible`, `is_api_bookable`, `stripe_connect_account_id`).
+Extended candidate data: `user_id`, `title`, `years_experience`, `specializations[]`, `tools[]`, `industries[]`, `security_clearance`, `work_mode_preference`, `availability_status`, `day_rate_gbp`, `hourly_rate_gbp`, `ir35_status`, `linkedin_url`, `github_url`, `portfolio_url`, `resume_url`, `phone`, `professional_statement`, `willing_to_relocate`, `available_for_bounties` (boolean, default false — opts candidate into task bounty work), marketplace fields (`is_marketplace_visible`, `is_api_bookable`, `stripe_connect_account_id`).
 
 ### `candidate_verifications`
 HR-Ready verification data. One-to-one with profiles. Fields include:
@@ -125,7 +125,7 @@ Archive conversations per user.
 ## Marketplace
 
 ### `marketplace_engagements`
-Talent bookings: `employer_id`, `talent_id`, `status`, `scope_of_work`, `agreed_rate_gbp`, `start_date`, `end_date`, `stripe_payment_intent_id`.
+Talent bookings: `client_id`, `talent_id`, `status`, `title`, `description`, `engagement_type`, `agreed_rate_gbp`, `start_date`, `end_date`, `stripe_payment_intent_id`. Supports both permanent hire engagements and task bounty engagements via the unified marketplace.
 
 ### `marketplace_api_keys`
 API key management: `profile_id`, `key_hash`, `key_prefix`, `permissions[]`, `rate_limit_per_hour`.

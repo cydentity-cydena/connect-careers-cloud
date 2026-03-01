@@ -104,12 +104,21 @@
 - **Assessment review**: Review submitted assessments
 - **Role simulator**: Admin can simulate any role for testing
 
-## 5. Marketplace
+## 5. Marketplace (Unified Talent & Bounty Platform)
 
-- **Talent marketplace**: Browse available-for-hire candidates
+### Three-Tab Structure
+- **Browse Talent**: Search verified candidates for permanent/contract hire
+- **Task Bounties**: Scoped security task engagements (pen tests, audits, etc.)
+- **API & MCP**: Programmatic access via REST API and Model Context Protocol
+
+### Talent Features
+- **Bounty availability toggle**: Candidates opt in via `available_for_bounties` flag in profile settings
+- **Bounty availability badge**: Purple "Bounties" badge on talent cards for opted-in candidates
 - **Booking system**: Book talent for engagements
 - **Stripe Connect**: Talent receives payments via Connect
-- **API access**: REST API for programmatic access
+
+### Programmatic Access
+- **REST API**: SHA-256 key-authenticated API for talent search and booking
 - **MCP server**: Model Context Protocol for AI agent integration
 - **API key management**: Generate and manage API keys
 

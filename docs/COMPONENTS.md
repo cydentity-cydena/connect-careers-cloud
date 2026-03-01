@@ -135,3 +135,17 @@ Buy credit packs via Stripe.
 
 ### `HireConfirmationDialog`
 Formal hire workflow.
+
+## Marketplace Components
+
+### `Marketplace.tsx` (page)
+Three-tab layout:
+- **Browse Talent** — Searchable talent directory with bounty availability badges
+- **Task Bounties** — Scoped security engagement listings (employer-posted)
+- **API & MCP** — REST API and MCP Server programmatic access docs
+
+### `MarketplaceSettings.tsx`
+Candidate dashboard settings including:
+- Marketplace visibility toggle
+- API/MCP bookability toggle
+- **Available for bounties toggle** — Opts candidate into task bounty work, shows purple "Bounties" badge on talent cards

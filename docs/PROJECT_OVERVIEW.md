@@ -64,3 +64,4 @@ Cydena is a **UK-focused cybersecurity talent platform** that differentiates fro
 4. **Community model** — XP, leaderboard, peer endorsements, CTF challenges
 5. **SMB MSSP focus** — Not just enterprise; serves managed security providers
 6. **Zero agency heritage** — Technology-first, no recruiter rebrand
+7. **Unified talent & bounty marketplace** — Same candidate profile serves full-time hiring and scoped task bounties; employers can trial candidates via bounties before committing to a permanent hire
