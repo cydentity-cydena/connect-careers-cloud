@@ -5019,6 +5019,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      join_ctf_event: {
+        Args: { p_access_code: string; p_event_slug: string }
+        Returns: Json
+      }
       log_profile_view: {
         Args: {
           p_candidate_id: string

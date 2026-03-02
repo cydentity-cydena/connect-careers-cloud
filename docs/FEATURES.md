@@ -23,6 +23,7 @@
 - **Free learning paths**: Curated YouTube courses with XP tracking
 - **Training partner courses**: Third-party course completions
 - **CTF challenges**: 7 challenge types (Quiz, Chess, Web, Injection, Port Probe, Deepfake Detector, SOC-in-the-Loop)
+- **Private CTF events**: Access-code-gated events with dedicated leaderboards (e.g., BSides Lancashire). Admins create events, assign challenges, and share URLs like `/ctf/events/bsides-lancashire-2026`
 - **Skills assessments**: AI-graded technical assessments
 - **Career AI assistant**: Chat-based career guidance
 
