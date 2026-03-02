@@ -382,7 +382,9 @@ const CTFEvent = () => {
             <CardHeader className="text-center">
               {event.banner_url && (
                 <div className="flex justify-center mb-4">
-                  <img src={event.banner_url} alt={event.name} className="max-h-24 object-contain rounded-lg" />
+                  <div className="bg-white/10 backdrop-blur-sm p-4 rounded-lg inline-block">
+                    <img src={event.banner_url} alt={event.name} className="max-h-24 object-contain" />
+                  </div>
                 </div>
               )}
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-4 mx-auto">
@@ -441,7 +443,9 @@ const CTFEvent = () => {
         <div className="text-center mb-8">
           {event.banner_url && (
             <div className="flex justify-center mb-6">
-              <img src={event.banner_url} alt={event.name} className="max-h-32 object-contain rounded-xl" />
+              <div className="bg-white/10 backdrop-blur-sm p-5 rounded-xl inline-block">
+                <img src={event.banner_url} alt={event.name} className="max-h-32 object-contain" />
+              </div>
             </div>
           )}
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-4">
