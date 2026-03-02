@@ -68,6 +68,7 @@ import SecuritySettings from "./pages/SecuritySettings";
 import VerifyEmail from "./pages/VerifyEmail";
 import Unsubscribe from "./pages/Unsubscribe";
 import CTF from "./pages/CTF";
+import CTFEvent from "./pages/CTFEvent";
 import BrandingPack from "./pages/BrandingPack";
 import LearningPaths from "./pages/LearningPaths";
 import TrainingPartners from "./pages/TrainingPartners";
@@ -120,6 +121,7 @@ const AppContent = () => {
           <Route path="/jobs/create" element={<ProtectedRoute><JobCreate /></ProtectedRoute>} />
           <Route path="/community" element={<ProtectedRoute><Community /></ProtectedRoute>} />
           <Route path="/ctf" element={<CTF />} />
+          <Route path="/ctf/events/:slug" element={<CTFEvent />} />
           {/* <Route path="/roi-calculator" element={<ROICalculator />} /> */}
           <Route path="/partnerships" element={<ProtectedRoute><Partnerships /></ProtectedRoute>} />
           <Route path="/career-assistant" element={<ProtectedRoute><CareerAssistant /></ProtectedRoute>} />

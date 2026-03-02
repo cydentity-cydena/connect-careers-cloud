@@ -10,10 +10,12 @@ import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { Plus, Edit, Trash2, Eye, EyeOff, Flag, Trophy, Shield, ArrowLeft, Upload, FileDown, X } from "lucide-react";
+import { Plus, Edit, Trash2, Eye, EyeOff, Flag, Trophy, Shield, ArrowLeft, Upload, FileDown, X, Calendar } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import { useNavigate } from "react-router-dom";
+import CTFEventManagement from "@/components/admin/CTFEventManagement";
 
 interface CTFChallenge {
   id: string;
@@ -290,16 +292,25 @@ const CTFManagement = () => {
           Back to Dashboard
         </Button>
 
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-3xl font-bold flex items-center gap-3">
-              <Flag className="h-8 w-8 text-primary" />
-              CTF Challenge Management
-            </h1>
-            <p className="text-muted-foreground mt-1">
-              Create and manage Capture The Flag challenges
-            </p>
-          </div>
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold flex items-center gap-3">
+            <Flag className="h-8 w-8 text-primary" />
+            CTF Management
+          </h1>
+          <p className="text-muted-foreground mt-1">
+            Manage challenges and private events
+          </p>
+        </div>
+
+        <Tabs defaultValue="challenges" className="w-full">
+          <TabsList className="mb-6">
+            <TabsTrigger value="challenges" className="gap-2"><Flag className="h-4 w-4" /> Challenges</TabsTrigger>
+            <TabsTrigger value="events" className="gap-2"><Calendar className="h-4 w-4" /> Events</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="challenges">
+          <div className="flex items-center justify-between mb-8">
+          <div />
 
           <Dialog open={dialogOpen} onOpenChange={(open) => {
             setDialogOpen(open);
@@ -661,6 +672,12 @@ const CTFManagement = () => {
             )}
           </CardContent>
         </Card>
+          </TabsContent>
+
+          <TabsContent value="events">
+            <CTFEventManagement />
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
