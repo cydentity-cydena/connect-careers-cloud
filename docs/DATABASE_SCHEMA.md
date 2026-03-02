@@ -114,6 +114,15 @@ Submission attempts: `candidate_id`, `challenge_id`, `submitted_flag`, `is_corre
 ### `ctf_hint_usage`
 Hint reveals: `candidate_id`, `challenge_id`, `hint_index`, `points_deducted`.
 
+### `ctf_events`
+Private CTF events: `name`, `slug` (unique), `description`, `access_code`, `starts_at`, `ends_at`, `is_active`, `banner_url`, `created_by`.
+
+### `ctf_challenge_events`
+Junction table mapping challenges to events (many-to-many): `challenge_id`, `event_id`, `sort_order`.
+
+### `ctf_event_participants`
+Users who joined an event via access code: `event_id`, `user_id`, `joined_at`.
+
 ## Messaging
 
 ### `direct_messages`

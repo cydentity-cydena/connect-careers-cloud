@@ -100,10 +100,10 @@ const CTFEvent = () => {
     const { data: { user } } = await supabase.auth.getUser();
     setUserId(user?.id || null);
 
-    // Fetch event by slug
+    // Fetch event by slug (exclude access_code)
     const { data: eventData, error: eventError } = await supabase
       .from('ctf_events')
-      .select('*')
+      .select('id, name, slug, description, starts_at, ends_at, is_active, banner_url')
       .eq('slug', slug)
       .single();
 
@@ -214,41 +214,29 @@ const CTFEvent = () => {
 
     setCheckingCode(true);
 
-    // Verify access code matches
-    // We need to check server-side. For now, compare directly since the event data is already fetched
-    // and access_code is not exposed to non-participants. We'll use an RPC or edge function for production.
-    // Simple approach: fetch event with matching code
-    const { data: matchedEvent } = await supabase
-      .from('ctf_events')
-      .select('id, access_code')
-      .eq('slug', slug)
-      .single();
+    // Use secure server-side verification
+    const { data, error } = await supabase.rpc('join_ctf_event', {
+      p_event_slug: slug!,
+      p_access_code: accessCode.trim()
+    });
 
-    if (!matchedEvent || matchedEvent.access_code.toLowerCase() !== accessCode.trim().toLowerCase()) {
-      toast.error("Invalid access code");
+    if (error) {
+      toast.error("Failed to verify access code");
       setCheckingCode(false);
       return;
     }
 
-    // Register participant
-    const { error } = await supabase
-      .from('ctf_event_participants')
-      .insert({ event_id: event.id, user_id: userId });
+    const result = data as { success: boolean; error?: string; event_id?: string; event_name?: string };
 
-    if (error) {
-      if (error.code === '23505') {
-        // Already joined
-        setHasAccess(true);
-        await loadEventData(event.id, userId);
-      } else {
-        toast.error("Failed to join event");
-      }
-    } else {
-      toast.success(`Welcome to ${event.name}!`);
-      setHasAccess(true);
-      await loadEventData(event.id, userId);
+    if (!result.success) {
+      toast.error(result.error || "Invalid access code");
+      setCheckingCode(false);
+      return;
     }
 
+    toast.success(`Welcome to ${result.event_name || event.name}!`);
+    setHasAccess(true);
+    await loadEventData(event.id, userId);
     setCheckingCode(false);
   };
 
