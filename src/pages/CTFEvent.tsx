@@ -144,9 +144,10 @@ const CTFEvent = () => {
     if (challengeAssignments && challengeAssignments.length > 0) {
       const challengeIds = challengeAssignments.map(ca => ca.challenge_id);
       const { data: challengesData } = await supabase
-        .from('ctf_challenges_public')
-        .select('*')
-        .in('id', challengeIds);
+        .from('ctf_challenges')
+        .select('id, title, description, category, difficulty, points, hints, file_url, file_name')
+        .in('id', challengeIds)
+        .eq('is_active', true);
 
       if (challengesData) {
         // Sort by assignment order
