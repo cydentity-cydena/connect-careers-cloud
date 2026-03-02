@@ -11,7 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
-import { Plus, Edit, Trash2, Users, Calendar, Copy, Link, Eye } from "lucide-react";
+import { Plus, Edit, Trash2, Users, Calendar, Copy, Link, Eye, Upload, Image } from "lucide-react";
 
 interface CTFEvent {
   id: string;
@@ -52,8 +52,9 @@ const CTFEventManagement = () => {
 
   const [formData, setFormData] = useState({
     name: "", slug: "", description: "", access_code: "",
-    starts_at: "", ends_at: "", is_active: false
+    starts_at: "", ends_at: "", is_active: false, banner_url: "" as string | null
   });
+  const [uploadingLogo, setUploadingLogo] = useState(false);
 
   useEffect(() => { loadData(); }, []);
 
@@ -90,7 +91,7 @@ const CTFEventManagement = () => {
   };
 
   const resetForm = () => {
-    setFormData({ name: "", slug: "", description: "", access_code: generateCode(), starts_at: "", ends_at: "", is_active: false });
+    setFormData({ name: "", slug: "", description: "", access_code: generateCode(), starts_at: "", ends_at: "", is_active: false, banner_url: null });
     setEditingEvent(null);
   };
 
@@ -103,9 +104,29 @@ const CTFEventManagement = () => {
       access_code: ev.access_code,
       starts_at: ev.starts_at ? ev.starts_at.slice(0, 16) : "",
       ends_at: ev.ends_at ? ev.ends_at.slice(0, 16) : "",
-      is_active: ev.is_active
+      is_active: ev.is_active,
+      banner_url: (ev as any).banner_url || null
     });
     setDialogOpen(true);
+  };
+
+  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) { toast.error("Please upload an image file"); return; }
+    if (file.size > 2 * 1024 * 1024) { toast.error("Max file size is 2MB"); return; }
+
+    setUploadingLogo(true);
+    const ext = file.name.split('.').pop();
+    const fileName = `${formData.slug || 'event'}-${Date.now()}.${ext}`;
+
+    const { data, error } = await supabase.storage.from('ctf-event-logos').upload(fileName, file, { upsert: true });
+    if (error) { toast.error("Upload failed"); setUploadingLogo(false); return; }
+
+    const { data: urlData } = supabase.storage.from('ctf-event-logos').getPublicUrl(data.path);
+    setFormData(prev => ({ ...prev, banner_url: urlData.publicUrl }));
+    toast.success("Logo uploaded!");
+    setUploadingLogo(false);
   };
 
   const handleSubmit = async () => {
@@ -120,7 +141,8 @@ const CTFEventManagement = () => {
       access_code: formData.access_code,
       starts_at: formData.starts_at ? new Date(formData.starts_at).toISOString() : null,
       ends_at: formData.ends_at ? new Date(formData.ends_at).toISOString() : null,
-      is_active: formData.is_active
+      is_active: formData.is_active,
+      banner_url: formData.banner_url || null
     };
 
     if (editingEvent) {
@@ -306,6 +328,28 @@ const CTFEventManagement = () => {
             <div className="flex items-center gap-3">
               <Switch checked={formData.is_active} onCheckedChange={checked => setFormData(prev => ({ ...prev, is_active: checked }))} />
               <Label>Event is active (accepting participants)</Label>
+            </div>
+            <div className="space-y-2">
+              <Label>Event Logo</Label>
+              {formData.banner_url && (
+                <div className="relative w-24 h-24 rounded-lg overflow-hidden border border-border">
+                  <img src={formData.banner_url} alt="Event logo" className="w-full h-full object-contain bg-muted" />
+                  <Button variant="ghost" size="icon" className="absolute top-0 right-0 h-6 w-6 bg-background/80"
+                    onClick={() => setFormData(prev => ({ ...prev, banner_url: null }))}>
+                    <Trash2 className="h-3 w-3" />
+                  </Button>
+                </div>
+              )}
+              <div>
+                <Button variant="outline" size="sm" className="gap-2" disabled={uploadingLogo} asChild>
+                  <label className="cursor-pointer">
+                    <Upload className="h-4 w-4" />
+                    {uploadingLogo ? "Uploading..." : "Upload Logo"}
+                    <input type="file" accept="image/*" className="hidden" onChange={handleLogoUpload} />
+                  </label>
+                </Button>
+                <p className="text-xs text-muted-foreground mt-1">Max 2MB. Shown on the event page.</p>
+              </div>
             </div>
             <div className="flex justify-end gap-3 pt-4">
               <Button variant="outline" onClick={() => setDialogOpen(false)}>Cancel</Button>

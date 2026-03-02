@@ -380,6 +380,11 @@ const CTFEvent = () => {
         <div className="container mx-auto px-4 py-16 max-w-md">
           <Card className="border-primary/20">
             <CardHeader className="text-center">
+              {event.banner_url && (
+                <div className="flex justify-center mb-4">
+                  <img src={event.banner_url} alt={event.name} className="max-h-24 object-contain rounded-lg" />
+                </div>
+              )}
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-4 mx-auto">
                 <ShieldCheck className="h-4 w-4 text-primary" />
                 <span className="text-sm font-medium text-primary">Private Event</span>
@@ -434,6 +439,11 @@ const CTFEvent = () => {
       <div className="container mx-auto px-4 py-8">
         {/* Event Header */}
         <div className="text-center mb-8">
+          {event.banner_url && (
+            <div className="flex justify-center mb-6">
+              <img src={event.banner_url} alt={event.name} className="max-h-32 object-contain rounded-xl" />
+            </div>
+          )}
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-4">
             <ShieldCheck className="h-4 w-4 text-primary" />
             <span className="text-sm font-medium text-primary">Private CTF Event</span>
