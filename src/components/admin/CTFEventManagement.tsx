@@ -332,8 +332,8 @@ const CTFEventManagement = () => {
             <div className="space-y-2">
               <Label>Event Logo</Label>
               {formData.banner_url && (
-                <div className="relative w-24 h-24 rounded-lg overflow-hidden border border-border">
-                  <img src={formData.banner_url} alt="Event logo" className="w-full h-full object-contain bg-muted" />
+                <div className="relative w-24 h-24 rounded-lg overflow-hidden border border-border bg-white/10">
+                  <img src={formData.banner_url} alt="Event logo" className="w-full h-full object-contain" />
                   <Button variant="ghost" size="icon" className="absolute top-0 right-0 h-6 w-6 bg-background/80"
                     onClick={() => setFormData(prev => ({ ...prev, banner_url: null }))}>
                     <Trash2 className="h-3 w-3" />
