@@ -83,6 +83,13 @@ export type Database = {
             foreignKeyName: "activity_feed_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
+            referencedRelation: "ctf_event_leaderboard"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "activity_feed_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
             referencedRelation: "ctf_leaderboard"
             referencedColumns: ["id"]
           },
@@ -321,6 +328,13 @@ export type Database = {
             foreignKeyName: "bounty_applications_talent_id_fkey"
             columns: ["talent_id"]
             isOneToOne: false
+            referencedRelation: "ctf_event_leaderboard"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bounty_applications_talent_id_fkey"
+            columns: ["talent_id"]
+            isOneToOne: false
             referencedRelation: "ctf_leaderboard"
             referencedColumns: ["id"]
           },
@@ -362,6 +376,13 @@ export type Database = {
           pipeline_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "candidate_notes_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "ctf_event_leaderboard"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "candidate_notes_created_by_fkey"
             columns: ["created_by"]
@@ -442,6 +463,13 @@ export type Database = {
             foreignKeyName: "candidate_pipeline_candidate_id_fkey"
             columns: ["candidate_id"]
             isOneToOne: false
+            referencedRelation: "ctf_event_leaderboard"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "candidate_pipeline_candidate_id_fkey"
+            columns: ["candidate_id"]
+            isOneToOne: false
             referencedRelation: "ctf_leaderboard"
             referencedColumns: ["id"]
           },
@@ -450,6 +478,13 @@ export type Database = {
             columns: ["candidate_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "candidate_pipeline_moved_by_fkey"
+            columns: ["moved_by"]
+            isOneToOne: false
+            referencedRelation: "ctf_event_leaderboard"
             referencedColumns: ["id"]
           },
           {
@@ -793,6 +828,13 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "candidate_verifications_candidate_id_fkey"
+            columns: ["candidate_id"]
+            isOneToOne: true
+            referencedRelation: "ctf_event_leaderboard"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "candidate_verifications_candidate_id_fkey"
             columns: ["candidate_id"]
@@ -1163,6 +1205,13 @@ export type Database = {
             foreignKeyName: "conversation_archives_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
+            referencedRelation: "ctf_event_leaderboard"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "conversation_archives_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
             referencedRelation: "ctf_leaderboard"
             referencedColumns: ["id"]
           },
@@ -1210,6 +1259,13 @@ export type Database = {
           verified_at?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "course_completions_candidate_id_fkey"
+            columns: ["candidate_id"]
+            isOneToOne: false
+            referencedRelation: "ctf_event_leaderboard"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "course_completions_candidate_id_fkey"
             columns: ["candidate_id"]
@@ -1263,6 +1319,52 @@ export type Database = {
         }
         Relationships: []
       }
+      ctf_challenge_events: {
+        Row: {
+          challenge_id: string
+          created_at: string | null
+          event_id: string
+          id: string
+          sort_order: number | null
+        }
+        Insert: {
+          challenge_id: string
+          created_at?: string | null
+          event_id: string
+          id?: string
+          sort_order?: number | null
+        }
+        Update: {
+          challenge_id?: string
+          created_at?: string | null
+          event_id?: string
+          id?: string
+          sort_order?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ctf_challenge_events_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "ctf_challenges"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ctf_challenge_events_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "ctf_challenges_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ctf_challenge_events_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "ctf_events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ctf_challenges: {
         Row: {
           category: string
@@ -1308,6 +1410,80 @@ export type Database = {
           points?: number
           title?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      ctf_event_participants: {
+        Row: {
+          event_id: string
+          id: string
+          joined_at: string | null
+          user_id: string
+        }
+        Insert: {
+          event_id: string
+          id?: string
+          joined_at?: string | null
+          user_id: string
+        }
+        Update: {
+          event_id?: string
+          id?: string
+          joined_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ctf_event_participants_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "ctf_events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ctf_events: {
+        Row: {
+          access_code: string
+          banner_url: string | null
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          ends_at: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          slug: string
+          starts_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          access_code: string
+          banner_url?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          ends_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          slug: string
+          starts_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          access_code?: string
+          banner_url?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          ends_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          slug?: string
+          starts_at?: string | null
+          updated_at?: string | null
         }
         Relationships: []
       }
@@ -1479,6 +1655,13 @@ export type Database = {
             foreignKeyName: "direct_messages_deleted_by_fkey"
             columns: ["deleted_by"]
             isOneToOne: false
+            referencedRelation: "ctf_event_leaderboard"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "direct_messages_deleted_by_fkey"
+            columns: ["deleted_by"]
+            isOneToOne: false
             referencedRelation: "ctf_leaderboard"
             referencedColumns: ["id"]
           },
@@ -1621,6 +1804,13 @@ export type Database = {
             foreignKeyName: "engagement_messages_sender_id_fkey"
             columns: ["sender_id"]
             isOneToOne: false
+            referencedRelation: "ctf_event_leaderboard"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "engagement_messages_sender_id_fkey"
+            columns: ["sender_id"]
+            isOneToOne: false
             referencedRelation: "ctf_leaderboard"
             referencedColumns: ["id"]
           },
@@ -1716,6 +1906,13 @@ export type Database = {
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "featured_members_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "ctf_event_leaderboard"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "featured_members_user_id_fkey"
             columns: ["user_id"]
@@ -1975,6 +2172,13 @@ export type Database = {
             foreignKeyName: "marketplace_api_keys_profile_id_fkey"
             columns: ["profile_id"]
             isOneToOne: false
+            referencedRelation: "ctf_event_leaderboard"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "marketplace_api_keys_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
             referencedRelation: "ctf_leaderboard"
             referencedColumns: ["id"]
           },
@@ -2143,6 +2347,13 @@ export type Database = {
             foreignKeyName: "marketplace_engagements_client_id_fkey"
             columns: ["client_id"]
             isOneToOne: false
+            referencedRelation: "ctf_event_leaderboard"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "marketplace_engagements_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
             referencedRelation: "ctf_leaderboard"
             referencedColumns: ["id"]
           },
@@ -2151,6 +2362,13 @@ export type Database = {
             columns: ["client_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "marketplace_engagements_talent_id_fkey"
+            columns: ["talent_id"]
+            isOneToOne: false
+            referencedRelation: "ctf_event_leaderboard"
             referencedColumns: ["id"]
           },
           {
@@ -2593,6 +2811,13 @@ export type Database = {
             foreignKeyName: "pipeline_candidates_profile_id_fkey"
             columns: ["profile_id"]
             isOneToOne: false
+            referencedRelation: "ctf_event_leaderboard"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pipeline_candidates_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
             referencedRelation: "ctf_leaderboard"
             referencedColumns: ["id"]
           },
@@ -2634,6 +2859,13 @@ export type Database = {
           to_stage?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "pipeline_stage_history_moved_by_fkey"
+            columns: ["moved_by"]
+            isOneToOne: false
+            referencedRelation: "ctf_event_leaderboard"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "pipeline_stage_history_moved_by_fkey"
             columns: ["moved_by"]
@@ -2857,6 +3089,13 @@ export type Database = {
             columns: ["post_id"]
             isOneToOne: false
             referencedRelation: "activity_feed"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "post_comments_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "ctf_event_leaderboard"
             referencedColumns: ["id"]
           },
           {
@@ -3593,6 +3832,13 @@ export type Database = {
             foreignKeyName: "skills_assessments_candidate_id_fkey"
             columns: ["candidate_id"]
             isOneToOne: false
+            referencedRelation: "ctf_event_leaderboard"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "skills_assessments_candidate_id_fkey"
+            columns: ["candidate_id"]
+            isOneToOne: false
             referencedRelation: "ctf_leaderboard"
             referencedColumns: ["id"]
           },
@@ -3735,6 +3981,13 @@ export type Database = {
             columns: ["category_id"]
             isOneToOne: false
             referencedRelation: "task_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "task_bounties_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "ctf_event_leaderboard"
             referencedColumns: ["id"]
           },
           {
@@ -4058,6 +4311,13 @@ export type Database = {
             foreignKeyName: "verification_evidence_verified_by_fkey"
             columns: ["verified_by"]
             isOneToOne: false
+            referencedRelation: "ctf_event_leaderboard"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "verification_evidence_verified_by_fkey"
+            columns: ["verified_by"]
+            isOneToOne: false
             referencedRelation: "ctf_leaderboard"
             referencedColumns: ["id"]
           },
@@ -4213,6 +4473,13 @@ export type Database = {
           title?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "weekly_challenges_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "ctf_event_leaderboard"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "weekly_challenges_created_by_fkey"
             columns: ["created_by"]
@@ -4561,6 +4828,25 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      ctf_event_leaderboard: {
+        Row: {
+          challenges_solved: number | null
+          event_id: string | null
+          id: string | null
+          last_submission: string | null
+          total_points: number | null
+          username: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ctf_event_participants_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "ctf_events"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       ctf_leaderboard: {
         Row: {
