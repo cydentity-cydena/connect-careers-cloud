@@ -30,6 +30,7 @@ interface CTFChallenge {
   created_at: string;
   file_url?: string | null;
   file_name?: string | null;
+  visibility: string;
 }
 
 const CATEGORIES = [
@@ -70,7 +71,8 @@ const CTFManagement = () => {
     hints: [] as { text: string; cost: number }[],
     is_active: false,
     file_url: null as string | null,
-    file_name: null as string | null
+    file_name: null as string | null,
+    visibility: "both" as string
   });
 
   useEffect(() => {
@@ -103,7 +105,8 @@ const CTFManagement = () => {
       hints: [],
       is_active: false,
       file_url: null,
-      file_name: null
+      file_name: null,
+      visibility: "both"
     });
     setEditingChallenge(null);
   };
@@ -120,7 +123,8 @@ const CTFManagement = () => {
       hints: (challenge.hints as { text: string; cost: number }[] | null) || [],
       is_active: challenge.is_active,
       file_url: challenge.file_url || null,
-      file_name: challenge.file_name || null
+      file_name: challenge.file_name || null,
+      visibility: challenge.visibility || "both"
     });
     setDialogOpen(true);
   };
@@ -186,7 +190,8 @@ const CTFManagement = () => {
       hints: formData.hints.length > 0 ? formData.hints : null,
       is_active: formData.is_active,
       file_url: formData.file_url,
-      file_name: formData.file_name
+      file_name: formData.file_name,
+      visibility: formData.visibility
     };
 
     if (editingChallenge) {
@@ -497,6 +502,26 @@ const CTFManagement = () => {
                   </Label>
                 </div>
 
+                <div className="space-y-2">
+                  <Label>Visibility</Label>
+                  <Select
+                    value={formData.visibility}
+                    onValueChange={(value) => setFormData(prev => ({ ...prev, visibility: value }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="public">Public only — main CTF page</SelectItem>
+                      <SelectItem value="event_only">Event only — private events</SelectItem>
+                      <SelectItem value="both">Both — public + events</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <p className="text-xs text-muted-foreground">
+                    Controls where this challenge appears
+                  </p>
+                </div>
+
                 <div className="flex justify-end gap-3 pt-4">
                   <Button variant="outline" onClick={() => setDialogOpen(false)}>
                     Cancel
@@ -581,9 +606,10 @@ const CTFManagement = () => {
                     <TableHead>Category</TableHead>
                     <TableHead>Difficulty</TableHead>
                     <TableHead>Points</TableHead>
-                    <TableHead>File</TableHead>
-                    <TableHead>Flag</TableHead>
-                    <TableHead>Status</TableHead>
+                     <TableHead>File</TableHead>
+                     <TableHead>Flag</TableHead>
+                     <TableHead>Visibility</TableHead>
+                     <TableHead>Status</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -629,6 +655,12 @@ const CTFManagement = () => {
                             {showFlag[challenge.id] ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
                           </Button>
                         </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="outline" className="text-xs capitalize">
+                          {(challenge as any).visibility === 'event_only' ? 'Event Only' : 
+                           (challenge as any).visibility === 'public' ? 'Public' : 'Both'}
+                        </Badge>
                       </TableCell>
                       <TableCell>
                         <Badge variant={challenge.is_active ? "default" : "secondary"}>

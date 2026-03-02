@@ -32,6 +32,7 @@ interface Challenge {
   difficulty: string;
   points: number;
   is_active: boolean;
+  visibility: string;
 }
 
 interface ChallengeAssignment {
@@ -62,7 +63,7 @@ const CTFEventManagement = () => {
     setLoading(true);
     const [eventsRes, challengesRes] = await Promise.all([
       supabase.from('ctf_events').select('*').order('created_at', { ascending: false }),
-      supabase.from('ctf_challenges').select('id, title, category, difficulty, points, is_active').order('title')
+      supabase.from('ctf_challenges').select('id, title, category, difficulty, points, is_active, visibility').order('title')
     ]);
 
     if (eventsRes.data) {
@@ -377,6 +378,8 @@ const CTFEventManagement = () => {
                   <div className="flex items-center gap-2 mt-0.5">
                     <Badge variant="outline" className="text-xs">{ch.category}</Badge>
                     <span className="text-xs text-muted-foreground">{ch.points} pts</span>
+                    {ch.visibility === 'public' && <Badge variant="secondary" className="text-xs">Public Only</Badge>}
+                    {ch.visibility === 'event_only' && <Badge className="text-xs bg-purple-500/20 text-purple-400 border-0">Event Only</Badge>}
                     {!ch.is_active && <Badge variant="secondary" className="text-xs">Draft</Badge>}
                   </div>
                 </div>

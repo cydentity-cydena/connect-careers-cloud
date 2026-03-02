@@ -1380,6 +1380,7 @@ export type Database = {
           points: number
           title: string
           updated_at: string
+          visibility: string
         }
         Insert: {
           category: string
@@ -1395,6 +1396,7 @@ export type Database = {
           points: number
           title: string
           updated_at?: string
+          visibility?: string
         }
         Update: {
           category?: string
@@ -1410,6 +1412,7 @@ export type Database = {
           points?: number
           title?: string
           updated_at?: string
+          visibility?: string
         }
         Relationships: []
       }
@@ -4787,45 +4790,36 @@ export type Database = {
       ctf_challenges_public: {
         Row: {
           category: string | null
-          created_at: string | null
           description: string | null
           difficulty: string | null
           file_name: string | null
           file_url: string | null
           hints: Json | null
           id: string | null
-          is_active: boolean | null
           points: number | null
           title: string | null
-          updated_at: string | null
         }
         Insert: {
           category?: string | null
-          created_at?: string | null
           description?: string | null
           difficulty?: string | null
           file_name?: string | null
           file_url?: string | null
           hints?: Json | null
           id?: string | null
-          is_active?: boolean | null
           points?: number | null
           title?: string | null
-          updated_at?: string | null
         }
         Update: {
           category?: string | null
-          created_at?: string | null
           description?: string | null
           difficulty?: string | null
           file_name?: string | null
           file_url?: string | null
           hints?: Json | null
           id?: string | null
-          is_active?: boolean | null
           points?: number | null
           title?: string | null
-          updated_at?: string | null
         }
         Relationships: []
       }
