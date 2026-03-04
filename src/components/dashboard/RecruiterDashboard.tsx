@@ -253,8 +253,8 @@ const RecruiterDashboard = () => {
 
           <SubscriptionStatus />
 
-          {/* Yoti Identity Verification for Recruiters */}
-          {userId && <YotiVerificationCard userId={userId} types={["identity"]} />}
+          {/* Yoti Identity Verification — hidden until Yoti integration is live */}
+          {/* {userId && <YotiVerificationCard userId={userId} types={["identity"]} />} */}
 
           <AnalyticsDashboard />
 

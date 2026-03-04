@@ -405,8 +405,8 @@ const CandidateDashboard = () => {
             </Card>
           </div>
 
-          {/* Yoti Identity Verification */}
-          {userId && <YotiVerificationCard userId={userId} types={["identity", "rtw"]} />}
+          {/* Yoti Identity Verification — hidden until Yoti integration is live */}
+          {/* {userId && <YotiVerificationCard userId={userId} types={["identity", "rtw"]} />} */}
 
           {/* HR-Ready CTA */}
           {userId && <HRReadyCTA userId={userId} />}
