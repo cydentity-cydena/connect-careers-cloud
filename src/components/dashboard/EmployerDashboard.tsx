@@ -148,8 +148,8 @@ const EmployerDashboard = () => {
         </Card>
       )}
 
-      {/* Yoti Identity Verification for Employers */}
-      {userId && <YotiVerificationCard userId={userId} types={["identity"]} />}
+      {/* Yoti Identity Verification — hidden until Yoti integration is live */}
+      {/* {userId && <YotiVerificationCard userId={userId} types={["identity"]} />} */}
 
       {/* Subscription Status */}
       <SubscriptionStatus />
