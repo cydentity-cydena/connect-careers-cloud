@@ -14,6 +14,7 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const [hasMFA, setHasMFA] = useState(false);
   const [mfaChecked, setMfaChecked] = useState(false);
   const [needsMfaVerify, setNeedsMfaVerify] = useState(false);
+  const [isCandidateOnly, setIsCandidateOnly] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
@@ -25,21 +26,40 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
       const isMfaRoute = location.pathname === '/mfa';
 
       if (session && !(isSecuritySettings || isMfaRoute)) {
+        // Check user role — MFA is optional for candidates
+        const { data: roles } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', session.user.id);
+        
+        const userRoles = roles?.map(r => r.role) || [];
+        const candidateOnly = userRoles.length > 0 && userRoles.every(r => r === 'candidate');
+        setIsCandidateOnly(candidateOnly);
+
         // Check MFA setup
         const { data: factors } = await supabase.auth.mfa.listFactors();
         const hasVerifiedMFA = factors?.totp?.some((f) => f.status === 'verified');
         setHasMFA(!!hasVerifiedMFA);
 
-        if (!hasVerifiedMFA) {
-          // No MFA configured at all → require setup
-          toast.warning('Two-factor authentication setup is required to access your account.');
+        if (candidateOnly) {
+          // Candidates: MFA is optional, skip enforcement
+          // But if they HAVE set it up, still verify AAL2
+          if (hasVerifiedMFA) {
+            const { data: aalData } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+            const isAAL2 = aalData?.currentLevel === 'aal2';
+            setNeedsMfaVerify(!isAAL2);
+          }
         } else {
-          // MFA configured → verify AAL level and require challenge if needed
-          const { data: aalData } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
-          const isAAL2 = aalData?.currentLevel === 'aal2';
-          setNeedsMfaVerify(!isAAL2);
-          if (!isAAL2) {
-            toast.message('Please complete two-factor verification to continue.');
+          // Employers/recruiters/admins: MFA is mandatory
+          if (!hasVerifiedMFA) {
+            toast.warning('Two-factor authentication setup is required to access your account.');
+          } else {
+            const { data: aalData } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+            const isAAL2 = aalData?.currentLevel === 'aal2';
+            setNeedsMfaVerify(!isAAL2);
+            if (!isAAL2) {
+              toast.message('Please complete two-factor verification to continue.');
+            }
           }
         }
       } else {
@@ -59,8 +79,8 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
         setHasMFA(false);
         setMfaChecked(false);
         setNeedsMfaVerify(false);
+        setIsCandidateOnly(false);
       } else {
-        // Defer to avoid deadlocks per best practices
         setTimeout(() => {
           checkAuth();
         }, 0);
@@ -90,8 +110,8 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     return <Navigate to="/mfa" state={{ from: location }} replace />;
   }
 
-  // Redirect to MFA setup if not configured (except on security settings or MFA page)
-  if (mfaChecked && !hasMFA && location.pathname !== '/security-settings') {
+  // Redirect to MFA setup if not configured — only for non-candidate roles
+  if (mfaChecked && !hasMFA && !isCandidateOnly && location.pathname !== '/security-settings') {
     return <Navigate to="/security-settings" state={{ from: location }} replace />;
   }
 
