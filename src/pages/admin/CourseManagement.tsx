@@ -80,7 +80,8 @@ const CourseManagement = () => {
   // Form state
   const [courseForm, setCourseForm] = useState({
     title: "", slug: "", description: "", partner_name: "", partner_logo_url: "",
-    banner_url: "", access_code: "", sequential_modules: true
+    banner_url: "", access_code: "", sequential_modules: true,
+    accreditation_name: "", accreditation_logo_url: "", accreditation_url: ""
   });
   const [moduleForm, setModuleForm] = useState({ title: "", description: "" });
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
