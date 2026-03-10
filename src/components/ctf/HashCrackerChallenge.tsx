@@ -73,6 +73,15 @@ const sha1 = async (str: string): Promise<string> => {
   return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
 };
 
+// Simulated wordlist for the crack command — includes the answers plus decoys
+const WORDLIST = [
+  "password", "123456", "admin", "letmein", "welcome", "monkey", "dragon",
+  "master", "qwerty", "login", "abc123", "hello", "its me", "hash",
+  "cracker", "letssee", "crackme", "shadow", "sunshine", "trustno1",
+  "iloveyou", "batman", "access", "flower", "test", "passw0rd",
+  "charlie", "robert", "thomas", "football", "science", "computer"
+];
+
 const HEADER_LINES = [
   "=== Challenge: Identify the hashing algorithms of the weak hashes and decrypt/crack them ===",
   "",
@@ -82,14 +91,15 @@ const HEADER_LINES = [
   "Task:",
   "  1) Run cat hashes.txt to view the hashes.",
   "  2) Identify the hashing algorithms (hint: check the hash length).",
-  "  3) Crack the weak hashes using online tools or the built-in hash commands.",
+  "  3) Crack the weak hashes using the crack command or external tools.",
   "  4) Submit each cracked hash in format: hash:plaintext algorithm",
   "",
   "Allowed commands:",
   "  cat hashes.txt          — view the hashes to crack",
-  "  md5 <text>              — compute MD5 hash of text",
-  "  sha1 <text>             — compute SHA-1 hash of text",
+  "  crack <hash>            — run dictionary attack against a hash",
   "  identify <hash>         — identify hash type by length",
+  "  md5 <text>              — compute MD5 hash of text (verify)",
+  "  sha1 <text>             — compute SHA-1 hash of text (verify)",
   "  hash:plaintext algorithm — submit answer (e.g. 49f6...3b:hi MD5)",
   "  help, quit",
   "",
