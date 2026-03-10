@@ -31,6 +31,9 @@ interface Course {
   access_code: string;
   is_active: boolean;
   sequential_modules: boolean;
+  accreditation_name: string | null;
+  accreditation_logo_url: string | null;
+  accreditation_url: string | null;
   created_at: string;
 }
 
