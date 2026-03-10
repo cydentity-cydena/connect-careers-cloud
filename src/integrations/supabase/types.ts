@@ -1289,6 +1289,164 @@ export type Database = {
           },
         ]
       }
+      course_module_challenges: {
+        Row: {
+          challenge_id: string
+          created_at: string | null
+          id: string
+          module_id: string
+          sort_order: number | null
+        }
+        Insert: {
+          challenge_id: string
+          created_at?: string | null
+          id?: string
+          module_id: string
+          sort_order?: number | null
+        }
+        Update: {
+          challenge_id?: string
+          created_at?: string | null
+          id?: string
+          module_id?: string
+          sort_order?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "course_module_challenges_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "ctf_challenges"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "course_module_challenges_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "ctf_challenges_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "course_module_challenges_module_id_fkey"
+            columns: ["module_id"]
+            isOneToOne: false
+            referencedRelation: "course_modules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      course_modules: {
+        Row: {
+          course_id: string
+          created_at: string | null
+          description: string | null
+          id: string
+          module_order: number
+          title: string
+        }
+        Insert: {
+          course_id: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          module_order?: number
+          title: string
+        }
+        Update: {
+          course_id?: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          module_order?: number
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "course_modules_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      course_participants: {
+        Row: {
+          course_id: string
+          id: string
+          joined_at: string | null
+          user_id: string
+        }
+        Insert: {
+          course_id: string
+          id?: string
+          joined_at?: string | null
+          user_id: string
+        }
+        Update: {
+          course_id?: string
+          id?: string
+          joined_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "course_participants_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      courses: {
+        Row: {
+          access_code: string
+          banner_url: string | null
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          id: string
+          is_active: boolean | null
+          partner_logo_url: string | null
+          partner_name: string | null
+          sequential_modules: boolean | null
+          slug: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          access_code: string
+          banner_url?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          partner_logo_url?: string | null
+          partner_name?: string | null
+          sequential_modules?: boolean | null
+          slug: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          access_code?: string
+          banner_url?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          partner_logo_url?: string | null
+          partner_name?: string | null
+          sequential_modules?: boolean | null
+          slug?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       credit_transactions: {
         Row: {
           amount: number
@@ -5012,6 +5170,10 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      join_course: {
+        Args: { p_access_code: string; p_course_slug: string }
+        Returns: Json
       }
       join_ctf_event: {
         Args: { p_access_code: string; p_event_slug: string }
