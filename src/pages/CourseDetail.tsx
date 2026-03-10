@@ -94,7 +94,7 @@ const CourseDetail = () => {
 
     const { data: courseData, error } = await supabase
       .from('courses')
-      .select('id, title, slug, description, partner_name, partner_logo_url, banner_url, sequential_modules')
+      .select('id, title, slug, description, partner_name, partner_logo_url, banner_url, sequential_modules, accreditation_name, accreditation_logo_url, accreditation_url')
       .eq('slug', slug)
       .single();
 
