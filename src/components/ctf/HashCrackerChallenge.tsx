@@ -97,8 +97,6 @@ const HELP_LINES = [
   "  cat hashes.txt",
   "  identify <hash>",
   "  crack <hash>",
-  "  md5 <text>",
-  "  sha1 <text>",
   "  help, quit",
   "",
   "Once you've cracked a hash, figure out how to submit it.",
