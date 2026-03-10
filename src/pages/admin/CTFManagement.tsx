@@ -514,6 +514,7 @@ const CTFManagement = () => {
                     <SelectContent>
                       <SelectItem value="public">Public only — main CTF page</SelectItem>
                       <SelectItem value="event_only">Event only — private events</SelectItem>
+                      <SelectItem value="course_only">Course only — training modules</SelectItem>
                       <SelectItem value="both">Both — public + events</SelectItem>
                     </SelectContent>
                   </Select>
@@ -659,6 +660,7 @@ const CTFManagement = () => {
                       <TableCell>
                         <Badge variant="outline" className="text-xs capitalize">
                           {(challenge as any).visibility === 'event_only' ? 'Event Only' : 
+                           (challenge as any).visibility === 'course_only' ? 'Course Only' :
                            (challenge as any).visibility === 'public' ? 'Public' : 'Both'}
                         </Badge>
                       </TableCell>
