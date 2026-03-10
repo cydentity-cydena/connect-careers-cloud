@@ -660,6 +660,7 @@ const CTFManagement = () => {
                       <TableCell>
                         <Badge variant="outline" className="text-xs capitalize">
                           {(challenge as any).visibility === 'event_only' ? 'Event Only' : 
+                           (challenge as any).visibility === 'course_only' ? 'Course Only' :
                            (challenge as any).visibility === 'public' ? 'Public' : 'Both'}
                         </Badge>
                       </TableCell>
