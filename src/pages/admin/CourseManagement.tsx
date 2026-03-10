@@ -31,6 +31,9 @@ interface Course {
   access_code: string;
   is_active: boolean;
   sequential_modules: boolean;
+  accreditation_name: string | null;
+  accreditation_logo_url: string | null;
+  accreditation_url: string | null;
   created_at: string;
 }
 
@@ -77,7 +80,8 @@ const CourseManagement = () => {
   // Form state
   const [courseForm, setCourseForm] = useState({
     title: "", slug: "", description: "", partner_name: "", partner_logo_url: "",
-    banner_url: "", access_code: "", sequential_modules: true
+    banner_url: "", access_code: "", sequential_modules: true,
+    accreditation_name: "", accreditation_logo_url: "", accreditation_url: ""
   });
   const [moduleForm, setModuleForm] = useState({ title: "", description: "" });
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
@@ -169,6 +173,9 @@ const CourseManagement = () => {
       banner_url: courseForm.banner_url || null,
       access_code: courseForm.access_code,
       sequential_modules: courseForm.sequential_modules,
+      accreditation_name: courseForm.accreditation_name || null,
+      accreditation_logo_url: courseForm.accreditation_logo_url || null,
+      accreditation_url: courseForm.accreditation_url || null,
       created_by: user?.id
     });
 
@@ -180,7 +187,7 @@ const CourseManagement = () => {
 
     toast.success("Course created!");
     setShowCreateDialog(false);
-    setCourseForm({ title: "", slug: "", description: "", partner_name: "", partner_logo_url: "", banner_url: "", access_code: "", sequential_modules: true });
+    setCourseForm({ title: "", slug: "", description: "", partner_name: "", partner_logo_url: "", banner_url: "", access_code: "", sequential_modules: true, accreditation_name: "", accreditation_logo_url: "", accreditation_url: "" });
     fetchCourses();
   };
 
@@ -350,6 +357,23 @@ const CourseManagement = () => {
                     <div>
                       <Label>Banner Image URL</Label>
                       <Input value={courseForm.banner_url} onChange={e => setCourseForm(f => ({ ...f, banner_url: e.target.value }))} placeholder="https://..." />
+                    </div>
+                    <div className="border-t pt-4 mt-2">
+                      <p className="text-sm font-medium mb-3">Accreditation / Endorsement</p>
+                      <div className="space-y-3">
+                        <div>
+                          <Label>Accrediting Body Name</Label>
+                          <Input value={courseForm.accreditation_name} onChange={e => setCourseForm(f => ({ ...f, accreditation_name: e.target.value }))} placeholder="e.g. CREST" />
+                        </div>
+                        <div>
+                          <Label>Accreditation Logo URL</Label>
+                          <Input value={courseForm.accreditation_logo_url} onChange={e => setCourseForm(f => ({ ...f, accreditation_logo_url: e.target.value }))} placeholder="https://..." />
+                        </div>
+                        <div>
+                          <Label>Accreditation Website URL</Label>
+                          <Input value={courseForm.accreditation_url} onChange={e => setCourseForm(f => ({ ...f, accreditation_url: e.target.value }))} placeholder="https://www.crest-approved.org" />
+                        </div>
+                      </div>
                     </div>
                     <div className="flex items-center gap-2">
                       <Switch checked={courseForm.sequential_modules} onCheckedChange={v => setCourseForm(f => ({ ...f, sequential_modules: v }))} />

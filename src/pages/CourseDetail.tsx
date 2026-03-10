@@ -53,6 +53,9 @@ interface CourseInfo {
   partner_logo_url: string | null;
   banner_url: string | null;
   sequential_modules: boolean;
+  accreditation_name: string | null;
+  accreditation_logo_url: string | null;
+  accreditation_url: string | null;
 }
 
 const parseHints = (hints: Json | null): HintItem[] | null => {
@@ -91,7 +94,7 @@ const CourseDetail = () => {
 
     const { data: courseData, error } = await supabase
       .from('courses')
-      .select('id, title, slug, description, partner_name, partner_logo_url, banner_url, sequential_modules')
+      .select('id, title, slug, description, partner_name, partner_logo_url, banner_url, sequential_modules, accreditation_name, accreditation_logo_url, accreditation_url')
       .eq('slug', slug)
       .single();
 
@@ -403,6 +406,23 @@ const CourseDetail = () => {
                   Delivered by <strong>{course.partner_name}</strong>
                 </p>
               )}
+              {course.accreditation_name && (
+                <div className="flex items-center justify-center gap-2 mt-3 pt-3 border-t border-border">
+                  {course.accreditation_logo_url && (
+                    <img src={course.accreditation_logo_url} alt={course.accreditation_name} className="h-6 object-contain" />
+                  )}
+                  <span className="text-xs text-muted-foreground">
+                    Endorsed by{" "}
+                    {course.accreditation_url ? (
+                      <a href={course.accreditation_url} target="_blank" rel="noopener noreferrer" className="font-medium text-primary hover:underline">
+                        {course.accreditation_name}
+                      </a>
+                    ) : (
+                      <strong>{course.accreditation_name}</strong>
+                    )}
+                  </span>
+                </div>
+              )}
             </CardHeader>
             <CardContent className="space-y-4">
               {!userId ? (
@@ -580,6 +600,23 @@ const CourseDetail = () => {
           </div>
           {course.description && (
             <p className="text-muted-foreground mt-4 max-w-3xl">{course.description}</p>
+          )}
+          {course.accreditation_name && (
+            <div className="mt-4 inline-flex items-center gap-3 px-4 py-2 rounded-lg border border-primary/20 bg-primary/5">
+              {course.accreditation_logo_url && (
+                <img src={course.accreditation_logo_url} alt={course.accreditation_name} className="h-8 object-contain" />
+              )}
+              <div>
+                <p className="text-xs text-muted-foreground">Endorsed by</p>
+                {course.accreditation_url ? (
+                  <a href={course.accreditation_url} target="_blank" rel="noopener noreferrer" className="text-sm font-semibold text-primary hover:underline">
+                    {course.accreditation_name}
+                  </a>
+                ) : (
+                  <p className="text-sm font-semibold">{course.accreditation_name}</p>
+                )}
+              </div>
+            </div>
           )}
         </div>
 
