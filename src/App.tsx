@@ -57,6 +57,7 @@ import CTFManagement from "./pages/admin/CTFManagement";
 import LearningPathsManagement from "./pages/admin/LearningPathsManagement";
 import PartnerCommunitiesManagement from "./pages/admin/PartnerCommunitiesManagement";
 import SubscriptionOverrides from "./pages/admin/SubscriptionOverrides";
+import CourseManagement from "./pages/admin/CourseManagement";
 import NotFound from "./pages/NotFound";
 import Messages from "./pages/Messages";
 import EmployerPitchDeck from "./pages/EmployerPitchDeck";
