@@ -346,6 +346,7 @@ const CourseDetail = () => {
     if (title.includes('injection')) return <InjectionJunctionChallenge onFlagSubmit={onComplete} />;
     if (title.includes('deepfake')) return <DeepfakeDetectorChallenge onComplete={onComplete} />;
     if (title.includes('soc in')) return <SOCInTheLoopChallenge onComplete={onComplete} />;
+    if (title.includes('hash cracker')) return <HashCrackerChallenge onComplete={onComplete} />;
     return null;
   };
 
