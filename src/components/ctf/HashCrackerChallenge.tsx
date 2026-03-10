@@ -191,7 +191,7 @@ const HashCrackerChallenge = ({ onComplete }: HashCrackerChallengeProps) => {
     }
 
     if (low === "help") {
-      addLines(displayCmd, "", ...HEADER_LINES);
+      addLines(displayCmd, "", ...HELP_LINES);
       return;
     }
 
