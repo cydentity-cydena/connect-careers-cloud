@@ -53,6 +53,9 @@ interface CourseInfo {
   partner_logo_url: string | null;
   banner_url: string | null;
   sequential_modules: boolean;
+  accreditation_name: string | null;
+  accreditation_logo_url: string | null;
+  accreditation_url: string | null;
 }
 
 const parseHints = (hints: Json | null): HintItem[] | null => {
