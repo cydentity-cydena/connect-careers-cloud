@@ -96,6 +96,7 @@ const Navigation = () => {
         { to: "/training", label: "Training", description: "Courses and resources" },
         { to: "/certifications-catalog", label: "Certifications", description: "Industry certifications catalog" },
         { to: "/ctf", label: "CTF Challenges", description: "Test your skills with challenges" },
+        { to: "/courses", label: "Courses", description: "Structured training with challenges" },
         { to: "/learning-paths", label: "Learning Paths", description: "Free curated YouTube courses" },
         { to: "/career-assistant", label: "AI Assistant", description: "AI-powered career guidance", showForRoles: ["candidate"] },
       ],

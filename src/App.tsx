@@ -172,6 +172,10 @@ const AppContent = () => {
           <Route path="/learning-paths/:pathId" element={<ProtectedRoute><LearningPaths /></ProtectedRoute>} />
           <Route path="/training-partners" element={<TrainingPartners />} />
           
+          {/* Courses */}
+          <Route path="/courses" element={<Courses />} />
+          <Route path="/courses/:slug" element={<CourseDetail />} />
+          
           {/* Marketplace */}
           <Route path="/marketplace" element={<Marketplace />} />
           <Route path="/marketplace/docs" element={<MarketplaceDocs />} />
