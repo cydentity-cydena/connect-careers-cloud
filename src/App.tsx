@@ -57,6 +57,7 @@ import CTFManagement from "./pages/admin/CTFManagement";
 import LearningPathsManagement from "./pages/admin/LearningPathsManagement";
 import PartnerCommunitiesManagement from "./pages/admin/PartnerCommunitiesManagement";
 import SubscriptionOverrides from "./pages/admin/SubscriptionOverrides";
+import CourseManagement from "./pages/admin/CourseManagement";
 import NotFound from "./pages/NotFound";
 import Messages from "./pages/Messages";
 import EmployerPitchDeck from "./pages/EmployerPitchDeck";
@@ -148,6 +149,7 @@ const AppContent = () => {
           <Route path="/admin/learning-paths" element={<ProtectedRoute><LearningPathsManagement /></ProtectedRoute>} />
           <Route path="/admin/partner-communities" element={<ProtectedRoute><PartnerCommunitiesManagement /></ProtectedRoute>} />
           <Route path="/admin/subscription-overrides" element={<ProtectedRoute><SubscriptionOverrides /></ProtectedRoute>} />
+          <Route path="/admin/courses" element={<ProtectedRoute><CourseManagement /></ProtectedRoute>} />
           
           {/* Standalone Presentations */}
           <Route path="/employer-pitch-deck" element={<EmployerPitchDeck />} />
