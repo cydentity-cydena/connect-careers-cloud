@@ -17,6 +17,7 @@ import { CuriousWebChallenge } from "@/components/ctf/CuriousWebChallenge";
 import { InjectionJunctionChallenge } from "@/components/ctf/InjectionJunctionChallenge";
 import { DeepfakeDetectorChallenge } from "@/components/ctf/DeepfakeDetectorChallenge";
 import { SOCInTheLoopChallenge } from "@/components/ctf/SOCInTheLoopChallenge";
+import HashCrackerChallenge from "@/components/ctf/HashCrackerChallenge";
 import {
   BookOpen, Lock, CheckCircle2, ChevronRight, ShieldCheck,
   Flag, Target, Lightbulb, Trophy, ExternalLink
@@ -345,6 +346,7 @@ const CourseDetail = () => {
     if (title.includes('injection')) return <InjectionJunctionChallenge onFlagSubmit={onComplete} />;
     if (title.includes('deepfake')) return <DeepfakeDetectorChallenge onComplete={onComplete} />;
     if (title.includes('soc in')) return <SOCInTheLoopChallenge onComplete={onComplete} />;
+    if (title.includes('hash cracker')) return <HashCrackerChallenge onComplete={onComplete} />;
     return null;
   };
 
