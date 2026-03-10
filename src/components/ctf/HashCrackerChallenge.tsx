@@ -117,12 +117,56 @@ const HashCrackerChallenge = ({ onComplete }: HashCrackerChallengeProps) => {
   const terminalRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const [cracking, setCracking] = useState(false);
+
   useEffect(() => {
     terminalRef.current?.scrollTo(0, terminalRef.current.scrollHeight);
   }, [lines]);
 
   const addLines = (...newLines: string[]) => {
     setLines(prev => [...prev, ...newLines]);
+  };
+
+  const runCrack = async (targetHash: string, displayCmd: string) => {
+    setCracking(true);
+    // Identify algorithm by length
+    const isMd5 = targetHash.length === 32;
+    const isSha1 = targetHash.length === 40;
+    if (!isMd5 && !isSha1) {
+      addLines(displayCmd, "✗ Unrecognised hash length. Use 'identify' first.", "");
+      setCracking(false);
+      return;
+    }
+    const algName = isMd5 ? "MD5" : "SHA-1";
+    addLines(displayCmd, `[*] Detected ${algName} hash. Starting dictionary attack...`, `[*] Wordlist: ${WORDLIST.length} words`);
+
+    let found = false;
+    for (let i = 0; i < WORDLIST.length; i++) {
+      const word = WORDLIST[i];
+      const computed = isMd5 ? md5(word) : await sha1(word);
+
+      // Show progress every few words
+      if (i % 8 === 0) {
+        addLines(`[*] Trying: ${word}...`);
+        // Small delay for realism
+        await new Promise(r => setTimeout(r, 60));
+      }
+
+      if (computed === targetHash) {
+        addLines(
+          `[+] CRACKED! ${targetHash} → "${word}" (${algName})`,
+          `[*] Submit with: ${targetHash}:${word} ${algName}`,
+          ""
+        );
+        found = true;
+        break;
+      }
+    }
+
+    if (!found) {
+      addLines("[✗] Not found in wordlist. Try a larger dictionary or external tools.", "");
+    }
+    setCracking(false);
   };
 
   const handleCommand = async () => {
