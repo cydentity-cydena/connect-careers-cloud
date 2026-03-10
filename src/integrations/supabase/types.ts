@@ -1402,6 +1402,9 @@ export type Database = {
       courses: {
         Row: {
           access_code: string
+          accreditation_logo_url: string | null
+          accreditation_name: string | null
+          accreditation_url: string | null
           banner_url: string | null
           created_at: string | null
           created_by: string | null
@@ -1417,6 +1420,9 @@ export type Database = {
         }
         Insert: {
           access_code: string
+          accreditation_logo_url?: string | null
+          accreditation_name?: string | null
+          accreditation_url?: string | null
           banner_url?: string | null
           created_at?: string | null
           created_by?: string | null
@@ -1432,6 +1438,9 @@ export type Database = {
         }
         Update: {
           access_code?: string
+          accreditation_logo_url?: string | null
+          accreditation_name?: string | null
+          accreditation_url?: string | null
           banner_url?: string | null
           created_at?: string | null
           created_by?: string | null
