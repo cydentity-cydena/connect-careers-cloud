@@ -170,12 +170,20 @@ const HashCrackerChallenge = ({ onComplete }: HashCrackerChallengeProps) => {
   };
 
   const handleCommand = async () => {
+    if (cracking) return;
     const cmd = input.trim();
     if (!cmd) return;
 
     const displayCmd = `> ${cmd}`;
     const low = cmd.toLowerCase();
     setInput("");
+
+    // crack <hash> command
+    const crackMatch = low.match(/^crack\s+([a-f0-9]+)$/);
+    if (crackMatch) {
+      await runCrack(crackMatch[1], displayCmd);
+      return;
+    }
 
     if (low === "quit" || low === "exit") {
       addLines(displayCmd, "Bye.", "");
