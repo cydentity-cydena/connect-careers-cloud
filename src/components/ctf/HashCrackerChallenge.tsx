@@ -242,27 +242,48 @@ const HashCrackerChallenge = ({ onComplete }: HashCrackerChallengeProps) => {
       {/* Terminal */}
       <div
         ref={terminalRef}
-        className="bg-black/80 border border-green-500/20 rounded-lg p-4 h-80 overflow-y-auto font-mono text-xs leading-relaxed cursor-text"
-        onClick={() => inputRef.current?.focus()}
+        className="bg-black/80 border border-green-500/20 rounded-lg p-4 h-80 overflow-y-auto font-mono text-xs leading-relaxed cursor-text select-text"
+        onClick={(e) => {
+          // Only focus input if user didn't select text
+          const sel = window.getSelection();
+          if (!sel || sel.toString().length === 0) {
+            inputRef.current?.focus();
+          }
+        }}
       >
-        {lines.map((line, i) => (
-          <div
-            key={i}
-            className={
-              line.startsWith(">")
-                ? "text-cyan-400"
-                : line.startsWith("✓")
-                ? "text-green-400"
-                : line.startsWith("✗")
-                ? "text-red-400"
-                : line.startsWith("🎉")
-                ? "text-yellow-300 font-bold"
-                : "text-green-300/80"
-            }
-          >
-            {line || "\u00A0"}
-          </div>
-        ))}
+        {lines.map((line, i) => {
+          // Detect hash lines (32 or 40 hex chars)
+          const isHash = /^[a-f0-9]{32,40}$/.test(line.trim());
+          return (
+            <div
+              key={i}
+              className={`${
+                line.startsWith(">")
+                  ? "text-cyan-400"
+                  : line.startsWith("✓")
+                  ? "text-green-400"
+                  : line.startsWith("✗")
+                  ? "text-red-400"
+                  : line.startsWith("🎉")
+                  ? "text-yellow-300 font-bold"
+                  : isHash
+                  ? "text-green-300 hover:bg-green-500/10 cursor-pointer rounded px-1 -mx-1 transition-colors group"
+                  : "text-green-300/80"
+              }`}
+              onClick={isHash ? async (e) => {
+                e.stopPropagation();
+                await navigator.clipboard.writeText(line.trim());
+                const el = e.currentTarget;
+                el.dataset.copied = "true";
+                setTimeout(() => { el.dataset.copied = ""; }, 1200);
+              } : undefined}
+              title={isHash ? "Click to copy hash" : undefined}
+            >
+              {line || "\u00A0"}
+              {isHash && <span className="text-green-500/50 text-[10px] ml-2 opacity-0 group-hover:opacity-100 transition-opacity">📋 click to copy</span>}
+            </div>
+          );
+        })}
 
         {!isComplete && (
           <div className="flex items-center text-green-400">
