@@ -76,6 +76,8 @@ const CourseManagement = () => {
   const [showModuleDialog, setShowModuleDialog] = useState(false);
   const [showAddChallengeDialog, setShowAddChallengeDialog] = useState(false);
   const [activeModuleId, setActiveModuleId] = useState<string | null>(null);
+  const [editingModuleId, setEditingModuleId] = useState<string | null>(null);
+  const [editModuleForm, setEditModuleForm] = useState({ title: "", description: "" });
 
   // Form state
   const [courseForm, setCourseForm] = useState({
