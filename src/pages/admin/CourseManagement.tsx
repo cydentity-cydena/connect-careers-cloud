@@ -553,21 +553,73 @@ const CourseManagement = () => {
               <div className="space-y-4">
                 {modules.map((mod, idx) => {
                   const challenges = moduleChallenges[mod.id] || [];
+                  const isEditing = editingModuleId === mod.id;
                   return (
                     <Card key={mod.id}>
                       <CardHeader className="pb-3">
                         <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-3">
-                            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary text-sm font-bold">
+                          <div className="flex items-center gap-3 flex-1 min-w-0">
+                            {/* Reorder buttons */}
+                            <div className="flex flex-col gap-0.5">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-5 w-5 p-0"
+                                disabled={idx === 0}
+                                onClick={() => handleMoveModule(mod.id, 'up')}
+                              >
+                                <ChevronUp className="h-3.5 w-3.5" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-5 w-5 p-0"
+                                disabled={idx === modules.length - 1}
+                                onClick={() => handleMoveModule(mod.id, 'down')}
+                              >
+                                <ChevronDown className="h-3.5 w-3.5" />
+                              </Button>
+                            </div>
+                            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary text-sm font-bold flex-shrink-0">
                               {idx + 1}
                             </div>
-                            <div>
-                              <CardTitle className="text-lg">{mod.title}</CardTitle>
-                              {mod.description && <CardDescription>{mod.description}</CardDescription>}
-                            </div>
+                            {isEditing ? (
+                              <div className="flex-1 space-y-2">
+                                <Input
+                                  value={editModuleForm.title}
+                                  onChange={e => setEditModuleForm(f => ({ ...f, title: e.target.value }))}
+                                  className="h-8 text-sm"
+                                  autoFocus
+                                  onKeyDown={e => { if (e.key === 'Enter') handleSaveModule(); if (e.key === 'Escape') setEditingModuleId(null); }}
+                                />
+                                <Input
+                                  value={editModuleForm.description}
+                                  onChange={e => setEditModuleForm(f => ({ ...f, description: e.target.value }))}
+                                  placeholder="Description (optional)"
+                                  className="h-7 text-xs"
+                                />
+                                <div className="flex gap-1.5">
+                                  <Button size="sm" className="h-7 text-xs" onClick={handleSaveModule}>Save</Button>
+                                  <Button size="sm" variant="ghost" className="h-7 text-xs" onClick={() => setEditingModuleId(null)}>Cancel</Button>
+                                </div>
+                              </div>
+                            ) : (
+                              <div className="cursor-pointer" onDoubleClick={() => startEditModule(mod)}>
+                                <CardTitle className="text-lg">{mod.title}</CardTitle>
+                                {mod.description && <CardDescription>{mod.description}</CardDescription>}
+                              </div>
+                            )}
                           </div>
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-2 flex-shrink-0">
                             <Badge variant="secondary">{challenges.length} challenges</Badge>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-7 w-7 p-0"
+                              onClick={() => startEditModule(mod)}
+                            >
+                              <Pencil className="h-3.5 w-3.5" />
+                            </Button>
                             <Button
                               variant="outline"
                               size="sm"
