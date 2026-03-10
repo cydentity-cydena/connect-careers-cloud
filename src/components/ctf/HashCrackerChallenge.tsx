@@ -366,8 +366,7 @@ const HashCrackerChallenge = ({ onComplete }: HashCrackerChallengeProps) => {
       </div>
 
       <p className="text-xs text-muted-foreground text-center">
-        Type <code className="text-primary">help</code> for instructions or{" "}
-        <code className="text-primary">cat hashes.txt</code> to view hashes
+        Type <code className="text-primary">help</code> for available commands
       </p>
     </div>
   );
