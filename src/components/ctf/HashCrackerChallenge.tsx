@@ -98,9 +98,9 @@ const HEADER_LINES = [
   "  cat hashes.txt          — view the hashes to crack",
   "  crack <hash>            — run dictionary attack against a hash",
   "  identify <hash>         — identify hash type by length",
-  "  md5 <text>              — compute MD5 hash of text (verify)",
-  "  sha1 <text>             — compute SHA-1 hash of text (verify)",
-  "  hash:plaintext algorithm — submit answer (e.g. 49f6...3b:hi MD5)",
+  "  md5 <text>              — compute MD5 hash of text",
+  "  sha1 <text>             — compute SHA-1 hash of text",
+  "  hash:plaintext algorithm — submit answer",
   "  help, quit",
   "",
 ];
