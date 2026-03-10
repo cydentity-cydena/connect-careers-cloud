@@ -73,6 +73,15 @@ const sha1 = async (str: string): Promise<string> => {
   return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
 };
 
+// Simulated wordlist for the crack command — includes the answers plus decoys
+const WORDLIST = [
+  "password", "123456", "admin", "letmein", "welcome", "monkey", "dragon",
+  "master", "qwerty", "login", "abc123", "hello", "its me", "hash",
+  "cracker", "letssee", "crackme", "shadow", "sunshine", "trustno1",
+  "iloveyou", "batman", "access", "flower", "test", "passw0rd",
+  "charlie", "robert", "thomas", "football", "science", "computer"
+];
+
 const HEADER_LINES = [
   "=== Challenge: Identify the hashing algorithms of the weak hashes and decrypt/crack them ===",
   "",
@@ -82,14 +91,15 @@ const HEADER_LINES = [
   "Task:",
   "  1) Run cat hashes.txt to view the hashes.",
   "  2) Identify the hashing algorithms (hint: check the hash length).",
-  "  3) Crack the weak hashes using online tools or the built-in hash commands.",
+  "  3) Crack the weak hashes using the crack command or external tools.",
   "  4) Submit each cracked hash in format: hash:plaintext algorithm",
   "",
   "Allowed commands:",
   "  cat hashes.txt          — view the hashes to crack",
-  "  md5 <text>              — compute MD5 hash of text",
-  "  sha1 <text>             — compute SHA-1 hash of text",
+  "  crack <hash>            — run dictionary attack against a hash",
   "  identify <hash>         — identify hash type by length",
+  "  md5 <text>              — compute MD5 hash of text (verify)",
+  "  sha1 <text>             — compute SHA-1 hash of text (verify)",
   "  hash:plaintext algorithm — submit answer (e.g. 49f6...3b:hi MD5)",
   "  help, quit",
   "",
@@ -107,6 +117,8 @@ const HashCrackerChallenge = ({ onComplete }: HashCrackerChallengeProps) => {
   const terminalRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const [cracking, setCracking] = useState(false);
+
   useEffect(() => {
     terminalRef.current?.scrollTo(0, terminalRef.current.scrollHeight);
   }, [lines]);
@@ -115,13 +127,63 @@ const HashCrackerChallenge = ({ onComplete }: HashCrackerChallengeProps) => {
     setLines(prev => [...prev, ...newLines]);
   };
 
+  const runCrack = async (targetHash: string, displayCmd: string) => {
+    setCracking(true);
+    // Identify algorithm by length
+    const isMd5 = targetHash.length === 32;
+    const isSha1 = targetHash.length === 40;
+    if (!isMd5 && !isSha1) {
+      addLines(displayCmd, "✗ Unrecognised hash length. Use 'identify' first.", "");
+      setCracking(false);
+      return;
+    }
+    const algName = isMd5 ? "MD5" : "SHA-1";
+    addLines(displayCmd, `[*] Detected ${algName} hash. Starting dictionary attack...`, `[*] Wordlist: ${WORDLIST.length} words`);
+
+    let found = false;
+    for (let i = 0; i < WORDLIST.length; i++) {
+      const word = WORDLIST[i];
+      const computed = isMd5 ? md5(word) : await sha1(word);
+
+      // Show progress every few words
+      if (i % 8 === 0) {
+        addLines(`[*] Trying: ${word}...`);
+        // Small delay for realism
+        await new Promise(r => setTimeout(r, 60));
+      }
+
+      if (computed === targetHash) {
+        addLines(
+          `[+] CRACKED! ${targetHash} → "${word}" (${algName})`,
+          `[*] Submit with: ${targetHash}:${word} ${algName}`,
+          ""
+        );
+        found = true;
+        break;
+      }
+    }
+
+    if (!found) {
+      addLines("[✗] Not found in wordlist. Try a larger dictionary or external tools.", "");
+    }
+    setCracking(false);
+  };
+
   const handleCommand = async () => {
+    if (cracking) return;
     const cmd = input.trim();
     if (!cmd) return;
 
     const displayCmd = `> ${cmd}`;
     const low = cmd.toLowerCase();
     setInput("");
+
+    // crack <hash> command
+    const crackMatch = low.match(/^crack\s+([a-f0-9]+)$/);
+    if (crackMatch) {
+      await runCrack(crackMatch[1], displayCmd);
+      return;
+    }
 
     if (low === "quit" || low === "exit") {
       addLines(displayCmd, "Bye.", "");
@@ -291,9 +353,10 @@ const HashCrackerChallenge = ({ onComplete }: HashCrackerChallengeProps) => {
             <input
               ref={inputRef}
               value={input}
-              onChange={e => setInput(e.target.value)}
+              onChange={e => !cracking && setInput(e.target.value)}
               onKeyDown={e => e.key === "Enter" && handleCommand()}
-              className="flex-1 bg-transparent outline-none text-cyan-400 caret-green-400 font-mono text-xs"
+              disabled={cracking}
+              className="flex-1 bg-transparent outline-none text-cyan-400 caret-green-400 font-mono text-xs disabled:opacity-50"
               autoFocus
               spellCheck={false}
               placeholder="Type a command..."
