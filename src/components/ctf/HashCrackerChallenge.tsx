@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { CheckCircle2, Terminal } from "lucide-react";
 
 const FLAG = "FLAG{Congratulations_you_cracked_the_weak_hashes_and_identified_their_hashing_algorithms}";
@@ -27,6 +27,52 @@ const SOLUTIONS: HashSolution[] = [
   { hash: "8786ba517f024e479b20982567f998e58cde951e", plaintext: "crackme", algorithm: "sha-1" },
 ];
 
+// Lightweight MD5 implementation (RFC 1321)
+const md5 = (str: string): string => {
+  const utf8 = new TextEncoder().encode(str);
+  const len = utf8.length;
+  const bitLen = len * 8;
+  const padLen = ((56 - (len + 1) % 64) + 64) % 64;
+  const buf = new Uint8Array(len + 1 + padLen + 8);
+  buf.set(utf8);
+  buf[len] = 0x80;
+  const view = new DataView(buf.buffer);
+  view.setUint32(buf.length - 8, bitLen >>> 0, true);
+  view.setUint32(buf.length - 4, (bitLen / 0x100000000) >>> 0, true);
+
+  let a0 = 0x67452301, b0 = 0xefcdab89, c0 = 0x98badcfe, d0 = 0x10325476;
+  const S = [7,12,17,22,7,12,17,22,7,12,17,22,7,12,17,22,5,9,14,20,5,9,14,20,5,9,14,20,5,9,14,20,4,11,16,23,4,11,16,23,4,11,16,23,4,11,16,23,6,10,15,21,6,10,15,21,6,10,15,21,6,10,15,21];
+  const K = Array.from({length:64},(_,i)=>Math.floor(2**32*Math.abs(Math.sin(i+1)))>>>0);
+
+  for (let off = 0; off < buf.length; off += 64) {
+    const M = Array.from({length:16},(_,j)=>view.getUint32(off+j*4,true));
+    let [a,b,c,d] = [a0,b0,c0,d0];
+    for (let i = 0; i < 64; i++) {
+      let f: number, g: number;
+      if (i < 16) { f = (b & c) | (~b & d); g = i; }
+      else if (i < 32) { f = (d & b) | (~d & c); g = (5*i+1)%16; }
+      else if (i < 48) { f = b ^ c ^ d; g = (3*i+5)%16; }
+      else { f = c ^ (b | ~d); g = (7*i)%16; }
+      f = (f + a + K[i] + M[g]) >>> 0;
+      a = d; d = c; c = b;
+      b = (b + ((f << S[i]) | (f >>> (32-S[i])))) >>> 0;
+    }
+    a0 = (a0+a)>>>0; b0 = (b0+b)>>>0; c0 = (c0+c)>>>0; d0 = (d0+d)>>>0;
+  }
+  return [a0,b0,c0,d0].map(v => {
+    const h = new DataView(new ArrayBuffer(4));
+    h.setUint32(0, v, true);
+    return Array.from(new Uint8Array(h.buffer)).map(b => b.toString(16).padStart(2,'0')).join('');
+  }).join('');
+};
+
+// SHA-1 via Web Crypto API
+const sha1 = async (str: string): Promise<string> => {
+  const data = new TextEncoder().encode(str);
+  const hashBuffer = await crypto.subtle.digest('SHA-1', data);
+  return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+};
+
 const HEADER_LINES = [
   "=== Challenge: Identify the hashing algorithms of the weak hashes and decrypt/crack them ===",
   "",
@@ -35,13 +81,16 @@ const HEADER_LINES = [
   "",
   "Task:",
   "  1) Run cat hashes.txt to view the hashes.",
-  "  2) Identify the hashing algorithms using online tools.",
-  "  3) Crack the weak hashes using online tools.",
+  "  2) Identify the hashing algorithms (hint: check the hash length).",
+  "  3) Crack the weak hashes using online tools or the built-in hash commands.",
   "  4) Submit each cracked hash in format: hash:plaintext algorithm",
   "",
   "Allowed commands:",
-  "  cat hashes.txt",
-  "  Submit cracked hash — e.g. 49f68a5c8493ec2c0bf489821c21fc3b:hi MD5",
+  "  cat hashes.txt          — view the hashes to crack",
+  "  md5 <text>              — compute MD5 hash of text",
+  "  sha1 <text>             — compute SHA-1 hash of text",
+  "  identify <hash>         — identify hash type by length",
+  "  hash:plaintext algorithm — submit answer (e.g. 49f6...3b:hi MD5)",
   "  help, quit",
   "",
 ];
@@ -66,7 +115,7 @@ const HashCrackerChallenge = ({ onComplete }: HashCrackerChallengeProps) => {
     setLines(prev => [...prev, ...newLines]);
   };
 
-  const handleCommand = () => {
+  const handleCommand = async () => {
     const cmd = input.trim();
     if (!cmd) return;
 
@@ -86,6 +135,36 @@ const HashCrackerChallenge = ({ onComplete }: HashCrackerChallengeProps) => {
 
     if (low === "cat hashes.txt") {
       addLines(displayCmd, "", ...HASHES_FILE, "");
+      return;
+    }
+
+    // md5 <text> command
+    const md5Match = cmd.match(/^md5\s+(.+)$/i);
+    if (md5Match) {
+      const text = md5Match[1];
+      const hash = md5(text);
+      addLines(displayCmd, `MD5("${text}") = ${hash}`, "");
+      return;
+    }
+
+    // sha1 <text> command
+    const sha1Match = cmd.match(/^sha1\s+(.+)$/i);
+    if (sha1Match) {
+      const text = sha1Match[1];
+      const hash = await sha1(text);
+      addLines(displayCmd, `SHA-1("${text}") = ${hash}`, "");
+      return;
+    }
+
+    // identify <hash> command
+    const identifyMatch = low.match(/^identify\s+([a-f0-9]+)$/);
+    if (identifyMatch) {
+      const h = identifyMatch[1];
+      let type = "Unknown";
+      if (h.length === 32) type = "MD5 (32 hex characters)";
+      else if (h.length === 40) type = "SHA-1 (40 hex characters)";
+      else if (h.length === 64) type = "SHA-256 (64 hex characters)";
+      addLines(displayCmd, `Hash length: ${h.length} chars → Likely: ${type}`, "");
       return;
     }
 
