@@ -76,6 +76,8 @@ const CourseManagement = () => {
   const [showModuleDialog, setShowModuleDialog] = useState(false);
   const [showAddChallengeDialog, setShowAddChallengeDialog] = useState(false);
   const [activeModuleId, setActiveModuleId] = useState<string | null>(null);
+  const [editingModuleId, setEditingModuleId] = useState<string | null>(null);
+  const [editModuleForm, setEditModuleForm] = useState({ title: "", description: "" });
 
   // Form state
   const [courseForm, setCourseForm] = useState({
@@ -264,6 +266,40 @@ const CourseManagement = () => {
     const { error } = await supabase.from('course_modules').delete().eq('id', moduleId);
     if (error) { toast.error("Failed to delete module"); return; }
     toast.success("Module deleted");
+    if (selectedCourse) fetchModules(selectedCourse.id);
+  };
+
+  const handleMoveModule = async (moduleId: string, direction: 'up' | 'down') => {
+    const idx = modules.findIndex(m => m.id === moduleId);
+    const swapIdx = direction === 'up' ? idx - 1 : idx + 1;
+    if (swapIdx < 0 || swapIdx >= modules.length) return;
+
+    const current = modules[idx];
+    const swap = modules[swapIdx];
+
+    const [r1, r2] = await Promise.all([
+      supabase.from('course_modules').update({ module_order: swap.module_order }).eq('id', current.id),
+      supabase.from('course_modules').update({ module_order: current.module_order }).eq('id', swap.id),
+    ]);
+
+    if (r1.error || r2.error) { toast.error("Failed to reorder"); return; }
+    if (selectedCourse) fetchModules(selectedCourse.id);
+  };
+
+  const startEditModule = (mod: CourseModule) => {
+    setEditingModuleId(mod.id);
+    setEditModuleForm({ title: mod.title, description: mod.description || "" });
+  };
+
+  const handleSaveModule = async () => {
+    if (!editingModuleId || !editModuleForm.title) return;
+    const { error } = await supabase.from('course_modules').update({
+      title: editModuleForm.title,
+      description: editModuleForm.description || null,
+    }).eq('id', editingModuleId);
+    if (error) { toast.error("Failed to update module"); return; }
+    toast.success("Module updated");
+    setEditingModuleId(null);
     if (selectedCourse) fetchModules(selectedCourse.id);
   };
 
@@ -517,21 +553,73 @@ const CourseManagement = () => {
               <div className="space-y-4">
                 {modules.map((mod, idx) => {
                   const challenges = moduleChallenges[mod.id] || [];
+                  const isEditing = editingModuleId === mod.id;
                   return (
                     <Card key={mod.id}>
                       <CardHeader className="pb-3">
                         <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-3">
-                            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary text-sm font-bold">
+                          <div className="flex items-center gap-3 flex-1 min-w-0">
+                            {/* Reorder buttons */}
+                            <div className="flex flex-col gap-0.5">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-5 w-5 p-0"
+                                disabled={idx === 0}
+                                onClick={() => handleMoveModule(mod.id, 'up')}
+                              >
+                                <ChevronUp className="h-3.5 w-3.5" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-5 w-5 p-0"
+                                disabled={idx === modules.length - 1}
+                                onClick={() => handleMoveModule(mod.id, 'down')}
+                              >
+                                <ChevronDown className="h-3.5 w-3.5" />
+                              </Button>
+                            </div>
+                            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary text-sm font-bold flex-shrink-0">
                               {idx + 1}
                             </div>
-                            <div>
-                              <CardTitle className="text-lg">{mod.title}</CardTitle>
-                              {mod.description && <CardDescription>{mod.description}</CardDescription>}
-                            </div>
+                            {isEditing ? (
+                              <div className="flex-1 space-y-2">
+                                <Input
+                                  value={editModuleForm.title}
+                                  onChange={e => setEditModuleForm(f => ({ ...f, title: e.target.value }))}
+                                  className="h-8 text-sm"
+                                  autoFocus
+                                  onKeyDown={e => { if (e.key === 'Enter') handleSaveModule(); if (e.key === 'Escape') setEditingModuleId(null); }}
+                                />
+                                <Input
+                                  value={editModuleForm.description}
+                                  onChange={e => setEditModuleForm(f => ({ ...f, description: e.target.value }))}
+                                  placeholder="Description (optional)"
+                                  className="h-7 text-xs"
+                                />
+                                <div className="flex gap-1.5">
+                                  <Button size="sm" className="h-7 text-xs" onClick={handleSaveModule}>Save</Button>
+                                  <Button size="sm" variant="ghost" className="h-7 text-xs" onClick={() => setEditingModuleId(null)}>Cancel</Button>
+                                </div>
+                              </div>
+                            ) : (
+                              <div className="cursor-pointer" onDoubleClick={() => startEditModule(mod)}>
+                                <CardTitle className="text-lg">{mod.title}</CardTitle>
+                                {mod.description && <CardDescription>{mod.description}</CardDescription>}
+                              </div>
+                            )}
                           </div>
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-2 flex-shrink-0">
                             <Badge variant="secondary">{challenges.length} challenges</Badge>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-7 w-7 p-0"
+                              onClick={() => startEditModule(mod)}
+                            >
+                              <Pencil className="h-3.5 w-3.5" />
+                            </Button>
                             <Button
                               variant="outline"
                               size="sm"
