@@ -157,14 +157,36 @@ const CourseManagement = () => {
     }
   };
 
+  const openEditDialog = (course: Course) => {
+    setEditingCourse(course);
+    setCourseForm({
+      title: course.title,
+      slug: course.slug,
+      description: course.description || "",
+      partner_name: course.partner_name || "",
+      partner_logo_url: course.partner_logo_url || "",
+      banner_url: course.banner_url || "",
+      access_code: course.access_code,
+      sequential_modules: course.sequential_modules,
+      accreditation_name: course.accreditation_name || "",
+      accreditation_logo_url: course.accreditation_logo_url || "",
+      accreditation_url: course.accreditation_url || ""
+    });
+    setShowCreateDialog(true);
+  };
+
+  const resetCourseForm = () => {
+    setCourseForm({ title: "", slug: "", description: "", partner_name: "", partner_logo_url: "", banner_url: "", access_code: "", sequential_modules: true, accreditation_name: "", accreditation_logo_url: "", accreditation_url: "" });
+    setEditingCourse(null);
+  };
+
   const handleCreateCourse = async () => {
     if (!courseForm.title || !courseForm.slug || !courseForm.access_code) {
       toast.error("Title, slug, and access code are required");
       return;
     }
 
-    const { data: { user } } = await supabase.auth.getUser();
-    const { error } = await supabase.from('courses').insert({
+    const payload = {
       title: courseForm.title,
       slug: courseForm.slug,
       description: courseForm.description || null,
@@ -176,18 +198,25 @@ const CourseManagement = () => {
       accreditation_name: courseForm.accreditation_name || null,
       accreditation_logo_url: courseForm.accreditation_logo_url || null,
       accreditation_url: courseForm.accreditation_url || null,
-      created_by: user?.id
-    });
+    };
 
-    if (error) {
-      if (error.code === '23505') toast.error("A course with this slug already exists");
-      else toast.error("Failed to create course");
-      return;
+    if (editingCourse) {
+      const { error } = await supabase.from('courses').update(payload).eq('id', editingCourse.id);
+      if (error) { toast.error("Failed to update course"); return; }
+      toast.success("Course updated!");
+    } else {
+      const { data: { user } } = await supabase.auth.getUser();
+      const { error } = await supabase.from('courses').insert({ ...payload, created_by: user?.id });
+      if (error) {
+        if (error.code === '23505') toast.error("A course with this slug already exists");
+        else toast.error("Failed to create course");
+        return;
+      }
+      toast.success("Course created!");
     }
 
-    toast.success("Course created!");
     setShowCreateDialog(false);
-    setCourseForm({ title: "", slug: "", description: "", partner_name: "", partner_logo_url: "", banner_url: "", access_code: "", sequential_modules: true, accreditation_name: "", accreditation_logo_url: "", accreditation_url: "" });
+    resetCourseForm();
     fetchCourses();
   };
 
