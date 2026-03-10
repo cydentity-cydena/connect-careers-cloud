@@ -358,6 +358,23 @@ const CourseManagement = () => {
                       <Label>Banner Image URL</Label>
                       <Input value={courseForm.banner_url} onChange={e => setCourseForm(f => ({ ...f, banner_url: e.target.value }))} placeholder="https://..." />
                     </div>
+                    <div className="border-t pt-4 mt-2">
+                      <p className="text-sm font-medium mb-3">Accreditation / Endorsement</p>
+                      <div className="space-y-3">
+                        <div>
+                          <Label>Accrediting Body Name</Label>
+                          <Input value={courseForm.accreditation_name} onChange={e => setCourseForm(f => ({ ...f, accreditation_name: e.target.value }))} placeholder="e.g. CREST" />
+                        </div>
+                        <div>
+                          <Label>Accreditation Logo URL</Label>
+                          <Input value={courseForm.accreditation_logo_url} onChange={e => setCourseForm(f => ({ ...f, accreditation_logo_url: e.target.value }))} placeholder="https://..." />
+                        </div>
+                        <div>
+                          <Label>Accreditation Website URL</Label>
+                          <Input value={courseForm.accreditation_url} onChange={e => setCourseForm(f => ({ ...f, accreditation_url: e.target.value }))} placeholder="https://www.crest-approved.org" />
+                        </div>
+                      </div>
+                    </div>
                     <div className="flex items-center gap-2">
                       <Switch checked={courseForm.sequential_modules} onCheckedChange={v => setCourseForm(f => ({ ...f, sequential_modules: v }))} />
                       <Label>Sequential modules (must complete in order)</Label>
