@@ -17,6 +17,7 @@ import { CuriousWebChallenge } from "@/components/ctf/CuriousWebChallenge";
 import { InjectionJunctionChallenge } from "@/components/ctf/InjectionJunctionChallenge";
 import { DeepfakeDetectorChallenge } from "@/components/ctf/DeepfakeDetectorChallenge";
 import { SOCInTheLoopChallenge } from "@/components/ctf/SOCInTheLoopChallenge";
+import HashCrackerChallenge from "@/components/ctf/HashCrackerChallenge";
 import {
   BookOpen, Lock, CheckCircle2, ChevronRight, ShieldCheck,
   Flag, Target, Lightbulb, Trophy, ExternalLink
