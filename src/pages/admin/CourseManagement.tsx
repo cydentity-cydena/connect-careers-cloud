@@ -347,14 +347,14 @@ const CourseManagement = () => {
                 </h1>
                 <p className="text-muted-foreground">Create and manage training courses with module challenges</p>
               </div>
-              <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
+              <Dialog open={showCreateDialog} onOpenChange={(open) => { setShowCreateDialog(open); if (!open) resetCourseForm(); }}>
                 <DialogTrigger asChild>
                   <Button className="gap-2"><Plus className="h-4 w-4" /> New Course</Button>
                 </DialogTrigger>
-                <DialogContent className="max-w-lg">
+                <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto">
                   <DialogHeader>
-                    <DialogTitle>Create New Course</DialogTitle>
-                    <DialogDescription>Set up a new training course with access code gate</DialogDescription>
+                    <DialogTitle>{editingCourse ? "Edit Course" : "Create New Course"}</DialogTitle>
+                    <DialogDescription>{editingCourse ? "Update course details, branding, and accreditation" : "Set up a new training course with access code gate"}</DialogDescription>
                   </DialogHeader>
                   <div className="space-y-4">
                     <div>
@@ -410,8 +410,8 @@ const CourseManagement = () => {
                     </div>
                   </div>
                   <DialogFooter>
-                    <Button variant="outline" onClick={() => setShowCreateDialog(false)}>Cancel</Button>
-                    <Button onClick={handleCreateCourse}>Create Course</Button>
+                    <Button variant="outline" onClick={() => { setShowCreateDialog(false); resetCourseForm(); }}>Cancel</Button>
+                    <Button onClick={handleCreateCourse}>{editingCourse ? "Save Changes" : "Create Course"}</Button>
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
