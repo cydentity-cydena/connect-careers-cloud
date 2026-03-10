@@ -173,6 +173,9 @@ const CourseManagement = () => {
       banner_url: courseForm.banner_url || null,
       access_code: courseForm.access_code,
       sequential_modules: courseForm.sequential_modules,
+      accreditation_name: courseForm.accreditation_name || null,
+      accreditation_logo_url: courseForm.accreditation_logo_url || null,
+      accreditation_url: courseForm.accreditation_url || null,
       created_by: user?.id
     });
 
@@ -184,7 +187,7 @@ const CourseManagement = () => {
 
     toast.success("Course created!");
     setShowCreateDialog(false);
-    setCourseForm({ title: "", slug: "", description: "", partner_name: "", partner_logo_url: "", banner_url: "", access_code: "", sequential_modules: true });
+    setCourseForm({ title: "", slug: "", description: "", partner_name: "", partner_logo_url: "", banner_url: "", access_code: "", sequential_modules: true, accreditation_name: "", accreditation_logo_url: "", accreditation_url: "" });
     fetchCourses();
   };
 
