@@ -514,6 +514,7 @@ const CTFManagement = () => {
                     <SelectContent>
                       <SelectItem value="public">Public only — main CTF page</SelectItem>
                       <SelectItem value="event_only">Event only — private events</SelectItem>
+                      <SelectItem value="course_only">Course only — training modules</SelectItem>
                       <SelectItem value="both">Both — public + events</SelectItem>
                     </SelectContent>
                   </Select>
