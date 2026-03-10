@@ -157,14 +157,36 @@ const CourseManagement = () => {
     }
   };
 
+  const openEditDialog = (course: Course) => {
+    setEditingCourse(course);
+    setCourseForm({
+      title: course.title,
+      slug: course.slug,
+      description: course.description || "",
+      partner_name: course.partner_name || "",
+      partner_logo_url: course.partner_logo_url || "",
+      banner_url: course.banner_url || "",
+      access_code: course.access_code,
+      sequential_modules: course.sequential_modules,
+      accreditation_name: course.accreditation_name || "",
+      accreditation_logo_url: course.accreditation_logo_url || "",
+      accreditation_url: course.accreditation_url || ""
+    });
+    setShowCreateDialog(true);
+  };
+
+  const resetCourseForm = () => {
+    setCourseForm({ title: "", slug: "", description: "", partner_name: "", partner_logo_url: "", banner_url: "", access_code: "", sequential_modules: true, accreditation_name: "", accreditation_logo_url: "", accreditation_url: "" });
+    setEditingCourse(null);
+  };
+
   const handleCreateCourse = async () => {
     if (!courseForm.title || !courseForm.slug || !courseForm.access_code) {
       toast.error("Title, slug, and access code are required");
       return;
     }
 
-    const { data: { user } } = await supabase.auth.getUser();
-    const { error } = await supabase.from('courses').insert({
+    const payload = {
       title: courseForm.title,
       slug: courseForm.slug,
       description: courseForm.description || null,
@@ -176,18 +198,25 @@ const CourseManagement = () => {
       accreditation_name: courseForm.accreditation_name || null,
       accreditation_logo_url: courseForm.accreditation_logo_url || null,
       accreditation_url: courseForm.accreditation_url || null,
-      created_by: user?.id
-    });
+    };
 
-    if (error) {
-      if (error.code === '23505') toast.error("A course with this slug already exists");
-      else toast.error("Failed to create course");
-      return;
+    if (editingCourse) {
+      const { error } = await supabase.from('courses').update(payload).eq('id', editingCourse.id);
+      if (error) { toast.error("Failed to update course"); return; }
+      toast.success("Course updated!");
+    } else {
+      const { data: { user } } = await supabase.auth.getUser();
+      const { error } = await supabase.from('courses').insert({ ...payload, created_by: user?.id });
+      if (error) {
+        if (error.code === '23505') toast.error("A course with this slug already exists");
+        else toast.error("Failed to create course");
+        return;
+      }
+      toast.success("Course created!");
     }
 
-    toast.success("Course created!");
     setShowCreateDialog(false);
-    setCourseForm({ title: "", slug: "", description: "", partner_name: "", partner_logo_url: "", banner_url: "", access_code: "", sequential_modules: true, accreditation_name: "", accreditation_logo_url: "", accreditation_url: "" });
+    resetCourseForm();
     fetchCourses();
   };
 
@@ -318,14 +347,14 @@ const CourseManagement = () => {
                 </h1>
                 <p className="text-muted-foreground">Create and manage training courses with module challenges</p>
               </div>
-              <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
+              <Dialog open={showCreateDialog} onOpenChange={(open) => { setShowCreateDialog(open); if (!open) resetCourseForm(); }}>
                 <DialogTrigger asChild>
                   <Button className="gap-2"><Plus className="h-4 w-4" /> New Course</Button>
                 </DialogTrigger>
-                <DialogContent className="max-w-lg">
+                <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto">
                   <DialogHeader>
-                    <DialogTitle>Create New Course</DialogTitle>
-                    <DialogDescription>Set up a new training course with access code gate</DialogDescription>
+                    <DialogTitle>{editingCourse ? "Edit Course" : "Create New Course"}</DialogTitle>
+                    <DialogDescription>{editingCourse ? "Update course details, branding, and accreditation" : "Set up a new training course with access code gate"}</DialogDescription>
                   </DialogHeader>
                   <div className="space-y-4">
                     <div>
@@ -381,8 +410,8 @@ const CourseManagement = () => {
                     </div>
                   </div>
                   <DialogFooter>
-                    <Button variant="outline" onClick={() => setShowCreateDialog(false)}>Cancel</Button>
-                    <Button onClick={handleCreateCourse}>Create Course</Button>
+                    <Button variant="outline" onClick={() => { setShowCreateDialog(false); resetCourseForm(); }}>Cancel</Button>
+                    <Button onClick={handleCreateCourse}>{editingCourse ? "Save Changes" : "Create Course"}</Button>
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
@@ -423,6 +452,9 @@ const CourseManagement = () => {
                         <Switch checked={course.is_active} onCheckedChange={() => handleToggleActive(course)} />
                         <span className="text-sm text-muted-foreground">Active</span>
                         <div className="flex-1" />
+                        <Button variant="outline" size="sm" className="gap-1.5" onClick={() => openEditDialog(course)}>
+                          <Pencil className="h-3.5 w-3.5" /> Edit
+                        </Button>
                         <Button variant="outline" size="sm" onClick={() => selectCourse(course)}>
                           Manage Modules
                         </Button>
