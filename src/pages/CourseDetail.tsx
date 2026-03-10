@@ -406,6 +406,23 @@ const CourseDetail = () => {
                   Delivered by <strong>{course.partner_name}</strong>
                 </p>
               )}
+              {course.accreditation_name && (
+                <div className="flex items-center justify-center gap-2 mt-3 pt-3 border-t border-border">
+                  {course.accreditation_logo_url && (
+                    <img src={course.accreditation_logo_url} alt={course.accreditation_name} className="h-6 object-contain" />
+                  )}
+                  <span className="text-xs text-muted-foreground">
+                    Endorsed by{" "}
+                    {course.accreditation_url ? (
+                      <a href={course.accreditation_url} target="_blank" rel="noopener noreferrer" className="font-medium text-primary hover:underline">
+                        {course.accreditation_name}
+                      </a>
+                    ) : (
+                      <strong>{course.accreditation_name}</strong>
+                    )}
+                  </span>
+                </div>
+              )}
             </CardHeader>
             <CardContent className="space-y-4">
               {!userId ? (
