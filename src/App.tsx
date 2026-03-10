@@ -75,6 +75,8 @@ import TrainingPartners from "./pages/TrainingPartners";
 import Marketplace from "./pages/Marketplace";
 import MarketplaceDocs from "./pages/MarketplaceDocs";
 import WhyCydena from "./pages/WhyCydena";
+import Courses from "./pages/Courses";
+import CourseDetail from "./pages/CourseDetail";
 
 import { ScrollToTop } from "./components/ScrollToTop";
 
@@ -169,6 +171,10 @@ const AppContent = () => {
           <Route path="/learning-paths" element={<ProtectedRoute><LearningPaths /></ProtectedRoute>} />
           <Route path="/learning-paths/:pathId" element={<ProtectedRoute><LearningPaths /></ProtectedRoute>} />
           <Route path="/training-partners" element={<TrainingPartners />} />
+          
+          {/* Courses */}
+          <Route path="/courses" element={<Courses />} />
+          <Route path="/courses/:slug" element={<CourseDetail />} />
           
           {/* Marketplace */}
           <Route path="/marketplace" element={<Marketplace />} />
