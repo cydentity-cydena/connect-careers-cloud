@@ -115,7 +115,7 @@ const HashCrackerChallenge = ({ onComplete }: HashCrackerChallengeProps) => {
     setLines(prev => [...prev, ...newLines]);
   };
 
-  const handleCommand = () => {
+  const handleCommand = async () => {
     const cmd = input.trim();
     if (!cmd) return;
 
@@ -135,6 +135,36 @@ const HashCrackerChallenge = ({ onComplete }: HashCrackerChallengeProps) => {
 
     if (low === "cat hashes.txt") {
       addLines(displayCmd, "", ...HASHES_FILE, "");
+      return;
+    }
+
+    // md5 <text> command
+    const md5Match = cmd.match(/^md5\s+(.+)$/i);
+    if (md5Match) {
+      const text = md5Match[1];
+      const hash = md5(text);
+      addLines(displayCmd, `MD5("${text}") = ${hash}`, "");
+      return;
+    }
+
+    // sha1 <text> command
+    const sha1Match = cmd.match(/^sha1\s+(.+)$/i);
+    if (sha1Match) {
+      const text = sha1Match[1];
+      const hash = await sha1(text);
+      addLines(displayCmd, `SHA-1("${text}") = ${hash}`, "");
+      return;
+    }
+
+    // identify <hash> command
+    const identifyMatch = low.match(/^identify\s+([a-f0-9]+)$/);
+    if (identifyMatch) {
+      const h = identifyMatch[1];
+      let type = "Unknown";
+      if (h.length === 32) type = "MD5 (32 hex characters)";
+      else if (h.length === 40) type = "SHA-1 (40 hex characters)";
+      else if (h.length === 64) type = "SHA-256 (64 hex characters)";
+      addLines(displayCmd, `Hash length: ${h.length} chars → Likely: ${type}`, "");
       return;
     }
 
