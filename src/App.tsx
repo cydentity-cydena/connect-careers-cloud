@@ -75,6 +75,8 @@ import TrainingPartners from "./pages/TrainingPartners";
 import Marketplace from "./pages/Marketplace";
 import MarketplaceDocs from "./pages/MarketplaceDocs";
 import WhyCydena from "./pages/WhyCydena";
+import Courses from "./pages/Courses";
+import CourseDetail from "./pages/CourseDetail";
 
 import { ScrollToTop } from "./components/ScrollToTop";
 
