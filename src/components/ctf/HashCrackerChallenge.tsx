@@ -99,7 +99,7 @@ const HELP_LINES = [
   "  crack <hash>",
   "  help, quit",
   "",
-  "Once you've cracked a hash, figure out how to submit it.",
+  "Submit: <hash>:<plaintext> <algorithm>",
   "",
 ];
 
