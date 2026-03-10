@@ -435,6 +435,26 @@ const AdminDashboard = ({ onSimulateRole, currentSimulatedRole }: AdminDashboard
 
           <Card 
             className="border-border shadow-card hover:shadow-lg transition-all cursor-pointer group"
+            onClick={() => navigate('/admin/courses')}
+          >
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 group-hover:text-primary transition-colors">
+                <GraduationCap className="h-5 w-5" />
+                Course Management
+              </CardTitle>
+              <CardDescription>
+                Create and manage training courses with module challenges
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button variant="outline" className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                Manage Courses
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card 
+            className="border-border shadow-card hover:shadow-lg transition-all cursor-pointer group"
             onClick={() => navigate('/admin/learning-paths')}
           >
             <CardHeader>
