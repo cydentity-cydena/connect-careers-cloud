@@ -452,6 +452,9 @@ const CourseManagement = () => {
                         <Switch checked={course.is_active} onCheckedChange={() => handleToggleActive(course)} />
                         <span className="text-sm text-muted-foreground">Active</span>
                         <div className="flex-1" />
+                        <Button variant="outline" size="sm" className="gap-1.5" onClick={() => openEditDialog(course)}>
+                          <Pencil className="h-3.5 w-3.5" /> Edit
+                        </Button>
                         <Button variant="outline" size="sm" onClick={() => selectCourse(course)}>
                           Manage Modules
                         </Button>
