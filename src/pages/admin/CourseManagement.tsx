@@ -269,6 +269,40 @@ const CourseManagement = () => {
     if (selectedCourse) fetchModules(selectedCourse.id);
   };
 
+  const handleMoveModule = async (moduleId: string, direction: 'up' | 'down') => {
+    const idx = modules.findIndex(m => m.id === moduleId);
+    const swapIdx = direction === 'up' ? idx - 1 : idx + 1;
+    if (swapIdx < 0 || swapIdx >= modules.length) return;
+
+    const current = modules[idx];
+    const swap = modules[swapIdx];
+
+    const [r1, r2] = await Promise.all([
+      supabase.from('course_modules').update({ module_order: swap.module_order }).eq('id', current.id),
+      supabase.from('course_modules').update({ module_order: current.module_order }).eq('id', swap.id),
+    ]);
+
+    if (r1.error || r2.error) { toast.error("Failed to reorder"); return; }
+    if (selectedCourse) fetchModules(selectedCourse.id);
+  };
+
+  const startEditModule = (mod: CourseModule) => {
+    setEditingModuleId(mod.id);
+    setEditModuleForm({ title: mod.title, description: mod.description || "" });
+  };
+
+  const handleSaveModule = async () => {
+    if (!editingModuleId || !editModuleForm.title) return;
+    const { error } = await supabase.from('course_modules').update({
+      title: editModuleForm.title,
+      description: editModuleForm.description || null,
+    }).eq('id', editingModuleId);
+    if (error) { toast.error("Failed to update module"); return; }
+    toast.success("Module updated");
+    setEditingModuleId(null);
+    if (selectedCourse) fetchModules(selectedCourse.id);
+  };
+
   const handleAddChallenge = async (challengeId: string) => {
     if (!activeModuleId) return;
     const existing = moduleChallenges[activeModuleId] || [];
