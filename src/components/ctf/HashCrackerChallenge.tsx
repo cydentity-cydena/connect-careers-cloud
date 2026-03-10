@@ -83,25 +83,25 @@ const WORDLIST = [
 ];
 
 const HEADER_LINES = [
-  "=== Challenge: Identify the hashing algorithms of the weak hashes and decrypt/crack them ===",
+  "=== Hash Cracker ===",
   "",
-  "View the weak hashes, identify their hashing algorithm(s), crack the weak hashes",
-  "and submit the cracked hash along with the hash and its algorithm to retrieve the flag.",
+  "You have intercepted a file containing password hashes.",
+  "Crack all 6 and prove you know what they are.",
   "",
-  "Task:",
-  "  1) Run cat hashes.txt to view the hashes.",
-  "  2) Identify the hashing algorithms (hint: check the hash length).",
-  "  3) Crack the weak hashes using the crack command or external tools.",
-  "  4) Submit each cracked hash in format: hash:plaintext algorithm",
+  "Type 'help' if you get stuck.",
   "",
-  "Allowed commands:",
-  "  cat hashes.txt          — view the hashes to crack",
-  "  crack <hash>            — run dictionary attack against a hash",
-  "  identify <hash>         — identify hash type by length",
-  "  md5 <text>              — compute MD5 hash of text",
-  "  sha1 <text>             — compute SHA-1 hash of text",
-  "  hash:plaintext algorithm — submit answer",
+];
+
+const HELP_LINES = [
+  "Commands:",
+  "  cat hashes.txt",
+  "  identify <hash>",
+  "  crack <hash>",
+  "  md5 <text>",
+  "  sha1 <text>",
   "  help, quit",
+  "",
+  "Once you've cracked a hash, figure out how to submit it.",
   "",
 ];
 
