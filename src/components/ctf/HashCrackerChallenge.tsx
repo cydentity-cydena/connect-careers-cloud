@@ -353,9 +353,10 @@ const HashCrackerChallenge = ({ onComplete }: HashCrackerChallengeProps) => {
             <input
               ref={inputRef}
               value={input}
-              onChange={e => setInput(e.target.value)}
+              onChange={e => !cracking && setInput(e.target.value)}
               onKeyDown={e => e.key === "Enter" && handleCommand()}
-              className="flex-1 bg-transparent outline-none text-cyan-400 caret-green-400 font-mono text-xs"
+              disabled={cracking}
+              className="flex-1 bg-transparent outline-none text-cyan-400 caret-green-400 font-mono text-xs disabled:opacity-50"
               autoFocus
               spellCheck={false}
               placeholder="Type a command..."
