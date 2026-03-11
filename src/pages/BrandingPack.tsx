@@ -167,6 +167,15 @@ const BrandingPack = () => {
                         <Download className="mr-2 h-4 w-4" />
                         Download 1200×1200
                       </Button>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => downloadResized(logo.path, `${logo.name.toLowerCase().replace(/\s+/g, '-')}-2400x2400.png`, 2400)}
+                        className="w-full"
+                      >
+                        <Download className="mr-2 h-4 w-4" />
+                        Download 2400×2400
+                      </Button>
                     </div>
                   </div>
                 </CardContent>
