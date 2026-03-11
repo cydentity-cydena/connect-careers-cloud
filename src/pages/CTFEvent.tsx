@@ -20,6 +20,7 @@ import { DeepfakeDetectorChallenge } from "@/components/ctf/DeepfakeDetectorChal
 import { SOCInTheLoopChallenge } from "@/components/ctf/SOCInTheLoopChallenge";
 import ClientBriefChallenge from "@/components/ctf/ClientBriefChallenge";
 import WindowsSecurityChallenge from "@/components/ctf/WindowsSecurityChallenge";
+import OSINTChallenge from "@/components/ctf/OSINTChallenge";
 import {
   Flag, Trophy, Target, Lightbulb, Lock, CheckCircle2, Crown, Medal, Award,
   Flame, Terminal, Share2, Copy, Check, ShieldCheck, Calendar, Users
