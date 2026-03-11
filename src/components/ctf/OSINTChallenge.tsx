@@ -244,7 +244,7 @@ export default function OSINTChallenge({ onComplete }: Props) {
             </CardHeader>
             <CardContent>
               <ScrollArea className="h-[350px] rounded-md border border-border/30 bg-black/40 p-1">
-                <pre className="text-xs font-mono text-green-400/90 whitespace-pre-wrap p-3 leading-relaxed">
+                <pre className="text-xs font-mono text-green-400/90 whitespace-pre-wrap break-all p-3 leading-relaxed">
                   {task.documents[activeDoc]?.content}
                 </pre>
               </ScrollArea>
