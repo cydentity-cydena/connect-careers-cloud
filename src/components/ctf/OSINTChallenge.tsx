@@ -30,25 +30,25 @@ Name Server: ns2.cydena-dynamics.com`;
 const DNS_ZONE_DATA = `$ORIGIN cydena-dynamics.com.
 
 @       IN  SOA ns1.cydena-dynamics.com. admin.cydena-dynamics.com. (
-            2024021201
-            3600
-            1800
-            604800
-            86400 )
+            2024020101 ; serial
+            3600       ; refresh
+            1800       ; retry
+            604800     ; expire
+            86400 )    ; minimum
 
 @       IN  NS  ns1.cydena-dynamics.com.
 @       IN  NS  ns2.cydena-dynamics.com.
 
-@       IN  A   198.51.100.10
-mail    IN  A   198.51.100.20
-vpn     IN  A   10.10.10.5
-dev     IN  A   10.10.10.10
-intranet IN A   10.10.10.15
+@       IN  A   192.0.2.10
+mail    IN  A   192.0.2.20
+vpn     IN  A   10.0.0.5
+dev     IN  A   10.0.0.10
+intranet IN A   10.0.0.15
 
 @       IN  MX  10 mail.cydena-dynamics.com.
 
 @       IN  TXT "v=spf1 include:mail.cydena-dynamics.com -all"
-@       IN  TXT "CI Migration: moved from build01.internal"`;
+@       IN  TXT "Internal Git: git.northbridge.local"`;
 
 const EMAIL_HEADER_1 = `Return-Path: <ceo@cydena-dynamics.com>
 Received: from mail.cydena.local (mail.cydena.local [10.0.0.20])
