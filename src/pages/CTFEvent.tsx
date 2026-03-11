@@ -533,7 +533,9 @@ const CTFEvent = () => {
                   const isWideChallenge = challenge.title.toLowerCase().includes('port probe') ||
                     challenge.title.toLowerCase().includes('curious web') ||
                     challenge.title.toLowerCase().includes('injection') ||
-                    challenge.title.toLowerCase().includes('soc in');
+                    challenge.title.toLowerCase().includes('soc in') ||
+                    challenge.title.toLowerCase().includes('client brief') ||
+                    challenge.title.toLowerCase().includes('professional practice');
 
                   return (
                     <Card
