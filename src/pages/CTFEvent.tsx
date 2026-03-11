@@ -541,7 +541,9 @@ const CTFEvent = () => {
                     challenge.title.toLowerCase().includes('client brief') ||
                     challenge.title.toLowerCase().includes('professional practice') ||
                     challenge.title.toLowerCase().includes('windows security') ||
-                    challenge.title.toLowerCase().includes('os security');
+                    challenge.title.toLowerCase().includes('os security') ||
+                    challenge.title.toLowerCase().includes('osint') ||
+                    challenge.title.toLowerCase().includes('reconnaissance');
 
                   return (
                     <Card
