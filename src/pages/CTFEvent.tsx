@@ -347,6 +347,7 @@ const CTFEvent = () => {
     if (title.includes('deepfake')) return <DeepfakeDetectorChallenge onComplete={onComplete} />;
     if (title.includes('soc in')) return <SOCInTheLoopChallenge onComplete={onComplete} />;
     if (title.includes('client brief') || title.includes('professional practice')) return <ClientBriefChallenge onComplete={onComplete} />;
+    if (title.includes('windows security') || title.includes('os security')) return <WindowsSecurityChallenge onComplete={onComplete} />;
     return null;
   };
 
