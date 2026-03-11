@@ -1,0 +1,1 @@
+UPDATE public.courses SET sequential_modules = false WHERE slug = 'cpsa-lite';
