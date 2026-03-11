@@ -22,7 +22,7 @@ Registrant Organization: Cydena Dynamics Ltd
 Registrant Country: GB
 
 Admin Email: info@cydena-dynamics.com
-Tech Email: platform-ops@cydena-dynamics.com
+Tech Email: devops-internal@cydena-dynamics.com
 
 Name Server: ns1.cydena-dynamics.com
 Name Server: ns2.cydena-dynamics.com`;
