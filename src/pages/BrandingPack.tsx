@@ -128,24 +128,46 @@ const BrandingPack = () => {
                   <div className="p-4 border-t border-border">
                     <h3 className="font-semibold text-foreground">{logo.name}</h3>
                     <p className="text-sm text-muted-foreground mb-3">{logo.description}</p>
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      onClick={() => downloadImage(logo.path, `${logo.name.toLowerCase().replace(/\s+/g, '-')}.png`)}
-                      className="w-full"
-                    >
-                      <Download className="mr-2 h-4 w-4" />
-                      Download PNG
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      onClick={() => downloadResized(logo.path, `${logo.name.toLowerCase().replace(/\s+/g, '-')}-600x600.png`, 600)}
-                      className="w-full"
-                    >
-                      <Download className="mr-2 h-4 w-4" />
-                      Download 600×600
-                    </Button>
+                    <div className="space-y-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => downloadImage(logo.path, `${logo.name.toLowerCase().replace(/\s+/g, '-')}.png`)}
+                        className="w-full"
+                      >
+                        <Download className="mr-2 h-4 w-4" />
+                        Download PNG
+                      </Button>
+                      {logo.svgPath && (
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          onClick={() => downloadImage(logo.svgPath!, `${logo.name.toLowerCase().replace(/\s+/g, '-')}.svg`)}
+                          className="w-full"
+                        >
+                          <Download className="mr-2 h-4 w-4" />
+                          Download SVG
+                        </Button>
+                      )}
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => downloadResized(logo.path, `${logo.name.toLowerCase().replace(/\s+/g, '-')}-600x600.png`, 600)}
+                        className="w-full"
+                      >
+                        <Download className="mr-2 h-4 w-4" />
+                        Download 600×600
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => downloadResized(logo.path, `${logo.name.toLowerCase().replace(/\s+/g, '-')}-1200x1200.png`, 1200)}
+                        className="w-full"
+                      >
+                        <Download className="mr-2 h-4 w-4" />
+                        Download 1200×1200
+                      </Button>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
