@@ -19,6 +19,7 @@ import { InjectionJunctionChallenge } from "@/components/ctf/InjectionJunctionCh
 import { DeepfakeDetectorChallenge } from "@/components/ctf/DeepfakeDetectorChallenge";
 import { SOCInTheLoopChallenge } from "@/components/ctf/SOCInTheLoopChallenge";
 import ClientBriefChallenge from "@/components/ctf/ClientBriefChallenge";
+import WindowsSecurityChallenge from "@/components/ctf/WindowsSecurityChallenge";
 import {
   Flag, Trophy, Target, Lightbulb, Lock, CheckCircle2, Crown, Medal, Award,
   Flame, Terminal, Share2, Copy, Check, ShieldCheck, Calendar, Users
@@ -346,6 +347,7 @@ const CTFEvent = () => {
     if (title.includes('deepfake')) return <DeepfakeDetectorChallenge onComplete={onComplete} />;
     if (title.includes('soc in')) return <SOCInTheLoopChallenge onComplete={onComplete} />;
     if (title.includes('client brief') || title.includes('professional practice')) return <ClientBriefChallenge onComplete={onComplete} />;
+    if (title.includes('windows security') || title.includes('os security')) return <WindowsSecurityChallenge onComplete={onComplete} />;
     return null;
   };
 
@@ -535,7 +537,9 @@ const CTFEvent = () => {
                     challenge.title.toLowerCase().includes('injection') ||
                     challenge.title.toLowerCase().includes('soc in') ||
                     challenge.title.toLowerCase().includes('client brief') ||
-                    challenge.title.toLowerCase().includes('professional practice');
+                    challenge.title.toLowerCase().includes('professional practice') ||
+                    challenge.title.toLowerCase().includes('windows security') ||
+                    challenge.title.toLowerCase().includes('os security');
 
                   return (
                     <Card
