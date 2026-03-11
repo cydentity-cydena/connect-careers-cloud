@@ -211,23 +211,23 @@ export default function OSINTChallenge({ onComplete }: Props) {
 
       {/* Main content */}
       {!allSolved && (
-        <div className="grid md:grid-cols-2 gap-4">
+      <div className="grid md:grid-cols-2 gap-4 min-h-0">
           {/* Document viewer */}
-          <Card className="bg-card/50 border-border/50">
+          <Card className="bg-card/50 border-border/50 min-w-0">
             <CardHeader className="pb-2">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-sm flex items-center gap-2">
+              <div className="flex items-center justify-between gap-2">
+                <CardTitle className="text-sm flex items-center gap-2 shrink-0">
                   <FileText className="h-4 w-4 text-primary" />
                   Evidence Documents
                 </CardTitle>
                 {task.documents.length > 1 && (
-                  <div className="flex gap-1">
+                  <div className="flex gap-1 flex-wrap justify-end">
                     {task.documents.map((doc, i) => (
                       <Button
                         key={i}
                         variant={activeDoc === i ? "secondary" : "ghost"}
                         size="sm"
-                        className="text-xs h-7"
+                        className="text-xs h-7 max-w-[160px] truncate"
                         onClick={() => setActiveDoc(i)}
                       >
                         {doc.icon} {doc.name}
@@ -244,7 +244,7 @@ export default function OSINTChallenge({ onComplete }: Props) {
             </CardHeader>
             <CardContent>
               <ScrollArea className="h-[350px] rounded-md border border-border/30 bg-black/40 p-1">
-                <pre className="text-xs font-mono text-green-400/90 whitespace-pre-wrap p-3 leading-relaxed">
+                <pre className="text-xs font-mono text-green-400/90 whitespace-pre-wrap break-all p-3 leading-relaxed">
                   {task.documents[activeDoc]?.content}
                 </pre>
               </ScrollArea>
