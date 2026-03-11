@@ -82,7 +82,7 @@ const HELP_LINES = [
   "  responder -I eth0 -rdwv    Poison LLMNR/NBT-NS",
   "  echo <data> > hash.txt     Save captured data",
   "  ls /    ls -la              List files",
-  "  cat hash.txt               View saved hash",UnicodeNumerals
+  "  cat hash.txt               View saved hash",
   "  hashcat <opts> hash.txt    Crack with hashcat",
   "  help, clear",
   "",
