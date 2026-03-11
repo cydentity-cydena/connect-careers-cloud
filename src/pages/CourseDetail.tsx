@@ -18,6 +18,7 @@ import { InjectionJunctionChallenge } from "@/components/ctf/InjectionJunctionCh
 import { DeepfakeDetectorChallenge } from "@/components/ctf/DeepfakeDetectorChallenge";
 import { SOCInTheLoopChallenge } from "@/components/ctf/SOCInTheLoopChallenge";
 import HashCrackerChallenge from "@/components/ctf/HashCrackerChallenge";
+import ClientBriefChallenge from "@/components/ctf/ClientBriefChallenge";
 import {
   BookOpen, Lock, CheckCircle2, ChevronRight, ShieldCheck,
   Flag, Target, Lightbulb, Trophy, ExternalLink
