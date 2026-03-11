@@ -211,9 +211,9 @@ export default function OSINTChallenge({ onComplete }: Props) {
 
       {/* Main content */}
       {!allSolved && (
-      <div className="grid md:grid-cols-2 gap-4 min-h-0">
-          {/* Document viewer */}
-          <Card className="bg-card/50 border-border/50 min-w-0">
+      <div className="space-y-4">
+          {/* Document viewer - full width */}
+          <Card className="bg-card/50 border-border/50">
             <CardHeader className="pb-2">
               <div className="flex items-center justify-between gap-2">
                 <CardTitle className="text-sm flex items-center gap-2 shrink-0">
@@ -227,7 +227,7 @@ export default function OSINTChallenge({ onComplete }: Props) {
                         key={i}
                         variant={activeDoc === i ? "secondary" : "ghost"}
                         size="sm"
-                        className="text-xs h-7 max-w-[160px] truncate"
+                        className="text-xs h-7"
                         onClick={() => setActiveDoc(i)}
                       >
                         {doc.icon} {doc.name}
@@ -243,18 +243,16 @@ export default function OSINTChallenge({ onComplete }: Props) {
               )}
             </CardHeader>
             <CardContent>
-              <ScrollArea className="h-[350px] rounded-md border border-border/30 bg-black/40 p-1">
-                <div className="overflow-x-auto">
-                  <pre className="text-xs font-mono text-green-400/90 whitespace-pre p-3 leading-relaxed min-w-max">
-                    {task.documents[activeDoc]?.content}
-                  </pre>
-                </div>
+              <ScrollArea className="h-[280px] rounded-md border border-border/30 bg-black/40 p-1">
+                <pre className="text-xs font-mono text-green-400/90 whitespace-pre p-3 leading-relaxed">
+                  {task.documents[activeDoc]?.content}
+                </pre>
               </ScrollArea>
             </CardContent>
           </Card>
 
-          {/* Task panel */}
-          <div className="space-y-4">
+          {/* Task panel + tips - side by side */}
+          <div className="grid md:grid-cols-2 gap-4">
             <Card className="bg-card/50 border-border/50">
               <CardHeader className="pb-2">
                 <div className="flex items-center gap-2">
@@ -270,7 +268,6 @@ export default function OSINTChallenge({ onComplete }: Props) {
                   Flag format: <code className="text-primary/80">{task.flagFormat}</code>
                 </p>
 
-                {/* Hint */}
                 {showHint[currentTask] && (
                   <div className="rounded-md border border-yellow-500/30 bg-yellow-500/10 p-3 text-sm">
                     <div className="flex items-start gap-2">
@@ -291,7 +288,6 @@ export default function OSINTChallenge({ onComplete }: Props) {
                   </Button>
                 )}
 
-                {/* Flag input */}
                 {!solvedTasks.has(currentTask) ? (
                   <div className="flex gap-2">
                     <Input
@@ -315,7 +311,6 @@ export default function OSINTChallenge({ onComplete }: Props) {
               </CardContent>
             </Card>
 
-            {/* Tips card */}
             <Card className="bg-card/30 border-border/30">
               <CardContent className="pt-4">
                 <h4 className="text-xs font-semibold text-muted-foreground mb-2 flex items-center gap-1.5">
