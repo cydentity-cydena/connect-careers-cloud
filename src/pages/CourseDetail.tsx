@@ -19,6 +19,7 @@ import { DeepfakeDetectorChallenge } from "@/components/ctf/DeepfakeDetectorChal
 import { SOCInTheLoopChallenge } from "@/components/ctf/SOCInTheLoopChallenge";
 import HashCrackerChallenge from "@/components/ctf/HashCrackerChallenge";
 import ClientBriefChallenge from "@/components/ctf/ClientBriefChallenge";
+import WindowsSecurityChallenge from "@/components/ctf/WindowsSecurityChallenge";
 import {
   BookOpen, Lock, CheckCircle2, ChevronRight, ShieldCheck,
   Flag, Target, Lightbulb, Trophy, ExternalLink
