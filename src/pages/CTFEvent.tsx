@@ -18,6 +18,7 @@ import { CuriousWebChallenge } from "@/components/ctf/CuriousWebChallenge";
 import { InjectionJunctionChallenge } from "@/components/ctf/InjectionJunctionChallenge";
 import { DeepfakeDetectorChallenge } from "@/components/ctf/DeepfakeDetectorChallenge";
 import { SOCInTheLoopChallenge } from "@/components/ctf/SOCInTheLoopChallenge";
+import ClientBriefChallenge from "@/components/ctf/ClientBriefChallenge";
 import {
   Flag, Trophy, Target, Lightbulb, Lock, CheckCircle2, Crown, Medal, Award,
   Flame, Terminal, Share2, Copy, Check, ShieldCheck, Calendar, Users
@@ -344,6 +345,7 @@ const CTFEvent = () => {
     if (title.includes('injection')) return <InjectionJunctionChallenge onFlagSubmit={onComplete} />;
     if (title.includes('deepfake')) return <DeepfakeDetectorChallenge onComplete={onComplete} />;
     if (title.includes('soc in')) return <SOCInTheLoopChallenge onComplete={onComplete} />;
+    if (title.includes('client brief') || title.includes('professional practice')) return <ClientBriefChallenge onComplete={onComplete} />;
     return null;
   };
 
@@ -531,7 +533,9 @@ const CTFEvent = () => {
                   const isWideChallenge = challenge.title.toLowerCase().includes('port probe') ||
                     challenge.title.toLowerCase().includes('curious web') ||
                     challenge.title.toLowerCase().includes('injection') ||
-                    challenge.title.toLowerCase().includes('soc in');
+                    challenge.title.toLowerCase().includes('soc in') ||
+                    challenge.title.toLowerCase().includes('client brief') ||
+                    challenge.title.toLowerCase().includes('professional practice');
 
                   return (
                     <Card

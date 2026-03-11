@@ -18,6 +18,7 @@ import { InjectionJunctionChallenge } from "@/components/ctf/InjectionJunctionCh
 import { DeepfakeDetectorChallenge } from "@/components/ctf/DeepfakeDetectorChallenge";
 import { SOCInTheLoopChallenge } from "@/components/ctf/SOCInTheLoopChallenge";
 import HashCrackerChallenge from "@/components/ctf/HashCrackerChallenge";
+import ClientBriefChallenge from "@/components/ctf/ClientBriefChallenge";
 import {
   BookOpen, Lock, CheckCircle2, ChevronRight, ShieldCheck,
   Flag, Target, Lightbulb, Trophy, ExternalLink
@@ -347,6 +348,7 @@ const CourseDetail = () => {
     if (title.includes('deepfake')) return <DeepfakeDetectorChallenge onComplete={onComplete} />;
     if (title.includes('soc in')) return <SOCInTheLoopChallenge onComplete={onComplete} />;
     if (title.includes('hash cracker')) return <HashCrackerChallenge onComplete={onComplete} />;
+    if (title.includes('client brief') || title.includes('professional practice')) return <ClientBriefChallenge onComplete={onComplete} />;
     return null;
   };
 

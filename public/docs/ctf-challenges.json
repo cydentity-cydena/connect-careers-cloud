@@ -177,6 +177,22 @@
       "is_active": true,
       "file_name": null,
       "file_url": null
+    },
+    {
+      "id": "client-brief-001",
+      "title": "Client Brief: Professional Practice",
+      "category": "Professional Practice",
+      "difficulty": "beginner",
+      "points": 100,
+      "description": "Review the penetration testing client brief from PENTEST LTD and answer questions about scope boundaries, legal authorizations, and risk acknowledgments. Attention to detail is critical — one wrong answer and you'll need to try again.",
+      "flag": "FLAG{scope_boundaries_verified_and_risks_acknowledged}",
+      "hints": [
+        { "cost": 10, "hint": "Read every section of the brief carefully, including the risk acknowledgment." },
+        { "cost": 20, "hint": "Pay close attention to what is explicitly listed vs what is not mentioned." }
+      ],
+      "is_active": true,
+      "file_name": null,
+      "file_url": null
     }
   ]
 }
