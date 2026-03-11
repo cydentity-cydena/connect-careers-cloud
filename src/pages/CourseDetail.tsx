@@ -20,6 +20,7 @@ import { SOCInTheLoopChallenge } from "@/components/ctf/SOCInTheLoopChallenge";
 import HashCrackerChallenge from "@/components/ctf/HashCrackerChallenge";
 import ClientBriefChallenge from "@/components/ctf/ClientBriefChallenge";
 import WindowsSecurityChallenge from "@/components/ctf/WindowsSecurityChallenge";
+import OSINTChallenge from "@/components/ctf/OSINTChallenge";
 import {
   BookOpen, Lock, CheckCircle2, ChevronRight, ShieldCheck,
   Flag, Target, Lightbulb, Trophy, ExternalLink
