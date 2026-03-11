@@ -8,7 +8,7 @@ import { toast } from "sonner";
 const BrandingPack = () => {
   const [copiedColor, setCopiedColor] = useState<string | null>(null);
 
-  const logos = [
+  const logos: { name: string; path: string; description: string; svgPath?: string }[] = [
     { name: "Main Logo", path: "/logos/cydena-main-logo.png", description: "Primary logo for most uses" },
     { name: "Full Logo", path: "/logos/cydena-logo-full.png", description: "Full horizontal logo" },
     { name: "Standard Logo", path: "/logos/cydena-logo.png", description: "Standard square logo" },
