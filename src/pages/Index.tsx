@@ -82,67 +82,76 @@ const Index = () => {
               Built technology-first. No agency rebrand.
             </Badge>
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 md:mb-6">
-              Every Candidate{" "}
+              Prove Your Skills.{" "}
               <span className="bg-gradient-cyber bg-clip-text text-transparent">
-                Validated
+                Get Discovered.
               </span>
-              , Not Just Listed
             </h1>
             <p className="text-xl md:text-2xl font-semibold mb-3 md:mb-4">
-              We validate capability — not scale headcount. Hire verified cyber talent without recruiter fees.
+              The UK's only cybersecurity talent platform where your skills are verified, not just claimed.
             </p>
             <p className="text-base md:text-lg text-muted-foreground mb-6 md:mb-8 max-w-2xl mx-auto px-2">
-              Identity checked. Right-to-work confirmed. Certifications auto-verified. Skills assessed. The UK's only cybersecurity talent platform where every professional is proven, not just registered.
+              Build a verified profile with identity checks, auto-verified certifications, and real skills assessments. Stand out to top employers — no recruiter middlemen, no spam, no fees.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center px-4">
-              <Link to="/profiles" className="w-full sm:w-auto">
+              <Link to="/auth" className="w-full sm:w-auto">
                 <Button variant="hero" size="lg" className="gap-2 w-full sm:w-auto">
-                  Find Talent <ArrowRight className="h-5 w-5" />
+                  Create Free Profile <ArrowRight className="h-5 w-5" />
                 </Button>
               </Link>
               <Link to="/jobs" className="w-full sm:w-auto">
                 <Button variant="cyber" size="lg" className="w-full sm:w-auto">
-                  Find Jobs
+                  Browse Jobs
                 </Button>
               </Link>
             </div>
 
-            {/* 3 Hiring Modes — Key Differentiator */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-8 max-w-3xl mx-auto px-2">
-              <Link to="/profiles" className="group">
-                <div className="bg-card/60 backdrop-blur border border-border/50 rounded-xl p-4 text-center hover:border-primary/40 transition-all hover:bg-primary/5">
-                  <Users className="h-6 w-6 text-primary mx-auto mb-2" />
-                  <p className="font-semibold text-sm">Book Talent</p>
-                  <p className="text-[11px] text-muted-foreground mt-1">Browse & hire pre-verified professionals directly</p>
+            {/* Dual value props — Candidates & Employers */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-8 max-w-3xl mx-auto px-2">
+              {/* Candidate value */}
+              <div className="bg-card/60 backdrop-blur border border-border/50 rounded-xl p-5 text-left">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                    <Award className="h-4 w-4 text-primary" />
+                  </div>
+                  <p className="font-semibold text-sm">For Candidates</p>
+                  <Badge variant="outline" className="text-[10px] px-1.5 py-0 border-success/30 text-success ml-auto">100% Free</Badge>
                 </div>
-              </Link>
-              <Link to="/marketplace" className="group">
-                <div className="bg-card/60 backdrop-blur border border-border/50 rounded-xl p-4 text-center hover:border-secondary/40 transition-all hover:bg-secondary/5">
-                  <Target className="h-6 w-6 text-secondary mx-auto mb-2" />
-                  <p className="font-semibold text-sm">Post a Bounty</p>
-                  <p className="text-[11px] text-muted-foreground mt-1">Scope a task, set a budget — talent comes to you</p>
+                <ul className="space-y-1.5 text-[12px] text-muted-foreground">
+                  <li className="flex items-start gap-1.5"><CheckCircle className="h-3 w-3 text-success mt-0.5 flex-shrink-0" /> Verified profile that proves your capability</li>
+                  <li className="flex items-start gap-1.5"><CheckCircle className="h-3 w-3 text-success mt-0.5 flex-shrink-0" /> Free learning paths, CTF challenges & XP</li>
+                  <li className="flex items-start gap-1.5"><CheckCircle className="h-3 w-3 text-success mt-0.5 flex-shrink-0" /> Direct employer access — no recruiter spam</li>
+                  <li className="flex items-start gap-1.5"><CheckCircle className="h-3 w-3 text-success mt-0.5 flex-shrink-0" /> Auto-verified certs from Credly, CompTIA & more</li>
+                </ul>
+              </div>
+
+              {/* Employer value */}
+              <div className="bg-card/60 backdrop-blur border border-border/50 rounded-xl p-5 text-left">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="h-8 w-8 rounded-full bg-secondary/10 flex items-center justify-center">
+                    <Briefcase className="h-4 w-4 text-secondary" />
+                  </div>
+                  <p className="font-semibold text-sm">For Employers</p>
                 </div>
-              </Link>
-              <div className="group cursor-default">
-                <div className="bg-card/60 backdrop-blur border border-border/50 rounded-xl p-4 text-center relative overflow-hidden">
-                  <Badge variant="outline" className="absolute top-2 right-2 text-[9px] px-1.5 py-0 border-accent/30 text-accent">Coming Soon</Badge>
-                  <Zap className="h-6 w-6 text-accent mx-auto mb-2" />
-                  <p className="font-semibold text-sm">AI Agent Hiring</p>
-                  <p className="text-[11px] text-muted-foreground mt-1">AI matches, shortlists & schedules — autonomously</p>
-                </div>
+                <ul className="space-y-1.5 text-[12px] text-muted-foreground">
+                  <li className="flex items-start gap-1.5"><CheckCircle className="h-3 w-3 text-success mt-0.5 flex-shrink-0" /> Every candidate identity & RTW pre-verified</li>
+                  <li className="flex items-start gap-1.5"><CheckCircle className="h-3 w-3 text-success mt-0.5 flex-shrink-0" /> Skills-assessed talent, not keyword CVs</li>
+                  <li className="flex items-start gap-1.5"><CheckCircle className="h-3 w-3 text-success mt-0.5 flex-shrink-0" /> UK compliance: CBEST, SC/DV, NIS2 ready</li>
+                  <li className="flex items-start gap-1.5"><CheckCircle className="h-3 w-3 text-success mt-0.5 flex-shrink-0" /> No recruiter fees — hire direct from £149/mo</li>
+                </ul>
               </div>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center mt-6 text-xs text-muted-foreground">
-              <span className="flex items-center gap-1 justify-center"><CheckCircle className="h-3 w-3 text-success" /> Free for candidates</span>
+              <span className="flex items-center gap-1 justify-center"><CheckCircle className="h-3 w-3 text-success" /> Free for candidates — always</span>
               <span className="flex items-center gap-1 justify-center"><CheckCircle className="h-3 w-3 text-success" /> No agency heritage — technology-first</span>
-              <span className="flex items-center gap-1 justify-center"><CheckCircle className="h-3 w-3 text-success" /> UK compliance: CBEST, SC/DV, NIS2</span>
+              <span className="flex items-center gap-1 justify-center"><CheckCircle className="h-3 w-3 text-success" /> Trusted by UK cyber professionals</span>
             </div>
 
             {/* Why Cydena link */}
             <div className="mt-6">
               <Link to="/why-cydena" className="text-sm text-primary hover:underline inline-flex items-center gap-1">
-                See why employers choose Cydena over volume platforms <ArrowRight className="h-3 w-3" />
+                See how Cydena compares to traditional recruitment <ArrowRight className="h-3 w-3" />
               </Link>
             </div>
 
