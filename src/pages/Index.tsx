@@ -51,6 +51,16 @@ const Index = () => {
       <SEO />
       <Schema type="organization" />
       <Schema type="website" />
+      <Schema type="faqPage" data={{ questions: [
+        { question: "How is Cydena different from recruitment agencies and volume platforms?", answer: "Most platforms scale headcount — they list thousands of unverified CVs. Cydena validates capability. Every candidate's identity, right-to-work, certifications, and skills are proven before you see them. We're built technology-first with no recruitment agency heritage, and we specialise in UK compliance frameworks like CBEST, TIBER-UK, and SC/DV clearance." },
+        { question: "What does verification include?", answer: "Our HR-Ready verification covers identity checks, right-to-work validation, security clearance confirmation, and automated certification verification. Skills assessments from platforms like TryHackMe and HackTheBox prove technical ability." },
+        { question: "Is there a contract or commitment?", answer: "No long-term contracts. All plans are month-to-month and you can cancel anytime. We also offer annual billing with a 15% discount for teams that prefer it." },
+        { question: "How quickly can we start hiring?", answer: "You can browse verified candidates immediately after signing up. Most employers have a shortlist within the first week. Our talent pods and intelligent matching accelerate time-to-hire significantly." },
+        { question: "Is Cydena really free for candidates?", answer: "Yes, 100% free. Creating your profile, getting verified, applying to jobs, and accessing learning paths costs you nothing. We're funded by employer subscriptions." },
+        { question: "How long does verification take?", answer: "Basic profile setup takes about 2 minutes. HR-Ready verification (identity, right-to-work) is typically reviewed within 24–48 hours. Certification verification is often instant for supported providers." },
+        { question: "Do I need certifications to join?", answer: "No. Cydena welcomes professionals at all levels, including career transitioners. Certifications boost your profile visibility, but skills assessments and peer endorsements also help you stand out." },
+        { question: "Who can see my profile?", answer: "Your profile is visible to verified employers and recruiters on the platform. Sensitive information like identity documents is never shared — only your verification status badges are shown." },
+      ]}} />
       <Navigation />
 
       {/* Hero Section — Specific, outcome-driven */}
