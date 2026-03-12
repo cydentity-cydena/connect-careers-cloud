@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 interface SchemaProps {
-  type: 'organization' | 'website' | 'jobPosting' | 'breadcrumb';
+  type: 'organization' | 'website' | 'jobPosting' | 'breadcrumb' | 'faqPage';
   data?: any;
 }
 
