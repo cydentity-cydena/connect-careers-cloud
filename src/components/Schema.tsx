@@ -167,6 +167,21 @@ const generateSchema = (type: string, data?: any) => {
         }))
       };
     
+    case 'faqPage':
+      if (!data || !data.questions) return null;
+      return {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": data.questions.map((q: { question: string; answer: string }) => ({
+          "@type": "Question",
+          "name": q.question,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": q.answer
+          }
+        }))
+      };
+    
     default:
       return null;
   }
