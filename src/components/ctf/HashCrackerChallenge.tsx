@@ -103,6 +103,11 @@ const HELP_LINES = [
   "",
 ];
 
+const HINTS = [
+  { text: "The first 3 hashes are 32 hex characters long — that's a strong indicator of the MD5 algorithm. The last 3 are 40 characters — characteristic of SHA-1.", cost: 15 },
+  { text: "Try using the built-in 'crack' command with each hash. It runs a dictionary attack against a common wordlist and will reveal both the plaintext and algorithm if found.", cost: 25 },
+];
+
 interface HashCrackerChallengeProps {
   onComplete: (flag: string) => void;
 }
