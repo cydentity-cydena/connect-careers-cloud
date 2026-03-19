@@ -351,6 +351,7 @@ const CTFEvent = () => {
     if (title.includes('client brief') || title.includes('professional practice')) return <ClientBriefChallenge onComplete={onComplete} />;
     if (title.includes('windows security') || title.includes('os security')) return <WindowsSecurityChallenge onComplete={onComplete} />;
     if (title.includes('osint') || title.includes('reconnaissance')) return <OSINTChallenge onComplete={onComplete} />;
+    if (title.includes('hash cracker') || title.includes('hash crack')) return <HashCrackerChallenge onComplete={onComplete} />;
     return null;
   };
 
