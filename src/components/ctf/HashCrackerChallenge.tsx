@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { CheckCircle2, Terminal } from "lucide-react";
+import { CheckCircle2, Terminal, Lightbulb } from "lucide-react";
 
 const FLAG = "FLAG{Congratulations_you_cracked_the_weak_hashes_and_identified_their_hashing_algorithms}";
 
@@ -103,6 +103,11 @@ const HELP_LINES = [
   "",
 ];
 
+const HINTS = [
+  { text: "The first 3 hashes are 32 hex characters long — that's a strong indicator of the MD5 algorithm. The last 3 are 40 characters — characteristic of SHA-1.", cost: 15 },
+  { text: "Try using the built-in 'crack' command with each hash. It runs a dictionary attack against a common wordlist and will reveal both the plaintext and algorithm if found.", cost: 25 },
+];
+
 interface HashCrackerChallengeProps {
   onComplete: (flag: string) => void;
 }
@@ -112,6 +117,8 @@ const HashCrackerChallenge = ({ onComplete }: HashCrackerChallengeProps) => {
   const [input, setInput] = useState("");
   const [solved, setSolved] = useState<boolean[]>(new Array(6).fill(false));
   const [isComplete, setIsComplete] = useState(false);
+  const [hintsRevealed, setHintsRevealed] = useState<boolean[]>(new Array(HINTS.length).fill(false));
+  const [pointsDeducted, setPointsDeducted] = useState(0);
   const terminalRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -362,6 +369,40 @@ const HashCrackerChallenge = ({ onComplete }: HashCrackerChallengeProps) => {
           </div>
         )}
       </div>
+
+      {/* Hints */}
+      {!isComplete && (
+        <div className="space-y-2">
+          {HINTS.map((hint, i) => (
+            <div key={i} className="flex items-start gap-2">
+              {hintsRevealed[i] ? (
+                <div className="flex-1 text-xs text-yellow-300/90 bg-yellow-500/10 border border-yellow-500/20 rounded-md px-3 py-2">
+                  <span className="font-semibold">Hint {i + 1}:</span> {hint.text}
+                </div>
+              ) : (
+                <button
+                  onClick={() => {
+                    const newRevealed = [...hintsRevealed];
+                    newRevealed[i] = true;
+                    setHintsRevealed(newRevealed);
+                    setPointsDeducted(prev => prev + hint.cost);
+                    addLines(`[!] Hint ${i + 1} revealed (−${hint.cost} pts)`, "");
+                  }}
+                  className="flex items-center gap-1.5 text-xs text-yellow-400/70 hover:text-yellow-400 transition-colors"
+                >
+                  <Lightbulb className="h-3.5 w-3.5" />
+                  Reveal Hint {i + 1} (−{hint.cost} pts)
+                </button>
+              )}
+            </div>
+          ))}
+          {pointsDeducted > 0 && (
+            <p className="text-[10px] text-muted-foreground text-center">
+              Points deducted: −{pointsDeducted}
+            </p>
+          )}
+        </div>
+      )}
 
       <p className="text-xs text-muted-foreground text-center">
         Type <code className="text-primary">help</code> for available commands
