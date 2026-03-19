@@ -117,6 +117,8 @@ const HashCrackerChallenge = ({ onComplete }: HashCrackerChallengeProps) => {
   const [input, setInput] = useState("");
   const [solved, setSolved] = useState<boolean[]>(new Array(6).fill(false));
   const [isComplete, setIsComplete] = useState(false);
+  const [hintsRevealed, setHintsRevealed] = useState<boolean[]>(new Array(HINTS.length).fill(false));
+  const [pointsDeducted, setPointsDeducted] = useState(0);
   const terminalRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
