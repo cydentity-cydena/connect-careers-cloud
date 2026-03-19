@@ -545,7 +545,9 @@ const CTFEvent = () => {
                     challenge.title.toLowerCase().includes('windows security') ||
                     challenge.title.toLowerCase().includes('os security') ||
                     challenge.title.toLowerCase().includes('osint') ||
-                    challenge.title.toLowerCase().includes('reconnaissance');
+                    challenge.title.toLowerCase().includes('reconnaissance') ||
+                    challenge.title.toLowerCase().includes('hash cracker') ||
+                    challenge.title.toLowerCase().includes('hash crack');
 
                   return (
                     <Card
