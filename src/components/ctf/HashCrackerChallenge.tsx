@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { CheckCircle2, Terminal } from "lucide-react";
+import { CheckCircle2, Terminal, Lightbulb } from "lucide-react";
 
 const FLAG = "FLAG{Congratulations_you_cracked_the_weak_hashes_and_identified_their_hashing_algorithms}";
 
