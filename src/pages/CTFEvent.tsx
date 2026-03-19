@@ -21,6 +21,7 @@ import { SOCInTheLoopChallenge } from "@/components/ctf/SOCInTheLoopChallenge";
 import ClientBriefChallenge from "@/components/ctf/ClientBriefChallenge";
 import WindowsSecurityChallenge from "@/components/ctf/WindowsSecurityChallenge";
 import OSINTChallenge from "@/components/ctf/OSINTChallenge";
+import HashCrackerChallenge from "@/components/ctf/HashCrackerChallenge";
 import {
   Flag, Trophy, Target, Lightbulb, Lock, CheckCircle2, Crown, Medal, Award,
   Flame, Terminal, Share2, Copy, Check, ShieldCheck, Calendar, Users
@@ -350,6 +351,7 @@ const CTFEvent = () => {
     if (title.includes('client brief') || title.includes('professional practice')) return <ClientBriefChallenge onComplete={onComplete} />;
     if (title.includes('windows security') || title.includes('os security')) return <WindowsSecurityChallenge onComplete={onComplete} />;
     if (title.includes('osint') || title.includes('reconnaissance')) return <OSINTChallenge onComplete={onComplete} />;
+    if (title.includes('hash cracker') || title.includes('hash crack')) return <HashCrackerChallenge onComplete={onComplete} />;
     return null;
   };
 
@@ -543,7 +545,9 @@ const CTFEvent = () => {
                     challenge.title.toLowerCase().includes('windows security') ||
                     challenge.title.toLowerCase().includes('os security') ||
                     challenge.title.toLowerCase().includes('osint') ||
-                    challenge.title.toLowerCase().includes('reconnaissance');
+                    challenge.title.toLowerCase().includes('reconnaissance') ||
+                    challenge.title.toLowerCase().includes('hash cracker') ||
+                    challenge.title.toLowerCase().includes('hash crack');
 
                   return (
                     <Card
