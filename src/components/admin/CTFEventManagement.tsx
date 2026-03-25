@@ -205,46 +205,50 @@ const CTFEventManagement = () => {
 
   const clearLeaderboard = async (eventId: string, eventName: string) => {
     try {
-      // Get challenge IDs for this event
-      const { data: assignments } = await supabase
-        .from('ctf_challenge_events')
-        .select('challenge_id')
-        .eq('event_id', eventId);
+      const [assignmentsRes, participantsRes] = await Promise.all([
+        supabase
+          .from('ctf_challenge_events')
+          .select('challenge_id')
+          .eq('event_id', eventId),
+        supabase
+          .from('ctf_event_participants')
+          .select('user_id')
+          .eq('event_id', eventId),
+      ]);
 
-      if (!assignments || assignments.length === 0) {
-        toast.info("No challenges assigned to this event");
-        return;
-      }
+      if (assignmentsRes.error) throw assignmentsRes.error;
+      if (participantsRes.error) throw participantsRes.error;
 
-      const challengeIds = assignments.map(a => a.challenge_id);
+      const challengeIds = (assignmentsRes.data ?? []).map(a => a.challenge_id);
+      const userIds = (participantsRes.data ?? []).map(p => p.user_id);
 
-      // Get participant user IDs for this event
-      const { data: participants } = await supabase
-        .from('ctf_event_participants')
-        .select('user_id')
-        .eq('event_id', eventId);
+      if (challengeIds.length > 0 && userIds.length > 0) {
+        const [{ error: subError }, { error: hintError }] = await Promise.all([
+          supabase
+            .from('ctf_submissions')
+            .delete()
+            .in('challenge_id', challengeIds)
+            .in('candidate_id', userIds),
+          supabase
+            .from('ctf_hint_usage')
+            .delete()
+            .in('challenge_id', challengeIds)
+            .in('candidate_id', userIds),
+        ]);
 
-      const userIds = participants?.map(p => p.user_id) || [];
-
-      // Delete submissions for these challenges by these users
-      if (userIds.length > 0) {
-        const { error: subError } = await supabase
-          .from('ctf_submissions')
-          .delete()
-          .in('challenge_id', challengeIds)
-          .in('candidate_id', userIds);
         if (subError) throw subError;
-
-        // Delete hint usage for these challenges by these users
-        const { error: hintError } = await supabase
-          .from('ctf_hint_usage')
-          .delete()
-          .in('challenge_id', challengeIds)
-          .in('candidate_id', userIds);
         if (hintError) throw hintError;
       }
 
-      toast.success(`Leaderboard cleared for ${eventName}`);
+      const { error: participantsDeleteError } = await supabase
+        .from('ctf_event_participants')
+        .delete()
+        .eq('event_id', eventId);
+
+      if (participantsDeleteError) throw participantsDeleteError;
+
+      setParticipantCounts(prev => ({ ...prev, [eventId]: 0 }));
+      toast.success(`Leaderboard and players cleared for ${eventName}`);
     } catch (err: any) {
       console.error(err);
       toast.error("Failed to clear leaderboard: " + err.message);
