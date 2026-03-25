@@ -314,6 +314,30 @@ const CTFEventManagement = () => {
                     <Button variant="ghost" size="sm" onClick={() => openAssignDialog(ev.id)} className="gap-1">
                       Challenges
                     </Button>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant="ghost" size="icon" title="Clear leaderboard">
+                          <RotateCcw className="h-4 w-4 text-amber-500" />
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Clear Leaderboard</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            This will delete all submissions and hint usage for <strong>{ev.name}</strong>. All participant scores will be reset to zero. This action cannot be undone.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction
+                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                            onClick={() => clearLeaderboard(ev.id, ev.name)}
+                          >
+                            Clear All Scores
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
                     <Button variant="ghost" size="icon" onClick={() => openEdit(ev)}>
                       <Edit className="h-4 w-4" />
                     </Button>
