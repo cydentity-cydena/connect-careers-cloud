@@ -15,7 +15,7 @@ interface Question {
 const QUESTIONS: Question[] = [
   {
     id: 1,
-    text: "Given the Client Brief, identify the correct legal authorizations that involve the scope, select what applies:",
+    text: "Based on the Client Brief, which IP range is authorised for testing?",
     options: [
       "192.168.110.0/24",
       "10.10.110.0/24",
@@ -27,7 +27,7 @@ const QUESTIONS: Question[] = [
   },
   {
     id: 2,
-    text: "Given the Client Brief, identify the correct legal authorizations that involve the scope, select what applies:",
+    text: "Based on the Client Brief, which domain is in scope?",
     options: [
       "financialaudit.com",
       "financialaudit.com.gb",
@@ -38,7 +38,7 @@ const QUESTIONS: Question[] = [
   },
   {
     id: 3,
-    text: "Given the Client Brief, flag the risks that apply:",
+    text: "Based on the Client Brief, which risks are acknowledged?",
     options: [
       "Application crashes",
       "System Instability",
@@ -56,7 +56,7 @@ const QUESTIONS: Question[] = [
   },
   {
     id: 4,
-    text: "Given the Client Brief, select the appropriate scope boundaries, select what applies:",
+    text: "What is the authorised IP scope, excluding any exclusions?",
     options: [
       "192.168.210.0/24",
       "10.10.110.0/24",
@@ -68,7 +68,7 @@ const QUESTIONS: Question[] = [
   },
   {
     id: 5,
-    text: "Given the Client Brief, select the appropriate scope boundaries, select what applies:",
+    text: "What is the authorised domain scope?",
     options: [
       "financialaudit.edu",
       "financialaudit.co",
@@ -80,7 +80,7 @@ const QUESTIONS: Question[] = [
   },
   {
     id: 6,
-    text: "Given the Client Brief, select the appropriate scope boundaries, select what applies:",
+    text: "What is the authorised testing window?",
     options: [
       "01/2026 – 02/2026",
       "02/2026 – 03/2026",
