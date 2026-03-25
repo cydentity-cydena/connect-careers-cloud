@@ -11,7 +11,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
-import { Plus, Edit, Trash2, Users, Calendar, Copy, Link, Eye, Upload, Image } from "lucide-react";
+import { Plus, Edit, Trash2, Users, Calendar, Copy, Link, Eye, Upload, Image, RotateCcw } from "lucide-react";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 
 interface CTFEvent {
   id: string;
@@ -202,6 +203,54 @@ const CTFEventManagement = () => {
     toast.success("Event URL copied!");
   };
 
+  const clearLeaderboard = async (eventId: string, eventName: string) => {
+    try {
+      // Get challenge IDs for this event
+      const { data: assignments } = await supabase
+        .from('ctf_challenge_events')
+        .select('challenge_id')
+        .eq('event_id', eventId);
+
+      if (!assignments || assignments.length === 0) {
+        toast.info("No challenges assigned to this event");
+        return;
+      }
+
+      const challengeIds = assignments.map(a => a.challenge_id);
+
+      // Get participant user IDs for this event
+      const { data: participants } = await supabase
+        .from('ctf_event_participants')
+        .select('user_id')
+        .eq('event_id', eventId);
+
+      const userIds = participants?.map(p => p.user_id) || [];
+
+      // Delete submissions for these challenges by these users
+      if (userIds.length > 0) {
+        const { error: subError } = await supabase
+          .from('ctf_submissions')
+          .delete()
+          .in('challenge_id', challengeIds)
+          .in('candidate_id', userIds);
+        if (subError) throw subError;
+
+        // Delete hint usage for these challenges by these users
+        const { error: hintError } = await supabase
+          .from('ctf_hint_usage')
+          .delete()
+          .in('challenge_id', challengeIds)
+          .in('candidate_id', userIds);
+        if (hintError) throw hintError;
+      }
+
+      toast.success(`Leaderboard cleared for ${eventName}`);
+    } catch (err: any) {
+      console.error(err);
+      toast.error("Failed to clear leaderboard: " + err.message);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -265,6 +314,30 @@ const CTFEventManagement = () => {
                     <Button variant="ghost" size="sm" onClick={() => openAssignDialog(ev.id)} className="gap-1">
                       Challenges
                     </Button>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant="ghost" size="icon" title="Clear leaderboard">
+                          <RotateCcw className="h-4 w-4 text-amber-500" />
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Clear Leaderboard</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            This will delete all submissions and hint usage for <strong>{ev.name}</strong>. All participant scores will be reset to zero. This action cannot be undone.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction
+                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                            onClick={() => clearLeaderboard(ev.id, ev.name)}
+                          >
+                            Clear All Scores
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
                     <Button variant="ghost" size="icon" onClick={() => openEdit(ev)}>
                       <Edit className="h-4 w-4" />
                     </Button>
