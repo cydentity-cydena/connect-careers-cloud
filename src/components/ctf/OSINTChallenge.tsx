@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { d } from "@/lib/ctfDecode";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -90,7 +91,7 @@ const SUB_CHALLENGES: SubChallenge[] = [
     title: "WHOIS Intelligence",
     objective: "Analyse the WHOIS record for cydena-dynamics.com. Identify the email prefix used by the technical team — this reveals an operational role that should not be publicly exposed.",
     documents: [{ name: "whois-cydena-dynamics.txt", content: WHOIS_DATA, icon: "🔍" }],
-    flag: "FLAG{devops-internal}",
+    flag: d("fWxhbnJldG5pLXNwb3ZlZHtHQUxG"),
     hint: "Look at the Tech Email field. The local-part before the @ symbol reveals the internal team or function responsible for infrastructure.",
     flagFormat: "FLAG{email-prefix}",
   },
@@ -99,7 +100,7 @@ const SUB_CHALLENGES: SubChallenge[] = [
     title: "DNS Zone Analysis",
     objective: "Examine the DNS zone file for cydena-dynamics.com. Identify a leaked internal hostname referenced in a TXT record that reveals their CI/CD migration history.",
     documents: [{ name: "cydena-dynamics-zone.txt", content: DNS_ZONE_DATA, icon: "🌐" }],
-    flag: "FLAG{git.northbridge.local}",
+    flag: d("fWxhY29sLmVnZGlyYmh0cm9uLnRpZ3tHQUxG"),
     hint: "TXT records can contain freeform text. Look for a migration note that mentions a previous internal hostname.",
     flagFormat: "FLAG{hostname}",
   },
@@ -108,7 +109,7 @@ const SUB_CHALLENGES: SubChallenge[] = [
     title: "Email Header Analysis I",
     objective: "Analyse the raw email headers. Identify the internal mail server hostname — a hostname using a non-public TLD that appears in the routing path.",
     documents: [{ name: "email_header.txt", content: EMAIL_HEADER_1, icon: "📧" }],
-    flag: "FLAG{mail.cydena.local}",
+    flag: d("fWxhY29sLmFuZWR5Yy5saWFte0dBTEY="),
     hint: "A hostname using a non-public TLD appears in the routing path. That internal mail server hostname is what you're looking for.",
     flagFormat: "FLAG{hostname}",
   },
@@ -120,7 +121,7 @@ const SUB_CHALLENGES: SubChallenge[] = [
       { name: "email_header_v2.txt", content: EMAIL_HEADER_2, icon: "📧" },
       { name: "dns_zone_reference.txt", content: DNS_ZONE_DATA, icon: "🌐" },
     ],
-    flag: "FLAG{build02.cydena.local}",
+    flag: d("fWxhY29sLmFuZWR5Yy4yMGRsaXVie0dBTEY="),
     hint: "Notice the change in internal domain suffix between older and newer systems. What naming pattern is being used now?",
     flagFormat: "FLAG{hostname.domain}",
   },

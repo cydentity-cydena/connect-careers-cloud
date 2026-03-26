@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { d } from "@/lib/ctfDecode";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
@@ -28,9 +29,9 @@ const CHESS_PUZZLES: ChessPuzzle[] = [
 2 . . . . . . . .
 1 . . . . . . . .`,
     question: "White to move. Black King e8, Black Queen d8, pawns d7/f7. White Queen h5, White Bishop c4. Find the checkmate!",
-    correctMove: "Qxf7#",
+    correctMove: d("IzdmeFE="),
     hint: "The Bishop on c4 protects a critical square on the a2-g8 diagonal",
-    flagLetter: "F"
+    flagLetter: d("Rg==")
   },
   {
     position: "Back Rank Mate",
@@ -44,9 +45,9 @@ const CHESS_PUZZLES: ChessPuzzle[] = [
 2 . . . . . . . .
 1 R . . . . . . .`,
     question: "White to move. Black King h8, pawns g7/h7. White Rook a1. Deliver checkmate!",
-    correctMove: "Ra8#",
+    correctMove: d("IzhhUg=="),
     hint: "The pawns trap the King - use the back rank",
-    flagLetter: "A"
+    flagLetter: d("QQ==")
   },
   {
     position: "Rook and King Coordination",
@@ -60,9 +61,9 @@ const CHESS_PUZZLES: ChessPuzzle[] = [
 2 . . . . . . . .
 1 . . R . . . . .`,
     question: "White to move. Black King a8, White King a6, White Rook c1. Find the checkmate!",
-    correctMove: "Rc8#",
+    correctMove: d("IzhjUg=="),
     hint: "The White King controls the escape squares on the 7th rank",
-    flagLetter: "C"
+    flagLetter: d("Qw==")
   },
   {
     position: "Queen Back Rank",
@@ -76,9 +77,9 @@ const CHESS_PUZZLES: ChessPuzzle[] = [
 2 . . . . . . . .
 1 . . . . Q . . .`,
     question: "White to move. Black King g8, Black Rook f8, pawns f7/g7/h7. White Queen e1. Deliver checkmate!",
-    correctMove: "Qe8#",
+    correctMove: d("IzhlUQ=="),
     hint: "The Queen attacks along the entire 8th rank",
-    flagLetter: "E"
+    flagLetter: d("RQ==")
   },
 ];
 
