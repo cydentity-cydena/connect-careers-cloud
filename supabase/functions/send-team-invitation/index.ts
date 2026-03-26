@@ -92,24 +92,26 @@ serve(async (req) => {
     let invitation = existingInvitation;
 
     if (!existingInvitation) {
+      // Create invitation
+      const { data: newInvitation, error: inviteError } = await supabaseClient
+        .from('team_invitations')
+        .insert({
+          inviter_id: user.id,
+          invitee_email,
+          role
+        })
+        .select()
+        .single();
 
-    // Create invitation
-    const { data: invitation, error: inviteError } = await supabaseClient
-      .from('team_invitations')
-      .insert({
-        inviter_id: user.id,
-        invitee_email,
-        role
-      })
-      .select()
-      .single();
-
-    if (inviteError) {
-      logStep("Error creating invitation", { error: inviteError });
-      throw inviteError;
+      if (inviteError) {
+        logStep("Error creating invitation", { error: inviteError });
+        throw inviteError;
+      }
+      invitation = newInvitation;
+      logStep("Invitation created", { invitationId: invitation.id });
+    } else {
+      logStep("Resending existing invitation", { invitationId: invitation.id });
     }
-
-    logStep("Invitation created", { invitationId: invitation.id });
 
     // Get inviter profile for email
     const { data: inviterProfile } = await supabaseClient
