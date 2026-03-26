@@ -2,8 +2,9 @@ import { useState, useRef, useEffect } from "react";
 import { CheckCircle2, FileText, ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { d } from "@/lib/ctfDecode";
 
-const FLAG = "FLAG{scope_boundaries_verified_and_risks_acknowledged}";
+const FLAG = d("fWRlZ2RlbHdvbmtjYV9za3Npcl9kbmFfZGVpZmlyZXZfc2VpcmFkbnVvYl9lcG9jc3tHQUxG");
 
 interface Question {
   id: number;
