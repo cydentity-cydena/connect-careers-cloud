@@ -40,11 +40,11 @@ serve(async (req) => {
     if (!user) throw new Error("User not authenticated");
     logStep("User authenticated", { userId: user.id });
 
-    const { invitee_email, role } = await req.json();
+    const { invitee_email, role, resend } = await req.json();
     if (!invitee_email || !role) {
       throw new Error("Missing required fields: invitee_email and role");
     }
-    logStep("Request data validated", { invitee_email, role });
+    logStep("Request data validated", { invitee_email, role, resend });
 
     // Check if seats are available
     const { data: seatsAvailable, error: seatsError } = await supabaseClient
@@ -78,7 +78,7 @@ serve(async (req) => {
       .eq('status', 'pending')
       .single();
 
-    if (existingInvitation) {
+    if (existingInvitation && !resend) {
       logStep("Invitation already exists");
       return new Response(
         JSON.stringify({ 
@@ -88,6 +88,10 @@ serve(async (req) => {
         { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 }
       );
     }
+
+    let invitation = existingInvitation;
+
+    if (!existingInvitation) {
 
     // Create invitation
     const { data: invitation, error: inviteError } = await supabaseClient
