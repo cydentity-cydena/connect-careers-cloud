@@ -5103,6 +5103,23 @@ export type Database = {
           projects_shared: number
         }[]
       }
+      get_ctf_challenges_safe: {
+        Args: { p_include_inactive?: boolean }
+        Returns: {
+          category: string
+          created_at: string
+          description: string
+          difficulty: string
+          file_name: string
+          file_url: string
+          hints: Json
+          id: string
+          is_active: boolean
+          points: number
+          title: string
+          visibility: string
+        }[]
+      }
       get_job_matches_graph: {
         Args: { p_candidate_id: string }
         Returns: {
