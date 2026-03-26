@@ -5120,6 +5120,24 @@ export type Database = {
           visibility: string
         }[]
       }
+      get_ctf_event_challenges_safe: {
+        Args: { p_event_id: string }
+        Returns: {
+          category: string
+          created_at: string
+          description: string
+          difficulty: string
+          file_name: string
+          file_url: string
+          hints: Json
+          id: string
+          is_active: boolean
+          points: number
+          sort_order: number
+          title: string
+          visibility: string
+        }[]
+      }
       get_job_matches_graph: {
         Args: { p_candidate_id: string }
         Returns: {
