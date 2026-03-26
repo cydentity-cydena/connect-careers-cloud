@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Users, UserPlus, UserX, Mail, CheckCircle, Clock } from "lucide-react";
+import { Users, UserPlus, UserX, Mail, CheckCircle, Clock, RefreshCw } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { InviteTeamMemberDialog } from "./InviteTeamMemberDialog";
@@ -94,6 +94,25 @@ export function TeamMembersView({ role }: TeamMembersViewProps) {
       return { limit: limit || 1, used: usageNum + 1 }; // +1 for owner
     },
   });
+
+  const handleResendInvite = async (email: string) => {
+    try {
+      const { data, error } = await supabase.functions.invoke('send-team-invitation', {
+        body: { invitee_email: email, role, resend: true }
+      });
+      if (error) throw error;
+      toast({
+        title: "Invitation resent",
+        description: `Invitation resent to ${email}`,
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to resend invitation",
+        variant: "destructive",
+      });
+    }
+  };
 
   const handleRemoveMember = async (memberId: string) => {
     try {
