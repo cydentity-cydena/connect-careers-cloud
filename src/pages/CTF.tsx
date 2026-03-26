@@ -155,23 +155,28 @@ const CTF = () => {
       console.log('CTF Admin check: No user logged in');
     }
 
-    // Fetch challenges - use base table for admin drafts, public view otherwise
-    let challengesQuery;
+    // Fetch challenges - admins query table directly, others use safe RPC
+    let challengesData: any[] | null = null;
+    let challengesError: any = null;
     if (showDrafts && userIsAdmin) {
-      // Admin preview mode - fetch all challenges including drafts (but exclude flag)
-      challengesQuery = supabase
+      // Admin preview mode - direct table access (RLS allows admins)
+      const result = await supabase
         .from('ctf_challenges')
-        .select('id, title, description, category, difficulty, points, hints, is_active, file_url, file_name')
+        .select('id, title, description, category, difficulty, points, hints, is_active, file_url, file_name, visibility')
         .order('points', { ascending: true });
+      challengesData = result.data;
+      challengesError = result.error;
     } else {
-      // Normal mode - public view only (is_active = true)
-      challengesQuery = supabase
-        .from('ctf_challenges_public')
-        .select('*')
-        .order('points', { ascending: true });
+      // Normal mode - use secure RPC that never exposes flag
+      const result = await supabase.rpc('get_ctf_challenges_safe');
+      if (result.data) {
+        // Filter to public/both visibility for main CTF page
+        challengesData = (result.data as any[]).filter(
+          (c: any) => c.visibility === 'public' || c.visibility === 'both'
+        );
+      }
+      challengesError = result.error;
     }
-    
-    const { data: challengesData, error: challengesError } = await challengesQuery;
 
     if (challengesError) {
       console.error("Error fetching challenges:", challengesError);
