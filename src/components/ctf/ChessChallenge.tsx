@@ -15,7 +15,6 @@ interface ChessPuzzle {
   flagLetter: string;
 }
 
-// Valid checkmate-in-one puzzles - destination files spell FACE
 const CHESS_PUZZLES: ChessPuzzle[] = [
   {
     position: "Scholar's Mate pattern",
