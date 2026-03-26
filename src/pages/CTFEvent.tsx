@@ -602,7 +602,7 @@ const CTFEvent = () => {
                               onKeyDown={e => e.key === 'Enter' && handleSubmitFlag()}
                               className="font-mono"
                             />
-                            <Button onClick={handleSubmitFlag} disabled={submitting}>
+                            <Button onClick={() => handleSubmitFlag()} disabled={submitting}>
                               {submitting ? "..." : "Submit"}
                             </Button>
                           </div>
