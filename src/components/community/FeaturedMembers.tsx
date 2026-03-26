@@ -50,14 +50,13 @@ export const FeaturedMembers = () => {
       if (adminError) throw adminError;
 
       // Fetch referral-featured profiles (featured_until in future)
-      const { data: referralFeatured, error: referralError } = await supabase
-        .from('profiles')
-        .select('id, full_name, username, avatar_url, desired_job_title, featured_until')
-        .gt('featured_until', new Date().toISOString())
-        .order('featured_until', { ascending: false })
-        .limit(3);
-
+      // Use safe RPC to get profiles, then filter for featured
+      const { data: allSafeProfiles, error: referralError } = await supabase.rpc('get_profiles_safe');
       if (referralError) throw referralError;
+      const referralFeatured = (allSafeProfiles || [])
+        .filter((p: any) => p.featured_until && new Date(p.featured_until) > new Date())
+        .sort((a: any, b: any) => new Date(b.featured_until).getTime() - new Date(a.featured_until).getTime())
+        .slice(0, 3);
 
       // Combine and dedupe (admin-featured takes priority)
       const adminUserIds = new Set(adminFeatured?.map(m => m.user_id) || []);
