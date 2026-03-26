@@ -260,33 +260,19 @@ const CTF = () => {
     setSubmitting(true);
 
     try {
-      // Use the secure RPC function to verify the flag
-      const { data: isCorrect, error: verifyError } = await supabase
-        .rpc('verify_ctf_flag', {
+      // Use secure server-side RPC that validates AND submits atomically
+      const { data: result, error: submitError } = await supabase
+        .rpc('submit_ctf_flag', {
           p_challenge_id: selectedChallenge.id,
           p_submitted_flag: currentInput.trim()
         });
 
-      if (verifyError) throw verifyError;
+      if (submitError) throw submitError;
 
-      // Calculate points with hint deductions
-      const hintPenalty = hintDeductions[selectedChallenge.id] || 0;
-      const finalPoints = Math.max(0, selectedChallenge.points - hintPenalty);
+      const response = result as { success: boolean; is_correct?: boolean; points_awarded?: number; error?: string; already_solved?: boolean };
 
-      // Record the submission
-      const { error: submitError } = await supabase
-        .from('ctf_submissions')
-        .insert({
-          candidate_id: userId,
-          challenge_id: selectedChallenge.id,
-          submitted_flag: currentInput.trim(),
-          is_correct: isCorrect,
-          points_awarded: isCorrect ? finalPoints : 0
-        });
-
-      if (submitError) {
-        // Check if already solved (unique constraint on correct submissions)
-        if (submitError.code === '23505') {
+      if (!response.success) {
+        if (response.already_solved) {
           toast.info("You've already solved this challenge!");
           setUserStats(prev => ({
             ...prev,
@@ -297,21 +283,21 @@ const CTF = () => {
           setSelectedChallenge(null);
           setFlagInputs(prev => ({ ...prev, [selectedChallenge.id]: "" }));
           return;
-        } else {
-          throw submitError;
         }
+        throw new Error(response.error || 'Submission failed');
       }
       
-      if (isCorrect) {
-        // Show celebration feedback before clearing
+      if (response.is_correct) {
+        const pointsAwarded = response.points_awarded || 0;
+        const hintPenalty = hintDeductions[selectedChallenge.id] || 0;
         const pointsMessage = hintPenalty > 0 
-          ? `${selectedChallenge.points} - ${hintPenalty} hint penalty = ${finalPoints}`
-          : `${finalPoints}`;
-        setJustSolved({ challengeId: selectedChallenge.id, points: finalPoints });
+          ? `${selectedChallenge.points} - ${hintPenalty} hint penalty = ${pointsAwarded}`
+          : `${pointsAwarded}`;
+        setJustSolved({ challengeId: selectedChallenge.id, points: pointsAwarded });
         setUserStats(prev => ({
           ...prev,
           solvedChallenges: [...prev.solvedChallenges, selectedChallenge.id],
-          totalPoints: prev.totalPoints + finalPoints
+          totalPoints: prev.totalPoints + pointsAwarded
         }));
         setFlagInputs(prev => ({ ...prev, [selectedChallenge.id]: "" }));
         

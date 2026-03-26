@@ -254,28 +254,27 @@ const CourseDetail = () => {
 
     setSubmitting(true);
     try {
-      const { data: isCorrect, error: verifyError } = await supabase
-        .rpc('verify_ctf_flag', { p_challenge_id: challenge.id, p_submitted_flag: currentInput.trim() });
-      if (verifyError) throw verifyError;
+      const { data: result, error: submitError } = await supabase
+        .rpc('submit_ctf_flag', {
+          p_challenge_id: challenge.id,
+          p_submitted_flag: currentInput.trim()
+        });
 
-      const hintPenalty = hintDeductions[challenge.id] || 0;
-      const finalPoints = Math.max(0, challenge.points - hintPenalty);
+      if (submitError) throw submitError;
 
-      const { error: submitError } = await supabase.from('ctf_submissions').insert({
-        candidate_id: userId, challenge_id: challenge.id,
-        submitted_flag: currentInput.trim(), is_correct: isCorrect, points_awarded: isCorrect ? finalPoints : 0
-      });
+      const response = result as { success: boolean; is_correct?: boolean; points_awarded?: number; error?: string; already_solved?: boolean };
 
-      if (submitError) {
-        if (submitError.code === '23505') {
+      if (!response.success) {
+        if (response.already_solved) {
           toast.info("You've already solved this challenge!");
           return;
         }
-        throw submitError;
+        throw new Error(response.error || 'Submission failed');
       }
 
-      if (isCorrect) {
-        setJustSolved({ challengeId: challenge.id, points: finalPoints });
+      if (response.is_correct) {
+        const pointsAwarded = response.points_awarded || 0;
+        setJustSolved({ challengeId: challenge.id, points: pointsAwarded });
         setSolvedChallenges(prev => [...prev, challenge.id]);
         setFlagInputs(prev => ({ ...prev, [challenge.id]: "" }));
         setTimeout(() => { setJustSolved(null); setSelectedChallenge(null); }, 3000);
