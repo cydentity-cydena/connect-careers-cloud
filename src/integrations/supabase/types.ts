@@ -5199,6 +5199,14 @@ export type Database = {
       }
       mark_as_founding_200: { Args: { user_id: string }; Returns: Json }
       mark_message_read: { Args: { message_id: string }; Returns: undefined }
+      submit_ctf_flag: {
+        Args: {
+          p_challenge_id: string
+          p_event_id?: string
+          p_submitted_flag: string
+        }
+        Returns: Json
+      }
       verify_ctf_flag: {
         Args: { p_challenge_id: string; p_submitted_flag: string }
         Returns: boolean
