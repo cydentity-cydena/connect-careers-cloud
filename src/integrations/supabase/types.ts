@@ -4212,6 +4212,42 @@ export type Database = {
         }
         Relationships: []
       }
+      team_invitations: {
+        Row: {
+          accepted_at: string | null
+          created_at: string
+          id: string
+          invitee_email: string
+          inviter_id: string
+          role: string
+          status: string
+          token: string
+          updated_at: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          created_at?: string
+          id?: string
+          invitee_email: string
+          inviter_id: string
+          role: string
+          status?: string
+          token?: string
+          updated_at?: string
+        }
+        Update: {
+          accepted_at?: string | null
+          created_at?: string
+          id?: string
+          invitee_email?: string
+          inviter_id?: string
+          role?: string
+          status?: string
+          token?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       team_members: {
         Row: {
           created_at: string | null
@@ -5075,6 +5111,10 @@ export type Database = {
       check_profile_view_rate_limit: {
         Args: { p_daily_limit?: number; p_viewer_id: string }
         Returns: Json
+      }
+      check_seats_available: {
+        Args: { owner_id: string; role_type: string }
+        Returns: boolean
       }
       count_monthly_assessments: {
         Args: { p_user_id: string }
