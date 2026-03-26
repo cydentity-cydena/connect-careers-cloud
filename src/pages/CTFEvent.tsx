@@ -138,33 +138,26 @@ const CTFEvent = () => {
   };
 
   const loadEventData = async (eventId: string, uid: string) => {
-    // Load challenges assigned to this event
-    const { data: challengeAssignments } = await supabase
-      .from('ctf_challenge_events')
-      .select('challenge_id, sort_order')
-      .eq('event_id', eventId)
-      .order('sort_order', { ascending: true });
+    // Load assigned event challenges through secure server-side function
+    const { data: challengesData, error: challengesError } = await supabase
+      .rpc('get_ctf_event_challenges_safe', { p_event_id: eventId });
 
-    if (challengeAssignments && challengeAssignments.length > 0) {
-      const challengeIds = challengeAssignments.map(ca => ca.challenge_id);
-      // Use safe RPC that never exposes flag column
-      const { data: allChallenges } = await supabase.rpc('get_ctf_challenges_safe');
-      const challengesData = (allChallenges as any[] || []).filter(
-        (c: any) => challengeIds.includes(c.id) && c.is_active
-      );
-
-      if (challengesData) {
-        // Sort by assignment order
-        const orderMap = new Map(challengeAssignments.map(ca => [ca.challenge_id, ca.sort_order]));
-        const mapped: CTFChallenge[] = challengesData
-          .map(c => ({
-            id: c.id!, title: c.title!, description: c.description!,
-            category: c.category!, difficulty: c.difficulty!, points: c.points!,
-            hints: parseHints(c.hints), file_url: c.file_url || null, file_name: c.file_name || null
-          }))
-          .sort((a, b) => (orderMap.get(a.id) || 0) - (orderMap.get(b.id) || 0));
-        setChallenges(mapped);
-      }
+    if (challengesError) {
+      console.error("Error loading event challenges:", challengesError);
+      setChallenges([]);
+    } else {
+      const mapped: CTFChallenge[] = (challengesData as any[] || []).map(c => ({
+        id: c.id!,
+        title: c.title!,
+        description: c.description!,
+        category: c.category!,
+        difficulty: c.difficulty!,
+        points: c.points!,
+        hints: parseHints(c.hints),
+        file_url: c.file_url || null,
+        file_name: c.file_name || null
+      }));
+      setChallenges(mapped);
     }
 
     // Load event leaderboard
