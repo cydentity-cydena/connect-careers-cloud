@@ -198,7 +198,7 @@ const KNOWN_IPS = [
   "198.51.100.99",  // Nikto
   "203.0.113.45",   // Credential stuffing
   "203.0.115.36",   // XSS attempts
-  "203.0.113.77",   // CORRECT ANSWER - subtle SQLi
+  "203.0.113.77",   // Subtle SQLi attempts
   "45.33.32.156",   // Path traversal
   "172.16.0.50",    // SSRF
 ];
