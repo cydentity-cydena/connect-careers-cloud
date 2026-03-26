@@ -20,12 +20,12 @@ interface HashSolution {
 }
 
 const SOLUTIONS: HashSolution[] = [
-  { hash: "5d41402abc4b2a76b9719d911017c592", plaintext: "hello", algorithm: "md5" },
-  { hash: "bba57ffdc31f073ab830ae660156181f", plaintext: "its me", algorithm: "md5" },
-  { hash: "0800fc577294c34e0b28ad2839435945", plaintext: "hash", algorithm: "md5" },
-  { hash: "1c4cb48e4fcc0769f6bdd4ba7585fad02570a371", plaintext: "cracker", algorithm: "sha-1" },
-  { hash: "9193bc3e3398740a43fc57266ca3713745382b3a", plaintext: "letssee", algorithm: "sha-1" },
-  { hash: "8786ba517f024e479b20982567f998e58cde951e", plaintext: "crackme", algorithm: "sha-1" },
+  { hash: "5d41402abc4b2a76b9719d911017c592", plaintext: d("b2xsZWg="), algorithm: "md5" },
+  { hash: "bba57ffdc31f073ab830ae660156181f", plaintext: d("ZW0gc3Rp"), algorithm: "md5" },
+  { hash: "0800fc577294c34e0b28ad2839435945", plaintext: d("aHNhaA=="), algorithm: "md5" },
+  { hash: "1c4cb48e4fcc0769f6bdd4ba7585fad02570a371", plaintext: d("cmVrY2FyYw=="), algorithm: "sha-1" },
+  { hash: "9193bc3e3398740a43fc57266ca3713745382b3a", plaintext: d("ZWVzc3RlbA=="), algorithm: "sha-1" },
+  { hash: "8786ba517f024e479b20982567f998e58cde951e", plaintext: d("ZW1rY2FyYw=="), algorithm: "sha-1" },
 ];
 
 // Lightweight MD5 implementation (RFC 1321)
