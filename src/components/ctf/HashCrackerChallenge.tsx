@@ -255,7 +255,7 @@ const HashCrackerChallenge = ({ onComplete }: HashCrackerChallengeProps) => {
       return;
     }
 
-    // Check hash:plaintext algorithm format
+    // Check hash:plaintext algorithm format (alternative manual method)
     const match = low.match(/^([a-f0-9]+):(.+)\s+(md5|sha-1|sha1)$/);
     if (match) {
       const [, hash, plaintext, alg] = match;
@@ -266,32 +266,10 @@ const HashCrackerChallenge = ({ onComplete }: HashCrackerChallengeProps) => {
       );
 
       if (idx !== -1) {
-        const newSolved = [...solved];
-        newSolved[idx] = true;
-        setSolved(newSolved);
-
-        if (newSolved.every(Boolean)) {
-          addLines(
-            displayCmd,
-            "✓ Correct Hashing Algorithm Identification and Hash Decryption!",
-            "",
-            `🎉 ${FLAG}`,
-            "",
-            "FLAG retrieved. Challenge complete!",
-            ""
-          );
-          setIsComplete(true);
-          onComplete(FLAG);
-        } else {
-          const remaining = newSolved.filter(s => !s).length;
-          addLines(
-            displayCmd,
-            `✓ Correct! ${remaining} hash${remaining === 1 ? "" : "es"} remaining.`,
-            ""
-          );
-        }
+        addLines(displayCmd);
+        markSolved(idx);
       } else {
-        addLines(displayCmd, "✗ Incorrect hash decryption or algorithm. Try again.", "");
+        addLines(displayCmd, "✗ Incorrect. Try again.", "");
       }
     } else {
       addLines(displayCmd, "Command not recognised. Type 'help' for allowed commands.", "");
