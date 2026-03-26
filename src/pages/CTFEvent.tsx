@@ -147,11 +147,11 @@ const CTFEvent = () => {
 
     if (challengeAssignments && challengeAssignments.length > 0) {
       const challengeIds = challengeAssignments.map(ca => ca.challenge_id);
-      const { data: challengesData } = await supabase
-        .from('ctf_challenges')
-        .select('id, title, description, category, difficulty, points, hints, file_url, file_name')
-        .in('id', challengeIds)
-        .eq('is_active', true);
+      // Use safe RPC that never exposes flag column
+      const { data: allChallenges } = await supabase.rpc('get_ctf_challenges_safe');
+      const challengesData = (allChallenges as any[] || []).filter(
+        (c: any) => challengeIds.includes(c.id) && c.is_active
+      );
 
       if (challengesData) {
         // Sort by assignment order
