@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { d } from "@/lib/ctfDecode";
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -18,7 +19,7 @@ interface CuriousWebChallengeProps {
   isCompleted?: boolean;
 }
 
-const FLAG = 'FLAG{ai_was_trying_to_distract_you}';
+const FLAG = d('fXVveV90Y2FydHNpZF9vdF9nbml5cnRfc2F3X2lhe0dBTEY=');
 
 // Simulated web pages
 const PAGES: Record<string, { title: string; content: React.ReactNode; source: string }> = {

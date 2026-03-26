@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
+import { d } from "@/lib/ctfDecode";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -258,7 +259,7 @@ export const DeepfakeDetectorChallenge = ({ onComplete }: DeepfakeDetectorChalle
       // Need all 3 correct to get the flag
       if (finalScore === 3) {
         setTimeout(() => {
-          onComplete('FLAG{deepfake_detector_elite}');
+          onComplete(d('fWV0aWxlX3JvdGNldGVkX2VrYWZwZWVke0dBTEY='));
         }, 1500);
       }
     } else {

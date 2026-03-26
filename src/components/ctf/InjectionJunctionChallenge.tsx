@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { d } from "@/lib/ctfDecode";
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -13,7 +14,7 @@ interface InjectionJunctionChallengeProps {
   isCompleted?: boolean;
 }
 
-const FLAG = 'FLAG{sql_injection_master}';
+const FLAG = d('fXJldHNhbV9ub2l0Y2VqbmlfbHFze0dBTEY=');
 
 // Simulated database
 const USERS_TABLE = [
