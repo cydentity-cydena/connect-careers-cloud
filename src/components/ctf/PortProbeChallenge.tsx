@@ -13,7 +13,7 @@ const HOST = "127.0.0.1";
 const PORT_RANGE = { min: 1, max: 65535 };
 const SCAN_RANGE = "1-65535"; // Full port range for realism
 const BANNER_PATH = "/banner.txt";
-const FLAG = "FLAG{banner_found_via_scan}";
+const FLAG = d("fW5hY3NfYWl2X2RudW9mX3Jlbm5hYntHQUxG");
 
 // Generate consistent ports based on challenge ID (pseudo-random but deterministic)
 const generatePorts = (seed: string): { realPort: number; redHttpPort: number; redNonHttpPort: number } => {

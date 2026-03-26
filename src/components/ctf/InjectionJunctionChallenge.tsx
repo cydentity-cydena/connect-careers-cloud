@@ -13,7 +13,7 @@ interface InjectionJunctionChallengeProps {
   isCompleted?: boolean;
 }
 
-const FLAG = 'FLAG{sql_injection_master}';
+const FLAG = d('fXJldHNhbV9ub2l0Y2VqbmlfbHFze0dBTEY=');
 
 // Simulated database
 const USERS_TABLE = [

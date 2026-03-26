@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { CheckCircle2, Terminal, Lightbulb } from "lucide-react";
+import { d } from "@/lib/ctfDecode";
 
-const FLAG = "FLAG{Congratulations_you_cracked_the_weak_hashes_and_identified_their_hashing_algorithms}";
+const FLAG = d("fXNtaHRpcm9nbGFfZ25paHNhaF9yaWVodF9kZWlmaXRuZWRpX2RuYV9zZWhzYWhfa2Fld19laHRfZGVrY2FyY191b3lfc25vaXRhbHV0YXJnbm9De0dBTEY=");
 
 const HASHES_FILE = [
   "5d41402abc4b2a76b9719d911017c592",

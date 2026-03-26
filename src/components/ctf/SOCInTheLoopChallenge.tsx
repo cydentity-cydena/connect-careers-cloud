@@ -179,7 +179,7 @@ System integrity: MAINTAINED
 [AI Analysis Complete - Recommended Action: Monitor and blocklist]
 [Model confidence: 94.7%]`;
 
-const FLAG = "FLAG{ai_guided_but_human_verified}";
+const FLAG = d("fWRlaWZpcmV2X25hbXVoX3R1Yl9kZWRpdWdfaWF7R0FMRg==");
 
 // Known IPs in the logs for validation
 const KNOWN_IPS = [

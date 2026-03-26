@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import { CheckCircle2, Terminal } from "lucide-react";
+import { d } from "@/lib/ctfDecode";
 
-const FLAG = "FLAG{Cydena@2026}";
+const FLAG = d("fTYyMDJAYW5lZHlDe0dBTEY=");
 
 const HASH_RAW =
   "cydena_admin::CPSALITE:1122334455667788:6f2b7d3480037599f5799a64e1378875:010100000000000028292a2b2c2d2e2f3031323334353637";
