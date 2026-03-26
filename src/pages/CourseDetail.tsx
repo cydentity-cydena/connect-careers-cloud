@@ -245,8 +245,8 @@ const CourseDetail = () => {
     setCheckingCode(false);
   };
 
-  const handleSubmitFlag = async (challenge: CTFChallenge) => {
-    const currentInput = flagInputs[challenge.id] || "";
+  const handleSubmitFlag = async (challenge: CTFChallenge, directFlag?: string) => {
+    const currentInput = directFlag || flagInputs[challenge.id] || "";
     if (!currentInput.trim() || !userId) {
       if (!userId) toast.error("Please sign in to submit flags");
       return;
@@ -338,7 +338,7 @@ const CourseDetail = () => {
   const renderInteractiveChallenge = (challenge: CTFChallenge) => {
     const onComplete = (flag: string) => {
       setFlagInputs(prev => ({ ...prev, [challenge.id]: flag }));
-      setTimeout(() => handleSubmitFlag(challenge), 100);
+      setTimeout(() => handleSubmitFlag(challenge, flag), 100);
     };
     const title = challenge.title.toLowerCase();
     if (title.includes('chess')) return <ChessChallenge onComplete={onComplete} />;

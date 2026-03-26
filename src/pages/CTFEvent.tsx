@@ -238,8 +238,8 @@ const CTFEvent = () => {
     setCheckingCode(false);
   };
 
-  const handleSubmitFlag = async () => {
-    const currentInput = selectedChallenge ? flagInputs[selectedChallenge.id] || "" : "";
+  const handleSubmitFlag = async (directFlag?: string) => {
+    const currentInput = directFlag || (selectedChallenge ? flagInputs[selectedChallenge.id] || "" : "");
     if (!selectedChallenge || !currentInput.trim() || !userId) {
       if (!userId) toast.error("Please sign in to submit flags");
       return;
@@ -331,7 +331,7 @@ const CTFEvent = () => {
   const renderInteractiveChallenge = (challenge: CTFChallenge) => {
     const onComplete = (flag: string) => {
       setFlagInputs(prev => ({ ...prev, [challenge.id]: flag }));
-      setTimeout(() => handleSubmitFlag(), 100);
+      setTimeout(() => handleSubmitFlag(flag), 100);
     };
     const title = challenge.title.toLowerCase();
     if (title.includes('chess')) return <ChessChallenge onComplete={onComplete} />;
@@ -602,7 +602,7 @@ const CTFEvent = () => {
                               onKeyDown={e => e.key === 'Enter' && handleSubmitFlag()}
                               className="font-mono"
                             />
-                            <Button onClick={handleSubmitFlag} disabled={submitting}>
+                            <Button onClick={() => handleSubmitFlag()} disabled={submitting}>
                               {submitting ? "..." : "Submit"}
                             </Button>
                           </div>
