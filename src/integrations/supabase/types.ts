@@ -5151,6 +5151,28 @@ export type Database = {
           missing_skills: string[]
         }[]
       }
+      get_profiles_safe: {
+        Args: { p_user_ids?: string[] }
+        Returns: {
+          avatar_url: string
+          bio: string
+          created_at: string
+          desired_job_title: string
+          featured_until: string
+          full_name: string
+          hackthebox_rank: string
+          hackthebox_username: string
+          id: string
+          is_founding_200: boolean
+          is_verified: boolean
+          location: string
+          selected_avatar_frame: string
+          selected_badge_id: string
+          tryhackme_rank: string
+          tryhackme_username: string
+          username: string
+        }[]
+      }
       get_public_candidate_profile: {
         Args: { profile_user_id: string }
         Returns: {
