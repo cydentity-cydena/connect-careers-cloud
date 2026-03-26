@@ -100,8 +100,6 @@ const HELP_LINES = [
   "  crack <hash>",
   "  help, quit",
   "",
-  "Submit: <hash>:<plaintext> <algorithm>",
-  "",
 ];
 
 const HINTS = [
@@ -133,9 +131,32 @@ const HashCrackerChallenge = ({ onComplete }: HashCrackerChallengeProps) => {
     setLines(prev => [...prev, ...newLines]);
   };
 
+  const markSolved = useCallback((idx: number) => {
+    setSolved(prev => {
+      const newSolved = [...prev];
+      newSolved[idx] = true;
+      if (newSolved.every(Boolean)) {
+        addLines(
+          "",
+          "✓ All hashes cracked!",
+          "",
+          `🎉 ${FLAG}`,
+          "",
+          "FLAG retrieved. Challenge complete!",
+          ""
+        );
+        setIsComplete(true);
+        onComplete(FLAG);
+      } else {
+        const remaining = newSolved.filter(s => !s).length;
+        addLines(`✓ Hash solved! ${remaining} remaining.`, "");
+      }
+      return newSolved;
+    });
+  }, [onComplete]);
+
   const runCrack = async (targetHash: string, displayCmd: string) => {
     setCracking(true);
-    // Identify algorithm by length
     const isMd5 = targetHash.length === 32;
     const isSha1 = targetHash.length === 40;
     if (!isMd5 && !isSha1) {
@@ -151,19 +172,17 @@ const HashCrackerChallenge = ({ onComplete }: HashCrackerChallengeProps) => {
       const word = WORDLIST[i];
       const computed = isMd5 ? md5(word) : await sha1(word);
 
-      // Show progress every few words
       if (i % 8 === 0) {
         addLines(`[*] Trying: ${word}...`);
-        // Small delay for realism
         await new Promise(r => setTimeout(r, 60));
       }
 
       if (computed === targetHash) {
-        addLines(
-          `[+] CRACKED! ${targetHash} → "${word}" (${algName})`,
-          `[*] Submit with: ${targetHash}:${word} ${algName}`,
-          ""
-        );
+        const solIdx = SOLUTIONS.findIndex(s => s.hash === targetHash);
+        addLines(`[+] CRACKED! ${targetHash} → "${word}" (${algName})`);
+        if (solIdx !== -1) {
+          markSolved(solIdx);
+        }
         found = true;
         break;
       }
