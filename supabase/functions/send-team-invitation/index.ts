@@ -40,11 +40,11 @@ serve(async (req) => {
     if (!user) throw new Error("User not authenticated");
     logStep("User authenticated", { userId: user.id });
 
-    const { invitee_email, role } = await req.json();
+    const { invitee_email, role, resend } = await req.json();
     if (!invitee_email || !role) {
       throw new Error("Missing required fields: invitee_email and role");
     }
-    logStep("Request data validated", { invitee_email, role });
+    logStep("Request data validated", { invitee_email, role, resend });
 
     // Check if seats are available
     const { data: seatsAvailable, error: seatsError } = await supabaseClient
@@ -78,7 +78,7 @@ serve(async (req) => {
       .eq('status', 'pending')
       .single();
 
-    if (existingInvitation) {
+    if (existingInvitation && !resend) {
       logStep("Invitation already exists");
       return new Response(
         JSON.stringify({ 
@@ -89,23 +89,29 @@ serve(async (req) => {
       );
     }
 
-    // Create invitation
-    const { data: invitation, error: inviteError } = await supabaseClient
-      .from('team_invitations')
-      .insert({
-        inviter_id: user.id,
-        invitee_email,
-        role
-      })
-      .select()
-      .single();
+    let invitation = existingInvitation;
 
-    if (inviteError) {
-      logStep("Error creating invitation", { error: inviteError });
-      throw inviteError;
+    if (!existingInvitation) {
+      // Create invitation
+      const { data: newInvitation, error: inviteError } = await supabaseClient
+        .from('team_invitations')
+        .insert({
+          inviter_id: user.id,
+          invitee_email,
+          role
+        })
+        .select()
+        .single();
+
+      if (inviteError) {
+        logStep("Error creating invitation", { error: inviteError });
+        throw inviteError;
+      }
+      invitation = newInvitation;
+      logStep("Invitation created", { invitationId: invitation.id });
+    } else {
+      logStep("Resending existing invitation", { invitationId: invitation.id });
     }
-
-    logStep("Invitation created", { invitationId: invitation.id });
 
     // Get inviter profile for email
     const { data: inviterProfile } = await supabaseClient

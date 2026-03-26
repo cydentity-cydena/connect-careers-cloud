@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Users, UserPlus, UserX, Mail, CheckCircle, Clock } from "lucide-react";
+import { Users, UserPlus, UserX, Mail, CheckCircle, Clock, RefreshCw } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { InviteTeamMemberDialog } from "./InviteTeamMemberDialog";
@@ -94,6 +94,25 @@ export function TeamMembersView({ role }: TeamMembersViewProps) {
       return { limit: limit || 1, used: usageNum + 1 }; // +1 for owner
     },
   });
+
+  const handleResendInvite = async (email: string) => {
+    try {
+      const { data, error } = await supabase.functions.invoke('send-team-invitation', {
+        body: { invitee_email: email, role, resend: true }
+      });
+      if (error) throw error;
+      toast({
+        title: "Invitation resent",
+        description: `Invitation resent to ${email}`,
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to resend invitation",
+        variant: "destructive",
+      });
+    }
+  };
 
   const handleRemoveMember = async (memberId: string) => {
     try {
@@ -219,15 +238,22 @@ export function TeamMembersView({ role }: TeamMembersViewProps) {
                         <p className="text-xs text-muted-foreground">
                           Invited {new Date(invitation.created_at).toLocaleDateString()}
                         </p>
-                        <p className="text-xs text-muted-foreground">
-                          Expires {new Date(invitation.expires_at).toLocaleDateString()}
-                        </p>
                       </div>
                     </div>
-                    <Badge variant="outline">
-                      <Clock className="h-3 w-3 mr-1" />
-                      Pending
-                    </Badge>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleResendInvite(invitation.invitee_email)}
+                      >
+                        <RefreshCw className="h-3 w-3 mr-1" />
+                        Resend
+                      </Button>
+                      <Badge variant="outline">
+                        <Clock className="h-3 w-3 mr-1" />
+                        Pending
+                      </Badge>
+                    </div>
                   </div>
                 </Card>
               ))}
