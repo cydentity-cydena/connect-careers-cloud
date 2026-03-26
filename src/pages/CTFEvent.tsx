@@ -568,7 +568,7 @@ const CTFEvent = () => {
                         </div>
                       </CardHeader>
 
-                      {isSelected && !isSolved && (
+                      {isSelected && (!isSolved || isCelebrating) && (
                         <CardContent onClick={e => e.stopPropagation()}>
                           {interactiveComponent && <div className="mb-4">{interactiveComponent}</div>}
 
