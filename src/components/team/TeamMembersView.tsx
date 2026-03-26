@@ -219,15 +219,22 @@ export function TeamMembersView({ role }: TeamMembersViewProps) {
                         <p className="text-xs text-muted-foreground">
                           Invited {new Date(invitation.created_at).toLocaleDateString()}
                         </p>
-                        <p className="text-xs text-muted-foreground">
-                          Expires {new Date(invitation.expires_at).toLocaleDateString()}
-                        </p>
                       </div>
                     </div>
-                    <Badge variant="outline">
-                      <Clock className="h-3 w-3 mr-1" />
-                      Pending
-                    </Badge>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleResendInvite(invitation.invitee_email)}
+                      >
+                        <RefreshCw className="h-3 w-3 mr-1" />
+                        Resend
+                      </Button>
+                      <Badge variant="outline">
+                        <Clock className="h-3 w-3 mr-1" />
+                        Pending
+                      </Badge>
+                    </div>
                   </div>
                 </Card>
               ))}
