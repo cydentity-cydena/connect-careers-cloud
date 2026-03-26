@@ -142,11 +142,7 @@ export const ActivityFeed = ({ limit = 20 }: { limit?: number }) => {
           description,
           metadata,
           created_at,
-          profiles (
-            username,
-            avatar_url,
-            full_name
-          )
+          user_id
         `)
         .eq('is_public', true)
         .order('created_at', { ascending: false })
@@ -154,22 +150,28 @@ export const ActivityFeed = ({ limit = 20 }: { limit?: number }) => {
 
       if (error) throw error;
 
-      // Fetch user roles separately for each activity
-      const activitiesWithRoles = await Promise.all(
-        (activitiesData || []).map(async (activity) => {
-          if (!activity.user_id) return activity;
-          
-          const { data: roles } = await supabase
-            .from('user_roles')
-            .select('role')
-            .eq('user_id', activity.user_id);
-          
-          return {
-            ...activity,
-            user_roles: roles || []
-          };
-        })
-      );
+      // Fetch profiles and roles safely via server-side functions
+      const userIds = [...new Set((activitiesData || []).map(a => a.user_id).filter(Boolean))] as string[];
+      const [profilesResult, rolesResult] = await Promise.all([
+        userIds.length > 0 ? supabase.rpc('get_profiles_safe', { p_user_ids: userIds }) : { data: [] },
+        userIds.length > 0 ? supabase.from('user_roles').select('user_id, role').in('user_id', userIds) : { data: [] }
+      ]);
+
+      const profilesMap = new Map((profilesResult.data || []).map((p: any) => [p.id, p]));
+      const rolesMap = new Map<string, any[]>();
+      (rolesResult.data || []).forEach((r: any) => {
+        if (!rolesMap.has(r.user_id)) rolesMap.set(r.user_id, []);
+        rolesMap.get(r.user_id)!.push(r);
+      });
+
+      const activitiesWithRoles = (activitiesData || []).map(activity => {
+        const profile = activity.user_id ? profilesMap.get(activity.user_id) : null;
+        return {
+          ...activity,
+          profiles: profile ? { username: profile.username, avatar_url: profile.avatar_url, full_name: profile.full_name } : undefined,
+          user_roles: activity.user_id ? (rolesMap.get(activity.user_id) || []) : []
+        };
+      });
 
       setActivities(activitiesWithRoles as any);
     } catch (error) {
