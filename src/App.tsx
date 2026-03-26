@@ -79,6 +79,7 @@ import WhyCydena from "./pages/WhyCydena";
 import Courses from "./pages/Courses";
 import CourseDetail from "./pages/CourseDetail";
 
+import AdminRoute from "./components/AdminRoute";
 import { ScrollToTop } from "./components/ScrollToTop";
 
 const queryClient = new QueryClient();
@@ -136,20 +137,20 @@ const AppContent = () => {
           <Route path="/accept-invitation" element={<ProtectedRoute><AcceptInvitation /></ProtectedRoute>} />
           <Route path="/mfa" element={<MFA />} />
           
-          {/* Admin Routes */}
-          <Route path="/admin/users" element={<ProtectedRoute><UserManagement /></ProtectedRoute>} />
-          <Route path="/admin/roles" element={<ProtectedRoute><RoleManagement /></ProtectedRoute>} />
-          <Route path="/admin/jobs" element={<ProtectedRoute><JobModeration /></ProtectedRoute>} />
-          <Route path="/admin/pods" element={<ProtectedRoute><PodManagement /></ProtectedRoute>} />
-          <Route path="/admin/verification-review" element={<ProtectedRoute><VerificationReview /></ProtectedRoute>} />
-          <Route path="/admin/allowed-signups" element={<ProtectedRoute><AllowedSignups /></ProtectedRoute>} />
-          <Route path="/admin/partner-analytics" element={<ProtectedRoute><PartnerAnalytics /></ProtectedRoute>} />
-          <Route path="/admin/assessment-review" element={<ProtectedRoute><AssessmentReview /></ProtectedRoute>} />
-          <Route path="/admin/ctf" element={<ProtectedRoute><CTFManagement /></ProtectedRoute>} />
-          <Route path="/admin/learning-paths" element={<ProtectedRoute><LearningPathsManagement /></ProtectedRoute>} />
-          <Route path="/admin/partner-communities" element={<ProtectedRoute><PartnerCommunitiesManagement /></ProtectedRoute>} />
-          <Route path="/admin/subscription-overrides" element={<ProtectedRoute><SubscriptionOverrides /></ProtectedRoute>} />
-          <Route path="/admin/courses" element={<ProtectedRoute><CourseManagement /></ProtectedRoute>} />
+          {/* Admin Routes - Require admin role */}
+          <Route path="/admin/users" element={<AdminRoute><UserManagement /></AdminRoute>} />
+          <Route path="/admin/roles" element={<AdminRoute><RoleManagement /></AdminRoute>} />
+          <Route path="/admin/jobs" element={<AdminRoute><JobModeration /></AdminRoute>} />
+          <Route path="/admin/pods" element={<AdminRoute><PodManagement /></AdminRoute>} />
+          <Route path="/admin/verification-review" element={<AdminRoute><VerificationReview /></AdminRoute>} />
+          <Route path="/admin/allowed-signups" element={<AdminRoute><AllowedSignups /></AdminRoute>} />
+          <Route path="/admin/partner-analytics" element={<AdminRoute><PartnerAnalytics /></AdminRoute>} />
+          <Route path="/admin/assessment-review" element={<AdminRoute><AssessmentReview /></AdminRoute>} />
+          <Route path="/admin/ctf" element={<AdminRoute><CTFManagement /></AdminRoute>} />
+          <Route path="/admin/learning-paths" element={<AdminRoute><LearningPathsManagement /></AdminRoute>} />
+          <Route path="/admin/partner-communities" element={<AdminRoute><PartnerCommunitiesManagement /></AdminRoute>} />
+          <Route path="/admin/subscription-overrides" element={<AdminRoute><SubscriptionOverrides /></AdminRoute>} />
+          <Route path="/admin/courses" element={<AdminRoute><CourseManagement /></AdminRoute>} />
           
           {/* Standalone Presentations */}
           <Route path="/employer-pitch-deck" element={<EmployerPitchDeck />} />
