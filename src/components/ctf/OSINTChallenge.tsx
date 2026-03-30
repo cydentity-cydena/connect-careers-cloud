@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect } from "react";
-import { d } from "@/lib/ctfDecode";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -23,7 +22,7 @@ Registrant Organization: Cydena Dynamics Ltd
 Registrant Country: GB
 
 Admin Email: info@cydena-dynamics.com
-Tech Email: devops-internal@cydena-dynamics.com
+Tech Email: platform-ops@cydena-dynamics.com
 
 Name Server: ns1.cydena-dynamics.com
 Name Server: ns2.cydena-dynamics.com`;
@@ -31,25 +30,25 @@ Name Server: ns2.cydena-dynamics.com`;
 const DNS_ZONE_DATA = `$ORIGIN cydena-dynamics.com.
 
 @       IN  SOA ns1.cydena-dynamics.com. admin.cydena-dynamics.com. (
-            2024020101 ; serial
-            3600       ; refresh
-            1800       ; retry
-            604800     ; expire
-            86400 )    ; minimum
+            2024021201
+            3600
+            1800
+            604800
+            86400 )
 
 @       IN  NS  ns1.cydena-dynamics.com.
 @       IN  NS  ns2.cydena-dynamics.com.
 
-@       IN  A   192.0.2.10
-mail    IN  A   192.0.2.20
-vpn     IN  A   10.0.0.5
-dev     IN  A   10.0.0.10
-intranet IN A   10.0.0.15
+@       IN  A   198.51.100.10
+mail    IN  A   198.51.100.20
+vpn     IN  A   10.10.10.5
+dev     IN  A   10.10.10.10
+intranet IN A   10.10.10.15
 
 @       IN  MX  10 mail.cydena-dynamics.com.
 
 @       IN  TXT "v=spf1 include:mail.cydena-dynamics.com -all"
-@       IN  TXT "Internal Git: git.northbridge.local"`;
+@       IN  TXT "CI Migration: moved from build01.internal"`;
 
 const EMAIL_HEADER_1 = `Return-Path: <ceo@cydena-dynamics.com>
 Received: from mail.cydena.local (mail.cydena.local [10.0.0.20])
@@ -91,7 +90,7 @@ const SUB_CHALLENGES: SubChallenge[] = [
     title: "WHOIS Intelligence",
     objective: "Analyse the WHOIS record for cydena-dynamics.com. Identify the email prefix used by the technical team — this reveals an operational role that should not be publicly exposed.",
     documents: [{ name: "whois-cydena-dynamics.txt", content: WHOIS_DATA, icon: "🔍" }],
-    flag: d("fWxhbnJldG5pLXNwb3ZlZHtHQUxG"),
+    flag: "FLAG{devops-internal}",
     hint: "Look at the Tech Email field. The local-part before the @ symbol reveals the internal team or function responsible for infrastructure.",
     flagFormat: "FLAG{email-prefix}",
   },
@@ -100,7 +99,7 @@ const SUB_CHALLENGES: SubChallenge[] = [
     title: "DNS Zone Analysis",
     objective: "Examine the DNS zone file for cydena-dynamics.com. Identify a leaked internal hostname referenced in a TXT record that reveals their CI/CD migration history.",
     documents: [{ name: "cydena-dynamics-zone.txt", content: DNS_ZONE_DATA, icon: "🌐" }],
-    flag: d("fWxhY29sLmVnZGlyYmh0cm9uLnRpZ3tHQUxG"),
+    flag: "FLAG{git.northbridge.local}",
     hint: "TXT records can contain freeform text. Look for a migration note that mentions a previous internal hostname.",
     flagFormat: "FLAG{hostname}",
   },
@@ -109,7 +108,7 @@ const SUB_CHALLENGES: SubChallenge[] = [
     title: "Email Header Analysis I",
     objective: "Analyse the raw email headers. Identify the internal mail server hostname — a hostname using a non-public TLD that appears in the routing path.",
     documents: [{ name: "email_header.txt", content: EMAIL_HEADER_1, icon: "📧" }],
-    flag: d("fWxhY29sLmFuZWR5Yy5saWFte0dBTEY="),
+    flag: "FLAG{mail.cydena.local}",
     hint: "A hostname using a non-public TLD appears in the routing path. That internal mail server hostname is what you're looking for.",
     flagFormat: "FLAG{hostname}",
   },
@@ -121,7 +120,7 @@ const SUB_CHALLENGES: SubChallenge[] = [
       { name: "email_header_v2.txt", content: EMAIL_HEADER_2, icon: "📧" },
       { name: "dns_zone_reference.txt", content: DNS_ZONE_DATA, icon: "🌐" },
     ],
-    flag: d("fWxhY29sLmFuZWR5Yy4yMGRsaXVie0dBTEY="),
+    flag: "FLAG{build02.cydena.local}",
     hint: "Notice the change in internal domain suffix between older and newer systems. What naming pattern is being used now?",
     flagFormat: "FLAG{hostname.domain}",
   },
@@ -212,9 +211,9 @@ export default function OSINTChallenge({ onComplete }: Props) {
 
       {/* Main content */}
       {!allSolved && (
-      <div className="space-y-4">
-          {/* Document viewer - full width */}
-          <Card className="bg-card/50 border-border/50">
+      <div className="grid md:grid-cols-2 gap-4 min-h-0">
+          {/* Document viewer */}
+          <Card className="bg-card/50 border-border/50 min-w-0">
             <CardHeader className="pb-2">
               <div className="flex items-center justify-between gap-2">
                 <CardTitle className="text-sm flex items-center gap-2 shrink-0">
@@ -228,7 +227,7 @@ export default function OSINTChallenge({ onComplete }: Props) {
                         key={i}
                         variant={activeDoc === i ? "secondary" : "ghost"}
                         size="sm"
-                        className="text-xs h-7"
+                        className="text-xs h-7 max-w-[160px] truncate"
                         onClick={() => setActiveDoc(i)}
                       >
                         {doc.icon} {doc.name}
@@ -244,16 +243,18 @@ export default function OSINTChallenge({ onComplete }: Props) {
               )}
             </CardHeader>
             <CardContent>
-              <ScrollArea className="h-[280px] rounded-md border border-border/30 bg-black/40 p-1">
-                <pre className="text-xs font-mono text-green-400/90 whitespace-pre p-3 leading-relaxed">
-                  {task.documents[activeDoc]?.content}
-                </pre>
+              <ScrollArea className="h-[350px] rounded-md border border-border/30 bg-black/40 p-1">
+                <div className="overflow-x-auto">
+                  <pre className="text-xs font-mono text-green-400/90 whitespace-pre p-3 leading-relaxed min-w-max">
+                    {task.documents[activeDoc]?.content}
+                  </pre>
+                </div>
               </ScrollArea>
             </CardContent>
           </Card>
 
-          {/* Task panel + tips - side by side */}
-          <div className="grid md:grid-cols-2 gap-4">
+          {/* Task panel */}
+          <div className="space-y-4">
             <Card className="bg-card/50 border-border/50">
               <CardHeader className="pb-2">
                 <div className="flex items-center gap-2">
@@ -269,6 +270,7 @@ export default function OSINTChallenge({ onComplete }: Props) {
                   Flag format: <code className="text-primary/80">{task.flagFormat}</code>
                 </p>
 
+                {/* Hint */}
                 {showHint[currentTask] && (
                   <div className="rounded-md border border-yellow-500/30 bg-yellow-500/10 p-3 text-sm">
                     <div className="flex items-start gap-2">
@@ -289,6 +291,7 @@ export default function OSINTChallenge({ onComplete }: Props) {
                   </Button>
                 )}
 
+                {/* Flag input */}
                 {!solvedTasks.has(currentTask) ? (
                   <div className="flex gap-2">
                     <Input
@@ -312,6 +315,7 @@ export default function OSINTChallenge({ onComplete }: Props) {
               </CardContent>
             </Card>
 
+            {/* Tips card */}
             <Card className="bg-card/30 border-border/30">
               <CardContent className="pt-4">
                 <h4 className="text-xs font-semibold text-muted-foreground mb-2 flex items-center gap-1.5">

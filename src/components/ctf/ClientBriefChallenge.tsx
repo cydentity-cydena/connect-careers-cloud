@@ -2,9 +2,8 @@ import { useState, useRef, useEffect } from "react";
 import { CheckCircle2, FileText, ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { d } from "@/lib/ctfDecode";
 
-const FLAG = d("fWRlZ2RlbHdvbmtjYV9za3Npcl9kbmFfZGVpZmlyZXZfc2VpcmFkbnVvYl9lcG9jc3tHQUxG");
+const FLAG = "FLAG{scope_boundaries_verified_and_risks_acknowledged}";
 
 interface Question {
   id: number;
@@ -16,7 +15,7 @@ interface Question {
 const QUESTIONS: Question[] = [
   {
     id: 1,
-    text: "Based on the Client Brief, which IP range is authorised for testing?",
+    text: "Given the Client Brief, identify the correct legal authorizations that involve the scope, select what applies:",
     options: [
       "192.168.110.0/24",
       "10.10.110.0/24",
@@ -28,7 +27,7 @@ const QUESTIONS: Question[] = [
   },
   {
     id: 2,
-    text: "Based on the Client Brief, which domain is in scope?",
+    text: "Given the Client Brief, identify the correct legal authorizations that involve the scope, select what applies:",
     options: [
       "financialaudit.com",
       "financialaudit.com.gb",
@@ -39,7 +38,7 @@ const QUESTIONS: Question[] = [
   },
   {
     id: 3,
-    text: "Based on the Client Brief, which risks are acknowledged?",
+    text: "Given the Client Brief, flag the risks that apply:",
     options: [
       "Application crashes",
       "System Instability",
@@ -57,7 +56,7 @@ const QUESTIONS: Question[] = [
   },
   {
     id: 4,
-    text: "What is the authorised IP scope, excluding any exclusions?",
+    text: "Given the Client Brief, select the appropriate scope boundaries, select what applies:",
     options: [
       "192.168.210.0/24",
       "10.10.110.0/24",
@@ -69,7 +68,7 @@ const QUESTIONS: Question[] = [
   },
   {
     id: 5,
-    text: "What is the authorised domain scope?",
+    text: "Given the Client Brief, select the appropriate scope boundaries, select what applies:",
     options: [
       "financialaudit.edu",
       "financialaudit.co",
@@ -81,7 +80,7 @@ const QUESTIONS: Question[] = [
   },
   {
     id: 6,
-    text: "What is the authorised testing window?",
+    text: "Given the Client Brief, select the appropriate scope boundaries, select what applies:",
     options: [
       "01/2026 – 02/2026",
       "02/2026 – 03/2026",

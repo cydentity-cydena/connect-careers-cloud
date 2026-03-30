@@ -21,7 +21,6 @@ import { SOCInTheLoopChallenge } from "@/components/ctf/SOCInTheLoopChallenge";
 import ClientBriefChallenge from "@/components/ctf/ClientBriefChallenge";
 import WindowsSecurityChallenge from "@/components/ctf/WindowsSecurityChallenge";
 import OSINTChallenge from "@/components/ctf/OSINTChallenge";
-import HashCrackerChallenge from "@/components/ctf/HashCrackerChallenge";
 import {
   Flag, Trophy, Target, Lightbulb, Lock, CheckCircle2, Crown, Medal, Award,
   Flame, Terminal, Share2, Copy, Check, ShieldCheck, Calendar, Users
@@ -138,26 +137,33 @@ const CTFEvent = () => {
   };
 
   const loadEventData = async (eventId: string, uid: string) => {
-    // Load assigned event challenges through secure server-side function
-    const { data: challengesData, error: challengesError } = await supabase
-      .rpc('get_ctf_event_challenges_safe', { p_event_id: eventId });
+    // Load challenges assigned to this event
+    const { data: challengeAssignments } = await supabase
+      .from('ctf_challenge_events')
+      .select('challenge_id, sort_order')
+      .eq('event_id', eventId)
+      .order('sort_order', { ascending: true });
 
-    if (challengesError) {
-      console.error("Error loading event challenges:", challengesError);
-      setChallenges([]);
-    } else {
-      const mapped: CTFChallenge[] = (challengesData as any[] || []).map(c => ({
-        id: c.id!,
-        title: c.title!,
-        description: c.description!,
-        category: c.category!,
-        difficulty: c.difficulty!,
-        points: c.points!,
-        hints: parseHints(c.hints),
-        file_url: c.file_url || null,
-        file_name: c.file_name || null
-      }));
-      setChallenges(mapped);
+    if (challengeAssignments && challengeAssignments.length > 0) {
+      const challengeIds = challengeAssignments.map(ca => ca.challenge_id);
+      const { data: challengesData } = await supabase
+        .from('ctf_challenges')
+        .select('id, title, description, category, difficulty, points, hints, file_url, file_name')
+        .in('id', challengeIds)
+        .eq('is_active', true);
+
+      if (challengesData) {
+        // Sort by assignment order
+        const orderMap = new Map(challengeAssignments.map(ca => [ca.challenge_id, ca.sort_order]));
+        const mapped: CTFChallenge[] = challengesData
+          .map(c => ({
+            id: c.id!, title: c.title!, description: c.description!,
+            category: c.category!, difficulty: c.difficulty!, points: c.points!,
+            hints: parseHints(c.hints), file_url: c.file_url || null, file_name: c.file_name || null
+          }))
+          .sort((a, b) => (orderMap.get(a.id) || 0) - (orderMap.get(b.id) || 0));
+        setChallenges(mapped);
+      }
     }
 
     // Load event leaderboard
@@ -238,8 +244,8 @@ const CTFEvent = () => {
     setCheckingCode(false);
   };
 
-  const handleSubmitFlag = async (directFlag?: string) => {
-    const currentInput = directFlag || (selectedChallenge ? flagInputs[selectedChallenge.id] || "" : "");
+  const handleSubmitFlag = async () => {
+    const currentInput = selectedChallenge ? flagInputs[selectedChallenge.id] || "" : "";
     if (!selectedChallenge || !currentInput.trim() || !userId) {
       if (!userId) toast.error("Please sign in to submit flags");
       return;
@@ -247,33 +253,33 @@ const CTFEvent = () => {
 
     setSubmitting(true);
     try {
-      const { data: result, error: submitError } = await supabase
-        .rpc('submit_ctf_flag', {
-          p_challenge_id: selectedChallenge.id,
-          p_submitted_flag: currentInput.trim(),
-          p_event_id: event?.id || null
-        });
+      const { data: isCorrect, error: verifyError } = await supabase
+        .rpc('verify_ctf_flag', { p_challenge_id: selectedChallenge.id, p_submitted_flag: currentInput.trim() });
+      if (verifyError) throw verifyError;
 
-      if (submitError) throw submitError;
+      const hintPenalty = hintDeductions[selectedChallenge.id] || 0;
+      const finalPoints = Math.max(0, selectedChallenge.points - hintPenalty);
 
-      const response = result as { success: boolean; is_correct?: boolean; points_awarded?: number; error?: string; already_solved?: boolean };
+      const { error: submitError } = await supabase.from('ctf_submissions').insert({
+        candidate_id: userId, challenge_id: selectedChallenge.id,
+        submitted_flag: currentInput.trim(), is_correct: isCorrect, points_awarded: isCorrect ? finalPoints : 0
+      });
 
-      if (!response.success) {
-        if (response.already_solved) {
+      if (submitError) {
+        if (submitError.code === '23505') {
           toast.info("You've already solved this challenge!");
           setSelectedChallenge(null);
           return;
         }
-        throw new Error(response.error || 'Submission failed');
+        throw submitError;
       }
 
-      if (response.is_correct) {
-        const pointsAwarded = response.points_awarded || 0;
-        setJustSolved({ challengeId: selectedChallenge.id, points: pointsAwarded });
+      if (isCorrect) {
+        setJustSolved({ challengeId: selectedChallenge.id, points: finalPoints });
         setUserStats(prev => ({
           ...prev,
           solvedChallenges: [...prev.solvedChallenges, selectedChallenge.id],
-          totalPoints: prev.totalPoints + pointsAwarded
+          totalPoints: prev.totalPoints + finalPoints
         }));
         setFlagInputs(prev => ({ ...prev, [selectedChallenge.id]: "" }));
         setTimeout(() => { setJustSolved(null); setSelectedChallenge(null); }, 3000);
@@ -331,7 +337,7 @@ const CTFEvent = () => {
   const renderInteractiveChallenge = (challenge: CTFChallenge) => {
     const onComplete = (flag: string) => {
       setFlagInputs(prev => ({ ...prev, [challenge.id]: flag }));
-      setTimeout(() => handleSubmitFlag(flag), 100);
+      setTimeout(() => handleSubmitFlag(), 100);
     };
     const title = challenge.title.toLowerCase();
     if (title.includes('chess')) return <ChessChallenge onComplete={onComplete} />;
@@ -344,7 +350,6 @@ const CTFEvent = () => {
     if (title.includes('client brief') || title.includes('professional practice')) return <ClientBriefChallenge onComplete={onComplete} />;
     if (title.includes('windows security') || title.includes('os security')) return <WindowsSecurityChallenge onComplete={onComplete} />;
     if (title.includes('osint') || title.includes('reconnaissance')) return <OSINTChallenge onComplete={onComplete} />;
-    if (title.includes('hash cracker') || title.includes('hash crack')) return <HashCrackerChallenge onComplete={onComplete} />;
     return null;
   };
 
@@ -538,9 +543,7 @@ const CTFEvent = () => {
                     challenge.title.toLowerCase().includes('windows security') ||
                     challenge.title.toLowerCase().includes('os security') ||
                     challenge.title.toLowerCase().includes('osint') ||
-                    challenge.title.toLowerCase().includes('reconnaissance') ||
-                    challenge.title.toLowerCase().includes('hash cracker') ||
-                    challenge.title.toLowerCase().includes('hash crack');
+                    challenge.title.toLowerCase().includes('reconnaissance');
 
                   return (
                     <Card
@@ -568,7 +571,7 @@ const CTFEvent = () => {
                         </div>
                       </CardHeader>
 
-                      {isSelected && (!isSolved || isCelebrating) && (
+                      {isSelected && !isSolved && (
                         <CardContent onClick={e => e.stopPropagation()}>
                           {interactiveComponent && <div className="mb-4">{interactiveComponent}</div>}
 
@@ -602,7 +605,7 @@ const CTFEvent = () => {
                               onKeyDown={e => e.key === 'Enter' && handleSubmitFlag()}
                               className="font-mono"
                             />
-                            <Button onClick={() => handleSubmitFlag()} disabled={submitting}>
+                            <Button onClick={handleSubmitFlag} disabled={submitting}>
                               {submitting ? "..." : "Submit"}
                             </Button>
                           </div>

@@ -92,7 +92,7 @@ const Marketplace = () => {
       
       if (userIds.length > 0) {
         const [profilesRes, certsRes, verificationsRes] = await Promise.all([
-          supabase.rpc('get_profiles_safe', { p_user_ids: userIds }),
+          supabase.from("profiles").select("id, username").in("id", userIds),
           supabase.from("certifications").select("candidate_id, name, verification_status").in("candidate_id", userIds).eq("verification_status", "verified"),
           supabase.from("candidate_verifications").select("candidate_id, hr_ready").in("candidate_id", userIds),
         ]);

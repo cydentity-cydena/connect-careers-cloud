@@ -153,11 +153,11 @@ const CourseDetail = () => {
     let challengeMap: Record<string, CTFChallenge> = {};
 
     if (challengeIds.length > 0) {
-      // Use safe RPC that never exposes flag column
-      const { data: allChallenges } = await supabase.rpc('get_ctf_challenges_safe');
-      const challengesData = (allChallenges as any[] || []).filter(
-        (c: any) => challengeIds.includes(c.id) && c.is_active
-      );
+      const { data: challengesData } = await supabase
+        .from('ctf_challenges')
+        .select('id, title, description, category, difficulty, points, hints, file_url, file_name')
+        .in('id', challengeIds)
+        .eq('is_active', true);
 
       if (challengesData) {
         challengesData.forEach(c => {
@@ -245,8 +245,8 @@ const CourseDetail = () => {
     setCheckingCode(false);
   };
 
-  const handleSubmitFlag = async (challenge: CTFChallenge, directFlag?: string) => {
-    const currentInput = directFlag || flagInputs[challenge.id] || "";
+  const handleSubmitFlag = async (challenge: CTFChallenge) => {
+    const currentInput = flagInputs[challenge.id] || "";
     if (!currentInput.trim() || !userId) {
       if (!userId) toast.error("Please sign in to submit flags");
       return;
@@ -254,27 +254,28 @@ const CourseDetail = () => {
 
     setSubmitting(true);
     try {
-      const { data: result, error: submitError } = await supabase
-        .rpc('submit_ctf_flag', {
-          p_challenge_id: challenge.id,
-          p_submitted_flag: currentInput.trim()
-        });
+      const { data: isCorrect, error: verifyError } = await supabase
+        .rpc('verify_ctf_flag', { p_challenge_id: challenge.id, p_submitted_flag: currentInput.trim() });
+      if (verifyError) throw verifyError;
 
-      if (submitError) throw submitError;
+      const hintPenalty = hintDeductions[challenge.id] || 0;
+      const finalPoints = Math.max(0, challenge.points - hintPenalty);
 
-      const response = result as { success: boolean; is_correct?: boolean; points_awarded?: number; error?: string; already_solved?: boolean };
+      const { error: submitError } = await supabase.from('ctf_submissions').insert({
+        candidate_id: userId, challenge_id: challenge.id,
+        submitted_flag: currentInput.trim(), is_correct: isCorrect, points_awarded: isCorrect ? finalPoints : 0
+      });
 
-      if (!response.success) {
-        if (response.already_solved) {
+      if (submitError) {
+        if (submitError.code === '23505') {
           toast.info("You've already solved this challenge!");
           return;
         }
-        throw new Error(response.error || 'Submission failed');
+        throw submitError;
       }
 
-      if (response.is_correct) {
-        const pointsAwarded = response.points_awarded || 0;
-        setJustSolved({ challengeId: challenge.id, points: pointsAwarded });
+      if (isCorrect) {
+        setJustSolved({ challengeId: challenge.id, points: finalPoints });
         setSolvedChallenges(prev => [...prev, challenge.id]);
         setFlagInputs(prev => ({ ...prev, [challenge.id]: "" }));
         setTimeout(() => { setJustSolved(null); setSelectedChallenge(null); }, 3000);
@@ -338,7 +339,7 @@ const CourseDetail = () => {
   const renderInteractiveChallenge = (challenge: CTFChallenge) => {
     const onComplete = (flag: string) => {
       setFlagInputs(prev => ({ ...prev, [challenge.id]: flag }));
-      setTimeout(() => handleSubmitFlag(challenge, flag), 100);
+      setTimeout(() => handleSubmitFlag(challenge), 100);
     };
     const title = challenge.title.toLowerCase();
     if (title.includes('chess')) return <ChessChallenge onComplete={onComplete} />;

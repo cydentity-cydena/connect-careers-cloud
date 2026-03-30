@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { d } from "@/lib/ctfDecode";
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -12,60 +11,61 @@ interface QuizQuestion {
   hint: string;
 }
 
+// Answers spell out: N-E-V-E-R-G-I-V-E-U-P = NEVERGIVEUP
 const QUIZ_QUESTIONS: QuizQuestion[] = [
   {
     question: "Which popular open-source tool is used for network discovery and security auditing through port scanning?",
-    answer: d("cGFtbg=="),
+    answer: "nmap",
     hint: "It's a 4-letter tool that starts with 'n'."
   },
   {
     question: "What Linux command prints all environment variables to the terminal?",
-    answer: d("dm5l"),
+    answer: "env",
     hint: "A 3-letter command that shows your shell's variables."
   },
   {
     question: "Which modal text editor, famous for its steep learning curve, is installed by default on most Unix systems?",
-    answer: d("bWl2"),
+    answer: "vim",
     hint: "An improved version of 'vi'."
   },
   {
     question: "What bash command outputs a string or variable value to the terminal?",
-    answer: d("b2hjZQ=="),
+    answer: "echo",
     hint: "It 'repeats' what you tell it."
   },
   {
     question: "What is the name of the superuser account on Unix/Linux systems with UID 0?",
-    answer: d("dG9vcg=="),
+    answer: "root",
     hint: "The most powerful account on the system."
   },
   {
     question: "Which command-line utility searches for text patterns using regular expressions?",
-    answer: d("cGVyZw=="),
+    answer: "grep",
     hint: "Global Regular Expression Print."
   },
   {
     question: "What legacy Linux command is used to configure network interfaces (now replaced by 'ip')?",
-    answer: d("Z2lmbm9jZmk="),
+    answer: "ifconfig",
     hint: "Short for 'interface configuration'."
   },
   {
     question: "What technology creates a secure encrypted tunnel over the internet for private network access?",
-    answer: d("bnB2"),
+    answer: "vpn",
     hint: "Virtual Private ___."
   },
   {
     question: "What is the term for the unauthorized transfer of data out of a compromised network or system?",
-    answer: d("bm9pdGFydGxpZnhl"),
+    answer: "exfiltration",
     hint: "The opposite of infiltration, but for data."
   },
   {
     question: "Which transport layer protocol is connectionless and commonly used for streaming and gaming?",
-    answer: d("cGR1"),
+    answer: "udp",
     hint: "User Datagram Protocol."
   },
   {
     question: "Which ICMP-based command is used to test network connectivity to a remote host?",
-    answer: d("Z25pcA=="),
+    answer: "ping",
     hint: "Named after sonar sound."
   }
 ];

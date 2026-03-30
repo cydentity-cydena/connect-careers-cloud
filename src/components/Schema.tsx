@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 interface SchemaProps {
-  type: 'organization' | 'website' | 'jobPosting' | 'breadcrumb' | 'faqPage';
+  type: 'organization' | 'website' | 'jobPosting' | 'breadcrumb';
   data?: any;
 }
 
@@ -164,21 +164,6 @@ const generateSchema = (type: string, data?: any) => {
           "position": index + 1,
           "name": item.name,
           "item": `${baseUrl}${item.path}`
-        }))
-      };
-    
-    case 'faqPage':
-      if (!data || !data.questions) return null;
-      return {
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        "mainEntity": data.questions.map((q: { question: string; answer: string }) => ({
-          "@type": "Question",
-          "name": q.question,
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": q.answer
-          }
         }))
       };
     

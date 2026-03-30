@@ -1,8 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { CheckCircle2, Terminal, Lightbulb } from "lucide-react";
-import { d } from "@/lib/ctfDecode";
+import { CheckCircle2, Terminal } from "lucide-react";
 
-const FLAG = d("fXNtaHRpcm9nbGFfZ25paHNhaF9yaWVodF9kZWlmaXRuZWRpX2RuYV9zZWhzYWhfa2Fld19laHRfZGVrY2FyY191b3lfc25vaXRhbHV0YXJnbm9De0dBTEY=");
+const FLAG = "FLAG{Congratulations_you_cracked_the_weak_hashes_and_identified_their_hashing_algorithms}";
 
 const HASHES_FILE = [
   "5d41402abc4b2a76b9719d911017c592",
@@ -20,12 +19,12 @@ interface HashSolution {
 }
 
 const SOLUTIONS: HashSolution[] = [
-  { hash: "5d41402abc4b2a76b9719d911017c592", plaintext: d("b2xsZWg="), algorithm: "md5" },
-  { hash: "bba57ffdc31f073ab830ae660156181f", plaintext: d("ZW0gc3Rp"), algorithm: "md5" },
-  { hash: "0800fc577294c34e0b28ad2839435945", plaintext: d("aHNhaA=="), algorithm: "md5" },
-  { hash: "1c4cb48e4fcc0769f6bdd4ba7585fad02570a371", plaintext: d("cmVrY2FyYw=="), algorithm: "sha-1" },
-  { hash: "9193bc3e3398740a43fc57266ca3713745382b3a", plaintext: d("ZWVzc3RlbA=="), algorithm: "sha-1" },
-  { hash: "8786ba517f024e479b20982567f998e58cde951e", plaintext: d("ZW1rY2FyYw=="), algorithm: "sha-1" },
+  { hash: "5d41402abc4b2a76b9719d911017c592", plaintext: "hello", algorithm: "md5" },
+  { hash: "bba57ffdc31f073ab830ae660156181f", plaintext: "its me", algorithm: "md5" },
+  { hash: "0800fc577294c34e0b28ad2839435945", plaintext: "hash", algorithm: "md5" },
+  { hash: "1c4cb48e4fcc0769f6bdd4ba7585fad02570a371", plaintext: "cracker", algorithm: "sha-1" },
+  { hash: "9193bc3e3398740a43fc57266ca3713745382b3a", plaintext: "letssee", algorithm: "sha-1" },
+  { hash: "8786ba517f024e479b20982567f998e58cde951e", plaintext: "crackme", algorithm: "sha-1" },
 ];
 
 // Lightweight MD5 implementation (RFC 1321)
@@ -100,11 +99,8 @@ const HELP_LINES = [
   "  crack <hash>",
   "  help, quit",
   "",
-];
-
-const HINTS = [
-  { text: "The first 3 hashes are 32 hex characters long — that's a strong indicator of the MD5 algorithm. The last 3 are 40 characters — characteristic of SHA-1.", cost: 15 },
-  { text: "Try using the built-in 'crack' command with each hash. It runs a dictionary attack against a common wordlist and will reveal both the plaintext and algorithm if found.", cost: 25 },
+  "Submit: <hash>:<plaintext> <algorithm>",
+  "",
 ];
 
 interface HashCrackerChallengeProps {
@@ -116,8 +112,6 @@ const HashCrackerChallenge = ({ onComplete }: HashCrackerChallengeProps) => {
   const [input, setInput] = useState("");
   const [solved, setSolved] = useState<boolean[]>(new Array(6).fill(false));
   const [isComplete, setIsComplete] = useState(false);
-  const [hintsRevealed, setHintsRevealed] = useState<boolean[]>(new Array(HINTS.length).fill(false));
-  const [pointsDeducted, setPointsDeducted] = useState(0);
   const terminalRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -131,32 +125,9 @@ const HashCrackerChallenge = ({ onComplete }: HashCrackerChallengeProps) => {
     setLines(prev => [...prev, ...newLines]);
   };
 
-  const markSolved = useCallback((idx: number) => {
-    setSolved(prev => {
-      const newSolved = [...prev];
-      newSolved[idx] = true;
-      if (newSolved.every(Boolean)) {
-        addLines(
-          "",
-          "✓ All hashes cracked!",
-          "",
-          `🎉 ${FLAG}`,
-          "",
-          "FLAG retrieved. Challenge complete!",
-          ""
-        );
-        setIsComplete(true);
-        onComplete(FLAG);
-      } else {
-        const remaining = newSolved.filter(s => !s).length;
-        addLines(`✓ Hash solved! ${remaining} remaining.`, "");
-      }
-      return newSolved;
-    });
-  }, [onComplete]);
-
   const runCrack = async (targetHash: string, displayCmd: string) => {
     setCracking(true);
+    // Identify algorithm by length
     const isMd5 = targetHash.length === 32;
     const isSha1 = targetHash.length === 40;
     if (!isMd5 && !isSha1) {
@@ -172,17 +143,19 @@ const HashCrackerChallenge = ({ onComplete }: HashCrackerChallengeProps) => {
       const word = WORDLIST[i];
       const computed = isMd5 ? md5(word) : await sha1(word);
 
+      // Show progress every few words
       if (i % 8 === 0) {
         addLines(`[*] Trying: ${word}...`);
+        // Small delay for realism
         await new Promise(r => setTimeout(r, 60));
       }
 
       if (computed === targetHash) {
-        const solIdx = SOLUTIONS.findIndex(s => s.hash === targetHash);
-        addLines(`[+] CRACKED! ${targetHash} → "${word}" (${algName})`);
-        if (solIdx !== -1) {
-          markSolved(solIdx);
-        }
+        addLines(
+          `[+] CRACKED! ${targetHash} → "${word}" (${algName})`,
+          `[*] Submit with: ${targetHash}:${word} ${algName}`,
+          ""
+        );
         found = true;
         break;
       }
@@ -255,7 +228,7 @@ const HashCrackerChallenge = ({ onComplete }: HashCrackerChallengeProps) => {
       return;
     }
 
-    // Check hash:plaintext algorithm format (alternative manual method)
+    // Check hash:plaintext algorithm format
     const match = low.match(/^([a-f0-9]+):(.+)\s+(md5|sha-1|sha1)$/);
     if (match) {
       const [, hash, plaintext, alg] = match;
@@ -266,10 +239,32 @@ const HashCrackerChallenge = ({ onComplete }: HashCrackerChallengeProps) => {
       );
 
       if (idx !== -1) {
-        addLines(displayCmd);
-        markSolved(idx);
+        const newSolved = [...solved];
+        newSolved[idx] = true;
+        setSolved(newSolved);
+
+        if (newSolved.every(Boolean)) {
+          addLines(
+            displayCmd,
+            "✓ Correct Hashing Algorithm Identification and Hash Decryption!",
+            "",
+            `🎉 ${FLAG}`,
+            "",
+            "FLAG retrieved. Challenge complete!",
+            ""
+          );
+          setIsComplete(true);
+          onComplete(FLAG);
+        } else {
+          const remaining = newSolved.filter(s => !s).length;
+          addLines(
+            displayCmd,
+            `✓ Correct! ${remaining} hash${remaining === 1 ? "" : "es"} remaining.`,
+            ""
+          );
+        }
       } else {
-        addLines(displayCmd, "✗ Incorrect. Try again.", "");
+        addLines(displayCmd, "✗ Incorrect hash decryption or algorithm. Try again.", "");
       }
     } else {
       addLines(displayCmd, "Command not recognised. Type 'help' for allowed commands.", "");
@@ -367,40 +362,6 @@ const HashCrackerChallenge = ({ onComplete }: HashCrackerChallengeProps) => {
           </div>
         )}
       </div>
-
-      {/* Hints */}
-      {!isComplete && (
-        <div className="space-y-2">
-          {HINTS.map((hint, i) => (
-            <div key={i} className="flex items-start gap-2">
-              {hintsRevealed[i] ? (
-                <div className="flex-1 text-xs text-yellow-300/90 bg-yellow-500/10 border border-yellow-500/20 rounded-md px-3 py-2">
-                  <span className="font-semibold">Hint {i + 1}:</span> {hint.text}
-                </div>
-              ) : (
-                <button
-                  onClick={() => {
-                    const newRevealed = [...hintsRevealed];
-                    newRevealed[i] = true;
-                    setHintsRevealed(newRevealed);
-                    setPointsDeducted(prev => prev + hint.cost);
-                    addLines(`[!] Hint ${i + 1} revealed (−${hint.cost} pts)`, "");
-                  }}
-                  className="flex items-center gap-1.5 text-xs text-yellow-400/70 hover:text-yellow-400 transition-colors"
-                >
-                  <Lightbulb className="h-3.5 w-3.5" />
-                  Reveal Hint {i + 1} (−{hint.cost} pts)
-                </button>
-              )}
-            </div>
-          ))}
-          {pointsDeducted > 0 && (
-            <p className="text-[10px] text-muted-foreground text-center">
-              Points deducted: −{pointsDeducted}
-            </p>
-          )}
-        </div>
-      )}
 
       <p className="text-xs text-muted-foreground text-center">
         Type <code className="text-primary">help</code> for available commands

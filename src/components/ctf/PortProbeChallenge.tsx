@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect } from "react";
-import { d } from "@/lib/ctfDecode";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,7 +13,7 @@ const HOST = "127.0.0.1";
 const PORT_RANGE = { min: 1, max: 65535 };
 const SCAN_RANGE = "1-65535"; // Full port range for realism
 const BANNER_PATH = "/banner.txt";
-const FLAG = d("fW5hY3NfYWl2X2RudW9mX3Jlbm5hYntHQUxG");
+const FLAG = "FLAG{banner_found_via_scan}";
 
 // Generate consistent ports based on challenge ID (pseudo-random but deterministic)
 const generatePorts = (seed: string): { realPort: number; redHttpPort: number; redNonHttpPort: number } => {

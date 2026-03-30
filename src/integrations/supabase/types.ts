@@ -4212,42 +4212,6 @@ export type Database = {
         }
         Relationships: []
       }
-      team_invitations: {
-        Row: {
-          accepted_at: string | null
-          created_at: string
-          id: string
-          invitee_email: string
-          inviter_id: string
-          role: string
-          status: string
-          token: string
-          updated_at: string
-        }
-        Insert: {
-          accepted_at?: string | null
-          created_at?: string
-          id?: string
-          invitee_email: string
-          inviter_id: string
-          role: string
-          status?: string
-          token?: string
-          updated_at?: string
-        }
-        Update: {
-          accepted_at?: string | null
-          created_at?: string
-          id?: string
-          invitee_email?: string
-          inviter_id?: string
-          role?: string
-          status?: string
-          token?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
       team_members: {
         Row: {
           created_at: string | null
@@ -5112,10 +5076,6 @@ export type Database = {
         Args: { p_daily_limit?: number; p_viewer_id: string }
         Returns: Json
       }
-      check_seats_available: {
-        Args: { owner_id: string; role_type: string }
-        Returns: boolean
-      }
       count_monthly_assessments: {
         Args: { p_user_id: string }
         Returns: number
@@ -5143,41 +5103,6 @@ export type Database = {
           projects_shared: number
         }[]
       }
-      get_ctf_challenges_safe: {
-        Args: { p_include_inactive?: boolean }
-        Returns: {
-          category: string
-          created_at: string
-          description: string
-          difficulty: string
-          file_name: string
-          file_url: string
-          hints: Json
-          id: string
-          is_active: boolean
-          points: number
-          title: string
-          visibility: string
-        }[]
-      }
-      get_ctf_event_challenges_safe: {
-        Args: { p_event_id: string }
-        Returns: {
-          category: string
-          created_at: string
-          description: string
-          difficulty: string
-          file_name: string
-          file_url: string
-          hints: Json
-          id: string
-          is_active: boolean
-          points: number
-          sort_order: number
-          title: string
-          visibility: string
-        }[]
-      }
       get_job_matches_graph: {
         Args: { p_candidate_id: string }
         Returns: {
@@ -5189,28 +5114,6 @@ export type Database = {
           matched_skills: string[]
           missing_certs: string[]
           missing_skills: string[]
-        }[]
-      }
-      get_profiles_safe: {
-        Args: { p_user_ids?: string[] }
-        Returns: {
-          avatar_url: string
-          bio: string
-          created_at: string
-          desired_job_title: string
-          featured_until: string
-          full_name: string
-          hackthebox_rank: string
-          hackthebox_username: string
-          id: string
-          is_founding_200: boolean
-          is_verified: boolean
-          location: string
-          selected_avatar_frame: string
-          selected_badge_id: string
-          tryhackme_rank: string
-          tryhackme_username: string
-          username: string
         }[]
       }
       get_public_candidate_profile: {
@@ -5296,14 +5199,6 @@ export type Database = {
       }
       mark_as_founding_200: { Args: { user_id: string }; Returns: Json }
       mark_message_read: { Args: { message_id: string }; Returns: undefined }
-      submit_ctf_flag: {
-        Args: {
-          p_challenge_id: string
-          p_event_id?: string
-          p_submitted_flag: string
-        }
-        Returns: Json
-      }
       verify_ctf_flag: {
         Args: { p_challenge_id: string; p_submitted_flag: string }
         Returns: boolean

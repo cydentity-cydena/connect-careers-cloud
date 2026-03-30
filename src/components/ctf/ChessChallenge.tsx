@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { d } from "@/lib/ctfDecode";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
@@ -15,6 +14,7 @@ interface ChessPuzzle {
   flagLetter: string;
 }
 
+// Valid checkmate-in-one puzzles - destination files spell FACE
 const CHESS_PUZZLES: ChessPuzzle[] = [
   {
     position: "Scholar's Mate pattern",
@@ -28,9 +28,9 @@ const CHESS_PUZZLES: ChessPuzzle[] = [
 2 . . . . . . . .
 1 . . . . . . . .`,
     question: "White to move. Black King e8, Black Queen d8, pawns d7/f7. White Queen h5, White Bishop c4. Find the checkmate!",
-    correctMove: d("IzdmeFE="),
+    correctMove: "Qxf7#",
     hint: "The Bishop on c4 protects a critical square on the a2-g8 diagonal",
-    flagLetter: d("Rg==")
+    flagLetter: "F"
   },
   {
     position: "Back Rank Mate",
@@ -44,9 +44,9 @@ const CHESS_PUZZLES: ChessPuzzle[] = [
 2 . . . . . . . .
 1 R . . . . . . .`,
     question: "White to move. Black King h8, pawns g7/h7. White Rook a1. Deliver checkmate!",
-    correctMove: d("IzhhUg=="),
+    correctMove: "Ra8#",
     hint: "The pawns trap the King - use the back rank",
-    flagLetter: d("QQ==")
+    flagLetter: "A"
   },
   {
     position: "Rook and King Coordination",
@@ -60,9 +60,9 @@ const CHESS_PUZZLES: ChessPuzzle[] = [
 2 . . . . . . . .
 1 . . R . . . . .`,
     question: "White to move. Black King a8, White King a6, White Rook c1. Find the checkmate!",
-    correctMove: d("IzhjUg=="),
+    correctMove: "Rc8#",
     hint: "The White King controls the escape squares on the 7th rank",
-    flagLetter: d("Qw==")
+    flagLetter: "C"
   },
   {
     position: "Queen Back Rank",
@@ -76,9 +76,9 @@ const CHESS_PUZZLES: ChessPuzzle[] = [
 2 . . . . . . . .
 1 . . . . Q . . .`,
     question: "White to move. Black King g8, Black Rook f8, pawns f7/g7/h7. White Queen e1. Deliver checkmate!",
-    correctMove: d("IzhlUQ=="),
+    correctMove: "Qe8#",
     hint: "The Queen attacks along the entire 8th rank",
-    flagLetter: d("RQ==")
+    flagLetter: "E"
   },
 ];
 

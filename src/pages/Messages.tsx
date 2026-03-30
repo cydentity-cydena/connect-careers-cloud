@@ -108,7 +108,9 @@ export default function Messages() {
 
       // Fetch profiles for all users
       const { data: profiles } = await supabase
-        .rpc('get_profiles_safe', { p_user_ids: Array.from(userIds) });
+        .from('profiles')
+        .select('id, full_name, avatar_url')
+        .in('id', Array.from(userIds));
 
       const profilesMap = new Map(profiles?.map(p => [p.id, p]) || []);
 
@@ -211,7 +213,9 @@ export default function Messages() {
         // Fetch profiles for sender and recipient
         const userIds = Array.from(new Set([...messagesData.map(m => m.sender_id), ...messagesData.map(m => m.recipient_id)]));
         const { data: profilesData } = await supabase
-          .rpc('get_profiles_safe', { p_user_ids: userIds });
+          .from('profiles')
+          .select('id, full_name, avatar_url')
+          .in('id', userIds);
 
         const profilesMap = new Map(profilesData?.map(p => [p.id, p]) || []);
 
