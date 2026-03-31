@@ -66,8 +66,6 @@ const Auth = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showMfaForReset, setShowMfaForReset] = useState(false);
-  const [showVerificationSent, setShowVerificationSent] = useState(false);
-  const [verificationEmail, setVerificationEmail] = useState("");
   const oauthProfileStarted = useRef(false);
 
   // Helper to get return URL from query params
