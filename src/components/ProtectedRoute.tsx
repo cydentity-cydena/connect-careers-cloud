@@ -98,10 +98,7 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     return <Navigate to="/mfa" state={{ from: location }} replace />;
   }
 
-  // Redirect to MFA setup if not configured — only for non-candidate roles
-  if (mfaChecked && !hasMFA && !isCandidateOnly && location.pathname !== '/security-settings') {
-    return <Navigate to="/security-settings" state={{ from: location }} replace />;
-  }
+  // MFA setup is optional — no forced redirect to security-settings
 
   return <>{children}</>;
 };
