@@ -389,36 +389,6 @@ serve(async (req) => {
       }
     }
 
-    // Send verification email (only for non-OAuth signups with a verification URL)
-    if (verificationUrl && !isOAuthCompletion) {
-      try {
-        const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-        const response = await fetch(`${supabaseUrl}/functions/v1/send-verification-email`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${supabaseServiceKey}`,
-          },
-          body: JSON.stringify({
-            email: email,
-            fullName: fullName,
-            verificationUrl: verificationUrl,
-            role: role,
-          }),
-        });
-
-        if (!response.ok) {
-          const errorText = await response.text();
-          console.error('Failed to send verification email:', errorText);
-        } else {
-          console.log('Verification email sent successfully');
-        }
-      } catch (emailError) {
-        console.error('Error sending verification email:', emailError);
-        // Don't fail signup if email fails - user can request resend
-      }
-    }
-
     return new Response(
       JSON.stringify({
         success: true,
@@ -427,7 +397,7 @@ serve(async (req) => {
           email: email,
           role: role,
         },
-        emailVerificationRequired: !isOAuthCompletion,
+        emailVerificationRequired: false,
       }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
