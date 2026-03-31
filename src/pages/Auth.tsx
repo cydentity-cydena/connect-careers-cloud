@@ -999,7 +999,6 @@ const Auth = () => {
             )}
           </CardContent>
         </Card>
-        )}
         </div>
 
         {/* Additional SEO Content - Collapsible */}
