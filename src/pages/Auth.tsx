@@ -349,14 +349,23 @@ const Auth = () => {
         }
       }
 
-      // Show verification sent screen
-      setVerificationEmail(email);
-      setShowVerificationSent(true);
-      
-      // Clear form
-      setPassword("");
-      setFullName("");
-      setUsername("");
+      // Auto sign in after successful signup
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: email.trim().toLowerCase(),
+        password,
+      });
+
+      if (signInError) {
+        console.error('Auto sign-in failed:', signInError);
+        toast.success("Account created! Please sign in.");
+        setPassword("");
+        setFullName("");
+        setUsername("");
+        return;
+      }
+
+      toast.success("Account created successfully! Welcome to Cydena.");
+      navigate("/security-settings");
     } catch (error: any) {
       console.error('Signup error:', error);
       
