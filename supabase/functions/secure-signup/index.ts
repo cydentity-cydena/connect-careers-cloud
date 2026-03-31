@@ -154,11 +154,11 @@ serve(async (req) => {
         throw new Error('Password is required for regular signup');
       }
 
-      // 1. Create auth user with email_confirm: false to require verification
+      // 1. Create auth user with email_confirm: true (auto-confirmed, no verification needed)
       const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
         email,
         password,
-        email_confirm: false, // Require email verification
+        email_confirm: true,
         user_metadata: {
           full_name: fullName,
         },
@@ -171,23 +171,6 @@ serve(async (req) => {
 
       userId = authData.user.id;
       console.log('Auth user created:', userId);
-
-      // Generate email verification link using invite type (doesn't require password)
-      const appUrl = Deno.env.get('APP_URL') || 'https://www.cydentity.co.uk';
-      const { data: linkData, error: linkError } = await supabaseAdmin.auth.admin.generateLink({
-        type: 'invite',
-        email: email,
-        options: {
-          redirectTo: `${appUrl}/auth?verified=true`,
-        },
-      });
-
-      if (linkError) {
-        console.error('Failed to generate verification link:', linkError);
-      } else if (linkData?.properties?.action_link) {
-        verificationUrl = linkData.properties.action_link;
-        console.log('Verification link generated');
-      }
     }
 
     // Auto-generate username for OAuth candidates if not provided
@@ -406,36 +389,6 @@ serve(async (req) => {
       }
     }
 
-    // Send verification email (only for non-OAuth signups with a verification URL)
-    if (verificationUrl && !isOAuthCompletion) {
-      try {
-        const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-        const response = await fetch(`${supabaseUrl}/functions/v1/send-verification-email`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${supabaseServiceKey}`,
-          },
-          body: JSON.stringify({
-            email: email,
-            fullName: fullName,
-            verificationUrl: verificationUrl,
-            role: role,
-          }),
-        });
-
-        if (!response.ok) {
-          const errorText = await response.text();
-          console.error('Failed to send verification email:', errorText);
-        } else {
-          console.log('Verification email sent successfully');
-        }
-      } catch (emailError) {
-        console.error('Error sending verification email:', emailError);
-        // Don't fail signup if email fails - user can request resend
-      }
-    }
-
     return new Response(
       JSON.stringify({
         success: true,
@@ -444,7 +397,7 @@ serve(async (req) => {
           email: email,
           role: role,
         },
-        emailVerificationRequired: !isOAuthCompletion,
+        emailVerificationRequired: false,
       }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },

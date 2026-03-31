@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Shield, Loader2, CheckCircle, ChevronDown, Target, Mail } from "lucide-react";
+import { Shield, Loader2, CheckCircle, ChevronDown, Target } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { FunctionsHttpError } from "@supabase/supabase-js";
 import { useNavigate } from "react-router-dom";
@@ -66,8 +66,6 @@ const Auth = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showMfaForReset, setShowMfaForReset] = useState(false);
-  const [showVerificationSent, setShowVerificationSent] = useState(false);
-  const [verificationEmail, setVerificationEmail] = useState("");
   const oauthProfileStarted = useRef(false);
 
   // Helper to get return URL from query params
@@ -349,14 +347,23 @@ const Auth = () => {
         }
       }
 
-      // Show verification sent screen
-      setVerificationEmail(email);
-      setShowVerificationSent(true);
-      
-      // Clear form
-      setPassword("");
-      setFullName("");
-      setUsername("");
+      // Auto sign in after successful signup
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: email.trim().toLowerCase(),
+        password,
+      });
+
+      if (signInError) {
+        console.error('Auto sign-in failed:', signInError);
+        toast.success("Account created! Please sign in.");
+        setPassword("");
+        setFullName("");
+        setUsername("");
+        return;
+      }
+
+      toast.success("Account created successfully! Welcome to Cydena.");
+      navigate("/security-settings");
     } catch (error: any) {
       console.error('Signup error:', error);
       
@@ -603,45 +610,6 @@ const Auth = () => {
           </div>
 
         <div className="max-w-md mx-auto">
-        {showVerificationSent ? (
-          <Card className="border-border shadow-card animate-slide-up">
-            <CardHeader className="text-center">
-              <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
-                <Mail className="h-8 w-8 text-primary" />
-              </div>
-              <CardTitle>Check Your Email</CardTitle>
-              <CardDescription className="text-base">
-                We've sent a verification link to <strong className="text-foreground">{verificationEmail}</strong>
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="bg-muted/50 rounded-lg p-4 text-sm space-y-2">
-                <p className="font-medium">Next steps:</p>
-                <ol className="list-decimal list-inside space-y-1 text-muted-foreground">
-                  <li>Check your email inbox (and spam folder)</li>
-                  <li>Click the verification link</li>
-                  <li>Set up two-factor authentication</li>
-                  <li>Complete your profile</li>
-                </ol>
-              </div>
-              <p className="text-xs text-muted-foreground text-center">
-                The verification link will expire in 24 hours.
-              </p>
-              <div className="flex flex-col gap-2">
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    setShowVerificationSent(false);
-                    setEmail("");
-                  }}
-                  className="w-full"
-                >
-                  Back to Sign In
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        ) : (
         <Card className="border-border shadow-card animate-slide-up">
           <CardHeader>
             <CardTitle>{isPasswordResetMode ? "Reset Your Password" : "Welcome to Cydena"}</CardTitle>
@@ -1031,7 +999,6 @@ const Auth = () => {
             )}
           </CardContent>
         </Card>
-        )}
         </div>
 
         {/* Additional SEO Content - Collapsible */}

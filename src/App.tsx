@@ -66,7 +66,7 @@ import Founding20 from "./pages/Founding20";
 import AcceptInvitation from "./pages/AcceptInvitation";
 import MFA from "./pages/MFA";
 import SecuritySettings from "./pages/SecuritySettings";
-import VerifyEmail from "./pages/VerifyEmail";
+
 import Unsubscribe from "./pages/Unsubscribe";
 import CTF from "./pages/CTF";
 import CTFEvent from "./pages/CTFEvent";
@@ -93,7 +93,7 @@ const AppContent = () => {
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/auth" element={<Auth />} />
-          <Route path="/verify-email" element={<VerifyEmail />} />
+          
           <Route path="/unsubscribe" element={<Unsubscribe />} />
           <Route path="/dashboard/unsubscribe" element={<Unsubscribe />} />
           <Route path="/terms" element={<Terms />} />
