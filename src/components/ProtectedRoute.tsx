@@ -41,25 +41,13 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
         const hasVerifiedMFA = factors?.totp?.some((f) => f.status === 'verified');
         setHasMFA(!!hasVerifiedMFA);
 
-        if (candidateOnly) {
-          // Candidates: MFA is optional, skip enforcement
-          // But if they HAVE set it up, still verify AAL2
-          if (hasVerifiedMFA) {
-            const { data: aalData } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
-            const isAAL2 = aalData?.currentLevel === 'aal2';
-            setNeedsMfaVerify(!isAAL2);
-          }
-        } else {
-          // Employers/recruiters/admins: MFA is mandatory
-          if (!hasVerifiedMFA) {
-            toast.warning('Two-factor authentication setup is required to access your account.');
-          } else {
-            const { data: aalData } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
-            const isAAL2 = aalData?.currentLevel === 'aal2';
-            setNeedsMfaVerify(!isAAL2);
-            if (!isAAL2) {
-              toast.message('Please complete two-factor verification to continue.');
-            }
+        // MFA is optional for all roles — but if set up, require AAL2 verification
+        if (hasVerifiedMFA) {
+          const { data: aalData } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+          const isAAL2 = aalData?.currentLevel === 'aal2';
+          setNeedsMfaVerify(!isAAL2);
+          if (!isAAL2) {
+            toast.message('Please complete two-factor verification to continue.');
           }
         }
       } else {
